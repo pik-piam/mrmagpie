@@ -45,7 +45,7 @@ calcBphEffect <-function(){
     cells_NA <- cells[is.na(x[cells,,"ann_bph"])]
     #If all cells are NA, use m_glo, otherwise calc mean based on the non NA cells.
     if(identical(cells,cells_NA)) {
-      x[cells_NA,,"ann_bph"] <- m_glo      
+      x[cells_NA,,"ann_bph"] <- m_glo
     } else {
       m <- mean(x[cells,,"ann_bph"],na.rm=TRUE)
       x[cells_NA,,"ann_bph"] <- m
