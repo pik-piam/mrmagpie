@@ -4,7 +4,10 @@
 \alias{calcClimateClass}
 \title{calcClimateClass}
 \usage{
-calcClimateClass()
+calcClimateClass(source = "Koeppen")
+}
+\arguments{
+\item{source}{select source from: Koeppen, IPCC, IPCC_reduced}
 }
 \value{
 Clustered MAgPIE object on requested resolution
