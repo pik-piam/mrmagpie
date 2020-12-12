@@ -9,16 +9,16 @@
 #' readSource("IPCCClimate", convert="onlycorrect")
 #' }
 #'
-#' @importFrom raster raster aggregate extract
+#' @importFrom raster raster aggregate extract levels
 
 readIPCCClimate <-  function(){
 
   raster_1d12   <- raster("CLIMATE_ZONE.rst")
   zone_names    <- as.character(levels(raster_1d12)[[1]]$Class_name)
-  raster_1d2    <- aggregate(raster_1d12, fact=6, fun=max) # to avoid gaps (since 0 is NA)
+  raster_1d2    <- raster::aggregate(raster_1d12, fact=6, fun=max) # to avoid gaps (since 0 is NA)
 
   map           <- as.data.frame(magpie_coord)
-  mag           <- clean_magpie(as.magpie(extract(raster_1d2,map), spatial=1))
+  mag           <- clean_magpie(as.magpie(raster::extract(raster_1d2,map), spatial=1))
   #map[mag==0]   <- 6
   cellNames     <- toolMappingFile(type="cell",name="CountryToCellMapping.csv",readcsv=TRUE)$celliso
   getNames(mag) <- "NA"
