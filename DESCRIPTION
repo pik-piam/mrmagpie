@@ -1,7 +1,7 @@
 Package: mrmagpie
 Type: Package
 Title: madrat based MAgPIE Input Data Library
-Version: 0.29.2
+Version: 0.31.0
 Date: 2020-12-13
 Authors@R: c(person("Kristine", "Karstens", email = "karstens@pik-potsdam.de", role = c("aut","cre")),
              person("Jan Philipp", "Dietrich", email = "dietrich@pik-potsdam.de", role = "aut"),
@@ -33,6 +33,8 @@ Imports:
     stats,
     readxl
 License: LGPL-3 | file LICENSE
+URL: https://github.com/pik-piam/mrmagpie, https://doi.org/10.5281/zenodo.4319612
+BugReports: https://github.com/pik-piam/mrmagpie/issues
 LazyData: no
 Encoding: UTF-8
 RoxygenNote: 7.1.1
