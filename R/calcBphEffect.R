@@ -1,6 +1,6 @@
 #' @title calcBphEffect
 #' @description Biogeophysical temperature change of afforestation (degree C). File is based on observation datasets of Bright et al. 2017 and Duveiller et al. 2018
-#'# @param
+#'
 #' @return magpie object in cellular resolution
 #' @author Michael Windisch
 #'
