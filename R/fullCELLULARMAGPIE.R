@@ -36,8 +36,9 @@ fullCELLULARMAGPIE <- function(rev=0.1, dev="", ctype="c200", climatetype="HadGE
   if(is.na(lpjml["crop"]))   lpjml["crop"]   <- "LPJmL5"
   if(is.na(lpjml["natveg"])) lpjml["natveg"] <- "LPJmL4"
 
+  waterlpjml           <- lpjml
   if(grepl("watertest",dev)){
-    lpjml["natveg"] <- "LPJmL2"
+    waterlpjml["natveg"] <- "LPJmL2"
   }
 
   if(grepl("riverrouting_allocation",dev)){
@@ -147,14 +148,14 @@ fullCELLULARMAGPIE <- function(rev=0.1, dev="", ctype="c200", climatetype="HadGE
   calcOutput("GrowingPeriod", lpjml=lpjml, climatetype=climatetype, time="spline", dof=4, harmonize_baseline=harmonize_baseline, ref_year=ref_year, yield_ratio=0.1,
              aggregate=FALSE, round=2, file="lpj_grper_0.5.mz")
 
-  calcOutput("EnvmtlFlow", lpjml=lpjml, years=lpj_years, climatetype=climatetype, harmonize_baseline=ifelse(lpjml["natveg"]!="LPJmL2", harmonize_baseline, FALSE), ref_year=ref_year, time="spline", dof=4, aggregate="cluster", round=6, seasonality="grper", file=paste0("lpj_envflow_grper_", ctype, ".mz"))
+  calcOutput("EnvmtlFlow", lpjml=waterlpjml, years=lpj_years, climatetype=climatetype, harmonize_baseline=ifelse(waterlpjml["natveg"]!="LPJmL2", harmonize_baseline, FALSE), ref_year=ref_year, time="spline", dof=4, aggregate="cluster", round=6, seasonality="grper", file=paste0("lpj_envflow_grper_", ctype, ".mz"))
   calcOutput("WaterUseNonAg", source="WATCH_ISIMIP_WATERGAP", years=lpj_years, seasonality="grper", aggregate="cluster", file=paste0("watdem_nonagr_grper_", ctype, ".mz"))
   calcOutput("WaterUseNonAg", source="WATERGAP2020", years=lpj_years, seasonality="grper", waterusetype="withdrawal", aggregate="cluster", file=paste0("watdem_nonagr_ww_grper_", ctype, ".mz"))
   calcOutput("WaterUseNonAg", source="WATERGAP2020", years=lpj_years, seasonality="grper", waterusetype="consumption", aggregate="cluster", file=paste0("watdem_nonagr_wc_grper_", ctype, ".mz"))
 
   #43 water availability
-  calcOutput("AvlWater", lpjml=lpjml, years=lpj_years, climatetype=climatetype, harmonize_baseline=ifelse(lpjml["natveg"]!="LPJmL2", harmonize_baseline, FALSE), ref_year=ref_year, time="spline", dof=4, seasonality="grper", aggregate="cluster", round=6, file=paste0("lpj_watavail_grper_", ctype, ".mz"))
-  calcOutput("AvlWater", lpjml=lpjml, years=lpj_years, climatetype=climatetype, harmonize_baseline=ifelse(lpjml["natveg"]!="LPJmL2", harmonize_baseline, FALSE), ref_year=ref_year, time="spline", dof=4, seasonality="total", aggregate="cluster", round=6, file=paste0("lpj_watavail_total_", ctype, ".mz"))
+  calcOutput("AvlWater", lpjml=waterlpjml, years=lpj_years, climatetype=climatetype, harmonize_baseline=ifelse(waterlpjml["natveg"]!="LPJmL2", harmonize_baseline, FALSE), ref_year=ref_year, time="spline", dof=4, seasonality="grper", aggregate="cluster", round=6, file=paste0("lpj_watavail_grper_", ctype, ".mz"))
+  calcOutput("AvlWater", lpjml=waterlpjml, years=lpj_years, climatetype=climatetype, harmonize_baseline=ifelse(waterlpjml["natveg"]!="LPJmL2", harmonize_baseline, FALSE), ref_year=ref_year, time="spline", dof=4, seasonality="total", aggregate="cluster", round=6, file=paste0("lpj_watavail_total_", ctype, ".mz"))
 
   #44 biodiversity
   calcOutput("Luh2SideLayers", aggregate="cluster", round=6, file=paste0("luh2_side_layers_", ctype, ".mz"))
