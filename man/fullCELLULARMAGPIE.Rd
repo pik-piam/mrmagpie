@@ -9,6 +9,7 @@ fullCELLULARMAGPIE(
   dev = "",
   ctype = "c200",
   climatetype = "HadGEM2_ES:rcp2p6:co2",
+  lpjml = c(natveg = "LPJml4", crop = "LPJmL5GGCMI"),
   clusterweight = NULL
 )
 }
@@ -24,6 +25,8 @@ indicating the number of resulting clusters. Available methodologies are hierarc
 cluster distribution among regions whereas normalized k-means is used for the clustering within a region.}
 
 \item{climatetype}{climate change scenario to be used}
+
+\item{lpjml}{Defines LPJmL version for crop/grass and natveg specific inputs}
 
 \item{clusterweight}{Should specific regions be resolved with more or less detail? Values > 1 mean higher share, < 1 lower share
 e.g. cfg$clusterweight <- c(LAM=2) means that a higher level of detail for region LAM if set to NULL all weights will be assumed to be 1.

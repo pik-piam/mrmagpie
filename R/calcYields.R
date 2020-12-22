@@ -1,7 +1,7 @@
 #' @title calcYields
 #' @description This function extracts yields from LPJmL to MAgPIE
 #'
-#' @param version Switch between LPJmL4 and LPJmL5
+#' @param lpjml Defines LPJmL version for crop/grass and natveg specific inputs
 #' @param climatetype Switch between different climate scenarios (default: "CRU_4")
 #' @param time average, spline or raw (default)
 #' @param averaging_range just specify for time=="average": number of time steps to average
@@ -25,7 +25,7 @@
 #' @importFrom magclass getYears add_columns dimSums time_interpolate
 #' @importFrom madrat toolFillYears
 
-calcYields <- function(version="LPJmL5", climatetype="CRU_4", time="spline", averaging_range=NULL, dof=4,
+calcYields <- function(lpjml=c(natveg="LPJml4", crop="LPJmL5"), climatetype="CRU_4", time="spline", averaging_range=NULL, dof=4,
                        harmonize_baseline=FALSE, ref_year="y2015", calib_proxy=TRUE, split_cropcalc=TRUE, crops="magpie", selectyears="all",
                        replace_isimip3b=FALSE, replace_years="lpj",
                        isimip_subtype="ISIMIP3b:yields.EPIC-IIASA_ukesm1-0-ll_ssp585_default"){
@@ -45,7 +45,7 @@ calcYields <- function(version="LPJmL5", climatetype="CRU_4", time="spline", ave
     for(crop in lpjml_crops){
 
       subdata <- as.vector(outer(crop, irrig_types, paste, sep="."))
-      tmp     <- calcOutput("LPJmL", version=version, climatetype=climatetype, subtype="harvest", subdata=subdata, time=time, averaging_range=averaging_range, dof=dof,
+      tmp     <- calcOutput("LPJmL", version=lpjml["crop"], climatetype=climatetype, subtype="harvest", subdata=subdata, time=time, averaging_range=averaging_range, dof=dof,
                             harmonize_baseline=harmonize_baseline, ref_year=ref_year, limited=TRUE, hard_cut=FALSE, selectyears=selectyears, aggregate=FALSE)
 
       yields  <- mbind(yields, tmp)
@@ -53,7 +53,7 @@ calcYields <- function(version="LPJmL5", climatetype="CRU_4", time="spline", ave
 
   } else {
 
-    yields    <- calcOutput("LPJmL", version=version, climatetype=climatetype, subtype="harvest", time=time, averaging_range=averaging_range, dof=dof,
+    yields    <- calcOutput("LPJmL", version=lpjml["crop"], climatetype=climatetype, subtype="harvest", time=time, averaging_range=averaging_range, dof=dof,
                             harmonize_baseline=harmonize_baseline, ref_year=ref_year, limited=TRUE, hard_cut=FALSE, selectyears=selectyears, aggregate=FALSE)
   }
 
@@ -110,7 +110,7 @@ calcYields <- function(version="LPJmL5", climatetype="CRU_4", time="spline", ave
     }
     to_rep <- calcOutput("ISIMIPYields", subtype=isimip_subtype, aggregate=F)
     common_vars <- intersect(getNames(yields),getNames(to_rep))
-# convert to array for memory
+    # convert to array for memory
     yields <- as.array(yields[,rep_years,]); to_rep <- as.array(to_rep[,rep_years,])
     yields[,,common_vars] <- to_rep[,,common_vars]
     yields <- as.magpie(yields); to_rep <- as.magpie(to_rep)

@@ -1,7 +1,7 @@
 #' @title calcAvlWater
 #' @description This function calculates water availability for MAgPIE retrieved from LPJmL
 #'
-#' @param version Switch between LPJmL4 and LPJmL5
+#' @param lpjml Defines LPJmL version for crop/grass and natveg specific inputs
 #' @param climatetype Switch between different climate scenarios (default: "CRU_4")
 #' @param time Time smoothing: average, spline or raw (default)
 #' @param averaging_range only specify if time=="average": number of time steps to average
@@ -23,7 +23,8 @@
 #'
 
 calcAvlWater <- function(selectyears="all",
-                         version="LPJmL4", climatetype="CRU_4", time="raw", averaging_range=NULL, dof=NULL,
+                         lpjml=c(natveg="LPJml4", crop="LPJmL5"), climatetype="CRU_4",
+                         time="raw", averaging_range=NULL, dof=NULL,
                          harmonize_baseline=FALSE, ref_year="y2015",
                          seasonality="grper"){
 
@@ -38,14 +39,14 @@ calcAvlWater <- function(selectyears="all",
     if(time=="raw"){
 
       ### Monthly Discharge (unit (after calcLPJmL): mio. m^3/month)
-      monthly_discharge_magpie <- calcOutput("LPJmL", version=version, climatetype=climatetype, subtype="mdischarge", aggregate=FALSE,
+      monthly_discharge_magpie <- calcOutput("LPJmL", version=lpjml["natveg"], climatetype=climatetype, subtype="mdischarge", aggregate=FALSE,
                                              harmonize_baseline=FALSE,
                                              time="raw")
       # Transform to array (faster calculation)
       monthly_discharge_magpie <- as.array(collapseNames(monthly_discharge_magpie))
 
       ### Monthly Runoff (unit (after calcLPJmL): mio. m^3/month)
-      monthly_runoff_magpie    <- calcOutput("LPJmL", version=version, climatetype=climatetype, subtype="mrunoff", aggregate=FALSE,
+      monthly_runoff_magpie    <- calcOutput("LPJmL", version=lpjml["natveg"], climatetype=climatetype, subtype="mrunoff", aggregate=FALSE,
                                              harmonize_baseline=FALSE,
                                              time="raw")
       # Transform to array (faster calculation)
@@ -79,7 +80,7 @@ calcAvlWater <- function(selectyears="all",
 
     } else {
       # Time smoothing:
-      x     <- calcOutput("AvlWater", version=version, climatetype=climatetype, seasonality="monthly", aggregate=FALSE,
+      x     <- calcOutput("AvlWater", lpjml=lpjml, climatetype=climatetype, seasonality="monthly", aggregate=FALSE,
                           harmonize_baseline=FALSE, time="raw")
 
       if(time=="average"){
@@ -107,9 +108,9 @@ calcAvlWater <- function(selectyears="all",
       stop("Harmonization with raw data not possible. Select time='spline' when applying harmonize_baseline=TRUE")
     } else {
       # Load smoothed data
-      baseline <- calcOutput("AvlWater", version=version, climatetype=harmonize_baseline, seasonality="monthly", aggregate=FALSE,
+      baseline <- calcOutput("AvlWater", lpjml=lpjml, climatetype=harmonize_baseline, seasonality="monthly", aggregate=FALSE,
                              harmonize_baseline=FALSE, time=time, dof=dof, averaging_range=averaging_range)
-      x        <- calcOutput("AvlWater", version=version, climatetype=climatetype, seasonality="monthly", aggregate=FALSE,
+      x        <- calcOutput("AvlWater", lpjml=lpjml, climatetype=climatetype, seasonality="monthly", aggregate=FALSE,
                              harmonize_baseline=FALSE, time=time, dof=dof, averaging_range=averaging_range)
       # Harmonize to baseline
       avl_water_month <- toolHarmonize2Baseline(x=x, base=baseline, ref_year=ref_year, limited=TRUE, hard_cut=FALSE)
@@ -161,7 +162,7 @@ calcAvlWater <- function(selectyears="all",
     avl_water_day <- avl_water_month/month_day_magpie
 
     # Growing days per month
-    grow_days <- calcOutput("GrowingPeriod", version="LPJmL5", climatetype=climatetype, time=time, dof=dof, averaging_range=averaging_range,
+    grow_days <- calcOutput("GrowingPeriod", lpjml=lpjml, climatetype=climatetype, time=time, dof=dof, averaging_range=averaging_range,
                             harmonize_baseline=harmonize_baseline, ref_year=ref_year, yield_ratio=0.1, aggregate=FALSE)
 
     # Adjust years

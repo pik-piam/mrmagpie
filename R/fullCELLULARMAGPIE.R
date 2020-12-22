@@ -11,6 +11,7 @@
 #' @param dev development suffix to distinguish development versions for the same data revision. This can be useful to distinguish
 #' parallel lines of development.
 #' @param climatetype climate change scenario to be used
+#' @param lpjml Defines LPJmL version for crop/grass and natveg specific inputs
 #' @param clusterweight Should specific regions be resolved with more or less detail? Values > 1 mean higher share, < 1 lower share
 #' e.g. cfg$clusterweight <- c(LAM=2) means that a higher level of detail for region LAM if set to NULL all weights will be assumed to be 1.
 #' examples:
@@ -29,13 +30,14 @@
 #' @importFrom madrat setConfig getConfig
 #' @importFrom magpiesets findset
 
-fullCELLULARMAGPIE <- function(rev=0.1, dev="", ctype="c200", climatetype="HadGEM2_ES:rcp2p6:co2", clusterweight=NULL) {
+fullCELLULARMAGPIE <- function(rev=0.1, dev="", ctype="c200", climatetype="HadGEM2_ES:rcp2p6:co2", lpjml=c(natveg="LPJml4", crop="LPJmL5GGCMI"), clusterweight=NULL) {
 
+  # define defaults, if not specified
+  if(is.na(lpjml["crop"]))   lpjml["crop"]   <- "LPJmL5"
+  if(is.na(lpjml["natveg"])) lpjml["natveg"] <- "LPJmL4"
 
   if(grepl("watertest",dev)){
-    waterversion <- "LPJmL2"
-  } else {
-    waterversion <- "LPJmL4"
+    lpjml["natveg"] <- "LPJmL2"
   }
 
   if(grepl("riverrouting_allocation",dev)){
@@ -71,10 +73,10 @@ fullCELLULARMAGPIE <- function(rev=0.1, dev="", ctype="c200", climatetype="HadGE
   ### gridded pop?
 
   # 14 yields
-  calcOutput("Yields", version="LPJmL5", climatetype=climatetype, time="spline", dof=4,
+  calcOutput("Yields", lpjml=lpjml, climatetype=climatetype, time="spline", dof=4,
              harmonize_baseline=harmonize_baseline, ref_year=ref_year, aggregate = FALSE,
              years="y1995", file=paste0("lpj_yields_0.5.mz"))
-  calcOutput("Yields", version="LPJmL5", climatetype=climatetype, time="spline", dof=4,
+  calcOutput("Yields", lpjml=lpjml, climatetype=climatetype, time="spline", dof=4,
              harmonize_baseline=harmonize_baseline, ref_year=ref_year, aggregate = "cluster",
              years=lpj_years, file=paste0("lpj_yields_", ctype, ".mz"))
 
@@ -139,20 +141,20 @@ fullCELLULARMAGPIE <- function(rev=0.1, dev="", ctype="c200", climatetype="HadGE
 
 
   #42 water demand
-  calcOutput("Irrigation", version="LPJmL5", years=lpj_years, climatetype=climatetype, harmonize_baseline=harmonize_baseline, ref_year=ref_year, time="spline", dof=4, aggregate="cluster", round=6, file=paste0("lpj_airrig_", ctype, ".mz"))
+  calcOutput("Irrigation", lpjml=lpjml, years=lpj_years, climatetype=climatetype, harmonize_baseline=harmonize_baseline, ref_year=ref_year, time="spline", dof=4, aggregate="cluster", round=6, file=paste0("lpj_airrig_", ctype, ".mz"))
 
   #dummy Growing Period calc
-  calcOutput("GrowingPeriod", version="LPJmL5", climatetype=climatetype, time="spline", dof=4, harmonize_baseline=harmonize_baseline, ref_year=ref_year, yield_ratio=0.1,
+  calcOutput("GrowingPeriod", lpjml=lpjml, climatetype=climatetype, time="spline", dof=4, harmonize_baseline=harmonize_baseline, ref_year=ref_year, yield_ratio=0.1,
              aggregate=FALSE, round=2, file="lpj_grper_0.5.mz")
 
-  calcOutput("EnvmtlFlow", version=waterversion, years=lpj_years, climatetype=climatetype, harmonize_baseline=ifelse(waterversion!="LPJmL2", harmonize_baseline, FALSE), ref_year=ref_year, time="spline", dof=4, aggregate="cluster", round=6, seasonality="grper", file=paste0("lpj_envflow_grper_", ctype, ".mz"))
+  calcOutput("EnvmtlFlow", lpjml=lpjml, years=lpj_years, climatetype=climatetype, harmonize_baseline=ifelse(lpjml["natveg"]!="LPJmL2", harmonize_baseline, FALSE), ref_year=ref_year, time="spline", dof=4, aggregate="cluster", round=6, seasonality="grper", file=paste0("lpj_envflow_grper_", ctype, ".mz"))
   calcOutput("WaterUseNonAg", source="WATCH_ISIMIP_WATERGAP", years=lpj_years, seasonality="grper", aggregate="cluster", file=paste0("watdem_nonagr_grper_", ctype, ".mz"))
   calcOutput("WaterUseNonAg", source="WATERGAP2020", years=lpj_years, seasonality="grper", waterusetype="withdrawal", aggregate="cluster", file=paste0("watdem_nonagr_ww_grper_", ctype, ".mz"))
   calcOutput("WaterUseNonAg", source="WATERGAP2020", years=lpj_years, seasonality="grper", waterusetype="consumption", aggregate="cluster", file=paste0("watdem_nonagr_wc_grper_", ctype, ".mz"))
 
   #43 water availability
-  calcOutput("AvlWater", version=waterversion, years=lpj_years, climatetype=climatetype, harmonize_baseline=ifelse(waterversion!="LPJmL2", harmonize_baseline, FALSE), ref_year=ref_year, time="spline", dof=4, seasonality="grper", aggregate="cluster", round=6, file=paste0("lpj_watavail_grper_", ctype, ".mz"))
-  calcOutput("AvlWater", version=waterversion, years=lpj_years, climatetype=climatetype, harmonize_baseline=ifelse(waterversion!="LPJmL2", harmonize_baseline, FALSE), ref_year=ref_year, time="spline", dof=4, seasonality="total", aggregate="cluster", round=6, file=paste0("lpj_watavail_total_", ctype, ".mz"))
+  calcOutput("AvlWater", lpjml=lpjml, years=lpj_years, climatetype=climatetype, harmonize_baseline=ifelse(lpjml["natveg"]!="LPJmL2", harmonize_baseline, FALSE), ref_year=ref_year, time="spline", dof=4, seasonality="grper", aggregate="cluster", round=6, file=paste0("lpj_watavail_grper_", ctype, ".mz"))
+  calcOutput("AvlWater", lpjml=lpjml, years=lpj_years, climatetype=climatetype, harmonize_baseline=ifelse(lpjml["natveg"]!="LPJmL2", harmonize_baseline, FALSE), ref_year=ref_year, time="spline", dof=4, seasonality="total", aggregate="cluster", round=6, file=paste0("lpj_watavail_total_", ctype, ".mz"))
 
   #44 biodiversity
   calcOutput("Luh2SideLayers", aggregate="cluster", round=6, file=paste0("luh2_side_layers_", ctype, ".mz"))
@@ -168,17 +170,17 @@ fullCELLULARMAGPIE <- function(rev=0.1, dev="", ctype="c200", climatetype="HadGE
 
 
   #52 carbon
-  calcOutput("Carbon", aggregate = FALSE, version="LPJmL4+5", climatetype=climatetype,
+  calcOutput("Carbon", aggregate = FALSE, lpjml=lpjml, climatetype=climatetype,
              harmonize_baseline=harmonize_baseline, ref_year=ref_year,
              time="spline", dof=4, round=6, years="y1995", file="lpj_carbon_stocks_0.5.mz")
-  calcOutput("TopsoilCarbon", aggregate = FALSE, version="LPJmL4", climatetype=climatetype,
+  calcOutput("TopsoilCarbon", aggregate = FALSE, lpjml=lpjml, climatetype=climatetype,
              harmonize_baseline=harmonize_baseline, ref_year=ref_year,
              time="spline", dof=4, round=6, years="y1995", file="lpj_carbon_topsoil_0.5.mz")
 
-  calcOutput("Carbon", aggregate = "cluster", version="LPJmL4+5", climatetype=climatetype,
+  calcOutput("Carbon", aggregate = "cluster", lpjml=lpjml, climatetype=climatetype,
              harmonize_baseline=harmonize_baseline, ref_year=ref_year,
              time="spline", dof=4, round=6, years=lpj_years, file=paste0("lpj_carbon_stocks_", ctype, ".mz"))
-  calcOutput("TopsoilCarbon", aggregate = "cluster", version="LPJmL4", climatetype=climatetype,
+  calcOutput("TopsoilCarbon", aggregate = "cluster", lpjml=lpjml, climatetype=climatetype,
              harmonize_baseline=harmonize_baseline, ref_year=ref_year,
              time="spline", dof=4, round=6, years=lpj_years, file=paste0("lpj_carbon_topsoil_", ctype, ".mz"))
 

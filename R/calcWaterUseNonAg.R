@@ -6,6 +6,7 @@
 #' @param averaging_range only specify if time=="average": number of time steps to average
 #' @param dof             only specify if time=="spline": degrees of freedom needed for spline
 #' @param waterusetype withdrawal (default) or consumption
+#' @param lpjml              Defines LPJmL version for crop/grass and natveg specific inputs
 #' @param seasonality        grper (default): non-agricultural water demand in growing period per year; total: non-agricultural water demand throughout the year
 #' @param climatetype        switch between different climate scenarios (default: "CRU_4") for calcGrowingPeriod
 #' @param harmonize_baseline FALSE (default), if a baseline is specified here input data is harmonized to that baseline (from ref_year onwards) Note: only applies for calcGrowingPeriod
@@ -22,7 +23,7 @@
 #' @import mrcommons
 
 calcWaterUseNonAg <- function(selectyears="all", source="WATCH_ISIMIP_WATERGAP", waterusetype="withdrawal",
-                                 time="raw", averaging_range=NULL, dof=NULL,
+                                 time="raw", averaging_range=NULL, dof=NULL, lpjml=c(natveg="LPJml4", crop="LPJmL5"),
                                  seasonality="grper", climatetype="HadGEM2_ES:rcp2p6:co2", harmonize_baseline="CRU_4", ref_year="y2015"){
 
   #######################################
@@ -119,7 +120,7 @@ calcWaterUseNonAg <- function(selectyears="all", source="WATCH_ISIMIP_WATERGAP",
   ### Non-agricultural water demands in Growing Period
   if(seasonality=="grper"){
     # Get growing days per month
-    grow_days <- calcOutput("GrowingPeriod", version="LPJmL5", climatetype=climatetype, time="spline", dof=4,
+    grow_days <- calcOutput("GrowingPeriod", lpjml=lpjml, climatetype=climatetype, time="spline", dof=4,
                             harmonize_baseline=harmonize_baseline, ref_year=ref_year, yield_ratio=0.1, aggregate=FALSE)
     # Growing days per year
     grow_days <- dimSums(grow_days,dim=3)

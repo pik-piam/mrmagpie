@@ -11,6 +11,7 @@ calcWaterUseNonAg(
   time = "raw",
   averaging_range = NULL,
   dof = NULL,
+  lpjml = c(natveg = "LPJml4", crop = "LPJmL5"),
   seasonality = "grper",
   climatetype = "HadGEM2_ES:rcp2p6:co2",
   harmonize_baseline = "CRU_4",
@@ -29,6 +30,8 @@ calcWaterUseNonAg(
 \item{averaging_range}{only specify if time=="average": number of time steps to average}
 
 \item{dof}{only specify if time=="spline": degrees of freedom needed for spline}
+
+\item{lpjml}{Defines LPJmL version for crop/grass and natveg specific inputs}
 
 \item{seasonality}{grper (default): non-agricultural water demand in growing period per year; total: non-agricultural water demand throughout the year}
 

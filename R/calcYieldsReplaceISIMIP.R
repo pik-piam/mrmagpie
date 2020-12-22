@@ -1,7 +1,7 @@
 #' @title calcYields
 #' @description This function extracts yields from LPJmL to MAgPIE
 #'
-#' @param version Switch between LPJmL4 and LPJmL5
+#' @param lpjml Defines LPJmL version for crop/grass and natveg specific inputs
 #' @param climatetype Switch between different climate scenarios (default: "CRU_4")
 #' @param harmonize_baseline FALSE (default) nothing happens, if a baseline is specified here data is harmonized to that baseline (from ref_year on)
 #' @param ref_year just specify for harmonize_baseline != FALSE : Reference year
@@ -15,7 +15,7 @@
 #' \dontrun{ calcOutput("YieldsReplaceISIMIP", aggregate = FALSE) }
 #'
 
-calcYieldsReplaceISIMIP <- function(version="LPJmL5", climatetype="HadGEM2_ES:rcp2p6:co2", time="spline", dof=4,
+calcYieldsReplaceISIMIP <- function(lpjml=c(natveg="LPJml4", crop="LPJmL5"), climatetype="HadGEM2_ES:rcp2p6:co2", time="spline", dof=4,
                        harmonize_baseline="CRU_4", ref_year="y2015",
                        isimip_subtype="ISIMIP3b:yields.EPIC-IIASA_ukesm1-0-ll_ssp585_default"){
 
@@ -23,7 +23,7 @@ calcYieldsReplaceISIMIP <- function(version="LPJmL5", climatetype="HadGEM2_ES:rc
   options(magclass_sizeLimit=1e+12)
   on.exit(options(magclass_sizeLimit=sizelimit))
 
-  yields <- calcOutput("Yields", version=version, climatetype=climatetype, time=time,
+  yields <- calcOutput("Yields", lpjml=lpjml, climatetype=climatetype, time=time,
              harmonize_baseline=harmonize_baseline, ref_year=ref_year, aggregate = FALSE)
 
   to_rep <- calcOutput("ISIMIPYields", time=time, subtype=isimip_subtype, aggregate=FALSE)

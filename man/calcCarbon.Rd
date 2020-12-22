@@ -5,7 +5,7 @@
 \title{calcCarbon}
 \usage{
 calcCarbon(
-  version = "LPJmL4",
+  lpjml = c(natveg = "LPJml4", crop = "LPJmL5"),
   climatetype = "CRU_4",
   time = "raw",
   averaging_range = NULL,
@@ -15,7 +15,7 @@ calcCarbon(
 )
 }
 \arguments{
-\item{version}{Switch between LPJmL4 and LPJmL4 (or both LPJmL4+5)}
+\item{lpjml}{Defines LPJmL version for crop/grass and natveg specific inputs}
 
 \item{climatetype}{Switch between different climate scenarios (default: "CRU_4")}
 

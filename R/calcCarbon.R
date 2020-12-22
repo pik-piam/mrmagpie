@@ -1,7 +1,7 @@
 #' @title calcCarbon
 #' @description This function extracts carbon densities from LPJ to MAgPIE
 #'
-#' @param version Switch between LPJmL4 and LPJmL4 (or both LPJmL4+5)
+#' @param lpjml Defines LPJmL version for crop/grass and natveg specific inputs
 #' @param climatetype Switch between different climate scenarios (default: "CRU_4")
 #' @param time average, spline or raw (default)
 #' @param averaging_range just specify for time=="average": number of time steps to average
@@ -18,43 +18,39 @@
 #' @importFrom magpiesets findset
 #' @importFrom magclass add_dimension
 
-calcCarbon <- function(version="LPJmL4", climatetype="CRU_4", time="raw", averaging_range=NULL, dof=NULL,
+calcCarbon <- function(lpjml=c(natveg="LPJml4", crop="LPJmL5"), climatetype="CRU_4",
+                       time="raw", averaging_range=NULL, dof=NULL,
                        harmonize_baseline=FALSE, ref_year="y2015"){
 
-  version_backup <- version
-
-  if(version_backup == "LPJmL4+5") version <- "LPJmL4"
-
-  soilc_natveg <-  calcOutput("LPJmL", version=version, climatetype=climatetype, subtype="soilc",
+  soilc_natveg <-  calcOutput("LPJmL", version=lpjml["natveg"], climatetype=climatetype, subtype="soilc",
                               averaging_range=averaging_range, time=time, dof=dof,
                               harmonize_baseline=harmonize_baseline, ref_year=ref_year,
                               aggregate=FALSE)
 
-  vegc_natveg  <-  calcOutput("LPJmL", version=version, climatetype=climatetype, subtype="vegc",
+  vegc_natveg  <-  calcOutput("LPJmL", version=lpjml["natveg"], climatetype=climatetype, subtype="vegc",
                               averaging_range=averaging_range, time=time, dof=dof,
                               harmonize_baseline=harmonize_baseline, ref_year=ref_year,
                               aggregate=FALSE)
 
-  litc_natveg  <-  calcOutput("LPJmL", version=version, climatetype=climatetype, subtype="litc",
+  litc_natveg  <-  calcOutput("LPJmL", version=lpjml["natveg"], climatetype=climatetype, subtype="litc",
                               averaging_range=averaging_range, time=time, dof=dof,
                               harmonize_baseline=harmonize_baseline, ref_year=ref_year,
                               aggregate=FALSE)
 
   natveg       <- mbind(vegc_natveg, soilc_natveg, litc_natveg)
 
-  if(version_backup == "LPJmL4+5") version <- "LPJmL5"
 
-  soilc_grass  <-  calcOutput("LPJmL", version=version, climatetype=climatetype, subtype="soilc_grass",
+  soilc_grass  <-  calcOutput("LPJmL", version=lpjml["crop"], climatetype=climatetype, subtype="soilc_grass",
                               averaging_range=averaging_range, time=time, dof=dof,
                               harmonize_baseline=harmonize_baseline, ref_year=ref_year,
                               aggregate=FALSE)
 
-  vegc_grass   <-  calcOutput("LPJmL", version=version, climatetype=climatetype, subtype="vegc_grass",
+  vegc_grass   <-  calcOutput("LPJmL", version=lpjml["crop"], climatetype=climatetype, subtype="vegc_grass",
                               averaging_range=averaging_range, time=time, dof=dof,
                               harmonize_baseline=harmonize_baseline, ref_year=ref_year,
                               aggregate=FALSE)
 
-  litc_grass   <-  calcOutput("LPJmL", version=version, climatetype=climatetype, subtype="litc_grass",
+  litc_grass   <-  calcOutput("LPJmL", version=lpjml["crop"], climatetype=climatetype, subtype="litc_grass",
                               averaging_range=averaging_range, time=time, dof=dof,
                               harmonize_baseline=harmonize_baseline, ref_year=ref_year,
                               aggregate=FALSE)
@@ -64,9 +60,7 @@ calcCarbon <- function(version="LPJmL4", climatetype="CRU_4", time="raw", averag
   getNames(grass) <- getNames(natveg)
 
 
-  if(version_backup == "LPJmL4+5") version <- version_backup
-
-  topsoilc     <- calcOutput("TopsoilCarbon", version=version, climatetype=climatetype,
+  topsoilc     <- calcOutput("TopsoilCarbon", lpjml=lpjml, climatetype=climatetype,
                               averaging_range=averaging_range, time=time, dof=dof,
                               harmonize_baseline=harmonize_baseline, ref_year=ref_year,
                               aggregate=FALSE)

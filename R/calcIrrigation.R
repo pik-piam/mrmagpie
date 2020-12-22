@@ -2,7 +2,7 @@
 #' @description This function extracts irrigation water (airrig: water applied additionally to rainfall) from LPJmL to MAgPIE
 #'
 #' @param selectyears years to be returned
-#' @param version Switch between LPJmL4 and LPJmL5
+#' @param lpjml Defines LPJmL version for crop/grass and natveg specific inputs
 #' @param climatetype Switch between different climate scenarios (default: "CRU_4")
 #' @param time Time smoothing: average, spline or raw (default)
 #' @param averaging_range only specify if time=="average": number of time steps to average
@@ -21,7 +21,8 @@
 #' @importFrom mrcommons toolHarmonize2Baseline
 
 calcIrrigation <- function(selectyears="all",
-                           version="LPJmL5", climatetype="CRU_4", time="spline", averaging_range=NULL, dof=4,
+                           lpjml=c(natveg="LPJml4", crop="LPJmL5"), climatetype="CRU_4",
+                           time="spline", averaging_range=NULL, dof=4,
                            harmonize_baseline=FALSE, ref_year=NULL, rainfedweight=0.01){
 
   sizelimit <- getOption("magclass_sizeLimit")
@@ -32,7 +33,7 @@ calcIrrigation <- function(selectyears="all",
 
     if(time=="raw"){
       # Read in airrig (irrigation water applied additionally to rainfall where irrigation takes place):
-      lpj_airrig   <- collapseNames(calcOutput("LPJmL", version=version, climatetype=climatetype, subtype="irrig", aggregate=FALSE,
+      lpj_airrig   <- collapseNames(calcOutput("LPJmL", version=lpjml["crop"], climatetype=climatetype, subtype="irrig", aggregate=FALSE,
                                                                  harmonize_baseline=FALSE,
                                                                  time="raw")[,,"irrigated"])
 
@@ -49,7 +50,7 @@ calcIrrigation <- function(selectyears="all",
 
     } else {
       # Time smoothing:
-      x     <- calcOutput("Irrigation", version=version, climatetype=climatetype, aggregate=FALSE,
+      x     <- calcOutput("Irrigation", lpjml=lpjml, climatetype=climatetype, aggregate=FALSE,
                           harmonize_baseline=FALSE, time="raw")
 
       # Smoothing data through average:
@@ -74,9 +75,9 @@ calcIrrigation <- function(selectyears="all",
       stop("Harmonization with raw data not possible. Select time='spline' when applying harmonize_baseline=TRUE")
     } else {
       # Load smoothed data
-      baseline   <- calcOutput("Irrigation", version=version, climatetype=harmonize_baseline, aggregate=FALSE,
+      baseline   <- calcOutput("Irrigation", lpjml=lpjml, climatetype=harmonize_baseline, aggregate=FALSE,
                              harmonize_baseline=FALSE, time=time, dof=dof, averaging_range=averaging_range)
-      x          <- calcOutput("Irrigation", version=version, climatetype=climatetype, aggregate=FALSE,
+      x          <- calcOutput("Irrigation", lpjml=lpjml, climatetype=climatetype, aggregate=FALSE,
                              harmonize_baseline=FALSE, time=time, dof=dof, averaging_range=averaging_range)
       # Harmonize to baseline
       mag_airrig <- toolHarmonize2Baseline(x=x, base=baseline, ref_year=ref_year, limited=TRUE, hard_cut=FALSE)

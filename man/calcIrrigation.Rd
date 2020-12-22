@@ -6,7 +6,7 @@
 \usage{
 calcIrrigation(
   selectyears = "all",
-  version = "LPJmL5",
+  lpjml = c(natveg = "LPJml4", crop = "LPJmL5"),
   climatetype = "CRU_4",
   time = "spline",
   averaging_range = NULL,
@@ -19,7 +19,7 @@ calcIrrigation(
 \arguments{
 \item{selectyears}{years to be returned}
 
-\item{version}{Switch between LPJmL4 and LPJmL5}
+\item{lpjml}{Defines LPJmL version for crop/grass and natveg specific inputs}
 
 \item{climatetype}{Switch between different climate scenarios (default: "CRU_4")}
 

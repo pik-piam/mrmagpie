@@ -2,7 +2,7 @@
 #' @description This function determines a mean sowing date and a mean growing period for each cell
 #' in order to determine when irrigation can take place.
 #'
-#' @param version Switch between LPJmL4 and LPJmL5
+#' @param lpjml Defines LPJmL version for crop/grass and natveg specific inputs
 #' @param climatetype Switch between different climate scenarios (default: "CRU_4")
 #' @param time average, spline or raw (default)
 #' @param averaging_range just specify for time=="average": number of time steps to average
@@ -24,7 +24,8 @@
 #'
 #' @export
 
-calcGrowingPeriod <- function(version="LPJmL5", climatetype="CRU_4", time="raw", averaging_range=NULL, dof=NULL,
+calcGrowingPeriod <- function(lpjml=c(natveg="LPJml4", crop="LPJmL5"), climatetype="CRU_4",
+                              time="raw", averaging_range=NULL, dof=NULL,
                               harmonize_baseline=FALSE, ref_year="y2015", yield_ratio=0.1, selectyears="all") {
 
   if(harmonize_baseline==FALSE){
@@ -51,13 +52,13 @@ calcGrowingPeriod <- function(version="LPJmL5", climatetype="CRU_4", time="raw",
       LPJ2MAG      <- toolGetMapping("MAgPIE_LPJmL.csv", type = "sectoral", where = "mappingfolder")
 
       # Read yields first
-      yields       <- collapseNames(calcOutput("Yields", version=version, climatetype=climatetype, time=time, averaging_range=averaging_range, dof=dof,
+      yields       <- collapseNames(calcOutput("Yields", lpjml=lpjml, climatetype=climatetype, time=time, averaging_range=averaging_range, dof=dof,
                                          harmonize_baseline=FALSE, aggregate = FALSE)[,,"irrigated"])
 
       # Load Sowing dates from LPJmL (use just rainfed dates since they do not differ for irrigated and rainfed)
-      sowd         <- collapseNames(calcOutput("LPJmL", version=version, climatetype=climatetype, subtype="sdate", time="raw",
+      sowd         <- collapseNames(calcOutput("LPJmL", version=lpjml["crop"], climatetype=climatetype, subtype="sdate", time="raw",
                                                harmonize_baseline=FALSE, aggregate=FALSE)[,,"rainfed"])
-      hard         <- collapseNames(calcOutput("LPJmL", version=version, climatetype=climatetype, subtype="hdate", time="raw",
+      hard         <- collapseNames(calcOutput("LPJmL", version=lpjml["crop"], climatetype=climatetype, subtype="hdate", time="raw",
                                                harmonize_baseline=FALSE, aggregate=FALSE)[,,"rainfed"])
 
       good_crops   <- LPJ2MAG$MAgPIE[which(LPJ2MAG$LPJmL%in%getNames(sowd))]
@@ -246,7 +247,7 @@ calcGrowingPeriod <- function(version="LPJmL5", climatetype="CRU_4", time="raw",
     } else {
 
       # Time smoothing:
-      x <- calcOutput("GrowingPeriod", version=version, climatetype=climatetype, harmonize_baseline=FALSE,
+      x <- calcOutput("GrowingPeriod", lpjml=lpjml, climatetype=climatetype, harmonize_baseline=FALSE,
                       time="raw", yield_ratio=yield_ratio, aggregate = FALSE)
 
       if(time=="average"){
@@ -279,10 +280,10 @@ calcGrowingPeriod <- function(version="LPJmL5", climatetype="CRU_4", time="raw",
       stop("Harmonization with raw data not possible. Select time='spline' when applying harmonize_baseline=TRUE")
     } else {
       # load smoothed data
-      baseline <- calcOutput("GrowingPeriod", version=version, climatetype=harmonize_baseline,
+      baseline <- calcOutput("GrowingPeriod", lpjml=lpjml, climatetype=harmonize_baseline,
                              harmonize_baseline=FALSE, time=time, dof=dof, averaging_range=averaging_range,
                              yield_ratio=yield_ratio, aggregate = FALSE)
-      x        <- calcOutput("GrowingPeriod", version=version, climatetype=climatetype,
+      x        <- calcOutput("GrowingPeriod", lpjml=lpjml, climatetype=climatetype,
                              harmonize_baseline=FALSE, time=time,dof=dof,averaging_range=averaging_range,
                              yield_ratio=yield_ratio, aggregate = FALSE)
       # Harmonize to baseline
