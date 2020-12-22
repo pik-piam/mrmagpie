@@ -4,10 +4,15 @@
 \alias{calcClusterBase}
 \title{calcClusterBase}
 \usage{
-calcClusterBase(clusterdata = "yield_airrig")
+calcClusterBase(
+  clusterdata = "yield_airrig",
+  lpjml = c(natveg = "LPJml4", crop = "LPJmL5")
+)
 }
 \arguments{
 \item{clusterdata}{similarity data to be used to determine clusters: yield_airrig (current default) or yield_increment}
+
+\item{lpjml}{defines LPJmL version for crop/grass and natveg specific inputs}
 }
 \value{
 A matrix containing the data

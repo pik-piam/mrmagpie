@@ -2,21 +2,22 @@
 #' @description Reads a series of MAgPIE files and combines them to a matrix
 #' which is then used for calculating a clustering.
 #' @param clusterdata similarity data to be used to determine clusters: yield_airrig (current default) or yield_increment
+#' @param lpjml defines LPJmL version for crop/grass and natveg specific inputs
 #' @return A matrix containing the data
 #' @author Jan Philipp Dietrich, Felicitas Beier
 #' @seealso \code{\link{calcCluster}}
 #' @importFrom magclass wrap read.magpie
 #' @importFrom madrat toolMappingFile
-calcClusterBase <- function(clusterdata="yield_airrig") {
+calcClusterBase <- function(clusterdata="yield_airrig", lpjml=c(natveg="LPJml4", crop="LPJmL5")) {
 
   d <- list()
   # read in data which should be used to determine cluster
   if (clusterdata=="yield_airrig") {
-    d$yld    <- calcOutput("Yields",     years=1995, aggregate=FALSE)
-    d$irrig  <- calcOutput("Irrigation", years=1995, aggregate=FALSE)
+    d$yld    <- calcOutput("Yields",     lpjml=lpjml, years=1995, aggregate=FALSE)
+    d$irrig  <- calcOutput("Irrigation", lpjml=lpjml, years=1995, aggregate=FALSE)
     d$td     <- calcOutput("TransportDistance",      aggregate=FALSE)[,,rep(1,floor(ndata(d$yld)/2))]
   } else if (clusterdata=="yield_increment") {
-    yield    <- calcOutput("Yields", years=1995, aggregate=FALSE)
+    yield    <- calcOutput("Yields", lpjml=lpjml, years=1995, aggregate=FALSE)
     d$yld    <- collapseNames(yield[,,"rainfed"])
     d$irrig  <- collapseNames(yield[,,"irrigated"][,,"pasture",invert=T])-collapseNames(yield[,,"rainfed"][,,"pasture",invert=T])
     d$td     <- calcOutput("TransportDistance", aggregate=FALSE)[,,rep(1,ndata(d$yld))]

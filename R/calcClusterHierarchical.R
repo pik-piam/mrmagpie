@@ -15,6 +15,7 @@
 #' @param clusterdata similarity data to be used to determine clusters: yield_airrig (current default) or yield_increment
 #' @param mode Clustering type. At the moment you can choose between complete
 #' linkage clustering (h), single linkage clustering (s) and Ward clustering (w).
+#' @param lpjml defines LPJmL version for crop/grass and natveg specific inputs
 #' @param weight named vector with weighting factors for each region for the cluster distribution
 #' ,e.g. weight=c(AFR=3,EUR=0.5). weight > 1 will grant more cluster to a region and
 #' weight < 1 less cluster than by default.
@@ -24,10 +25,10 @@
 #' @importFrom stats hclust cutree
 #' @seealso \code{\link{calcCluster}}, \code{\link{calcClusterKMeans}}
 #' @export
-calcClusterHierarchical <- function(regionscode, ncluster, clusterdata="yield_airrig", mode="h", weight=NULL) {
+calcClusterHierarchical <- function(regionscode, ncluster, lpjml=c(natveg="LPJml4", crop="LPJmL5"), clusterdata="yield_airrig", mode="h", weight=NULL) {
 
   fullfit <- attributes(calcOutput("ClusterTreeHierarchical", regionscode=regionscode,
-                        mode=mode, weight=weight, clusterdata=clusterdata, aggregate=FALSE))$hclust
+                        mode=mode, weight=weight, lpjml=lpjml, clusterdata=clusterdata, aggregate=FALSE))$hclust
 
   clusters <- cutree(fullfit,k=ncluster)
   #sort clusters by regions

@@ -7,6 +7,7 @@
 calcClusterHierarchical(
   regionscode,
   ncluster,
+  lpjml = c(natveg = "LPJml4", crop = "LPJmL5"),
   clusterdata = "yield_airrig",
   mode = "h",
   weight = NULL
@@ -18,6 +19,8 @@ with the regionscode of the mapping mentioned in the madrat config! Can be
 retrieved via \code{regionscode()}.}
 
 \item{ncluster}{The desired total number of clusters.}
+
+\item{lpjml}{defines LPJmL version for crop/grass and natveg specific inputs}
 
 \item{clusterdata}{similarity data to be used to determine clusters: yield_airrig (current default) or yield_increment}
 

@@ -8,6 +8,7 @@ calcClusterTreeHierarchical(
   regionscode,
   mode = "h",
   weight = NULL,
+  lpjml = c(natveg = "LPJml4", crop = "LPJmL5"),
   clusterdata = "yield_airrig"
 )
 }
@@ -22,6 +23,8 @@ linkage clustering (h), single linkage clustering (s) and Ward clustering
 \item{weight}{named vector with weighting factors for each region for the cluster distribution
 ,e.g. weight=c(AFR=3,EUR=0.5). weight > 1 will grant more cluster to a region and
 weight < 1 less cluster than by default.}
+
+\item{lpjml}{defines LPJmL version for crop/grass and natveg specific inputs}
 
 \item{clusterdata}{similarity data to be used to determine clusters: yield_airrig (current default) or yield_increment}
 }

@@ -10,6 +10,7 @@ calcClusterKMeans(
   weight = NULL,
   cpr = NULL,
   seed = 42,
+  lpjml = c(natveg = "LPJml4", crop = "LPJmL5"),
   clusterdata = "yield_airrig"
 )
 }
@@ -27,6 +28,8 @@ weight < 1 less cluster than by default.}
 ignored in case that cpr is provided!}
 
 \item{seed}{a single value, interpreted as an integer, or NULL, to define seed for random calculations}
+
+\item{lpjml}{defines LPJmL version for crop/grass and natveg specific inputs}
 
 \item{clusterdata}{similarity data to be used to determine clusters: yield_airrig (current default) or yield_increment}
 }

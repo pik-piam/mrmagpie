@@ -13,6 +13,7 @@
 #' @param weight Should specific regions be resolved with more or less detail? Values > 1 mean higher share, < 1 lower share
 #' e.g. cfg$cluster_weight <- c(LAM=2) means that a higher level of detail for region LAM if set to NULL all weights will be
 #' assumed to be 1 (examples: c(LAM=1.5,SSA=1.5,OAS=1.5), c(LAM=2,SSA=2,OAS=2))
+#' @param lpjml defines LPJmL version for crop/grass and natveg specific inputs
 #' @param clusterdata similarity data to be used to determine clusters: yield_airrig (current default) or yield_increment
 #' @return magpie object in cellular resolution
 #' @author Jan Philipp Dietrich
@@ -21,17 +22,17 @@
 #' \dontrun{ calcOutput("Cluster", type="c200", aggregate = FALSE) }
 #' @importFrom madrat calcOutput
 
-calcCluster <- function(ctype, regionscode=madrat::regionscode(), seed=42, weight=NULL, clusterdata="yield_airrig"){
+calcCluster <- function(ctype, regionscode=madrat::regionscode(), seed=42, weight=NULL, lpjml=c(natveg="LPJml4", crop="LPJmL5"), clusterdata="yield_airrig"){
 
   mode <- substr(ctype,0,1)
   ncluster <- as.integer(substring(ctype,2))
 
   if(mode=="n") {
     mapping <- calcOutput("ClusterKMeans", regionscode=regionscode, ncluster=ncluster, weight=weight,
-                          seed=seed, clusterdata=clusterdata, aggregate=FALSE)
+                          seed=seed, lpjml=lpjml, clusterdata=clusterdata, aggregate=FALSE)
   } else if(mode=="h" | mode=="w" | mode=="s") {
     mapping <- calcOutput("ClusterHierarchical", regionscode=regionscode, ncluster=ncluster,
-                          mode=mode, weight=weight, clusterdata=clusterdata, aggregate=FALSE)
+                          mode=mode, weight=weight, lpjml=lpjml, clusterdata=clusterdata, aggregate=FALSE)
   } else if(mode=="c"){
     calcCPR <- function(x) {
       clusters <- table(sub("\\..*$","",unique(sub("\\..*\\.",".",x))))
@@ -39,17 +40,17 @@ calcCluster <- function(ctype, regionscode=madrat::regionscode(), seed=42, weigh
       return(cbind(cells,clusters))
     }
     tmpmap  <- calcOutput("ClusterHierarchical", regionscode=regionscode, ncluster=ncluster,
-                          mode="h", weight=weight, clusterdata=clusterdata, aggregate=FALSE)
+                          mode="h", weight=weight, lpjml=lpjml, clusterdata=clusterdata, aggregate=FALSE)
     mapping <- calcOutput("ClusterKMeans", regionscode=regionscode, ncluster=ncluster,
                           weight=weight, cpr=calcCPR(sub("^[^\\.]*\\.","",getCells(tmpmap))),
-                          seed=seed, clusterdata=clusterdata, aggregate=FALSE)
+                          seed=seed, lpjml=lpjml, clusterdata=clusterdata, aggregate=FALSE)
   } else if(mode=="m"){
 
-    cdata <- toolApplyRegionNames(calcOutput("ClusterBase", aggregate=FALSE, clusterdata=clusterdata), regionscode)
+    cdata <- toolApplyRegionNames(calcOutput("ClusterBase", aggregate=FALSE, lpjml=lpjml, clusterdata=clusterdata), regionscode)
     cpr   <- toolClusterPerRegionManual(sub("^[^\\.]*\\.","",getCells(cdata)), ncluster=ncluster, ncluster2reg=weight)
 
     mapping <- calcOutput("ClusterKMeans", regionscode=regionscode, ncluster=ncluster,
-                          weight=weight, cpr=cpr, seed=seed, clusterdata=clusterdata, aggregate=FALSE)
+                          weight=weight, cpr=cpr, seed=seed, lpjml=lpjml, clusterdata=clusterdata, aggregate=FALSE)
   } else {
     stop("Unkown clustering mode ",mode,"!")
   }
