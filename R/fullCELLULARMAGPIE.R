@@ -113,9 +113,9 @@ fullCELLULARMAGPIE <- function(rev=0.1, dev="", ctype="c200", climatetype="HadGE
   calcOutput("NpiNdcAdAolcPol", aggregate="cluster", round=6, file=paste0("npi_ndc_ad_aolc_pol_", ctype, ".mz"))
   calcOutput("NpiNdcAffPol",    aggregate="cluster", round=6, file=paste0("npi_ndc_aff_pol_", ctype, ".mz"))
 
-  calcOutput("BphEffect", aggregate="cluster", file="f32_bph_effect_noTCRE_", ctype, ".mz")
-  calcOutput("BphTCRE", aggregate="cluster", file="f32_localTCRE_", ctype, ".mz")
-  calcOutput("BphMask", aggregate="cluster", file="f32_bph_mask_", ctype, ".mz")
+  calcOutput("BphEffect", aggregate="cluster", file=paste0("f32_bph_effect_noTCRE_", ctype, ".mz"))
+  calcOutput("BphTCRE",   aggregate="cluster", file=paste0("f32_localTCRE_", ctype, ".mz"))
+  calcOutput("BphMask",   aggregate="cluster", file=paste0("f32_bph_mask_", ctype, ".mz"))
 
 
 
