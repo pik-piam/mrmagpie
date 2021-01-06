@@ -5,6 +5,7 @@
 #' @param dof degrees of freedom for spline
 #'  @return magpie object in cellular resolution
 #' @author David Meng-Chuen Chen
+#' @import mrcommons
 #' @examples
 #' \dontrun{ calcOutput("ISIMIPYields", aggregate = FALSE) }
 #'
