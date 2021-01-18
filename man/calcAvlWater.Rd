@@ -6,7 +6,7 @@
 \usage{
 calcAvlWater(
   selectyears = "all",
-  lpjml = c(natveg = "LPJml4", crop = "LPJmL5"),
+  lpjml = c(natveg = "LPJmL4", crop = "LPJmL5"),
   climatetype = "CRU_4",
   time = "raw",
   averaging_range = NULL,

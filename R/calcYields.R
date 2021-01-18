@@ -25,7 +25,7 @@
 #' @importFrom magclass getYears add_columns dimSums time_interpolate
 #' @importFrom madrat toolFillYears
 
-calcYields <- function(lpjml=c(natveg="LPJml4", crop="LPJmL5"), climatetype="CRU_4", time="spline", averaging_range=NULL, dof=4,
+calcYields <- function(lpjml=c(natveg="LPJmL4", crop="LPJmL5"), climatetype="CRU_4", time="spline", averaging_range=NULL, dof=4,
                        harmonize_baseline=FALSE, ref_year="y2015", calib_proxy=TRUE, split_cropcalc=TRUE, crops="magpie", selectyears="all",
                        replace_isimip3b=FALSE, replace_years="lpj",
                        isimip_subtype="ISIMIP3b:yields.EPIC-IIASA_ukesm1-0-ll_ssp585_default"){

@@ -8,7 +8,7 @@
 #' @seealso \code{\link{calcCluster}}
 #' @importFrom magclass wrap read.magpie
 #' @importFrom madrat toolMappingFile
-calcClusterBase <- function(clusterdata="yield_airrig", lpjml=c(natveg="LPJml4", crop="LPJmL5")) {
+calcClusterBase <- function(clusterdata="yield_airrig", lpjml=c(natveg="LPJmL4", crop="LPJmL5")) {
 
   d <- list()
   # read in data which should be used to determine cluster

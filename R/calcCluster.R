@@ -22,7 +22,7 @@
 #' \dontrun{ calcOutput("Cluster", type="c200", aggregate = FALSE) }
 #' @importFrom madrat calcOutput
 
-calcCluster <- function(ctype, regionscode=madrat::regionscode(), seed=42, weight=NULL, lpjml=c(natveg="LPJml4", crop="LPJmL5"), clusterdata="yield_airrig"){
+calcCluster <- function(ctype, regionscode=madrat::regionscode(), seed=42, weight=NULL, lpjml=c(natveg="LPJmL4", crop="LPJmL5"), clusterdata="yield_airrig"){
 
   mode <- substr(ctype,0,1)
   ncluster <- as.integer(substring(ctype,2))

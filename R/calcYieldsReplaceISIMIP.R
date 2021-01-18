@@ -15,7 +15,7 @@
 #' \dontrun{ calcOutput("YieldsReplaceISIMIP", aggregate = FALSE) }
 #'
 
-calcYieldsReplaceISIMIP <- function(lpjml=c(natveg="LPJml4", crop="LPJmL5"), climatetype="HadGEM2_ES:rcp2p6:co2", time="spline", dof=4,
+calcYieldsReplaceISIMIP <- function(lpjml=c(natveg="LPJmL4", crop="LPJmL5"), climatetype="HadGEM2_ES:rcp2p6:co2", time="spline", dof=4,
                        harmonize_baseline="CRU_4", ref_year="y2015",
                        isimip_subtype="ISIMIP3b:yields.EPIC-IIASA_ukesm1-0-ll_ssp585_default"){
 

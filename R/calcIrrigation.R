@@ -21,7 +21,7 @@
 #' @importFrom mrcommons toolHarmonize2Baseline
 
 calcIrrigation <- function(selectyears="all",
-                           lpjml=c(natveg="LPJml4", crop="LPJmL5"), climatetype="CRU_4",
+                           lpjml=c(natveg="LPJmL4", crop="LPJmL5"), climatetype="CRU_4",
                            time="spline", averaging_range=NULL, dof=4,
                            harmonize_baseline=FALSE, ref_year=NULL, rainfedweight=0.01){
 

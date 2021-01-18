@@ -23,7 +23,7 @@
 #'
 
 calcAvlWater <- function(selectyears="all",
-                         lpjml=c(natveg="LPJml4", crop="LPJmL5"), climatetype="CRU_4",
+                         lpjml=c(natveg="LPJmL4", crop="LPJmL5"), climatetype="CRU_4",
                          time="raw", averaging_range=NULL, dof=NULL,
                          harmonize_baseline=FALSE, ref_year="y2015",
                          seasonality="grper"){

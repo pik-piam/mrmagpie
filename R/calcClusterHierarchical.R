@@ -25,7 +25,7 @@
 #' @importFrom stats hclust cutree
 #' @seealso \code{\link{calcCluster}}, \code{\link{calcClusterKMeans}}
 #' @export
-calcClusterHierarchical <- function(regionscode, ncluster, lpjml=c(natveg="LPJml4", crop="LPJmL5"), clusterdata="yield_airrig", mode="h", weight=NULL) {
+calcClusterHierarchical <- function(regionscode, ncluster, lpjml=c(natveg="LPJmL4", crop="LPJmL5"), clusterdata="yield_airrig", mode="h", weight=NULL) {
 
   fullfit <- attributes(calcOutput("ClusterTreeHierarchical", regionscode=regionscode,
                         mode=mode, weight=weight, lpjml=lpjml, clusterdata=clusterdata, aggregate=FALSE))$hclust

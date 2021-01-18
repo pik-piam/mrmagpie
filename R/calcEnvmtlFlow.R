@@ -29,7 +29,7 @@
 #'
 
 calcEnvmtlFlow <- function(selectyears="all",
-                           lpjml=c(natveg="LPJml4", crop="LPJmL5"), climatetype="CRU_4",
+                           lpjml=c(natveg="LPJmL4", crop="LPJmL5"), climatetype="CRU_4",
                            time="spline", averaging_range=NULL, dof=4,
                            harmonize_baseline=FALSE, ref_year="y2015",
                            LFR_val=0.1, HFR_LFR_less10=0.2, HFR_LFR_10_20=0.15, HFR_LFR_20_30=0.07, HFR_LFR_more30=0.00,

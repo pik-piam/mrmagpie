@@ -17,7 +17,7 @@
 #'
 #' @importFrom magpiesets findset
 
-calcTopsoilCarbon <- function(lpjml=c(natveg="LPJml4", crop="LPJmL5"), climatetype="CRU_4", time="raw", averaging_range=NULL, dof=NULL,
+calcTopsoilCarbon <- function(lpjml=c(natveg="LPJmL4", crop="LPJmL5"), climatetype="CRU_4", time="raw", averaging_range=NULL, dof=NULL,
                        harmonize_baseline=FALSE, ref_year="y2015"){
 
 

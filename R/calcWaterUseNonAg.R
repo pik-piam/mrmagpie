@@ -23,7 +23,7 @@
 #' @import mrcommons
 
 calcWaterUseNonAg <- function(selectyears="all", source="WATCH_ISIMIP_WATERGAP", waterusetype="withdrawal",
-                                 time="raw", averaging_range=NULL, dof=NULL, lpjml=c(natveg="LPJml4", crop="LPJmL5"),
+                                 time="raw", averaging_range=NULL, dof=NULL, lpjml=c(natveg="LPJmL4", crop="LPJmL5"),
                                  seasonality="grper", climatetype="HadGEM2_ES:rcp2p6:co2", harmonize_baseline="CRU_4", ref_year="y2015"){
 
   #######################################

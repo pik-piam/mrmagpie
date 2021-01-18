@@ -11,7 +11,7 @@ calcWaterUseNonAg(
   time = "raw",
   averaging_range = NULL,
   dof = NULL,
-  lpjml = c(natveg = "LPJml4", crop = "LPJmL5"),
+  lpjml = c(natveg = "LPJmL4", crop = "LPJmL5"),
   seasonality = "grper",
   climatetype = "HadGEM2_ES:rcp2p6:co2",
   harmonize_baseline = "CRU_4",

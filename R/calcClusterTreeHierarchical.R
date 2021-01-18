@@ -19,7 +19,7 @@
 #' @seealso \code{\link{cluster_per_region}}, \code{\link{mag_kmeans}},
 #' \code{\link{clusterspam}}
 #' @export
-calcClusterTreeHierarchical <- function(regionscode, mode="h", weight=NULL, lpjml=c(natveg="LPJml4", crop="LPJmL5"), clusterdata="yield_airrig") {
+calcClusterTreeHierarchical <- function(regionscode, mode="h", weight=NULL, lpjml=c(natveg="LPJmL4", crop="LPJmL5"), clusterdata="yield_airrig") {
 
   cdata <- as.array(toolApplyRegionNames(calcOutput("ClusterBase", lpjml=lpjml, clusterdata=clusterdata, aggregate=FALSE),regionscode))[,,]
 

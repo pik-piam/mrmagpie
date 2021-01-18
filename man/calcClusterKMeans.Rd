@@ -10,7 +10,7 @@ calcClusterKMeans(
   weight = NULL,
   cpr = NULL,
   seed = 42,
-  lpjml = c(natveg = "LPJml4", crop = "LPJmL5"),
+  lpjml = c(natveg = "LPJmL4", crop = "LPJmL5"),
   clusterdata = "yield_airrig"
 )
 }

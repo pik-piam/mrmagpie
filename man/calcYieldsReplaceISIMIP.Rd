@@ -5,7 +5,7 @@
 \title{calcYields}
 \usage{
 calcYieldsReplaceISIMIP(
-  lpjml = c(natveg = "LPJml4", crop = "LPJmL5"),
+  lpjml = c(natveg = "LPJmL4", crop = "LPJmL5"),
   climatetype = "HadGEM2_ES:rcp2p6:co2",
   time = "spline",
   dof = 4,

@@ -20,7 +20,7 @@
 #' @seealso \code{\link{toolClusterPerRegion}}, \code{\link{calcClusterHierarchical}}
 #' @export
 
-calcClusterKMeans <- function(regionscode, ncluster, weight=NULL, cpr=NULL, seed=42, lpjml=c(natveg="LPJml4", crop="LPJmL5"), clusterdata="yield_airrig") {
+calcClusterKMeans <- function(regionscode, ncluster, weight=NULL, cpr=NULL, seed=42, lpjml=c(natveg="LPJmL4", crop="LPJmL5"), clusterdata="yield_airrig") {
 
   cdata <- toolApplyRegionNames(calcOutput("ClusterBase", aggregate=FALSE, lpjml=lpjml, clusterdata=clusterdata),regionscode)
 
