@@ -25,9 +25,6 @@ calcOutput("AreaActuallyIrrigated")
 
 
 }
-\seealso{
-\code{\link{calcLanduseInitialisation}}
-}
 \author{
 Felicitas Beier
 }

@@ -4,9 +4,6 @@
 #' @return List of magpie object with results on country or cellular level, weight on cellular level, unit and description.
 #' @author Benjamin Leon Bodirsky, Kristine Karstens
 #'
-#' @seealso
-#' \code{\link[mrcommons]{calcSOM}}
-#'
 #' @examples
 #' \dontrun{
 #' calcOutput("SOMinitialsiationPools")
