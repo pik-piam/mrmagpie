@@ -18,9 +18,6 @@ calcOutput("SOMinitialsiationPools")
 }
 
 }
-\seealso{
-\code{\link[mrcommons]{calcSOM}}
-}
 \author{
 Benjamin Leon Bodirsky, Kristine Karstens
 }

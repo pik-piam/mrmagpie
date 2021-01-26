@@ -6,8 +6,6 @@
 #'
 #' @return magpie object with results on cellular or iso country level
 #' @author Felicitas Beier
-#' @seealso
-#' \code{\link{calcLanduseInitialisation}}
 #' @examples
 #'
 #' \dontrun{

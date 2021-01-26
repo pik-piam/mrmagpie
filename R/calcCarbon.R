@@ -38,7 +38,7 @@ calcCarbon <- function(lpjml=c(natveg="LPJmL4", crop="LPJmL5"), climatetype="CRU
                               aggregate=FALSE)
 
   natveg       <- mbind(vegc_natveg, soilc_natveg, litc_natveg)
-
+  rm(vegc_natveg, litc_natveg)
 
   soilc_grass  <-  calcOutput("LPJmL", version=lpjml["crop"], climatetype=climatetype, subtype="soilc_grass",
                               averaging_range=averaging_range, time=time, dof=dof,
@@ -56,9 +56,9 @@ calcCarbon <- function(lpjml=c(natveg="LPJmL4", crop="LPJmL5"), climatetype="CRU
                               aggregate=FALSE)
 
   grass           <- mbind(vegc_grass, soilc_grass, litc_grass)
+  rm(vegc_grass, litc_grass)
 
   getNames(grass) <- getNames(natveg)
-
 
   topsoilc     <- calcOutput("TopsoilCarbon", lpjml=lpjml, climatetype=climatetype,
                               averaging_range=averaging_range, time=time, dof=dof,
@@ -79,6 +79,7 @@ calcCarbon <- function(lpjml=c(natveg="LPJmL4", crop="LPJmL5"), climatetype="CRU
   carbon_stocks <- add_dimension(carbon_stocks, dim = 3.1, add = "landtype",
                                  nm = c("crop","past","forestry","primforest","secdforest", "urban", "other"))
 
+  landuse <- calcOutput("LanduseInitialisation", aggregate=FALSE, cellular=TRUE, land="fao", input_magpie=TRUE, years="y1995", round=6)
 
   ####################################################
   #Calculate the appropriate values for all land types and carbon types.
@@ -87,9 +88,16 @@ calcCarbon <- function(lpjml=c(natveg="LPJmL4", crop="LPJmL5"), climatetype="CRU
   #Factor 0.012 is based on the script subversion/svn/tools/carbon_cropland, executed at 30.07.2013
   carbon_stocks[,,"crop.vegc"]       <- 0.012*natveg[,,"vegc"]
   carbon_stocks[,,"crop.litc"]       <- 0 # does not make sense
-  carbon_stocks[,,"crop.soilc"]      <- cshare * topsoilc + (soilc_natveg-topsoilc)
+  carbon_stocks[,,"crop.soilc"]      <- cshare * topsoilc + (soilc_natveg - topsoilc)
 
   carbon_stocks[,,"past"]            <- grass
+  grasssoil <- TRUE
+  if(dimSums(soilc_grass*landuse[,,"past"], dim=c(1,2)) > dimSums(soilc_natveg*landuse[,,"past"], dim=c(1,2))){
+    # use natveg stock for soilc grassland, for too big soilc stocks in ALLCROP grass runs
+    carbon_stocks[,,"past.soilc"]    <- natveg[,,"soilc"]
+    grasssoil <- FALSE
+  }
+
   carbon_stocks[,,"forestry"]        <- natveg
   carbon_stocks[,,"primforest"]      <- natveg
   carbon_stocks[,,"secdforest"]      <- natveg
@@ -102,12 +110,14 @@ calcCarbon <- function(lpjml=c(natveg="LPJmL4", crop="LPJmL5"), climatetype="CRU
     stop("produced NA Carbon")
   }
 
-  weight <- dimSums(calcOutput("LanduseInitialisation", aggregate=FALSE, cellular=TRUE, land="fao", input_magpie=TRUE, years="y1995", round=6), dim=3)
+  landuse <- dimSums(landuse, dim=3)
 
   return(list(
     x=carbon_stocks,
-    weight=weight,
+    weight=landuse,
     unit="t per ha",
     description="Carbon in tons per hectar for different land use types.",
+    note = ifelse(grasssoil,"Pasture soil carbon stocks are based on allcrop run.",
+                            "Pasture soil carbon stocks are based on natveg run."),
     isocountries=FALSE))
 }
