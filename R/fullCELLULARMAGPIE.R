@@ -80,6 +80,8 @@ fullCELLULARMAGPIE <- function(rev=0.1, dev="", ctype="c200", climatetype="HadGE
   calcOutput("Yields", lpjml=lpjml, climatetype=climatetype, time="spline", dof=4,
              harmonize_baseline=harmonize_baseline, ref_year=ref_year, aggregate = "cluster",
              years=lpj_years, file=paste0("lpj_yields_", ctype, ".mz"))
+  calcOutput("ContGrazMax", report = "harvest", aggregate = "cluster", file=paste0("lpj_cg_past_yields_", ctype, ".mz"))
+  calcOutput("Mowing",aggregate = "cluster", file=paste0("lpj_mw_past_yields_", ctype, ".mz"))
 
 
   # These outputs need to be aggregated using weighted area mean
@@ -98,7 +100,6 @@ fullCELLULARMAGPIE <- function(rev=0.1, dev="", ctype="c200", climatetype="HadGE
   calcOutput("SeaLevelRise", aggregate=FALSE, cellular=TRUE, years=mag_years, round=6, file="f10_SeaLevelRise_0.5.mz")
   calcOutput("AvlLandSi", aggregate=FALSE, round=6, file="avl_land_si_0.5.mz")
   calcOutput("AvlLandSi", aggregate="cluster", round=6, file=paste0("avl_land_si_", ctype, ".mz"))
-
 
   #30 crop
   #calcOutput("Croparea", sectoral="kcr", physical=TRUE, cellular=TRUE, irrigation=FALSE, aggregate = FALSE,file="f30_croparea_initialisation_0.5.mz")
