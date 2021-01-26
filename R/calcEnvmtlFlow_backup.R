@@ -1,4 +1,4 @@
-#' @title calcEnvmtlFlow
+#' @title calcEnvmtlFlow_backup
 #' @description This function calculates environmental flow requirements (EFR) for MAgPIE retrieved from LPJmL monthly discharge and water availability
 #'
 #' @param lpjml Defines LPJmL version for crop/grass and natveg specific inputs
@@ -25,10 +25,10 @@
 #' @author Felicitas Beier, Abhijeet Mishra
 #'
 #' @examples
-#' \dontrun{ calcOutput("EnvmtlFlow", aggregate = FALSE) }
+#' \dontrun{ calcOutput("EnvmtlFlow_backup", aggregate = FALSE) }
 #'
 
-calcEnvmtlFlow <- function(selectyears="all",
+calcEnvmtlFlow_backup <- function(selectyears="all",
                            lpjml=c(natveg="LPJmL4", crop="LPJmL5"), climatetype="CRU_4",
                            time="spline", averaging_range=NULL, dof=4,
                            harmonize_baseline=FALSE, ref_year="y2015",
@@ -111,7 +111,7 @@ calcEnvmtlFlow <- function(selectyears="all",
     #        from available water per month        #
     ################################################
     ### Available water per month (smoothed)
-    avl_water_month <- calcOutput("AvlWater", lpjml=lpjml, climatetype=climatetype, seasonality="monthly", aggregate=FALSE,
+    avl_water_month <- calcOutput("AvlWater_backup", lpjml=lpjml, climatetype=climatetype, seasonality="monthly", aggregate=FALSE,
                                   harmonize_baseline=FALSE,
                                   time=time, dof=dof, averaging_range=averaging_range)
 
@@ -148,90 +148,93 @@ calcEnvmtlFlow <- function(selectyears="all",
     EFR <- LFR+HFR
     EFR <- as.magpie(EFR)
 
-    ### aggregation to grper, total
-    ### EFR per cell per month
-    if(seasonality=="monthly"){
-
-      # Check for NAs
-      if(any(is.na(EFR))){
-        stop("produced NA EFR")
-      }
-      out=EFR
-      description="Environmental flow requirements per cell per month"
-
-      ### Total water available per cell per year
-    } else if(seasonality=="total"){
-
-      # Sum up over all month:
-      EFR_total <- dimSums(EFR, dim=3)
-
-      # Read in available water (for Smakthin calculation)
-      avl_water_total <- calcOutput("AvlWater", lpjml=lpjml, climatetype=climatetype, seasonality="total", aggregate=FALSE,
-                                    harmonize_baseline=harmonize_baseline,
-                                    time=time, dof=dof, averaging_range=averaging_range)
-
-      # Reduce EFR to 50% of available water where it exceeds this threshold (according to Smakhtin 2004)
-      EFR_total[which(EFR_total/avl_water_total>0.5)] <- 0.5*avl_water_total[which(EFR_total/avl_water_total>0.5)]
-
-      # Check for NAs
-      if(any(is.na(EFR_total))){
-        stop("produced NA EFR_total")
-      }
-      out=EFR_total
-      description="Total EFR per year"
-
-    ### Water available in growing period per cell per year
-    } else if(seasonality=="grper"){
-      # magpie object with days per month with same dimension as EFR
-      tmp <- c(31,28,31,30,31,30,31,31,30,31,30,31)
-      month_days <- new.magpie(names=dimnames(EFR)[[3]])
-      month_days[,,] <- tmp
-      month_day_magpie <- as.magpie(EFR)
-      month_day_magpie[,,] <- 1
-      month_day_magpie <- month_day_magpie * month_days
-
-      # Daily water availability
-      EFR_day   <- EFR/month_day_magpie
-
-      # Growing days per month
-      grow_days <- calcOutput("GrowingPeriod", lpjml=lpjml, climatetype=climatetype, time=time, dof=dof, averaging_range=averaging_range,
-                              harmonize_baseline=harmonize_baseline, ref_year=ref_year, yield_ratio=0.1, aggregate=FALSE)
-
-      # Available water in growing period
-      EFR_grper <- EFR_day*grow_days
-      # Available water in growing period per year
-      EFR_grper <- dimSums(EFR_grper, dim=3)
-      # Read in available water (for Smakthin calculation)
-      avl_water_grper <- calcOutput("AvlWater", lpjml=lpjml, climatetype=climatetype, seasonality="grper", aggregate=FALSE,
-                                    harmonize_baseline=harmonize_baseline,
-                                    time=time, dof=dof, averaging_range=averaging_range)
-
-      # Reduce EFR to 50% of available water where it exceeds this threshold (according to Smakhtin 2004)
-      EFR_grper[which(EFR_grper/avl_water_grper>0.5)] <- 0.5*avl_water_grper[which(EFR_grper/avl_water_grper>0.5)]
-
-      # Check for NAs
-      if(any(is.na(EFR_grper))){
-        stop("produced NA EFR_grper")
-      }
-      out=EFR_grper
-      description="EFR in growing period per year"
-    } else {
-      stop("Specify seasonality! grper or total")
-    }
-
   } else {
     # Load baseline and climate EFR:
-    baseline <- calcOutput("EnvmtlFlow", lpjml=lpjml, climatetype=harmonize_baseline, seasonality=seasonality, aggregate=FALSE,
+    baseline <- calcOutput("EnvmtlFlow_backup", lpjml=lpjml, climatetype=harmonize_baseline, seasonality="monthly", aggregate=FALSE,
                            harmonize_baseline=FALSE, time=time, dof=dof, averaging_range=averaging_range)
-    x        <- calcOutput("EnvmtlFlow", lpjml=lpjml, climatetype=climatetype, seasonality=seasonality, aggregate=FALSE,
+    x        <- calcOutput("EnvmtlFlow_backup", lpjml=lpjml, climatetype=climatetype, seasonality="monthly", aggregate=FALSE,
                            harmonize_baseline=FALSE, time=time, dof=dof, averaging_range=averaging_range)
     # Harmonize to baseline
-    out <- toolHarmonize2Baseline(x=x, base=baseline, ref_year=ref_year, limited=TRUE, hard_cut=FALSE)
+    EFR <- toolHarmonize2Baseline(x=x, base=baseline, ref_year=ref_year, limited=TRUE, hard_cut=FALSE)
   }
 
   if(selectyears!="all"){
     years   <- sort(findset(selectyears, noset="original"))
-    out     <- out[,years,]
+    EFR     <- EFR[,years,]
+  }
+
+  ###########################################
+  ############ FUNCTION OUTPUT  #############
+  ###########################################
+
+  ### EFR per cell per month
+  if(seasonality=="monthly"){
+
+    # Check for NAs
+    if(any(is.na(EFR))){
+      stop("produced NA EFR")
+    }
+    out=EFR
+    description="Environmental flow requirements per cell per month"
+
+    ### Total water available per cell per year
+  } else if(seasonality=="total"){
+
+    # Sum up over all month:
+    EFR_total <- dimSums(EFR, dim=3)
+
+    # Read in available water (for Smakthin calculation)
+    avl_water_total <- calcOutput("AvlWater_backup", lpjml=lpjml, climatetype=climatetype, seasonality="total", aggregate=FALSE,
+                                  harmonize_baseline=harmonize_baseline,
+                                  time=time, dof=dof, averaging_range=averaging_range)
+
+    # Reduce EFR to 50% of available water where it exceeds this threshold (according to Smakhtin 2004)
+    EFR_total[which(EFR_total/avl_water_total>0.5)] <- 0.5*avl_water_total[which(EFR_total/avl_water_total>0.5)]
+
+    # Check for NAs
+    if(any(is.na(EFR_total))){
+      stop("produced NA EFR_total")
+    }
+    out=EFR_total
+    description="Total EFR per year"
+
+  ### Water available in growing period per cell per year
+  } else if(seasonality=="grper"){
+    # magpie object with days per month with same dimension as EFR
+    tmp <- c(31,28,31,30,31,30,31,31,30,31,30,31)
+    month_days <- new.magpie(names=dimnames(EFR)[[3]])
+    month_days[,,] <- tmp
+    month_day_magpie <- as.magpie(EFR)
+    month_day_magpie[,,] <- 1
+    month_day_magpie <- month_day_magpie * month_days
+
+    # Daily water availability
+    EFR_day   <- EFR/month_day_magpie
+
+    # Growing days per month
+    grow_days <- calcOutput("GrowingPeriod", lpjml=lpjml, climatetype=climatetype, time=time, dof=dof, averaging_range=averaging_range,
+                            harmonize_baseline=harmonize_baseline, ref_year=ref_year, yield_ratio=0.1, aggregate=FALSE)
+
+    # Available water in growing period
+    EFR_grper <- EFR_day*grow_days
+    # Available water in growing period per year
+    EFR_grper <- dimSums(EFR_grper, dim=3)
+    # Read in available water (for Smakthin calculation)
+    avl_water_grper <- calcOutput("AvlWater_backup", lpjml=lpjml, climatetype=climatetype, seasonality="grper", aggregate=FALSE,
+                                  harmonize_baseline=harmonize_baseline,
+                                  time=time, dof=dof, averaging_range=averaging_range)
+
+    # Reduce EFR to 50% of available water where it exceeds this threshold (according to smakhtin 2004)
+    EFR_grper[which(EFR_grper/avl_water_grper>0.5)] <- 0.5*avl_water_grper[which(EFR_grper/avl_water_grper>0.5)]
+
+    # Check for NAs
+    if(any(is.na(EFR_grper))){
+      stop("produced NA EFR_grper")
+    }
+    out=EFR_grper
+    description="EFR in growing period per year"
+  } else {
+    stop("Specify seasonality! grper or total")
   }
 
   return(list(

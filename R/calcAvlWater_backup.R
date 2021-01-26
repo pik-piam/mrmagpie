@@ -19,10 +19,10 @@
 #' @author Felicitas Beier, Kristine Karstens, Abhijeet Mishra
 #'
 #' @examples
-#' \dontrun{ calcOutput("AvlWater", aggregate = FALSE) }
+#' \dontrun{ calcOutput("AvlWater_backup", aggregate = FALSE) }
 #'
 
-calcAvlWater <- function(selectyears="all",
+calcAvlWater_backup <- function(selectyears="all",
                          lpjml=c(natveg="LPJmL4", crop="LPJmL5"), climatetype="CRU_4",
                          time="raw", averaging_range=NULL, dof=NULL,
                          harmonize_baseline=FALSE, ref_year="y2015",
@@ -80,14 +80,16 @@ calcAvlWater <- function(selectyears="all",
 
     } else {
       # Time smoothing:
-      x     <- calcOutput("AvlWater", lpjml=lpjml, climatetype=climatetype, seasonality="monthly", aggregate=FALSE,
+      x     <- calcOutput("AvlWater_backup", lpjml=lpjml, climatetype=climatetype, seasonality="monthly", aggregate=FALSE,
                           harmonize_baseline=FALSE, time="raw")
 
       if(time=="average"){
+
         # Smoothing data through average:
         avl_water_month <- toolTimeAverage(x, averaging_range=averaging_range)
 
       } else if(time=="spline"){
+
         # Smoothing data with spline method:
         avl_water_month <- toolTimeSpline(x, dof=dof)
         # Replace value in 2100 with value from 2099 (LPJmL output ends in 2099)
@@ -100,89 +102,90 @@ calcAvlWater <- function(selectyears="all",
       }
     }
 
-    #######################
-    ##### Aggregation #####
-    #######################
-    ### Available water per cell per month
-    if(seasonality=="monthly"){
-      # Check for NAs
-      if(any(is.na(avl_water_month))){
-        stop("produced NA water availability")
-      }
-      out=avl_water_month
-      description="Available water per cell per month (based on runoff and discharge from LPJmL)"
-    }
-
-    ### Total water available per cell per year
-    if(seasonality=="total"){
-      # Sum up over all month:
-      avl_water_total <- dimSums(avl_water_month, dim=3)
-      # Check for NAs
-      if(any(is.na(avl_water_total))){
-        stop("produced NA water availability")
-      }
-      out=avl_water_total
-      description="Total available water per year"
-    }
-
-    ### Water available in growing period per cell per year
-    if(seasonality=="grper"){
-      # magpie object with days per month with same dimension as avl_water_month
-      tmp <- c(31,28,31,30,31,30,31,31,30,31,30,31)
-      month_days     <- new.magpie(names=dimnames(avl_water_month)[[3]])
-      month_days[,,] <- tmp
-      month_day_magpie     <- as.magpie(avl_water_month)
-      month_day_magpie[,,] <- 1
-      month_day_magpie     <- month_day_magpie * month_days
-
-      # Daily water availability
-      avl_water_day <- avl_water_month/month_day_magpie
-
-      # Growing days per month
-      grow_days <- calcOutput("GrowingPeriod", lpjml=lpjml, climatetype=climatetype, time=time, dof=dof, averaging_range=averaging_range,
-                              harmonize_baseline=harmonize_baseline, ref_year=ref_year, yield_ratio=0.1, aggregate=FALSE)
-
-      # Adjust years
-      years_wat <- getYears(avl_water_day)
-      years_grper  <- getYears(grow_days)
-      if(length(years_wat)>=length(years_grper)){
-        years <- years_grper
-      } else {
-        years <- years_wat
-      }
-      rm(years_grper, years_wat)
-
-      # Available water in growing period per month
-      avl_water_grper <- avl_water_day[,years,]*grow_days[,years,]
-      # Available water in growing period per year
-      avl_water_grper <- dimSums(avl_water_grper, dim=3)
-
-      # Check for NAs
-      if(any(is.na(avl_water_grper))){
-        stop("produced NA water availability")
-      }
-      out=avl_water_grper
-      description="Available water in growing period per year"
-    }
-
   } else {
 
     if(time=="raw"){
       stop("Harmonization with raw data not possible. Select time='spline' when applying harmonize_baseline=TRUE")
     } else {
       # Load smoothed data
-      baseline <- calcOutput("AvlWater", lpjml=lpjml, climatetype=harmonize_baseline, seasonality=seasonality, aggregate=FALSE,
+      baseline <- calcOutput("AvlWater_backup", lpjml=lpjml, climatetype=harmonize_baseline, seasonality="monthly", aggregate=FALSE,
                              harmonize_baseline=FALSE, time=time, dof=dof, averaging_range=averaging_range)
-      x        <- calcOutput("AvlWater", lpjml=lpjml, climatetype=climatetype, seasonality=seasonality, aggregate=FALSE,
+      x        <- calcOutput("AvlWater_backup", lpjml=lpjml, climatetype=climatetype, seasonality="monthly", aggregate=FALSE,
                              harmonize_baseline=FALSE, time=time, dof=dof, averaging_range=averaging_range)
       # Harmonize to baseline
-      out <- toolHarmonize2Baseline(x=x, base=baseline, ref_year=ref_year, limited=TRUE, hard_cut=FALSE)
+      avl_water_month <- toolHarmonize2Baseline(x=x, base=baseline, ref_year=ref_year, limited=TRUE, hard_cut=FALSE)
     }
   }
 
   if(selectyears!="all"){
-    years <- sort(findset(selectyears,noset = "original"))
-    out   <- out[,years,]
+    years           <- sort(findset(selectyears,noset = "original"))
+    avl_water_month <- avl_water_month[,years,]
+  }
+
+  ###########################################
+  ######### RETURN FUNCTION OUTPUT ##########
+  ###########################################
+
+  ### Available water per cell per month
+  if(seasonality=="monthly"){
+    # Check for NAs
+    if(any(is.na(avl_water_month))){
+      stop("produced NA water availability")
+    }
+    out=avl_water_month
+    description="Available water per cell per month (based on runoff and discharge from LPJmL)"
+  }
+
+  ### Total water available per cell per year
+  if(seasonality=="total"){
+    # Sum up over all month:
+    avl_water_total <- dimSums(avl_water_month, dim=3)
+    # Check for NAs
+    if(any(is.na(avl_water_total))){
+      stop("produced NA water availability")
+    }
+    out=avl_water_total
+    description="Total available water per year"
+  }
+
+  ### Water available in growing period per cell per year
+  if(seasonality=="grper"){
+    # magpie object with days per month with same dimension as avl_water_month
+    tmp <- c(31,28,31,30,31,30,31,31,30,31,30,31)
+    month_days     <- new.magpie(names=dimnames(avl_water_month)[[3]])
+    month_days[,,] <- tmp
+    month_day_magpie     <- as.magpie(avl_water_month)
+    month_day_magpie[,,] <- 1
+    month_day_magpie     <- month_day_magpie * month_days
+
+    # Daily water availability
+    avl_water_day <- avl_water_month/month_day_magpie
+
+    # Growing days per month
+    grow_days <- calcOutput("GrowingPeriod", lpjml=lpjml, climatetype=climatetype, time=time, dof=dof, averaging_range=averaging_range,
+                            harmonize_baseline=harmonize_baseline, ref_year=ref_year, yield_ratio=0.1, aggregate=FALSE)
+
+    # Adjust years
+    years_wat <- getYears(avl_water_day)
+    years_grper  <- getYears(grow_days)
+    if(length(years_wat)>=length(years_grper)){
+      years <- years_grper
+    } else {
+      years <- years_wat
+    }
+    rm(years_grper, years_wat)
+
+    # Available water in growing period per month
+    avl_water_grper <- avl_water_day[,years,]*grow_days[,years,]
+    # Available water in growing period per year
+    avl_water_grper <- dimSums(avl_water_grper, dim=3)
+
+    # Check for NAs
+    if(any(is.na(avl_water_grper))){
+      stop("produced NA water availability")
+    }
+    out=avl_water_grper
+    description="Available water in growing period per year"
   }
 
   return(list(
