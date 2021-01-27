@@ -150,17 +150,16 @@ calcEnvmtlFlow <- function(selectyears="all",
 
     ### aggregation to grper, total
     ### EFR per cell per month
-    if(seasonality=="monthly"){
+    if (seasonality=="monthly") {
 
       # Check for NAs
       if(any(is.na(EFR))){
         stop("produced NA EFR")
       }
       out=EFR
-      description="Environmental flow requirements per cell per month"
 
       ### Total water available per cell per year
-    } else if(seasonality=="total"){
+    } else if (seasonality=="total") {
 
       # Sum up over all month:
       EFR_total <- dimSums(EFR, dim=3)
@@ -178,10 +177,9 @@ calcEnvmtlFlow <- function(selectyears="all",
         stop("produced NA EFR_total")
       }
       out=EFR_total
-      description="Total EFR per year"
 
     ### Water available in growing period per cell per year
-    } else if(seasonality=="grper"){
+    } else if (seasonality=="grper") {
       # magpie object with days per month with same dimension as EFR
       tmp <- c(31,28,31,30,31,30,31,31,30,31,30,31)
       month_days <- new.magpie(names=dimnames(EFR)[[3]])
@@ -214,9 +212,8 @@ calcEnvmtlFlow <- function(selectyears="all",
         stop("produced NA EFR_grper")
       }
       out=EFR_grper
-      description="EFR in growing period per year"
     } else {
-      stop("Specify seasonality! grper or total")
+      stop("Specify seasonality: monthly, grper or total")
     }
 
   } else {
@@ -233,6 +230,8 @@ calcEnvmtlFlow <- function(selectyears="all",
     years   <- sort(findset(selectyears, noset="original"))
     out     <- out[,years,]
   }
+
+  description=paste0("EFR in ", seasonality)
 
   return(list(
     x=out,

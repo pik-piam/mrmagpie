@@ -104,17 +104,15 @@ calcAvlWater <- function(selectyears="all",
     ##### Aggregation #####
     #######################
     ### Available water per cell per month
-    if(seasonality=="monthly"){
+    if(seasonality=="monthly") {
       # Check for NAs
-      if(any(is.na(avl_water_month))){
+      if(any(is.na(avl_water_month))) {
         stop("produced NA water availability")
       }
       out=avl_water_month
-      description="Available water per cell per month (based on runoff and discharge from LPJmL)"
-    }
 
     ### Total water available per cell per year
-    if(seasonality=="total"){
+    } else if(seasonality=="total") {
       # Sum up over all month:
       avl_water_total <- dimSums(avl_water_month, dim=3)
       # Check for NAs
@@ -122,11 +120,9 @@ calcAvlWater <- function(selectyears="all",
         stop("produced NA water availability")
       }
       out=avl_water_total
-      description="Total available water per year"
-    }
 
     ### Water available in growing period per cell per year
-    if(seasonality=="grper"){
+    } else if (seasonality=="grper") {
       # magpie object with days per month with same dimension as avl_water_month
       tmp <- c(31,28,31,30,31,30,31,31,30,31,30,31)
       month_days     <- new.magpie(names=dimnames(avl_water_month)[[3]])
@@ -162,7 +158,8 @@ calcAvlWater <- function(selectyears="all",
         stop("produced NA water availability")
       }
       out=avl_water_grper
-      description="Available water in growing period per year"
+    } else {
+      stop("Please specify seasonality: monthly, total or grper")
     }
 
   } else {
@@ -184,6 +181,8 @@ calcAvlWater <- function(selectyears="all",
     years <- sort(findset(selectyears,noset = "original"))
     out   <- out[,years,]
   }
+
+  description=paste0("Available water in ", seasonality)
 
   return(list(
     x=out,
