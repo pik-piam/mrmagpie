@@ -87,8 +87,8 @@ fullCELLULARMAGPIE <- function(rev=0.1, dev="", ctype="c200", climatetype="HadGE
   calcOutput("Yields", lpjml=lpjml, climatetype=climatetype, time="spline", dof=4,
              harmonize_baseline=harmonize_baseline, ref_year=ref_year, aggregate = "cluster",
              years=lpj_years, replace_isimip3b=yieldswitch, isimip_subtype=isimip_subtype, file=paste0("lpj_yields_", ctype, ".mz"))
-  calcOutput("ContGrazMax", report = "harvest", aggregate = "cluster", file=paste0("lpj_cg_past_yields_", ctype, ".mz"))
-  calcOutput("Mowing",aggregate = "cluster", file=paste0("lpj_mw_past_yields_", ctype, ".mz"))
+  calcOutput("PastYields", lsu_levels = c(seq(0, 2, 0.2), 2.5), mowing_events = "2me", lpjml = lpjml,
+             climatetype = climatetype, aggregate = "cluster", file=paste0("lpj_past_yields_", ctype, ".mz"))
 
 
   # These outputs need to be aggregated using weighted area mean

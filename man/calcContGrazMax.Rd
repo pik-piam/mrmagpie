@@ -4,9 +4,20 @@
 \alias{calcContGrazMax}
 \title{calcContGrazMax}
 \usage{
-calcContGrazMax(report = "harvest")
+calcContGrazMax(
+  lsu_levels = c(seq(0, 2, 0.2), 2.5),
+  lpjml = c(crop = "LPJmL5"),
+  climatetype = "HadGEM2_ES:rcp8p5:co2",
+  report = "harvest"
+)
 }
 \arguments{
+\item{lsu_levels}{Livestock unit levels in the source folder}
+
+\item{lpjml}{Defines LPJmL version for crop/grass and natveg specific inputs}
+
+\item{climatetype}{Switch between different climate scenarios (default: "CRU_4")}
+
 \item{report}{Either 'harvest' or 'lsu/ha' controlling what values are output by the function.}
 }
 \value{
@@ -16,7 +27,7 @@ magpie object in cellular resolution
 Calculates continuous grazing maximum output
 }
 \examples{
-\dontrun{calcOutput("ContGrazMax", report = "harvest")}
+\dontrun{calcOutput("ContGrazMax", lsu_levels = 0, lpjml = lpjml["crop"], climatetype, report)}
 
 }
 \author{
