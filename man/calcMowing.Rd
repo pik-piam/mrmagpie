@@ -6,7 +6,7 @@
 \usage{
 calcMowing(
   mowing_events = "2me",
-  lpjml = c(crop = "LPJmL5"),
+  lpjml = "LPJml_mowing",
   climatetype = "HadGEM2_ES:rcp8p5:co2"
 )
 }
@@ -25,7 +25,7 @@ Calculates mowing pasture yields
 }
 \examples{
 \dontrun{
-calcOutput("Mowing", mowing_events = "2me", lpjml = lpjml["crop"], climatetype)
+calcOutput("Mowing", mowing_events = "2me", lpjml = "LPJml_mowing", climatetype)
 }
 
 }

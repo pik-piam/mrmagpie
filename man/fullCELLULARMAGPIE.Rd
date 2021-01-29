@@ -9,7 +9,8 @@ fullCELLULARMAGPIE(
   dev = "",
   ctype = "c200",
   climatetype = "HadGEM2_ES:rcp2p6:co2",
-  lpjml = c(natveg = "LPJmL4", crop = "LPJmL5GGCMI"),
+  lpjml = c(natveg = "LPJmL4", crop = "LPJmL5GGCMI", cgrazing = "LPJmL_cgrazing",
+    mowing = "LPJmL_mowing"),
   clusterweight = NULL
 )
 }

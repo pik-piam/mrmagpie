@@ -19,11 +19,11 @@
 
 
 calcPastYields <-
-  function(lsu_levels = c(seq(0, 2, 0.2), 2.5), mowing_events = "2me", lpjml = c(crop="LPJmL5"), climatetype = "HadGEM2_ES:rcp8p5:co2") {
+  function(lsu_levels = c(seq(0, 2, 0.2), 2.5), mowing_events = "2me", lpjml=c(cgrazing= "LPJmL_cgrazing" , mowing = "LPJmL_mowing"), climatetype = "HadGEM2_ES:rcp8p5:co2") {
 
     years <- 1995:2100
-    x <- calcOutput("ContGrazMax", lsu_levels = lsu_levels, lpjml = lpjml, climatetype = climatetype, report = "harvest", aggregate = F)
-    y <- calcOutput("Mowing", mowing_events = mowing_events, lpjml = lpjml, climatetype = climatetype, aggregate = F)
+    x <- calcOutput("ContGrazMax", lsu_levels = lsu_levels, lpjml = lpjml["cgrazing"], climatetype = climatetype, report = "harvest", aggregate = F)
+    y <- calcOutput("Mowing", mowing_events = mowing_events, lpjml = lpjml["mowing"], climatetype = climatetype, aggregate = F)
     x <- toolFillYears(x, years = years)
     y <- toolFillYears(y, years =  years)
     pasture <- mbind(x,y)

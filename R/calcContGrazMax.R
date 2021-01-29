@@ -8,7 +8,7 @@
 #' @author Marcos Alves
 #'
 #' @examples
-#' \dontrun{calcOutput("ContGrazMax", lsu_levels = 0, lpjml = lpjml["crop"], climatetype, report)}
+#' \dontrun{calcOutput("ContGrazMax", lsu_levels = 0, lpjml, climatetype, report)}
 #'
 #' @import madrat
 #' @import magclass
@@ -19,7 +19,7 @@
 
 
 calcContGrazMax <-
-  function(lsu_levels = c(seq(0, 2, 0.2), 2.5), lpjml = c(crop="LPJmL5"), climatetype = "HadGEM2_ES:rcp8p5:co2", report = "harvest") {
+  function(lsu_levels = c(seq(0, 2, 0.2), 2.5), lpjml = "LPJmL_cgrazing", climatetype = "HadGEM2_ES:rcp8p5:co2", report = "harvest") {
 
     #tidyr variables initiation to avoid problems with buildlibrary()
     water <- NULL
@@ -32,7 +32,7 @@ calcContGrazMax <-
     lsu_levels <- gsub("\\.", "p", lsu_levels)
     y <- list()
     for (lsu in lsu_levels) {
-      .subtype <- paste(paste(lpjml["crop"], climatetype,"cont_grazing", lsu, sep = ":"), "harvest", sep = ".")
+      .subtype <- paste(paste(lpjml, climatetype, lsu, sep = ":"), "harvest", sep = ".")
       x <- readSource("LPJmL", subtype = .subtype, convert = "onlycorrect")
       x <- x[, , "mgrass"]
       getNames(x) <- gsub("mgrass",lsu,getNames(x))

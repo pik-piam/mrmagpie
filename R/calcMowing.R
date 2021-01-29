@@ -8,13 +8,13 @@
 #'
 #' @examples
 #' \dontrun{
-#' calcOutput("Mowing", mowing_events = "2me", lpjml = lpjml["crop"], climatetype)
+#' calcOutput("Mowing", mowing_events = "2me", lpjml = "LPJml_mowing", climatetype)
 #' }
 #'
 
 
-calcMowing <- function(mowing_events = "2me", lpjml = c(crop="LPJmL5"), climatetype = "HadGEM2_ES:rcp8p5:co2") {
-  .subtype <- paste(paste(lpjml["crop"], climatetype, "mowing", mowing_events, sep = ":"), "harvest", sep = ".")
+calcMowing <- function(mowing_events = "2me", lpjml = "LPJml_mowing", climatetype = "HadGEM2_ES:rcp8p5:co2") {
+  .subtype <- paste(paste(lpjml, climatetype, mowing_events, sep = ":"), "harvest", sep = ".")
   x <- readSource("LPJmL", subtype = .subtype, convert = "onlycorrect")
   x <- x[, , "mgrass"]
   getNames(x) <- gsub("mgrass", "mowing", getNames(x))

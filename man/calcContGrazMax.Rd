@@ -6,7 +6,7 @@
 \usage{
 calcContGrazMax(
   lsu_levels = c(seq(0, 2, 0.2), 2.5),
-  lpjml = c(crop = "LPJmL5"),
+  lpjml = "LPJmL_cgrazing",
   climatetype = "HadGEM2_ES:rcp8p5:co2",
   report = "harvest"
 )
@@ -27,7 +27,7 @@ magpie object in cellular resolution
 Calculates continuous grazing maximum output
 }
 \examples{
-\dontrun{calcOutput("ContGrazMax", lsu_levels = 0, lpjml = lpjml["crop"], climatetype, report)}
+\dontrun{calcOutput("ContGrazMax", lsu_levels = 0, lpjml, climatetype, report)}
 
 }
 \author{

@@ -7,7 +7,7 @@
 calcPastYields(
   lsu_levels = c(seq(0, 2, 0.2), 2.5),
   mowing_events = "2me",
-  lpjml = c(crop = "LPJmL5"),
+  lpjml = c(cgrazing = "LPJmL_cgrazing", mowing = "LPJmL_mowing"),
   climatetype = "HadGEM2_ES:rcp8p5:co2"
 )
 }

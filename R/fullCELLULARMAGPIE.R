@@ -30,7 +30,7 @@
 #' @importFrom madrat setConfig getConfig
 #' @importFrom magpiesets findset
 
-fullCELLULARMAGPIE <- function(rev=0.1, dev="", ctype="c200", climatetype="HadGEM2_ES:rcp2p6:co2", lpjml=c(natveg="LPJmL4", crop="LPJmL5GGCMI"), clusterweight=NULL) {
+fullCELLULARMAGPIE <- function(rev=0.1, dev="", ctype="c200", climatetype="HadGEM2_ES:rcp2p6:co2", lpjml=c(natveg="LPJmL4", crop="LPJmL5GGCMI", cgrazing="LPJmL_cgrazing", mowing= "LPJmL_mowing"), clusterweight=NULL) {
 
   # define defaults, if not specified
   if(is.na(lpjml["crop"]))   lpjml["crop"]   <- "LPJmL5"
