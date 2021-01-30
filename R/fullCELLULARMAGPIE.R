@@ -179,19 +179,36 @@ fullCELLULARMAGPIE <- function(rev=0.1, dev="", ctype="c200", climatetype="HadGE
 
 
   #52 carbon
-  calcOutput("Carbon", aggregate = FALSE, lpjml=lpjml, climatetype=climatetype,
-             harmonize_baseline=harmonize_baseline, ref_year=ref_year,
-             time="spline", dof=4, round=6, years="y1995", file="lpj_carbon_stocks_0.5.mz")
-  calcOutput("TopsoilCarbon", aggregate = FALSE, lpjml=lpjml, climatetype=climatetype,
-             harmonize_baseline=harmonize_baseline, ref_year=ref_year,
-             time="spline", dof=4, round=6, years="y1995", file="lpj_carbon_topsoil_0.5.mz")
 
-  calcOutput("Carbon", aggregate = "cluster", lpjml=lpjml, climatetype=climatetype,
-             harmonize_baseline=harmonize_baseline, ref_year=ref_year,
-             time="spline", dof=4, round=6, years=lpj_years, file=paste0("lpj_carbon_stocks_", ctype, ".mz"))
-  calcOutput("TopsoilCarbon", aggregate = "cluster", lpjml=lpjml, climatetype=climatetype,
-             harmonize_baseline=harmonize_baseline, ref_year=ref_year,
-             time="spline", dof=4, round=6, years=lpj_years, file=paste0("lpj_carbon_topsoil_", ctype, ".mz"))
+  if(grepl("Carbon_new",dev)){
+
+    calcOutput("Carbon_new", aggregate = FALSE, lpjml=lpjml, climatetype=climatetype,
+               round=6, years="y1995", file="lpj_carbon_stocks_0.5.mz")
+    calcOutput("TopsoilCarbon_new", aggregate = FALSE, lpjml=lpjml, climatetype=climatetype,
+               round=6, years="y1995", file="lpj_carbon_topsoil_0.5.mz")
+
+    calcOutput("Carbon_new", aggregate = "cluster", lpjml=lpjml, climatetype=climatetype,
+               round=6, years=lpj_years, file=paste0("lpj_carbon_stocks_", ctype, ".mz"))
+    calcOutput("TopsoilCarbon_new", aggregate = "cluster", lpjml=lpjml, climatetype=climatetype,
+               round=6, years=lpj_years, file=paste0("lpj_carbon_topsoil_", ctype, ".mz"))
+
+  } else {
+
+    calcOutput("Carbon", aggregate = FALSE, lpjml=lpjml, climatetype=climatetype,
+               harmonize_baseline=harmonize_baseline, ref_year=ref_year,
+               time="spline", dof=4, round=6, years="y1995", file="lpj_carbon_stocks_0.5.mz")
+    calcOutput("TopsoilCarbon", aggregate = FALSE, lpjml=lpjml, climatetype=climatetype,
+               harmonize_baseline=harmonize_baseline, ref_year=ref_year,
+               time="spline", dof=4, round=6, years="y1995", file="lpj_carbon_topsoil_0.5.mz")
+
+    calcOutput("Carbon", aggregate = "cluster", lpjml=lpjml, climatetype=climatetype,
+               harmonize_baseline=harmonize_baseline, ref_year=ref_year,
+               time="spline", dof=4, round=6, years=lpj_years, file=paste0("lpj_carbon_stocks_", ctype, ".mz"))
+    calcOutput("TopsoilCarbon", aggregate = "cluster", lpjml=lpjml, climatetype=climatetype,
+               harmonize_baseline=harmonize_baseline, ref_year=ref_year,
+               time="spline", dof=4, round=6, years=lpj_years, file=paste0("lpj_carbon_topsoil_", ctype, ".mz"))
+  }
+
 
 
   #58 peatland
