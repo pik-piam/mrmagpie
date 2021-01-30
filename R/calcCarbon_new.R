@@ -15,23 +15,23 @@
 
 calcCarbon_new <- function(lpjml=c(natveg="LPJmL4", crop="LPJmL5"), climatetype){
 
-  soilc_natveg <-  calcOutput("LPJmL", version=lpjml["natveg"], climatetype=climatetype, subtype="soilc", stage="harmonized", aggregate=FALSE)
-  vegc_natveg  <-  calcOutput("LPJmL", version=lpjml["natveg"], climatetype=climatetype, subtype="vegc", stage="harmonized", aggregate=FALSE)
-  litc_natveg  <-  calcOutput("LPJmL", version=lpjml["natveg"], climatetype=climatetype, subtype="litc", stage="harmonized", aggregate=FALSE)
+  soilc_natveg <-  calcOutput("LPJmL_new", version=lpjml["natveg"], climatetype=climatetype, subtype="soilc", stage="harmonized", aggregate=FALSE)
+  vegc_natveg  <-  calcOutput("LPJmL_new", version=lpjml["natveg"], climatetype=climatetype, subtype="vegc", stage="harmonized", aggregate=FALSE)
+  litc_natveg  <-  calcOutput("LPJmL_new", version=lpjml["natveg"], climatetype=climatetype, subtype="litc", stage="harmonized", aggregate=FALSE)
 
   natveg       <- mbind(vegc_natveg, soilc_natveg, litc_natveg)
   rm(vegc_natveg, litc_natveg)
 
-  soilc_grass  <-  calcOutput("LPJmL", version=lpjml["crop"], climatetype=climatetype, subtype="soilc_grass", stage="harmonized", aggregate=FALSE)
-  vegc_grass   <-  calcOutput("LPJmL", version=lpjml["crop"], climatetype=climatetype, subtype="vegc_grass", stage="harmonized", aggregate=FALSE)
-  litc_grass   <-  calcOutput("LPJmL", version=lpjml["crop"], climatetype=climatetype, subtype="litc_grass", stage="harmonized", aggregate=FALSE)
+  soilc_grass  <-  calcOutput("LPJmL_new", version=lpjml["crop"], climatetype=climatetype, subtype="soilc_grass", stage="harmonized", aggregate=FALSE)
+  vegc_grass   <-  calcOutput("LPJmL_new", version=lpjml["crop"], climatetype=climatetype, subtype="vegc_grass", stage="harmonized", aggregate=FALSE)
+  litc_grass   <-  calcOutput("LPJmL_new", version=lpjml["crop"], climatetype=climatetype, subtype="litc_grass", stage="harmonized", aggregate=FALSE)
 
   grass           <- mbind(vegc_grass, soilc_grass, litc_grass)
   rm(vegc_grass, litc_grass)
 
   getNames(grass) <- getNames(natveg)
 
-  topsoilc       <- calcOutput("TopsoilCarbon", lpjml=lpjml, climatetype=climatetype, aggregate=FALSE)
+  topsoilc       <- calcOutput("TopsoilCarbon_new", lpjml=lpjml, climatetype=climatetype, aggregate=FALSE)
   #find cshare
   cshare         <- calcOutput("SOCLossShare", aggregate=FALSE, years="y1995")
 
