@@ -1,5 +1,6 @@
 #' @title calcWaterUseNonAg
 #' @description This function extracts non-agricultural water demand
+#'
 #' @param selectyears years to be returned
 #' @param source      data source to be used (e.g. WATERGAP2020)
 #' @param time            Time smoothing: average, spline or raw (default)
@@ -96,7 +97,7 @@ calcWaterUseNonAg <- function(selectyears="all", source="WATCH_ISIMIP_WATERGAP",
 
     } else {
       # Time smoothing:
-      x                <- calcOutput("WaterUseNonAg", selectyears=selectyears, source=source, seasonality=seasonality,
+      x                <- calcOutput("WaterUseNonAg", selectyears="all", source=source, seasonality=seasonality,
                           waterusetype=waterusetype, climatetype=climatetype, harmonize_baseline=harmonize_baseline,
                           ref_year=ref_year, time="raw", averaging_range=NULL, dof=NULL, finalcells=finalcells, aggregate=FALSE)
 
