@@ -26,9 +26,7 @@
 #' @importFrom madrat toolFillYears
 
 calcYields <- function(lpjml=c(natveg="LPJmL4", crop="LPJmL5"), climatetype="CRU_4", time="spline", averaging_range=NULL, dof=4,
-                       harmonize_baseline=FALSE, ref_year="y2015", calib_proxy=TRUE, split_cropcalc=TRUE, crops="magpie", selectyears="all",
-                       replace_isimip3b=FALSE, replace_years="lpj",
-                       isimip_subtype="ISIMIP3b:yields.EPIC-IIASA_ukesm1-0-ll_ssp585_default"){
+                       harmonize_baseline=FALSE, ref_year="y2015", calib_proxy=TRUE, split_cropcalc=TRUE, crops="magpie", selectyears="all"){
 
   sizelimit <- getOption("magclass_sizeLimit")
   options(magclass_sizeLimit=1e+12)
@@ -103,20 +101,6 @@ calcYields <- function(lpjml=c(natveg="LPJmL4", crop="LPJmL5"), climatetype="CRU
     crop_area_weight     <- yields
     crop_area_weight[,,] <- 1
   }
-
-  if (replace_isimip3b == TRUE){
-    if(replace_years=="lpj"){
-      rep_years = seq(1995,2100,5)
-    }
-    to_rep <- calcOutput("ISIMIPYields", subtype=isimip_subtype, aggregate=F)
-    common_vars <- intersect(getNames(yields),getNames(to_rep))
-    # convert to array for memory
-    yields <- as.array(yields[,rep_years,]); to_rep <- as.array(to_rep[,rep_years,])
-    yields[,,common_vars] <- to_rep[,,common_vars]
-    yields <- as.magpie(yields); to_rep <- as.magpie(to_rep)
-
-      }
-
 
   return(list(
     x=yields,

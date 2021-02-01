@@ -47,13 +47,6 @@ fullCELLULARMAGPIE <- function(rev=0.1, dev="", ctype="c200", climatetype="HadGE
     clusterdata="yield_airrig"
   }
 
-  yieldswitch = FALSE
-  isimip_subtype=NULL
-  if(grepl("yieldtest",dev)){
-    yieldswitch=TRUE
-    isimip_subtype="ISIMIP3b:yields.EPIC-IIASA_ukesm1-0-ll_ssp585_default"
-  }
-
   sizelimit <- getOption("magclass_sizeLimit")
   options(magclass_sizeLimit=1e+12)
   on.exit(options(magclass_sizeLimit=sizelimit))
@@ -78,15 +71,16 @@ fullCELLULARMAGPIE <- function(rev=0.1, dev="", ctype="c200", climatetype="HadGE
   setConfig(extramappings = clustermapname)
 
   # 09 drivers
-  ### gridded pop?
+
 
   # 14 yields
   calcOutput("Yields", lpjml=lpjml, climatetype=climatetype, time="spline", dof=4,
              harmonize_baseline=harmonize_baseline, ref_year=ref_year, aggregate = FALSE,
-             years="y1995", replace_isimip3b=yieldswitch, isimip_subtype=isimip_subtype, file=paste0("lpj_yields_0.5.mz"))
+             years="y1995", file=paste0("lpj_yields_0.5.mz"))
   calcOutput("Yields", lpjml=lpjml, climatetype=climatetype, time="spline", dof=4,
              harmonize_baseline=harmonize_baseline, ref_year=ref_year, aggregate = "cluster",
-             years=lpj_years, replace_isimip3b=yieldswitch, isimip_subtype=isimip_subtype, file=paste0("lpj_yields_", ctype, ".mz"))
+             years=lpj_years, file=paste0("lpj_yields_", ctype, ".mz"))
+
   calcOutput("PastYields", lsu_levels = c(seq(0, 2, 0.2), 2.5), mowing_events = "2me", lpjml = lpjml,
              climatetype = climatetype, aggregate = "cluster", file=paste0("lpj_past_yields_", ctype, ".mz"))
 
