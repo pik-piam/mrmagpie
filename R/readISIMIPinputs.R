@@ -39,30 +39,37 @@ readISIMIPinputs <- function(subtype="ISIMIP3b:water:histsoc.waterabstraction"){
                paste0(folder,"/indwc_",readyears,".nc"),
                paste0(folder,"/indww_",readyears,".nc"))
 
-    # Read in data
-    x <- read.magpie(paste0(folder,"/domwc_",readyears,".nc"))
+    ## Read in data
+    # read in raster brick
+    brick        <- brick(paste0(folder,"/domwc_",readyears,".nc"))
+    # start year (with name X0) is 1901:
+    names(brick) <- paste0("y",round(as.numeric(gsub("X","",names(brick))),0) + 1901)
+    # transform to magpie object with coordinate data
+    x            <- as.magpie(brick)
+    getNames(x)  <- brick@title
+
+    # append data
     for (i in (1:length(input))){
-      tmp <- read.magpie(input[i])
+      #tmp <- read.magpie(input[i])
+      brick         <- brick(input[i])
+      # start year (with name X0) is 1901:
+      names(brick)  <- paste0("y",round(as.numeric(gsub("X","",names(brick))),0) + 1901)
+      # transform to magpie object with coordinate data
+      tmp           <- as.magpie(brick)
+      getNames(tmp) <- brick@title
+
       x   <- mbind(x,tmp)
     }
-
-    ### Correct years dimension:
-    years       <- round(as.numeric(gsub("y","",getYears(x))),0)
-    # Provided ISIMIP data starts in year 1901:
-    start_year  <- 1901
-    years       <- years + start_year
-    years       <- paste0("y",years)
-    getYears(x) <- years
 
     # Unit transformation (from m3/yr to mio. m3/yr):
     x <- x/1000000
 
     ### Sum up over all non-agricultural water uses (domestic, industry)
     # water withdrawal:
-    ww           <- dimSums(mbind(x[,,"domww"],x[,,"indww"]),dim=3)
+    ww           <- dimSums(mbind(x[,,"domestic water withdrawal"],x[,,"industrial water withdrawal"]),dim=3)
     getNames(ww) <- "withdrawal"
     # water consumption:
-    wc           <- dimSums(mbind(x[,,"domwc"],x[,,"indwc"]),dim=3)
+    wc           <- dimSums(mbind(x[,,"domestic water consumption"],x[,,"industrial water consumption"]),dim=3)
     getNames(wc) <- "consumption"
     x            <- mbind(ww,wc)
 

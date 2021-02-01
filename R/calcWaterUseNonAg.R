@@ -11,6 +11,7 @@
 #' @param climatetype        switch between different climate scenarios (default: "CRU_4") for calcGrowingPeriod
 #' @param harmonize_baseline FALSE (default), if a baseline is specified here input data is harmonized to that baseline (from ref_year onwards) Note: only applies for calcGrowingPeriod
 #' @param ref_year           just specify for harmonize_baseline != FALSE : Reference year for calcGrowingPeriod
+#' @param finalcells  number of cells to be returned by this function magpiecell (59199) or lpjcell (67420)
 #'
 #' @return magpie object in cellular resolution
 #' @author Felicitas Beier
@@ -22,7 +23,7 @@
 #' @import magclass
 #' @import mrcommons
 
-calcWaterUseNonAg <- function(selectyears="all", source="WATCH_ISIMIP_WATERGAP", waterusetype="withdrawal",
+calcWaterUseNonAg <- function(selectyears="all", source="WATCH_ISIMIP_WATERGAP", waterusetype="withdrawal", finalcells="magpiecell",
                                  time="raw", averaging_range=NULL, dof=NULL, lpjml=c(natveg="LPJmL4", crop="LPJmL5"),
                                  seasonality="grper", climatetype="HadGEM2_ES:rcp2p6:co2", harmonize_baseline="CRU_4", ref_year="y2015"){
 
@@ -32,6 +33,11 @@ calcWaterUseNonAg <- function(selectyears="all", source="WATCH_ISIMIP_WATERGAP",
 
   # Old Non-Agricultural Waterdemand data (current default, will be deleted soon):
   if(source=="WATCH_ISIMIP_WATERGAP"){
+
+    if(finalcells=="lpjcell"){
+      stop("lpjcell argument not supported for old water data. Please select magpiecell in finalcells argument instead.")
+    }
+
     # Read in nonagricultural water demand:
     watdem_nonagr <- readSource("WATERGAP", convert="onlycorrect", subtype=source)
     # Add year 2100
@@ -46,6 +52,9 @@ calcWaterUseNonAg <- function(selectyears="all", source="WATCH_ISIMIP_WATERGAP",
       watdem_nonagr_WATERGAP      <- readSource("WATERGAP", convert="onlycorrect", subtype="WATERGAP2020")
       watdem_nonagr_ISIMIP_hist   <- readSource("ISIMIPinputs",subtype="ISIMIP3b:water:histsoc.waterabstraction",convert="onlycorrect")
       watdem_nonagr_ISIMIP_future <- readSource("ISIMIPinputs",subtype="ISIMIP3b:water:2015soc.waterabstraction",convert="onlycorrect")
+
+      watdem_nonagr_ISIMIP_hist   <- watdem_nonagr_ISIMIP_hist[getCells(watdem_nonagr_WATERGAP),,]
+      watdem_nonagr_ISIMIP_future <- watdem_nonagr_ISIMIP_future[getCells(watdem_nonagr_WATERGAP),,]
 
       ### Combine datasets from different sources:
       # historical and future ISIMIP data:
@@ -89,7 +98,7 @@ calcWaterUseNonAg <- function(selectyears="all", source="WATCH_ISIMIP_WATERGAP",
       # Time smoothing:
       x                <- calcOutput("WaterUseNonAg", selectyears=selectyears, source=source, seasonality=seasonality,
                           waterusetype=waterusetype, climatetype=climatetype, harmonize_baseline=harmonize_baseline,
-                          ref_year=ref_year, time="raw", averaging_range=NULL, dof=NULL, aggregate=FALSE)
+                          ref_year=ref_year, time="raw", averaging_range=NULL, dof=NULL, finalcells=finalcells, aggregate=FALSE)
 
       if(time=="average"){
         # Smoothing data through average:
@@ -107,6 +116,18 @@ calcWaterUseNonAg <- function(selectyears="all", source="WATCH_ISIMIP_WATERGAP",
         stop("Time argument not supported!")
       }
     }
+
+    ### Number of cells to be returned
+    if (finalcells=="lpjcell"){
+      watdem_nonagr <- watdem_nonagr
+    } else if (finalcells=="magpiecell"){
+      ### Note: magpiecell option will be deleted when we switch to new
+      ### water inputs (mrwater)
+      watdem_nonagr <- watdem_nonagr[magclassdata$cellbelongings$LPJ_input.Index,,]
+      watdem_nonagr <- toolCell2isoCell(watdem_nonagr)
+    } else {
+      stop("Cell argument for finalcells not supported. Select lpjcell for 67420 cells or magpiecell for 59199 cells")
+    }
   }
 
   ###########################################
@@ -119,6 +140,12 @@ calcWaterUseNonAg <- function(selectyears="all", source="WATCH_ISIMIP_WATERGAP",
 
   ### Non-agricultural water demands in Growing Period
   if(seasonality=="grper"){
+    ### Note: Seasonality "grper" will be deleted when we switch to new
+    ### water inputs (mrwater)
+    if (finalcells=="lpjcell") {
+      stop("grper not supported as seasonality argument for lpjcells. Please select seasonality total or select magpiecell in finalcells argument")
+    }
+
     # Get growing days per month
     grow_days <- calcOutput("GrowingPeriod", lpjml=lpjml, climatetype=climatetype, time="spline", dof=4,
                             harmonize_baseline=harmonize_baseline, ref_year=ref_year, yield_ratio=0.1, aggregate=FALSE)
@@ -147,9 +174,10 @@ calcWaterUseNonAg <- function(selectyears="all", source="WATCH_ISIMIP_WATERGAP",
   }
 
   # Check for NAs
-  if(any(is.na(watdem_nonagr))){
+  if(any(is.na(out))){
     stop("produced NA watdem_nonagr")
   }
+
 
   return(list(
     x=out,

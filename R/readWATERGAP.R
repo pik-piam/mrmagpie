@@ -9,6 +9,7 @@
 #'
 #' @import madrat
 #' @import magclass
+#' @importFrom raster brick
 
 readWATERGAP <- function(subtype="WATCH_ISIMIP_WATERGAP"){
 
@@ -31,15 +32,30 @@ readWATERGAP <- function(subtype="WATCH_ISIMIP_WATERGAP"){
     input[["ssp3"]][["ww"]] <- gsub("ssp1_rcp4p5","ssp3_rcp6p0",input[["ssp1"]][["ww"]])
 
     ### Reading in files and combining to one magpie object:
-    x           <- read.magpie(paste0(subtype,"/",input[[1]][["wc"]][1]))
+    # read in raster brick
+    brick        <- brick(paste0(subtype,"/",input[[1]][["wc"]][1]))
+    # start year (with name X0) is 2005:
+    names(brick) <- paste0("y",as.numeric(gsub("X","",names(brick))) + 2005)
+    # transform to magpie object with coordinate data
+    x            <- as.magpie(brick)
+    getNames(x)  <- brick@title
     getNames(x) <- paste0("sspX.",getNames(x))
+
     # Different SSPs:
     for (i in (1:length(input))){
       # Different water use types (withdrawal, consumption)
       for (j in (1:length(input[["ssp1"]]))){
         # Different industries (manufacturing, electricity, domestic)
         for (k in (1:length(input[["ssp1"]][["wc"]]))){
-          tmp <- read.magpie(paste0(subtype,"/",input[[i]][[j]][k]))
+          #tmp <- read.magpie(paste0(subtype,"/",input[[i]][[j]][k]))
+
+          brick        <- brick(paste0(subtype,"/",input[[i]][[j]][k]))
+          # start year (with name X0) is 2005:
+          names(brick) <- paste0("y",as.numeric(gsub("X","",names(brick))) + 2005)
+          # transform to magpie object with coordinate data
+          tmp            <- as.magpie(brick)
+          getNames(tmp)  <- brick@title
+
           getNames(tmp) <- paste0("ssp",i,".",getNames(tmp))
           x <- mbind(x,tmp)
         }
@@ -48,23 +64,15 @@ readWATERGAP <- function(subtype="WATCH_ISIMIP_WATERGAP"){
     # Remove redundant scenario (was for temporary use in loop only)
     x <- x[,,"sspX",invert=T]
 
-    ### Correct years dimension:
-    years       <- as.integer(gsub("y","",getYears(x)))
-    # Provided WATERGAP data starts with 2005:
-    start_year  <- 2005
-    years       <- years + start_year
-    years       <- paste0("y",years)
-    getYears(x) <- years
-
     # Unit transformation (from m3/yr to mio. m3/yr):
     x <- x/1000000
 
     ### Sum up over all non-agricultural water uses (domestic, industry)
     # water withdrawal:
-    ww           <- dimSums(mbind(x[,,"elecww"],x[,,"domww"],x[,,"manww"]),dim=3.2)
+    ww           <- dimSums(mbind(x[,,"electricity production water withdrawal"],x[,,"Domestic water withdrawal"],x[,,"manufacturing water withdrawal"]),dim=3.2)
     getNames(ww) <- paste0(getNames(ww),".withdrawal")
     # water consumption:
-    wc           <- dimSums(mbind(x[,,"elecuse"],x[,,"domuse"],x[,,"manuse"]),dim=3.2)
+    wc           <- dimSums(mbind(x[,,"electricity production water consumption"],x[,,"Domestic water consumption"],x[,,"manufacturing water consumption"]),dim=3.2)
     getNames(wc) <- paste0(getNames(wc),".consumption")
     x            <- mbind(ww,wc)
   }
