@@ -12,9 +12,6 @@
 #' @param split_cropcalc split calculation for different crop types (e.g. for parallelization)
 #' @param crops magpie (default) crops or lpjml crops
 #' @param selectyears defaults to all years available
-#' @param replace_isimip3b replace yields of maize rice wheat soy with outputs from isimip3b crop modesl
-#' @param isimip_subtype crop model, gcm, ssp and co2 fert of isimip outputs"ISIMIP3b:yields.EPIC-IIASA_ukesm1-0-ll_ssp585_default"
-#' @param replace_years only to subset years for isimip replacement, to reduce memory re
 #' @return magpie object in cellular resolution
 #' @author Kristine Karstens, Felicitas Beier
 #'
