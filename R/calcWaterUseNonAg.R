@@ -39,6 +39,9 @@ calcWaterUseNonAg <- function(selectyears="all", source="WATCH_ISIMIP_WATERGAP",
       stop("lpjcell argument not supported for old water data. Please select magpiecell in finalcells argument instead.")
     }
 
+    # iso cell names
+    x <- toolCell2isoCell(x)
+
     # Read in nonagricultural water demand:
     watdem_nonagr <- readSource("WATERGAP", convert="onlycorrect", subtype=source)
     # Add year 2100
