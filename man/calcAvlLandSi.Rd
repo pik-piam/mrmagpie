@@ -4,7 +4,10 @@
 \alias{calcAvlLandSi}
 \title{calcAvlLandSi}
 \usage{
-calcAvlLandSi()
+calcAvlLandSi(x, dataprocessing = "original")
+}
+\arguments{
+\item{dataprocessing}{just a temporary argument until read Ramankutty is fully functional (original or mrmagpie)}
 }
 \value{
 magpie object in cellular resolution
@@ -17,5 +20,5 @@ Extracts si0 and nsi0 areas based on Ramankutty dataset
 
 }
 \author{
-David Chen
+Felicitas Beier
 }
