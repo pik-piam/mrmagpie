@@ -17,7 +17,7 @@
 calcAvlLandSi <-function(dataprocessing="original", cells="magpiecell") {
 
   if (dataprocessing=="original") {
-    x <- readSource("AvlLandSi", convert="onlycorrect")
+    out <- readSource("AvlLandSi", convert="onlycorrect")
 
   } else if (dataprocessing=="mrmagpie") {
     # input data (Ramankutty)
