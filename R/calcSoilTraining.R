@@ -25,8 +25,8 @@ calcSoilTraining <-
     GCM <- strsplit(climatetype, split = ":")
     GCM <- paste("soilc", GCM[[1]][1],GCM[[1]][2],sep = "_")
 
-    x <- calcOutput("SoilCarbon", aggregate = F, lsu_levels = lsu_levels, lpjml = lpjml, climatetype = climatetype, sar = sar )
-    y <- calcOutput("Environment", climatetype=climatetype, sar = sar, aggregate = F)
+    x <- calcOutput("SoilCarbon", aggregate = F, lsu_levels = lsu_levels, lpjml = lpjml, climatetype = climatetype, sar = sar )[,1995:2100,]
+    y <- calcOutput("Environment", climatetype=climatetype, sar = sar, aggregate = F)[,1995:2100,]
     w <- add_columns(y, addnm = GCM)
     w <- add_dimension(w, dim = 3.1, add = "lsu", nm = getItems(x, dim = 3))
     w[,,GCM] <- x
