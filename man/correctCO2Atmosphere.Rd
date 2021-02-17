@@ -13,7 +13,7 @@ correctCO2Atmosphere(x)
 List of magpie objects with results on cellular level, weight, unit and description.
 }
 \description{
-Correct atmosphere co2 concentration
+Correct atmosphere CO2 concentration
 }
 \examples{
 

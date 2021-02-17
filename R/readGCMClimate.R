@@ -8,7 +8,7 @@
 #' @examples
 #'
 #' \dontrun{
-#' readSource("GCMClimate", subtype="HadGEM2:rcp85.temperature", convert="onlycorrect")
+#' readSource("GCMClimate", subtype="HadGEM2_ES:rcp8p5.temperature", convert="onlycorrect")
 #' }
 #'
 #' @importFrom lpjclass read.LPJ_input
@@ -16,7 +16,7 @@
 #' @export
 
 readGCMClimate <-
-  function(subtype = "GCMClimate:rcp85:HadGEM2.temperature") {
+  function(subtype = "HadGEM2_ES:rcp8p5.temperature") {
     if (grepl("\\.", subtype) & grepl("\\:", subtype)) {
       type     <- strsplit(gsub(":", "/" , subtype), split = "\\.")
       folder      <- unlist(type)[1]

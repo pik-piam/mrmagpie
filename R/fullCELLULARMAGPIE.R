@@ -86,13 +86,8 @@ fullCELLULARMAGPIE <- function(rev=0.1, dev="", ctype="c200", climatetype="HadGE
 
 
   # These outputs need to be aggregated using weighted area mean
-  calcOutput("GCMClimate", aggregate="cluster", file=paste0("rcp85.HadGEM2.temperature_", ctype, ".mz"), GCMModel = "HadGEM2", ClimateVariable = "temperature", rcp = "rcp85")
-  calcOutput("GCMClimate", aggregate="cluster", file=paste0("rcp85.HadGEM2.precipitation_", ctype, ".mz"), GCMModel = "HadGEM2", ClimateVariable = "precipitation", rcp = "rcp85")
-  calcOutput("GCMClimate", aggregate="cluster", file=paste0("rcp85.HadGEM2.longwave_radiation_", ctype, ".mz"), GCMModel = "HadGEM2", ClimateVariable = "longwave_radiation", rcp = "rcp85")
-  calcOutput("GCMClimate", aggregate="cluster", file=paste0("rcp85.HadGEM2.shortwave_radiation_", ctype,  ".mz"), GCMModel = "HadGEM2", ClimateVariable = "shortwave_radiation", rcp = "rcp85")
-  calcOutput("GCMClimate", aggregate="cluster", file=paste0("rcp85.HadGEM2.wetdays_", ctype, ".mz"), GCMModel = "HadGEM2", ClimateVariable = "wetdays", rcp = "rcp85")
-  calcOutput("CO2Atmosphere", aggregate="cluster", file=paste0("calcCO2Atmosphere_", ctype, ".mz"), rcp="rcp85", level="cellular")
-  calcOutput("SoilCharacteristics", aggregate="cluster", file=paste0("SoilCharacteristics_", ctype, ".mz"))
+  calcOutput("Environment", climatetype = climatetype, sar = 20, aggregate="cluster", file=paste0("Environment_", ctype, ".mz"))
+  calcOutput("SoilTraining", lsu_levels = c(seq(0, 2, 0.2), 2.5), lpjml = "LPJmL_cgrazing", climatetype = climatetype, sar = 20, file=paste0("soil_training_", ctype, ".mz"))
   calcOutput("ClimateClass", aggregate="cluster", years="y2015", file=paste0("koeppen_geiger_", ctype, ".mz"))
 
   #10 land

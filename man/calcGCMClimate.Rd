@@ -4,18 +4,10 @@
 \alias{calcGCMClimate}
 \title{calcGCMClimate}
 \usage{
-calcGCMClimate(
-  GCMModel = "HadGEM2",
-  ClimateVariable = "temperature",
-  rcp = "rcp85"
-)
+calcGCMClimate(subtype = "HadGEM2_ES:rcp8p5.temperature")
 }
 \arguments{
-\item{GCMModel}{!!!! add description}
-
-\item{ClimateVariable}{!!!! add description}
-
-\item{rcp}{specify the RCP (rcp85, rcp60, rcp45 or rcp26)}
+\item{subtype}{type of climate data to collect}
 }
 \value{
 magpie object in cellular resolution
@@ -24,7 +16,7 @@ magpie object in cellular resolution
 Disaggregate CO2 global atmospheric concentration to cellular level
 }
 \examples{
-\dontrun{ calcOutput("GCMClimate", aggregate = FALSE) }
+\dontrun{ calcOutput("GCMClimate", subtype = "HadGEM2_ES:rcp8p5.temperature") }
 
 }
 \author{

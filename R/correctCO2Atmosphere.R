@@ -1,5 +1,5 @@
 #' @title correctCO2Atmosphere
-#' @description Correct atmosphere co2 concentration
+#' @description Correct atmosphere CO2 concentration
 #' @param x magpie object provided by the read function
 #' @return List of magpie objects with results on cellular level, weight, unit and description.
 #' @author Marcos Alves, Kristine Karstens

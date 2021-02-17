@@ -18,7 +18,7 @@ Correct GCMs climate variables
 \examples{
 
 \dontrun{
-readSource("GCMClimate", subtype="rcp85:HadGEM2.temperature", convert="onlycorrect")
+readSource("GCMClimate", subtype="HadGEM2_ES:rcp8p5.temperature", convert="onlycorrect")
 }
 
 }

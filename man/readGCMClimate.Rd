@@ -4,7 +4,7 @@
 \alias{readGCMClimate}
 \title{readGCMClimate}
 \usage{
-readGCMClimate(subtype = "GCMClimate:rcp85:HadGEM2.temperature")
+readGCMClimate(subtype = "HadGEM2_ES:rcp8p5.temperature")
 }
 \arguments{
 \item{subtype}{Switch between different inputs}
@@ -18,7 +18,7 @@ Read Climate data used as LPJmL inputs into MAgPIE objects
 \examples{
 
 \dontrun{
-readSource("GCMClimate", subtype="HadGEM2:rcp85.temperature", convert="onlycorrect")
+readSource("GCMClimate", subtype="HadGEM2_ES:rcp8p5.temperature", convert="onlycorrect")
 }
 
 }

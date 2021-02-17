@@ -4,12 +4,13 @@
 \alias{calcCO2Atmosphere}
 \title{calcCO2Atmosphere}
 \usage{
-calcCO2Atmosphere(rcp = "rcp85", level = "cellular")
+calcCO2Atmosphere(rcp = "rcp8p5", co2_evolution = "rising")
 }
 \arguments{
 \item{rcp}{specify the RCP (rcp85, rcp60, rcp45 or rcp26)}
 
-\item{level}{specify the spatial output level}
+\item{co2_evolution}{Define `rising` for rising CO2 according to the climate scenario selected or
+`static` for stable CO2 at the last past time step level.}
 }
 \value{
 magpie object in cellular resolution
@@ -18,7 +19,9 @@ magpie object in cellular resolution
 Disaggregate CO2 global atmospheric concentration to cellular level
 }
 \examples{
-\dontrun{ calcOutput("CO2Atmosphere", aggregate = FALSE) }
+\dontrun{
+calcOutput("CO2Atmosphere", aggregate = FALSE, rcp = "rcp8p5", co2_evolution = "rising")
+}
 
 }
 \author{

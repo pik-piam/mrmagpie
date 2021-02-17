@@ -1,6 +1,5 @@
 #' @title calcSoilCharacteristics
 #' @description Calculate Soil Characteristics based on a HWDS soil classification map
-#'
 #' @return Magpie objects with results on cellular level.
 #' @author Marcos Alves
 #' @seealso
@@ -16,7 +15,7 @@
 
 calcSoilCharacteristics <- function() {
   x  <- readSource("SoilClassification", subtype = "HWSD.soil", convert="onlycorrect")
-  years <- seq(1995, 2100, 1)
+  years <- seq(1900, 2150, 1)
   z <- array(NA, dim = c(dim(x)[1], length(years), 1),
              dimnames = list(1:dim(x)[1], years, "soil"))
   for (i in 1:length(years)) {

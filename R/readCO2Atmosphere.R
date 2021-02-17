@@ -8,23 +8,23 @@
 #' @examples
 #'
 #' \dontrun{
-#' readSource("CO2Atmosphere", subtype="rcp85", convert=FALSE)
+#' readSource("CO2Atmosphere", subtype="rcp8p5", convert=FALSE)
 #' }
 #'
 #' @import madrat
 #' @importFrom utils read.table
 
 readCO2Atmosphere <-
-  function(subtype = "rcp85") {
+  function(subtype = "rcp8p5") {
 
-    files <- c(rcp85 = "rcp85_CO2_1765-2200.dat",
-               rcp60 = "rcp60_CO2_1765-2200.dat",
-               rcp45 = "rcp45_CO2_1765-2200.dat",
-               rcp26 = "rcp26_CO2_1765-2200.dat")
+    files <- c(rcp8p5 = "rcp85_CO2_1765-2200.dat",
+               rcp6p0 = "rcp60_CO2_1765-2200.dat",
+               rcp4p5 = "rcp45_CO2_1765-2200.dat",
+               rcp2p6 = "rcp26_CO2_1765-2200.dat")
 
     file  <- toolSubtypeSelect(subtype,files)
 
-    years <-seq(1995,2100, 1)
+    years <-seq(1900,2150, 1)
 
 
     x  <- array(NA, dim = c(1, length(years),1), dimnames = list(1, years, "co2"))
