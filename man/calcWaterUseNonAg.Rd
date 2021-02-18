@@ -7,7 +7,6 @@
 calcWaterUseNonAg(
   selectyears = "all",
   source = "WATCH_ISIMIP_WATERGAP",
-  waterusetype = "withdrawal",
   finalcells = "magpiecell",
   time = "raw",
   averaging_range = NULL,
@@ -23,8 +22,6 @@ calcWaterUseNonAg(
 \item{selectyears}{years to be returned}
 
 \item{source}{data source to be used (e.g. WATERGAP2020)}
-
-\item{waterusetype}{withdrawal (default) or consumption}
 
 \item{finalcells}{number of cells to be returned by this function magpiecell (59199) or lpjcell (67420)}
 

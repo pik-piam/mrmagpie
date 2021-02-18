@@ -6,7 +6,6 @@
 #' @param time            Time smoothing: average, spline or raw (default)
 #' @param averaging_range only specify if time=="average": number of time steps to average
 #' @param dof             only specify if time=="spline": degrees of freedom needed for spline
-#' @param waterusetype withdrawal (default) or consumption
 #' @param lpjml              Defines LPJmL version for crop/grass and natveg specific inputs
 #' @param seasonality        grper (default): non-agricultural water demand in growing period per year; total: non-agricultural water demand throughout the year
 #' @param climatetype        switch between different climate scenarios (default: "CRU_4") for calcGrowingPeriod
@@ -20,22 +19,23 @@
 #' @examples
 #' \dontrun{ calcOutput("WaterUseNonAg", aggregate=FALSE) }
 #'
-#' @import madrat
-#' @import magclass
-#' @import mrcommons
+#' @importFrom madrat calcOutput readSource toolTimeAverage toolTimeSpline toolFillYears
+#' @importFrom magclass getYears getCells
+#' @importFrom mrcommons toolCell2isoCell
+#' @importFrom magpiesets addLocation
 
-calcWaterUseNonAg <- function(selectyears="all", source="WATCH_ISIMIP_WATERGAP", waterusetype="withdrawal", finalcells="magpiecell",
+calcWaterUseNonAg <- function(selectyears="all", source="WATCH_ISIMIP_WATERGAP", finalcells="magpiecell",
                                  time="raw", averaging_range=NULL, dof=NULL, lpjml=c(natveg="LPJmL4", crop="LPJmL5"),
-                                 seasonality="grper", climatetype="HadGEM2_ES:rcp2p6:co2", harmonize_baseline="CRU_4", ref_year="y2015"){
+                                 seasonality="grper", climatetype="HadGEM2_ES:rcp2p6:co2", harmonize_baseline="CRU_4", ref_year="y2015") {
 
   #######################################
   ############ Calculations  ############
   #######################################
 
   # Old Non-Agricultural Waterdemand data (current default, will be deleted soon):
-  if(source=="WATCH_ISIMIP_WATERGAP"){
+  if (source=="WATCH_ISIMIP_WATERGAP") {
 
-    if(finalcells=="lpjcell"){
+    if (finalcells=="lpjcell") {
       stop("lpjcell argument not supported for old water data. Please select magpiecell in finalcells argument instead.")
     }
 
@@ -48,9 +48,9 @@ calcWaterUseNonAg <- function(selectyears="all", source="WATCH_ISIMIP_WATERGAP",
   }
 
   # New Non-Agricultural Waterdemand data (will be new default)
-  if(source=="WATERGAP2020"){
+  if (source=="WATERGAP2020") {
 
-    if(time=="raw"){
+    if (time=="raw") {
       # Read in nonagricultural water demand:
       watdem_nonagr_WATERGAP      <- readSource("WATERGAP", convert="onlycorrect", subtype="WATERGAP2020")
       watdem_nonagr_ISIMIP_hist   <- readSource("ISIMIPinputs",subtype="ISIMIP3b:water:histsoc.waterabstraction",convert="onlycorrect")
@@ -94,20 +94,17 @@ calcWaterUseNonAg <- function(selectyears="all", source="WATCH_ISIMIP_WATERGAP",
       # WATERGAP adjusted future scenario data
       watdem_nonagr[,getYears(watdem_nonagr_WATERGAP),getNames(watdem_nonagr_WATERGAP)] <- watdem_nonagr_WATERGAP_adjusted[,getYears(watdem_nonagr_WATERGAP),getNames(watdem_nonagr_WATERGAP)]
 
-      # Water consumption or water withdrawal:
-      watdem_nonagr <- watdem_nonagr[,,waterusetype]
-
     } else {
       # Time smoothing:
       x                <- calcOutput("WaterUseNonAg", selectyears="all", source=source, seasonality=seasonality,
-                          waterusetype=waterusetype, climatetype=climatetype, harmonize_baseline=harmonize_baseline,
+                          climatetype=climatetype, harmonize_baseline=harmonize_baseline,
                           ref_year=ref_year, time="raw", averaging_range=NULL, dof=NULL, finalcells=finalcells, aggregate=FALSE)
 
-      if(time=="average"){
+      if (time=="average") {
         # Smoothing data through average:
         watdem_nonagr   <- toolTimeAverage(x, averaging_range=averaging_range)
 
-      } else if(time=="spline"){
+      } else if (time=="spline") {
         # Smoothing data with spline method:
         watdem_nonagr   <- toolTimeSpline(x, dof=dof)
         # Replace value in 2100 with value from 2099
@@ -115,17 +112,25 @@ calcWaterUseNonAg <- function(selectyears="all", source="WATCH_ISIMIP_WATERGAP",
           watdem_nonagr <- toolFillYears(watdem_nonagr, c(getYears(watdem_nonagr, as.integer=TRUE)[1]:2100))
         }
 
-      } else if(time!="raw"){
+      } else if(time!="raw") {
         stop("Time argument not supported!")
       }
     }
 
+    # Correct mismatches of withdrawal and consumption (withdrawals > consumption)
+    watdem_nonagr[,,"withdrawal"]  <- pmax(watdem_nonagr[,,"withdrawal"], watdem_nonagr[,,"consumption"])
+    watdem_nonagr[,,"consumption"] <- pmax(watdem_nonagr[,,"consumption"], 0.01*watdem_nonagr[,,"withdrawal"])
+
     ### Number of cells to be returned
-    if (finalcells=="lpjcell"){
+    if (finalcells=="lpjcell") {
+      # sort cells correctly and rename
       watdem_nonagr <- watdem_nonagr
-    } else if (finalcells=="magpiecell"){
+    } else if (finalcells=="magpiecell") {
       ### Note: magpiecell option will be deleted when we switch to new
       ### water inputs (mrwater)
+      # sort cells correctly and rename
+      watdem_nonagr <- addLocation(watdem_nonagr)
+      # subset to 59199
       watdem_nonagr <- watdem_nonagr[magclassdata$cellbelongings$LPJ_input.Index,,]
       watdem_nonagr <- toolCell2isoCell(watdem_nonagr)
     } else {
@@ -136,13 +141,13 @@ calcWaterUseNonAg <- function(selectyears="all", source="WATCH_ISIMIP_WATERGAP",
   ###########################################
   ############ Function Output  #############
   ###########################################
-  if(selectyears!="all"){
+  if (selectyears!="all") {
     years         <- sort(findset(selectyears, noset="original"))
     watdem_nonagr <- watdem_nonagr[,years,]
   }
 
   ### Non-agricultural water demands in Growing Period
-  if(seasonality=="grper"){
+  if (seasonality=="grper") {
     ### Note: Seasonality "grper" will be deleted when we switch to new
     ### water inputs (mrwater)
     if (finalcells=="lpjcell") {
@@ -158,7 +163,7 @@ calcWaterUseNonAg <- function(selectyears="all", source="WATCH_ISIMIP_WATERGAP",
     # Adjust years
     years_watdem <- getYears(watdem_nonagr)
     years_grper  <- getYears(grow_days)
-    if(length(years_watdem)>=length(years_grper)){
+    if (length(years_watdem) >= length(years_grper)) {
       years <- years_grper
     } else {
       years <- years_watdem
@@ -168,7 +173,7 @@ calcWaterUseNonAg <- function(selectyears="all", source="WATCH_ISIMIP_WATERGAP",
     # Calculate non-agricultural water demand in growing period
     out         <- watdem_nonagr[,years,]*grow_days[,years,]/365
     description <- "Non-agricultural water demand (industry, electiricty, domestic) in growing period"
-  } else if(seasonality=="total"){
+  } else if (seasonality=="total") {
     ### Total non-agricultural water demands per year
     out         <- watdem_nonagr[,,]
     description <- "Total non-agricultural water demand (industry, electiricty, domestic)"
@@ -180,7 +185,6 @@ calcWaterUseNonAg <- function(selectyears="all", source="WATCH_ISIMIP_WATERGAP",
   if(any(is.na(out))){
     stop("produced NA watdem_nonagr")
   }
-
 
   return(list(
     x=out,

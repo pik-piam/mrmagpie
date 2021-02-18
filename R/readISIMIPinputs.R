@@ -71,7 +71,8 @@ readISIMIPinputs <- function(subtype="ISIMIP3b:water:histsoc.waterabstraction"){
     # water consumption:
     wc           <- dimSums(mbind(x[,,"domestic water consumption"],x[,,"industrial water consumption"]),dim=3)
     getNames(wc) <- "consumption"
-    x            <- mbind(ww,wc)
+
+    x  <- mbind(ww,wc)
 
   }
 

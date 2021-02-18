@@ -39,7 +39,7 @@ readWATERGAP <- function(subtype="WATCH_ISIMIP_WATERGAP"){
     # transform to magpie object with coordinate data
     x            <- as.magpie(brick)
     getNames(x)  <- brick@title
-    getNames(x) <- paste0("sspX.",getNames(x))
+    getNames(x)  <- paste0("sspX.",getNames(x))
 
     # Different SSPs:
     for (i in (1:length(input))){
@@ -74,7 +74,8 @@ readWATERGAP <- function(subtype="WATCH_ISIMIP_WATERGAP"){
     # water consumption:
     wc           <- dimSums(mbind(x[,,"electricity production water consumption"],x[,,"Domestic water consumption"],x[,,"manufacturing water consumption"]),dim=3.2)
     getNames(wc) <- paste0(getNames(wc),".consumption")
-    x            <- mbind(ww,wc)
+
+    x  <- mbind(ww,wc)
   }
 
   return(x)
