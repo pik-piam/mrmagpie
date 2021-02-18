@@ -87,7 +87,7 @@ fullCELLULARMAGPIE <- function(rev=0.1, dev="", ctype="c200", climatetype="HadGE
 
   # These outputs need to be aggregated using weighted area mean
   calcOutput("Environment", climatetype = climatetype, sar = 20, aggregate="cluster", file=paste0("Environment_", ctype, ".mz"))
-  calcOutput("SoilTraining", lsu_levels = c(seq(0, 2, 0.2), 2.5), lpjml = "LPJmL_cgrazing", climatetype = climatetype, sar = 20, file=paste0("soil_training_", ctype, ".mz"))
+  calcOutput("SoilCarbon", aggregate = "cluster", lsu_levels = c(seq(0, 2, 0.2), 2.5), lpjml = "LPJmL_cgrazing", climatetype = climatetype, sar = 20, file=paste0("soilc_stocks_", ctype, ".mz"))
   calcOutput("ClimateClass", aggregate="cluster", years="y2015", file=paste0("koeppen_geiger_", ctype, ".mz"))
 
   #10 land

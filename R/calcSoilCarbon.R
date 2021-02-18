@@ -14,6 +14,9 @@
 #'
 #' @import madrat
 #' @import magclass
+#' @importFrom raster rasterFromXYZ
+#' @importFrom raster area
+#' @importFrom raster "crs<-"
 #' @importFrom tidyr pivot_longer
 #' @importFrom dplyr mutate select
 #'
@@ -21,6 +24,17 @@
 
 calcSoilCarbon <-
   function(lsu_levels = c(seq(0, 2, 0.2), 2.5), lpjml = "LPJmL_cgrazing", climatetype = "HadGEM2_ES:rcp8p5:co2", sar = 20) {
+
+    # Calculating weights
+    landcoords <- as.data.frame(toolGetMapping("magpie_coord.rda", type = "cell"))
+    landcoords <- cbind(landcoords, rep(1,nrow(landcoords)))
+    landcoords <- raster::rasterFromXYZ(landcoords)
+    crs(landcoords) <- "+proj=longlat"
+    cell_size <- raster::area(landcoords)
+    weight <- cell_size*landcoords
+    weight <- as.magpie(weight)
+    weight <- toolOrderCells(collapseDim(addLocation(weight),dim=c("x","y")))
+
     lsu_levels <- gsub("\\.", "p", lsu_levels)
     y <- list()
     for (lsu in lsu_levels) {
@@ -36,9 +50,9 @@ calcSoilCarbon <-
     return(
       list(
         x = y,
-        weight = NULL,
-        unit = "lsu/ha",
-        description = "Optimal LSU density that corresponds to the maximum grass yields",
+        weight = weight,
+        unit = "gC/m2",
+        description = "Soil carbon stocks per lsu level",
         isocountries = FALSE
       )
     )

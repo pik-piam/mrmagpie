@@ -13,10 +13,24 @@
 #' @import madrat
 #' @import magclass
 #' @import mstools
+#' @importFrom raster rasterFromXYZ
+#' @importFrom raster area
+#' @importFrom raster "crs<-"
 #' @importFrom magpiesets findset
 #'
 
 calcEnvironment <- function(climatetype = "HadGEM2_ES:rcp8p5:co2", sar = 20) {
+
+  # Calculating weights
+  landcoords <- as.data.frame(toolGetMapping("magpie_coord.rda", type = "cell"))
+  landcoords <- cbind(landcoords, rep(1,nrow(landcoords)))
+  landcoords <- raster::rasterFromXYZ(landcoords)
+  crs(landcoords) <- "+proj=longlat"
+  cell_size <- raster::area(landcoords)
+  weight <- cell_size*landcoords
+  weight <- as.magpie(weight)
+  weight <- toolOrderCells(collapseDim(addLocation(weight),dim=c("x","y")))
+
   type <- strsplit(climatetype, split = "\\:")
   GCMModel <- unlist(type)[1]
   rcp <- unlist(type)[2]
@@ -43,7 +57,7 @@ calcEnvironment <- function(climatetype = "HadGEM2_ES:rcp8p5:co2", sar = 20) {
 
   return(list(
     x = env,
-    weight = NULL,
+    weight = weight,
     unit =
       "temperature: Degree Celcius,
     precipitation: mm3 per year,

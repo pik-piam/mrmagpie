@@ -11,9 +11,35 @@
 #' }
 #'
 #' @import madrat
+#' @importFrom raster rasterFromXYZ
+#' @importFrom raster area
 #' @importFrom dplyr left_join
+#' @importFrom raster "crs<-"
+#'
 
 calcSoilCharacteristics <- function() {
+
+  # Creating aggregation weights for the physical variables
+  # #Future implementation
+  # map <- mrcommons:::toolGetMappingCoord2Country()
+  # x <- new.magpie(cells_and_regions=map$coords)
+  # getSets(x)[c(1,2)] <- c("x", "y")
+  # x[,,1] <- 1
+  # str(x)
+  # landcoords <- as.RasterBrick(x)
+  # cell_size <- area(landcoords)
+  # raster::plot(cell_size)
+  #
+
+  landcoords <- as.data.frame(toolGetMapping("magpie_coord.rda", type = "cell"))
+  landcoords <- cbind(landcoords, rep(1,nrow(landcoords)))
+  landcoords <- raster::rasterFromXYZ(landcoords)
+  crs(landcoords) <- "+proj=longlat"
+  cell_size <- raster::area(landcoords)
+  weight <- cell_size*landcoords
+  weight <- as.magpie(weight)
+  weight <- toolOrderCells(collapseDim(addLocation(weight),dim=c("x","y")))
+
   x  <- readSource("SoilClassification", subtype = "HWSD.soil", convert="onlycorrect")
   years <- seq(1900, 2150, 1)
   z <- array(NA, dim = c(dim(x)[1], length(years), 1),
@@ -39,7 +65,7 @@ calcSoilCharacteristics <- function() {
 
   return(list(
     x=x,
-    weight=NULL,
+    weight=weight,
     unit=
 "Ks: mm/h, Sf: mm ,
  w_pwp: % ,
