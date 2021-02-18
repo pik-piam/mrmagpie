@@ -79,7 +79,7 @@ calcCarbon <- function(lpjml=c(natveg="LPJmL4", crop="LPJmL5"), climatetype="CRU
   carbon_stocks <- add_dimension(carbon_stocks, dim = 3.1, add = "landtype",
                                  nm = c("crop","past","forestry","primforest","secdforest", "urban", "other"))
 
-  landuse <- calcOutput("LanduseInitialisation", aggregate=FALSE, cellular=TRUE, land="fao", input_magpie=TRUE, years="y1995", round=6)
+  landuse <- calcOutput("LanduseInitialisation", aggregate=FALSE, cellular=TRUE, nclasses="seven", fao_corr=TRUE, input_magpie=TRUE, years="y1995", round=6)
 
   ####################################################
   #Calculate the appropriate values for all land types and carbon types.
