@@ -4,11 +4,9 @@
 \alias{calcAvlLandSi}
 \title{calcAvlLandSi}
 \usage{
-calcAvlLandSi(dataprocessing = "original", cells = "magpiecell")
+calcAvlLandSi(cells = "magpiecell")
 }
 \arguments{
-\item{dataprocessing}{just a temporary argument until read Ramankutty is fully functional (original or mrmagpie)}
-
 \item{cells}{magpiecell (59199 cells) or lpjcell (67420 cells)}
 }
 \value{
