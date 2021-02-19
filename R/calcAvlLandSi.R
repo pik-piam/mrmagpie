@@ -11,6 +11,7 @@
 #'
 #' @importFrom madrat readSource calcOutput
 #' @importFrom magclass dimSums getCells getYears getNames mbind
+#' @importFrom mrcommons toolCoord2Isocell
 #'
 
 calcAvlLandSi <-function(cells="magpiecell") {
@@ -43,8 +44,7 @@ calcAvlLandSi <-function(cells="magpiecell") {
   out <- mbind(setNames(si0,"si0"),setNames(nsi0,"nsi0"))
 
   if (cells=="magpiecell") {
-    out <- out[magclassdata$cellbelongings$LPJ_input.Index,,]
-    out <- toolCell2isoCell(out)
+    out <- toolCoord2Isocell(out)
   } else if (cells=="lpjcell") {
     out <- out
   } else {

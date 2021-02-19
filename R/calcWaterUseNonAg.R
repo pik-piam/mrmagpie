@@ -21,7 +21,7 @@
 #'
 #' @importFrom madrat calcOutput readSource toolTimeAverage toolTimeSpline toolFillYears
 #' @importFrom magclass getYears getCells
-#' @importFrom mrcommons toolCell2isoCell
+#' @importFrom mrcommons toolCell2isoCell toolCoord2Isocell
 #' @importFrom magpiesets addLocation
 
 calcWaterUseNonAg <- function(selectyears="all", source="WATCH_ISIMIP_WATERGAP", finalcells="magpiecell",
@@ -126,13 +126,8 @@ calcWaterUseNonAg <- function(selectyears="all", source="WATCH_ISIMIP_WATERGAP",
       # sort cells correctly and rename
       watdem_nonagr <- watdem_nonagr
     } else if (finalcells=="magpiecell") {
-      ### Note: magpiecell option will be deleted when we switch to new
-      ### water inputs (mrwater)
-      # sort cells correctly and rename
-      watdem_nonagr <- addLocation(watdem_nonagr)
-      # subset to 59199
-      watdem_nonagr <- watdem_nonagr[magclassdata$cellbelongings$LPJ_input.Index,,]
-      watdem_nonagr <- toolCell2isoCell(watdem_nonagr)
+      getSets(watdem_nonagr, fulldim = FALSE)[1] <- "x.y"
+      watdem_nonagr <- toolCoord2Isocell(watdem_nonagr)
     } else {
       stop("Cell argument for finalcells not supported. Select lpjcell for 67420 cells or magpiecell for 59199 cells")
     }
