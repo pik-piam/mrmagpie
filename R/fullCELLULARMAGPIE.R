@@ -169,6 +169,8 @@ fullCELLULARMAGPIE <- function(rev=0.1, dev="", ctype="c200", climatetype="HadGE
 
   if(grepl("Carbon_new",dev)){
 
+    lpjml       <-  c(natveg="LPJmL4_for_MAgPIE_84a69edd", crop="ggcmi_phase3_nchecks_72c185fa")
+    climatetype <- "GFDL-ESM4/ssp370"
     calcOutput("Carbon_new", aggregate = FALSE, lpjml=lpjml, climatetype=climatetype,
                round=6, years="y1995", file="lpj_carbon_stocks_0.5.mz")
     calcOutput("TopsoilCarbon_new", aggregate = FALSE, lpjml=lpjml, climatetype=climatetype,

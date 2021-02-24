@@ -15,7 +15,7 @@
 calcTopsoilCarbon_new <- function(lpjml=c(natveg="LPJmL4", crop="LPJmL5"), climatetype){
 
 
-  soilc_layer_natveg <- calcOutput("LPJmL_new", version=lpjml["natveg"], climatetype=climatetype, subtype="soilc_layer", stage="harmonized", aggregate=FALSE)
+  soilc_layer_natveg <- toolCoord2Isocell(calcOutput("LPJmL_new", version=lpjml["natveg"], climatetype=climatetype, subtype="soilc_layer", stage="harmonized2020", aggregate=FALSE))
   topsoilc           <- soilc_layer_natveg[,,1] + 1/3 * soilc_layer_natveg[,,2]
   getNames(topsoilc) <- "topsoilc"
 
