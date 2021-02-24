@@ -1,4 +1,4 @@
-#' @title calcEnvironment
+#' @title calcCollectEnvironmentData
 #' @description Calculate climate, CO2 and soil environmental conditions on cellular level
 #' @param climatetype Switch between different climate scenarios (default: "CRU_4")
 #' @param sar Average range for smoothing annual variations
@@ -7,7 +7,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' calcOutput("Environment", climatetype = "HadGEM2_ES:rcp8p5:co2", sar = 20)
+#' calcOutput("CollectEnvironmentData", climatetype = "HadGEM2_ES:rcp8p5:co2", sar = 20)
 #' }
 #'
 #' @import madrat
@@ -19,7 +19,7 @@
 #' @importFrom magpiesets findset
 #'
 
-calcEnvironment <- function(climatetype = "HadGEM2_ES:rcp8p5:co2", sar = 20) {
+calcCollectEnvironmentData <- function(climatetype = "HadGEM2_ES:rcp8p5:co2", sar = 20) {
 
   # Calculating weights
   landcoords <- as.data.frame(toolGetMapping("magpie_coord.rda", type = "cell"))

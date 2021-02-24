@@ -1,4 +1,4 @@
-#' @title calcSoilCarbon
+#' @title calcCollectSoilCarbonLSU
 #' @description Calculate soil carbon stocks for different LSU and climate conditions
 #' @param lsu_levels Livestock unit levels in the source folder
 #' @param lpjml Defines LPJmL version for crop/grass and natveg specific inputs
@@ -9,7 +9,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' calcOutput("SoilCarbon", lsu_levels = c(seq(0, 2, 0.2), 2.5))
+#' calcOutput("CollectSoilCarbonLSU ", lsu_levels = c(seq(0, 2, 0.2), 2.5))
 #' }
 #'
 #' @import madrat
@@ -22,7 +22,7 @@
 #'
 #'
 
-calcSoilCarbon <-
+calcCollectSoilCarbonLSU  <-
   function(lsu_levels = c(seq(0, 2, 0.2), 2.5), lpjml = "LPJmL_cgrazing", climatetype = "HadGEM2_ES:rcp8p5:co2", sar = 20) {
 
     # Calculating weights
