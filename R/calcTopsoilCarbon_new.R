@@ -11,6 +11,7 @@
 #' \dontrun{ calcOutput("TopsoilCarbon_new", aggregate = FALSE) }
 #'
 #' @importFrom magpiesets findset
+#' @importFrom mrcommons toolCoord2Isocell
 
 calcTopsoilCarbon_new <- function(lpjml=c(natveg="LPJmL4", crop="LPJmL5"), climatetype){
 
