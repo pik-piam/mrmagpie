@@ -24,9 +24,9 @@ calcCarbon_new <- function(lpjml=c(natveg="LPJmL4", crop="LPJmL5"), climatetype)
   }
 
   cfg    <- list(lpj=lpjml["natveg"], climatetype=climatetype)
-  natveg <- mbind(.getLPJmLCPools("vegc_natveg", cfg),
-                  .getLPJmLCPools("soilc_natveg", cfg),
-                  .getLPJmLCPools("litc_natveg", cfg))
+  natveg <- mbind(.getLPJmLCPools("vegc", cfg),
+                  .getLPJmLCPools("soilc", cfg),
+                  .getLPJmLCPools("litc", cfg))
 
   cfg    <- list(lpj=lpjml["crop"], climatetype=climatetype)
   grass  <- mbind(.getLPJmLCPools("vegc_grass", cfg),
