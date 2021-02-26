@@ -17,10 +17,13 @@ calcCarbon_new <- function(lpjml=c(natveg="LPJmL4", crop="LPJmL5"), climatetype)
 
 
   .getLPJmLCPools <- function(pool, cfg){
-   return(toolCoord2Isocell(calcOutput("LPJmL_new", version=cfg$lpjml,
-                     climatetype=cfg$climatetype,
-                     subtype=pool, stage="harmonized2020",
-                     aggregate=FALSE)))
+    out <- calcOutput("LPJmL_new", version=cfg$lpjml,
+                      climatetype=cfg$climatetype,
+                      subtype=pool, stage="harmonized2020",
+                      aggregate=FALSE)
+    out <- toolCoord2Isocell(out)
+    out <- setNames(out, pool)
+   return(out)
   }
 
   cfg    <- list(lpjml=lpjml["natveg"], climatetype=climatetype)
