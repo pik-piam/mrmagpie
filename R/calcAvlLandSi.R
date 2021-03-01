@@ -41,7 +41,7 @@ calcAvlLandSi <-function(cells="magpiecell") {
 
   # suitable
   si0  <- si0_binary[getCells(landarea),,] * landarea
-  # correction of suitable land
+  # correction of suitable land to LUH croparea (land is declared as suitable where LUH reports cropland)
   si0 <- pmax(croparea, si0)
   # nonsuitable
   nsi0 <- landarea - si0
