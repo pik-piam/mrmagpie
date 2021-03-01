@@ -8,9 +8,10 @@ fullCELLULARMAGPIE(
   rev = 0.1,
   dev = "",
   ctype = "c200",
-  climatetype = "HadGEM2_ES:rcp2p6:co2",
-  lpjml = c(natveg = "LPJmL4", crop = "LPJmL5GGCMI", cgrazing = "LPJmL_cgrazing",
-    mowing = "LPJmL_mowing"),
+  climatetype = "GFDL-ESM4:ssp370",
+  lpjml = c(natveg = "LPJmL4_for_MAgPIE_84a69edd", crop =
+    "ggcmi_phase3_nchecks_72c185fa", cgrazing = "LPJmL_cgrazing", mowing =
+    "LPJmL_mowing"),
   clusterweight = NULL
 )
 }

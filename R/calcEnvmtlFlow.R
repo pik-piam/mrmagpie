@@ -2,13 +2,8 @@
 #' @description This function calculates environmental flow requirements (EFR) for MAgPIE retrieved from LPJmL monthly discharge and water availability
 #'
 #' @param lpjml Defines LPJmL version for crop/grass and natveg specific inputs
-#' @param climatetype Switch between different climate scenarios (default: "CRU_4")
-#' @param time Time smoothing: average or spline (default)
-#' @param averaging_range only specify if time=="average": number of time steps to average
-#' @param dof only specify if time=="spline": degrees of freedom needed for spline
-#' @param harmonize_baseline FALSE (default): no harmonization, TRUE: if a baseline is specified here data is harmonized to that baseline (from ref_year on)
-#' @param ref_year Reference year for harmonization baseline (just specify when harmonize_baseline=TRUE)
-#' @param selectyears Years to be returned
+#' @param climatetype Switch between different climate scenarios
+#' @param stage Degree of processing: raw, smoothed, harmonized, harmonized2020
 #' @param LFR_val Strictness of environmental flow requirements
 #' @param HFR_LFR_less10 High flow requirements (share of total water for cells) with LFR<10percent of total water
 #' @param HFR_LFR_10_20 High flow requirements (share of total water for cells) with 10percent < LFR < 20percent of total water
@@ -28,14 +23,19 @@
 #' \dontrun{ calcOutput("EnvmtlFlow", aggregate = FALSE) }
 #'
 
-calcEnvmtlFlow <- function(selectyears="all",
-                           lpjml=c(natveg="LPJmL4", crop="LPJmL5"), climatetype="CRU_4",
-                           time="spline", averaging_range=NULL, dof=4,
-                           harmonize_baseline=FALSE, ref_year="y2015",
+calcEnvmtlFlow <- function(lpjml=c(natveg="LPJmL4_for_MAgPIE_84a69edd", crop="ggcmi_phase3_nchecks_72c185fa"),
+                           climatetype="GSWP3-W5E5:historical", stage="harmonized2020",
                            LFR_val=0.1, HFR_LFR_less10=0.2, HFR_LFR_10_20=0.15, HFR_LFR_20_30=0.07, HFR_LFR_more30=0.00,
                            seasonality="grper"){
 
-  if(harmonize_baseline==FALSE){
+  ##### CONFIG #####
+  baseline_hist <- "GSWP3-W5E5:historical"
+  ref_year_hist <- "y2010"
+  baseline_gcm  <- "GFDL-ESM4:ssp370"
+  ref_year_gcm  <- "y2020"
+  ##### CONFIG #####
+
+  if(stage%in%c("raw","smoothed")){
 
     ############################################################
     # Step 1 Determine monthly discharge low flow requirements #
@@ -43,8 +43,8 @@ calcEnvmtlFlow <- function(selectyears="all",
     ############################################################
 
     ### Monthly Discharge
-    monthly_discharge_magpie <- calcOutput("LPJmL", version=lpjml["natveg"], climatetype=climatetype, subtype="mdischarge", aggregate=FALSE,
-                                           harmonize_baseline=FALSE, time="raw")
+    monthly_discharge_magpie <- toolCoord2Isocell(calcOutput("LPJmL_new", version=lpjml["natveg"], climatetype=climatetype,
+                                                             subtype="mdischarge", aggregate=FALSE, stage="raw"))
     # Extract years for quantile calculation
     years <- getYears(monthly_discharge_magpie, as.integer = TRUE)
     years <- seq(years[1]+7,years[length(years)],by=1)
@@ -67,27 +67,14 @@ calcEnvmtlFlow <- function(selectyears="all",
     LFR_quant <- as.magpie(LFR_quant)
     LFR_quant <- toolFillYears(LFR_quant, getYears(monthly_discharge_magpie, as.integer = TRUE))
 
-    if(time=="average"){
-      # Smoothing data through average:
-      LFR_quant <- toolTimeAverage(LFR_quant, averaging_range=averaging_range)
-    } else if(time=="spline"){
-      # Smoothing data with spline method:
-      LFR_quant <- toolTimeSpline(LFR_quant, dof=dof)
-      # Replace value in 2100 with value from 2099 (LPJmL output ends in 2099)
-      if ("y2099" %in% getYears(LFR_quant)) {
-        LFR_quant <- toolFillYears(LFR_quant, c(getYears(LFR_quant, as.integer=TRUE)[1]:2100))
-      }
-    } else {
-      stop("Time argument not supported!")
-    }
+    if(stage=="smoothed") LFR_quant <- toolSmooth(LFR_quant)
 
     # Raw monthly discharge no longer needed at this point
     rm(monthly_discharge_magpie)
 
     ### Read in smoothed monthly discharge
-    monthly_discharge_magpie <- calcOutput("LPJmL", version=lpjml["natveg"], climatetype=climatetype, subtype="mdischarge", aggregate=FALSE,
-                                           harmonize_baseline=FALSE,
-                                           time=time, dof=dof, averaging_range=averaging_range)
+    monthly_discharge_magpie <- toolCoord2Isocell(calcOutput("LPJmL_new", version=lpjml["natveg"], climatetype=climatetype,
+                                                             subtype="mdischarge", aggregate=FALSE, stage="smoothed"))
 
     # Transform to array (faster calculation)
     LFR_quant <- as.array(collapseNames(LFR_quant))
@@ -111,9 +98,8 @@ calcEnvmtlFlow <- function(selectyears="all",
     #        from available water per month        #
     ################################################
     ### Available water per month (smoothed)
-    avl_water_month <- calcOutput("AvlWater", lpjml=lpjml, climatetype=climatetype, seasonality="monthly", aggregate=FALSE,
-                                  harmonize_baseline=FALSE,
-                                  time=time, dof=dof, averaging_range=averaging_range)
+    avl_water_month <- calcOutput("AvlWater", lpjml=lpjml, climatetype=climatetype,
+                                  seasonality="monthly", aggregate=FALSE, stage="smoothed")
 
     # Transform to array for faster calculation
     avl_water_month <- as.array(collapseNames(avl_water_month))
@@ -165,9 +151,8 @@ calcEnvmtlFlow <- function(selectyears="all",
       EFR_total <- dimSums(EFR, dim=3)
 
       # Read in available water (for Smakthin calculation)
-      avl_water_total <- calcOutput("AvlWater", lpjml=lpjml, climatetype=climatetype, seasonality="total", aggregate=FALSE,
-                                    harmonize_baseline=harmonize_baseline,
-                                    time=time, dof=dof, averaging_range=averaging_range)
+      avl_water_total <- calcOutput("AvlWater", lpjml=lpjml, climatetype=climatetype,
+                                    seasonality="total", aggregate=FALSE, stage="smoothed")
 
       # Reduce EFR to 50% of available water where it exceeds this threshold (according to Smakhtin 2004)
       EFR_total[which(EFR_total/avl_water_total>0.5)] <- 0.5*avl_water_total[which(EFR_total/avl_water_total>0.5)]
@@ -178,7 +163,7 @@ calcEnvmtlFlow <- function(selectyears="all",
       }
       out=EFR_total
 
-    ### Water available in growing period per cell per year
+      ### Water available in growing period per cell per year
     } else if (seasonality=="grper") {
       # magpie object with days per month with same dimension as EFR
       tmp <- c(31,28,31,30,31,30,31,31,30,31,30,31)
@@ -192,17 +177,16 @@ calcEnvmtlFlow <- function(selectyears="all",
       EFR_day   <- EFR/month_day_magpie
 
       # Growing days per month
-      grow_days <- calcOutput("GrowingPeriod", lpjml=lpjml, climatetype=climatetype, time=time, dof=dof, averaging_range=averaging_range,
-                              harmonize_baseline=harmonize_baseline, ref_year=ref_year, yield_ratio=0.1, aggregate=FALSE)
+      grow_days <- calcOutput("GrowingPeriod", lpjml=lpjml, climatetype=climatetype,
+                              stage="smoothed", yield_ratio=0.1, aggregate=FALSE)
 
       # Available water in growing period
       EFR_grper <- EFR_day*grow_days
       # Available water in growing period per year
       EFR_grper <- dimSums(EFR_grper, dim=3)
       # Read in available water (for Smakthin calculation)
-      avl_water_grper <- calcOutput("AvlWater", lpjml=lpjml, climatetype=climatetype, seasonality="grper", aggregate=FALSE,
-                                    harmonize_baseline=harmonize_baseline,
-                                    time=time, dof=dof, averaging_range=averaging_range)
+      avl_water_grper <- calcOutput("AvlWater", lpjml=lpjml, climatetype=climatetype,
+                                    seasonality="grper", aggregate=FALSE, stage="smoothed")
 
       # Reduce EFR to 50% of available water where it exceeds this threshold (according to Smakhtin 2004)
       EFR_grper[which(EFR_grper/avl_water_grper>0.5)] <- 0.5*avl_water_grper[which(EFR_grper/avl_water_grper>0.5)]
@@ -216,20 +200,35 @@ calcEnvmtlFlow <- function(selectyears="all",
       stop("Specify seasonality: monthly, grper or total")
     }
 
-  } else {
-    # Load baseline and climate EFR:
-    baseline <- calcOutput("EnvmtlFlow", lpjml=lpjml, climatetype=harmonize_baseline, seasonality=seasonality, aggregate=FALSE,
-                           harmonize_baseline=FALSE, time=time, dof=dof, averaging_range=averaging_range)
-    x        <- calcOutput("EnvmtlFlow", lpjml=lpjml, climatetype=climatetype, seasonality=seasonality, aggregate=FALSE,
-                           harmonize_baseline=FALSE, time=time, dof=dof, averaging_range=averaging_range)
-    # Harmonize to baseline
-    out <- toolHarmonize2Baseline(x=x, base=baseline, ref_year=ref_year, limited=TRUE, hard_cut=FALSE)
-  }
+  } else if(stage=="harmonized"){
 
-  if(selectyears!="all"){
-    years   <- sort(findset(selectyears, noset="original"))
-    out     <- out[,years,]
-  }
+    if(climatetype == baseline_hist) stop("You can not harmonize the historical baseline.")
+
+    # Load baseline and climate EFR:
+    baseline <- calcOutput("EnvmtlFlow", lpjml=lpjml, climatetype=baseline_hist,
+                           seasonality=seasonality, aggregate=FALSE, stage="smoothed")
+    x        <- calcOutput("EnvmtlFlow", lpjml=lpjml, climatetype=climatetype,
+                           seasonality=seasonality, aggregate=FALSE, stage="smoothed")
+    # Harmonize to baseline
+    out <- toolHarmonize2Baseline(x=x, base=baseline, ref_year=ref_year_hist)
+
+  } else if(stage == "harmonized2020"){
+
+    baseline2020 <- calcOutput("EnvmtlFlow", lpjml=lpjml, climatetype=baseline_gcm,
+                               seasonality=seasonality, aggregate=FALSE, stage="smoothed")
+
+    if(climatetype == baseline_gcm){
+
+      out <- baseline2020
+
+    } else {
+
+      x        <- calcOutput("EnvmtlFlow", lpjml=lpjml, climatetype=climatetype,
+                             seasonality=seasonality, aggregate=FALSE, stage="smoothed")
+      out      <- toolHarmonize2Baseline(x, baseline2020, ref_year=ref_year_gcm)
+    }
+
+  } else { stop("Stage argument not supported!") }
 
   description=paste0("EFR in ", seasonality)
 

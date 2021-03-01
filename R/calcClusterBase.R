@@ -6,9 +6,10 @@
 #' @return A matrix containing the data
 #' @author Jan Philipp Dietrich, Felicitas Beier
 #' @seealso \code{\link{calcCluster}}
-#' @importFrom magclass wrap read.magpie
+#' @importFrom magclass wrap read.magpie ndata
 #' @importFrom madrat toolMappingFile
-calcClusterBase <- function(clusterdata="yield_airrig", lpjml=c(natveg="LPJmL4", crop="LPJmL5")) {
+calcClusterBase <- function(clusterdata="yield_airrig", lpjml=c(natveg="LPJmL4_for_MAgPIE_84a69edd",
+                                                                crop="ggcmi_phase3_nchecks_72c185fa")) {
 
   d <- list()
   # read in data which should be used to determine cluster

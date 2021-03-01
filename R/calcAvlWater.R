@@ -3,12 +3,7 @@
 #'
 #' @param lpjml Defines LPJmL version for crop/grass and natveg specific inputs
 #' @param climatetype Switch between different climate scenarios (default: "CRU_4")
-#' @param time Time smoothing: average, spline or raw (default)
-#' @param averaging_range only specify if time=="average": number of time steps to average
-#' @param dof             only specify if time=="spline": degrees of freedom needed for spline
-#' @param harmonize_baseline FALSE (default): no harmonization, TRUE: if a baseline is specified here data is harmonized to that baseline (from ref_year on)
-#' @param ref_year Reference year for harmonization baseline (just specify when harmonize_baseline=TRUE)
-#' @param selectyears Years to be returned
+#' @param stage Degree of processing: raw, smoothed, harmonized, harmonized2020
 #' @param seasonality grper (default): water available in growing period per year; total: total water available throughout the year; monthly: monthly water availability (for further processing, e.g. in calcEnvmtlFlow)
 #'
 #' @import magclass
@@ -22,83 +17,63 @@
 #' \dontrun{ calcOutput("AvlWater", aggregate = FALSE) }
 #'
 
-calcAvlWater <- function(selectyears="all",
-                         lpjml=c(natveg="LPJmL4", crop="LPJmL5"), climatetype="CRU_4",
-                         time="raw", averaging_range=NULL, dof=NULL,
-                         harmonize_baseline=FALSE, ref_year="y2015",
-                         seasonality="grper"){
+calcAvlWater <- function(lpjml=c(natveg="LPJmL4_for_MAgPIE_84a69edd", crop="ggcmi_phase3_nchecks_72c185fa"),
+                         climatetype="GSWP3-W5E5:historical", stage="harmonized2020", seasonality="grper"){
+
+  ##### CONFIG #####
+  baseline_hist <- "GSWP3-W5E5:historical"
+  ref_year_hist <- "y2010"
+  baseline_gcm  <- "GFDL-ESM4:ssp370"
+  ref_year_gcm  <- "y2020"
+  ##### CONFIG #####
+
 
   ######################################################
   ############ Water availability per cell #############
   # Runoff is distributed across the river basin cells #
   # based on discharge-weighted algorithm              #
   ######################################################
+  if(stage%in%c("raw","smoothed")){
 
-  if(harmonize_baseline==FALSE){
+    ### Monthly Discharge (unit (after calcLPJmL): mio. m^3/month)
+    monthly_discharge_magpie <- toolCoord2Isocell(calcOutput("LPJmL_new", version=lpjml["natveg"], climatetype=climatetype,
+                                                             subtype="mdischarge", aggregate=FALSE, stage="raw"))
+    # Transform to array (faster calculation)
+    monthly_discharge_magpie <- as.array(collapseNames(monthly_discharge_magpie))
 
-    if(time=="raw"){
+    ### Monthly Runoff (unit (after calcLPJmL): mio. m^3/month)
+    monthly_runoff_magpie    <- toolCoord2Isocell(calcOutput("LPJmL_new", version=lpjml["natveg"], climatetype=climatetype,
+                                                             subtype="mrunoff", aggregate=FALSE, stage="raw"))
+    # Transform to array (faster calculation)
+    monthly_runoff_magpie    <- as.array(collapseNames(monthly_runoff_magpie))
 
-      ### Monthly Discharge (unit (after calcLPJmL): mio. m^3/month)
-      monthly_discharge_magpie <- calcOutput("LPJmL", version=lpjml["natveg"], climatetype=climatetype, subtype="mdischarge", aggregate=FALSE,
-                                             harmonize_baseline=FALSE,
-                                             time="raw")
-      # Transform to array (faster calculation)
-      monthly_discharge_magpie <- as.array(collapseNames(monthly_discharge_magpie))
+    ### Calculate available water per month (avl_water_month)
+    # Empty array
+    avl_water_month     <- monthly_runoff_magpie
+    avl_water_month[,,] <- NA
 
-      ### Monthly Runoff (unit (after calcLPJmL): mio. m^3/month)
-      monthly_runoff_magpie    <- calcOutput("LPJmL", version=lpjml["natveg"], climatetype=climatetype, subtype="mrunoff", aggregate=FALSE,
-                                             harmonize_baseline=FALSE,
-                                             time="raw")
-      # Transform to array (faster calculation)
-      monthly_runoff_magpie    <- as.array(collapseNames(monthly_runoff_magpie))
+    ## River basin water allocation algorithm:
+    # River basin information
+    basin_code <- toolGetMapping("rivermapping.csv",type="cell")
+    basin_code <- basin_code$basincode
 
-      ### Calculate available water per month (avl_water_month)
-      # Empty array
-      avl_water_month     <- monthly_runoff_magpie
-      avl_water_month[,,] <- NA
-
-      ## River basin water allocation algorithm:
-      # River basin information
-      basin_code <- toolGetMapping("rivermapping.csv",type="cell")
-      basin_code <- basin_code$basincode
-
-      # Sum the runoff in all basins and allocate it to the basin cells with discharge as weight
-      for(basin in unique(basin_code)){
-        basin_cells     <- which(basin_code==basin)
-        basin_runoff    <- colSums(monthly_runoff_magpie[basin_cells,,,drop=FALSE])
-        basin_discharge <- colSums(monthly_discharge_magpie[basin_cells,,,drop=FALSE])
-        for(month in dimnames(avl_water_month)[[3]]){
-          avl_water_month[basin_cells,,month] <- t(basin_runoff[,month]*t(monthly_discharge_magpie[basin_cells,,month])/basin_discharge[,month])
-        }
-      }
-      # Remove no longer needed objects
-      rm(basin_discharge,basin_runoff)
-
-      # avl_water_month contain NA's wherever basin_discharge was 0 -> Replace NA's by 0
-      avl_water_month[is.nan(avl_water_month)] <- 0
-      avl_water_month <- as.magpie(avl_water_month)
-
-    } else {
-      # Time smoothing:
-      x     <- calcOutput("AvlWater", lpjml=lpjml, climatetype=climatetype, seasonality="monthly", aggregate=FALSE,
-                          harmonize_baseline=FALSE, time="raw")
-
-      if(time=="average"){
-        # Smoothing data through average:
-        avl_water_month <- toolTimeAverage(x, averaging_range=averaging_range)
-
-      } else if(time=="spline"){
-        # Smoothing data with spline method:
-        avl_water_month <- toolTimeSpline(x, dof=dof)
-        # Replace value in 2100 with value from 2099 (LPJmL output ends in 2099)
-        if ("y2099" %in% getYears(avl_water_month)) {
-          avl_water_month <- toolFillYears(avl_water_month, c(getYears(avl_water_month, as.integer=TRUE)[1]:2100))
-        }
-
-      } else if(time!="raw"){
-        stop("Time argument not supported!")
+    # Sum the runoff in all basins and allocate it to the basin cells with discharge as weight
+    for(basin in unique(basin_code)){
+      basin_cells     <- which(basin_code==basin)
+      basin_runoff    <- colSums(monthly_runoff_magpie[basin_cells,,,drop=FALSE])
+      basin_discharge <- colSums(monthly_discharge_magpie[basin_cells,,,drop=FALSE])
+      for(month in dimnames(avl_water_month)[[3]]){
+        avl_water_month[basin_cells,,month] <- t(basin_runoff[,month]*t(monthly_discharge_magpie[basin_cells,,month])/basin_discharge[,month])
       }
     }
+    # Remove no longer needed objects
+    rm(basin_discharge,basin_runoff)
+
+    # avl_water_month contain NA's wherever basin_discharge was 0 -> Replace NA's by 0
+    avl_water_month[is.nan(avl_water_month)] <- 0
+    avl_water_month <- as.magpie(avl_water_month)
+
+    if(stage=="smoothed") avl_water_month <- toolSmooth(avl_water_month)
 
     #######################
     ##### Aggregation #####
@@ -111,7 +86,7 @@ calcAvlWater <- function(selectyears="all",
       }
       out=avl_water_month
 
-    ### Total water available per cell per year
+      ### Total water available per cell per year
     } else if(seasonality=="total") {
       # Sum up over all month:
       avl_water_total <- dimSums(avl_water_month, dim=3)
@@ -121,7 +96,7 @@ calcAvlWater <- function(selectyears="all",
       }
       out=avl_water_total
 
-    ### Water available in growing period per cell per year
+      ### Water available in growing period per cell per year
     } else if (seasonality=="grper") {
       # magpie object with days per month with same dimension as avl_water_month
       tmp <- c(31,28,31,30,31,30,31,31,30,31,30,31)
@@ -135,8 +110,8 @@ calcAvlWater <- function(selectyears="all",
       avl_water_day <- avl_water_month/month_day_magpie
 
       # Growing days per month
-      grow_days <- calcOutput("GrowingPeriod", lpjml=lpjml, climatetype=climatetype, time=time, dof=dof, averaging_range=averaging_range,
-                              harmonize_baseline=harmonize_baseline, ref_year=ref_year, yield_ratio=0.1, aggregate=FALSE)
+      grow_days <- calcOutput("GrowingPeriod", lpjml=lpjml, climatetype=climatetype,
+                              stage=stage, yield_ratio=0.1, aggregate=FALSE)
 
       # Adjust years
       years_wat <- getYears(avl_water_day)
@@ -162,25 +137,35 @@ calcAvlWater <- function(selectyears="all",
       stop("Please specify seasonality: monthly, total or grper")
     }
 
-  } else {
+  }  else if(stage=="harmonized"){
 
-    if(time=="raw"){
-      stop("Harmonization with raw data not possible. Select time='spline' when applying harmonize_baseline=TRUE")
+    if(climatetype == baseline_hist) stop("You can not harmonize the historical baseline.")
+
+    # load smoothed data
+    baseline <- calcOutput("AvlWater", lpjml=lpjml, climatetype=baseline_hist, seasonality=seasonality,
+                           aggregate=FALSE, stage="smoothed")
+    x        <- calcOutput("AvlWater", lpjml=lpjml, climatetype=climatetype, seasonality=seasonality,
+                           aggregate=FALSE, stage="smoothed")
+    # Harmonize to baseline
+    out <- toolHarmonize2Baseline(x=x, base=baseline, ref_year=ref_year_hist)
+
+  } else if(stage == "harmonized2020"){
+
+    #read in historical data for subtype
+    baseline2020 <- calcOutput("AvlWater", lpjml=lpjml, climatetype=baseline_gcm, seasonality=seasonality,
+                               aggregate=FALSE, stage="smoothed")
+
+    if(climatetype == baseline_gcm){
+      out <- baseline2020
+
     } else {
-      # Load smoothed data
-      baseline <- calcOutput("AvlWater", lpjml=lpjml, climatetype=harmonize_baseline, seasonality=seasonality, aggregate=FALSE,
-                             harmonize_baseline=FALSE, time=time, dof=dof, averaging_range=averaging_range)
-      x        <- calcOutput("AvlWater", lpjml=lpjml, climatetype=climatetype, seasonality=seasonality, aggregate=FALSE,
-                             harmonize_baseline=FALSE, time=time, dof=dof, averaging_range=averaging_range)
-      # Harmonize to baseline
-      out <- toolHarmonize2Baseline(x=x, base=baseline, ref_year=ref_year, limited=TRUE, hard_cut=FALSE)
-    }
-  }
 
-  if(selectyears!="all"){
-    years <- sort(findset(selectyears,noset = "original"))
-    out   <- out[,years,]
-  }
+      x        <- calcOutput("AvlWater", lpjml=lpjml, climatetype=climatetype, seasonality=seasonality,
+                             aggregate=FALSE, stage="smoothed")
+      out      <- toolHarmonize2Baseline(x, baseline2020, ref_year=ref_year_gcm)
+    }
+
+  } else { stop("Stage argument not supported!") }
 
   description=paste0("Available water in ", seasonality)
 

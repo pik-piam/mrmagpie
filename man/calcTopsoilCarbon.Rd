@@ -5,29 +5,15 @@
 \title{calcTopsoilCarbon}
 \usage{
 calcTopsoilCarbon(
-  lpjml = c(natveg = "LPJmL4", crop = "LPJmL5"),
-  climatetype = "CRU_4",
-  time = "raw",
-  averaging_range = NULL,
-  dof = NULL,
-  harmonize_baseline = FALSE,
-  ref_year = "y2015"
+  lpjml = c(natveg = "LPJmL4_for_MAgPIE_84a69edd", crop =
+    "ggcmi_phase3_nchecks_72c185fa"),
+  climatetype = "GSWP3-W5E5:historical"
 )
 }
 \arguments{
 \item{lpjml}{Defines LPJmL version for crop/grass and natveg specific inputs}
 
-\item{climatetype}{Switch between different climate scenarios (default: "CRU_4")}
-
-\item{time}{average, spline or raw (default)}
-
-\item{averaging_range}{just specify for time=="average": number of time steps to average}
-
-\item{dof}{just specify for time=="spline": degrees of freedom}
-
-\item{harmonize_baseline}{FALSE (default) nothing happens, if a baseline is specified here data is harmonized to that baseline (from ref_year on)}
-
-\item{ref_year}{just specify for harmonize_baseline != FALSE : Reference year}
+\item{climatetype}{Switch between different GCM climate scenarios}
 }
 \value{
 magpie object in cellular resolution

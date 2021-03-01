@@ -5,14 +5,10 @@
 \title{calcEnvmtlFlow}
 \usage{
 calcEnvmtlFlow(
-  selectyears = "all",
-  lpjml = c(natveg = "LPJmL4", crop = "LPJmL5"),
-  climatetype = "CRU_4",
-  time = "spline",
-  averaging_range = NULL,
-  dof = 4,
-  harmonize_baseline = FALSE,
-  ref_year = "y2015",
+  lpjml = c(natveg = "LPJmL4_for_MAgPIE_84a69edd", crop =
+    "ggcmi_phase3_nchecks_72c185fa"),
+  climatetype = "GSWP3-W5E5:historical",
+  stage = "harmonized2020",
   LFR_val = 0.1,
   HFR_LFR_less10 = 0.2,
   HFR_LFR_10_20 = 0.15,
@@ -22,21 +18,11 @@ calcEnvmtlFlow(
 )
 }
 \arguments{
-\item{selectyears}{Years to be returned}
-
 \item{lpjml}{Defines LPJmL version for crop/grass and natveg specific inputs}
 
-\item{climatetype}{Switch between different climate scenarios (default: "CRU_4")}
+\item{climatetype}{Switch between different climate scenarios}
 
-\item{time}{Time smoothing: average or spline (default)}
-
-\item{averaging_range}{only specify if time=="average": number of time steps to average}
-
-\item{dof}{only specify if time=="spline": degrees of freedom needed for spline}
-
-\item{harmonize_baseline}{FALSE (default): no harmonization, TRUE: if a baseline is specified here data is harmonized to that baseline (from ref_year on)}
-
-\item{ref_year}{Reference year for harmonization baseline (just specify when harmonize_baseline=TRUE)}
+\item{stage}{Degree of processing: raw, smoothed, harmonized, harmonized2020}
 
 \item{LFR_val}{Strictness of environmental flow requirements}
 
