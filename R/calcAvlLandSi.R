@@ -10,8 +10,9 @@
 #' \dontrun{ calcOutput("AvlLandSi", aggregate = FALSE) }
 #'
 #' @importFrom madrat readSource calcOutput
-#' @importFrom magclass dimSums getCells getYears getNames mbind
+#' @importFrom magclass dimSums getCells getYears getNames mbind collapseDim
 #' @importFrom mrcommons toolCoord2Isocell
+#' @importFrom magpiesets addLocation
 #'
 
 calcAvlLandSi <-function(cells="magpiecell") {
@@ -21,12 +22,9 @@ calcAvlLandSi <-function(cells="magpiecell") {
 
   # land area according to LUH in initialization year (1995) [note: landarea is constant, so the year does not matter]
   landarea <- calcOutput("LUH2v2", landuse_types="magpie", aggregate=FALSE, cellular=TRUE, cells="lpjcell", irrigation=FALSE, years="y1995")
+  landarea <- collapseDim(addLocation(landarea), dim=c("N","cell"))
   croparea <- landarea[,,"crop"]
   landarea <- dimSums(landarea, dim=3)
-  # next two lines are temporary!! (AS SOON AS READY FOR 67k cells: use addLocation)
-  coordinates        <- readRDS(system.file("extdata/riverstructure_stn_coord.rds", package="mrwater"))$coordinates
-  getCells(landarea) <- coordinates
-  getCells(croparea) <- coordinates
 
   # add missing cells to Ramankutty data (fill with 0)
   tmp <- new.magpie(cells_and_regions = getCells(landarea)[getCells(landarea) %in% getCells(x)==FALSE], years = getYears(x), names = getNames(x), fill = 0)
@@ -40,13 +38,13 @@ calcAvlLandSi <-function(cells="magpiecell") {
   getNames(si0_binary) <- NULL
 
   # suitable
-  si0  <- si0_binary[getCells(landarea),,] * landarea
+  si0  <- landarea * si0_binary[getCells(landarea),,]
   # correction of suitable land to LUH croparea (land is declared as suitable where LUH reports cropland)
-  si0 <- pmax(croparea, si0)
+  si0  <- pmax(croparea, si0)
   # nonsuitable
   nsi0 <- landarea - si0
 
-  out <- mbind(setNames(si0,"si0"),setNames(nsi0,"nsi0"))
+  out  <- mbind(setNames(si0,"si0"), setNames(nsi0,"nsi0"))
 
   if (cells=="magpiecell") {
     out <- toolCoord2Isocell(out)
