@@ -25,8 +25,9 @@ calcIrrigation <- function(lpjml=c(natveg="LPJmL4_for_MAgPIE_84a69edd", crop="gg
   on.exit(options(magclass_sizeLimit=sizelimit))
 
   # Read in airrig (irrigation water applied additionally to rainfall where irrigation takes place):
-  lpj_airrig   <- collapseNames(calcOutput("LPJmL_new", version=lpjml["crop"], climatetype=climatetype, subtype="irrig",
-                                           aggregate=FALSE, stage=stage)[,,"irrigated"])
+  lpj_airrig   <- toolCoord2Isocell(collapseNames(calcOutput("LPJmL_new", version=lpjml["crop"], climatetype=climatetype,
+                                                             subtype="irrig", aggregate=FALSE, stage=stage)[,,"irrigated"]))
+
   # Load LPJmL to MAgPIE mapping to aggregate to MAgPIE crops
   LPJ2MAG      <- toolGetMapping("MAgPIE_LPJmL.csv", type = "sectoral", where = "mappingfolder")
   # Aggregate to MAgPIE crops
