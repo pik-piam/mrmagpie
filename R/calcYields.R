@@ -71,7 +71,12 @@ calcYields <- function(lpjml=c(natveg="LPJmL4_for_MAgPIE_84a69edd", crop="ggcmi_
   # recalibrate yields for proxys
   yields <- Calib[,,getNames(yields, dim=1)] * yields
 
-  if(cells=="magpiecell") yields <- toolCoord2Isocell(yields)
+  # correct dimension names
+  names(dimnames(yields))[1] <- "x.y.iso"
+
+  if(cells=="magpiecell") {
+    yields <- toolCoord2Isocell(yields)
+  }
 
   #check again, what makes sense irrigation=FALSE/TRUE?
   crop_area_weight <- dimSums(calcOutput("Croparea", sectoral="kcr", physical=TRUE, irrigation=FALSE,
