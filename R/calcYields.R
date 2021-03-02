@@ -69,10 +69,7 @@ calcYields <- function(lpjml=c(natveg="LPJmL4_for_MAgPIE_84a69edd", crop="ggcmi_
   Calib <- toolFillYears(Calib, getYears(yields))
 
   # recalibrate yields for proxys
-  yields <- Calib[,,getNames(yields, dim=1)] * yields
-
-  # correct dimension names
-  names(dimnames(yields))[1] <- "x.y.iso"
+  yields <- yields * Calib[,,getNames(yields, dim=1)]
 
   if(cells=="magpiecell") {
     yields <- toolCoord2Isocell(yields)
