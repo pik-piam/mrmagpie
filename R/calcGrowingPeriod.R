@@ -50,7 +50,7 @@ calcGrowingPeriod <- function(lpjml=c(natveg="LPJmL4_for_MAgPIE_84a69edd", crop=
     LPJ2MAG      <- toolGetMapping("MAgPIE_LPJmL.csv", type = "sectoral", where = "mappingfolder")
 
     # Read yields first
-    yields       <- toolCoord2Isocell(collapseNames(calcOutput("LPJmL_new", lpjml=lpjml["crop"], climatetype=climatetype,
+    yields       <- toolCoord2Isocell(collapseNames(calcOutput("LPJmL_new", version=lpjml["crop"], climatetype=climatetype,
                                              subtype="harvest", stage="raw", aggregate = FALSE)[,,"irrigated"]))
 
     # Load Sowing dates from LPJmL (use just rainfed dates since they do not differ for irrigated and rainfed)
