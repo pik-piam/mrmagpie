@@ -11,7 +11,7 @@
 #'
 #' @importFrom madrat readSource calcOutput
 #' @importFrom magclass dimSums getCells getYears getNames mbind collapseDim
-#' @importFrom mrcommons toolCoord2Isocell
+#' @importFrom mrcommons toolCoord2Isocell toolGetMappingCoord2Country
 #' @importFrom magpiesets addLocation
 #'
 
@@ -41,10 +41,16 @@ calcAvlLandSi <-function(cells="magpiecell") {
   si0  <- landarea * si0_binary[getCells(landarea),,]
   # correction of suitable land to LUH croparea (land is declared as suitable where LUH reports cropland)
   si0  <- pmax(croparea, si0)
-  # nonsuitable
+  # not suitable for cropland
   nsi0 <- landarea - si0
 
   out  <- mbind(setNames(si0,"si0"), setNames(nsi0,"nsi0"))
+
+  # rename dimensions and names to standard x.y.iso
+  map                     <- toolGetMappingCoord2Country()
+  out                     <- out[map$coords,,]
+  getCells(out)           <- paste(map$coords, map$iso, sep=".")
+  names(dimnames(out))[1] <- "x.y.iso"
 
   if (cells=="magpiecell") {
     out <- toolCoord2Isocell(out)
