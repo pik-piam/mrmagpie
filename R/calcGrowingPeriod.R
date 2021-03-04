@@ -271,7 +271,7 @@ calcGrowingPeriod <- function(lpjml=c(natveg="LPJmL4_for_MAgPIE_84a69edd", crop=
 
     #read in historical data for subtype
     baseline2020    <- calcOutput("GrowingPeriod", lpjml=lpjml, climatetype=baseline_gcm,
-                                  stage="smoothed", yield_ratio=yield_ratio, aggregate = FALSE)
+                                  stage="harmonized", yield_ratio=yield_ratio, aggregate = FALSE)
 
     if(climatetype == baseline_gcm){
       out <- baseline2020

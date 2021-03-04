@@ -153,7 +153,7 @@ calcAvlWater <- function(lpjml=c(natveg="LPJmL4_for_MAgPIE_84a69edd", crop="ggcm
 
     #read in historical data for subtype
     baseline2020 <- calcOutput("AvlWater", lpjml=lpjml, climatetype=baseline_gcm, seasonality=seasonality,
-                               aggregate=FALSE, stage="smoothed")
+                               aggregate=FALSE, stage="harmonized")
 
     if(climatetype == baseline_gcm){
       out <- baseline2020

@@ -215,7 +215,7 @@ calcEnvmtlFlow <- function(lpjml=c(natveg="LPJmL4_for_MAgPIE_84a69edd", crop="gg
   } else if(stage == "harmonized2020"){
 
     baseline2020 <- calcOutput("EnvmtlFlow", lpjml=lpjml, climatetype=baseline_gcm,
-                               seasonality=seasonality, aggregate=FALSE, stage="smoothed")
+                               seasonality=seasonality, aggregate=FALSE, stage="harmonized")
 
     if(climatetype == baseline_gcm){
 

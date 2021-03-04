@@ -149,7 +149,7 @@ calcWaterUseNonAg <- function(selectyears="all", source="WATCH_ISIMIP_WATERGAP",
     }
 
     # Get growing days per month
-    grow_days <- calcOutput("GrowingPeriod", lpjml=lpjml, climatetype=climatetype, stage="harmonized2020", aggregate=FALSE)
+    grow_days <- calcOutput("GrowingPeriod", lpjml = lpjml, climatetype = climatetype, yield_ratio = 0.1, aggregate = FALSE)
 
     # Growing days per year
     grow_days <- dimSums(grow_days,dim=3)
