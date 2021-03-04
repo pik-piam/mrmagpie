@@ -9,8 +9,6 @@
 #' @param lpjml              Defines LPJmL version for crop/grass and natveg specific inputs
 #' @param seasonality        grper (default): non-agricultural water demand in growing period per year; total: non-agricultural water demand throughout the year
 #' @param climatetype        switch between different climate scenarios (default: "CRU_4") for calcGrowingPeriod
-#' @param harmonize_baseline FALSE (default), if a baseline is specified here input data is harmonized to that baseline (from ref_year onwards) Note: only applies for calcGrowingPeriod
-#' @param ref_year           just specify for harmonize_baseline != FALSE : Reference year for calcGrowingPeriod
 #' @param finalcells  number of cells to be returned by this function magpiecell (59199) or lpjcell (67420)
 #'
 #' @return magpie object in cellular resolution
@@ -25,8 +23,9 @@
 #' @importFrom magpiesets addLocation
 
 calcWaterUseNonAg <- function(selectyears="all", source="WATCH_ISIMIP_WATERGAP", finalcells="magpiecell",
-                                 time="raw", averaging_range=NULL, dof=NULL, lpjml=c(natveg="LPJmL4", crop="LPJmL5"),
-                                 seasonality="grper", climatetype="HadGEM2_ES:rcp2p6:co2", harmonize_baseline="CRU_4", ref_year="y2015") {
+                              time="raw", averaging_range=NULL, dof=NULL, seasonality="grper",
+                              lpjml=c(natveg="LPJmL4_for_MAgPIE_84a69edd", crop="ggcmi_phase3_nchecks_72c185fa"),
+                              climatetype="GSWP3-W5E5:historical") {
 
   #######################################
   ############ Calculations  ############
@@ -97,8 +96,8 @@ calcWaterUseNonAg <- function(selectyears="all", source="WATCH_ISIMIP_WATERGAP",
     } else {
       # Time smoothing:
       x                <- calcOutput("WaterUseNonAg", selectyears="all", source=source, seasonality=seasonality,
-                          climatetype=climatetype, harmonize_baseline=harmonize_baseline,
-                          ref_year=ref_year, time="raw", averaging_range=NULL, dof=NULL, finalcells=finalcells, aggregate=FALSE)
+                                     climatetype=climatetype, lpjml=lpjml, time="raw", averaging_range=NULL,
+                                     dof=NULL, finalcells=finalcells, aggregate=FALSE)
 
       if (time=="average") {
         # Smoothing data through average:
@@ -150,8 +149,8 @@ calcWaterUseNonAg <- function(selectyears="all", source="WATCH_ISIMIP_WATERGAP",
     }
 
     # Get growing days per month
-    grow_days <- calcOutput("GrowingPeriod", lpjml=lpjml, climatetype=climatetype, time="spline", dof=4,
-                            harmonize_baseline=harmonize_baseline, ref_year=ref_year, yield_ratio=0.1, aggregate=FALSE)
+    grow_days <- calcOutput("GrowingPeriod", lpjml=lpjml, climatetype=climatetype, stage="harmonized2020", aggregate=FALSE)
+
     # Growing days per year
     grow_days <- dimSums(grow_days,dim=3)
 

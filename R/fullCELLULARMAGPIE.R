@@ -120,16 +120,17 @@ fullCELLULARMAGPIE <- function(rev=0.1, dev="", ctype="c200", climatetype="GFDL-
   calcOutput("GrowingPeriod", lpjml=lpjml, years=lpj_years, climatetype=climatetype, yield_ratio=0.1,
              aggregate=FALSE, round=2, file="lpj_grper_0.5.mz")
 
-  calcOutput("EnvmtlFlow", lpjml=lpjml, years=lpj_years, climatetype=climatetype, aggregate="cluster",
-             round=6, seasonality="grper", file=paste0("lpj_envflow_grper_", ctype, ".mz"))
-  calcOutput("WaterUseNonAg", source="WATCH_ISIMIP_WATERGAP", years=lpj_years, seasonality="grper",
-             finalcells="magpiecell", aggregate="cluster", file=paste0("watdem_nonagr_grper_", ctype, ".mz"))
-
   #43 water availability
   calcOutput("AvlWater", lpjml=lpjml, years=lpj_years, climatetype=climatetype, seasonality="grper",
              aggregate="cluster", round=6, file=paste0("lpj_watavail_grper_", ctype, ".mz"))
   calcOutput("AvlWater", lpjml=lpjml, years=lpj_years, climatetype=climatetype, seasonality="total",
              aggregate="cluster", round=6, file=paste0("lpj_watavail_total_", ctype, ".mz"))
+
+
+  calcOutput("EnvmtlFlow", lpjml=lpjml, years=lpj_years, climatetype=climatetype, aggregate="cluster",
+             round=6, seasonality="grper", file=paste0("lpj_envflow_grper_", ctype, ".mz"))
+  calcOutput("WaterUseNonAg", source="WATCH_ISIMIP_WATERGAP", years=lpj_years, seasonality="grper",
+             finalcells="magpiecell", aggregate="cluster", file=paste0("watdem_nonagr_grper_", ctype, ".mz"))
 
   #44 biodiversity
   calcOutput("Luh2SideLayers", aggregate="cluster", round=6, file=paste0("luh2_side_layers_", ctype, ".mz"))
