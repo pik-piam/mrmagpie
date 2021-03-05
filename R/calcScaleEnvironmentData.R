@@ -22,8 +22,8 @@
 
 calcScaleEnvironmentData <- function(climatetype = "HadGEM2_ES:rcp8p5:co2", sar = 20){
 
-  # The dataset will the randomized after it is mergerged with labels.
-  # for that reason, it is being scaled with the hole dataset mean and std
+  # The dataset will the randomized after it is merged with labels.
+  # for that reason, it is being scaled with mean and sd from the hole dataset
   x <- calcOutput("CollectEnvironmentData", climatetype = climatetype, sar = sar, aggregate = F)
   xmeans <- apply(x, 3, mean)
   xstd <-  apply(x, 3, sd)
@@ -40,7 +40,7 @@ calcScaleEnvironmentData <- function(climatetype = "HadGEM2_ES:rcp8p5:co2", sar 
   weight <- toolOrderCells(collapseDim(addLocation(weight),dim=c("x","y")))
 
   return(list(
-    x = x,
+    x = y,
     weight = weight,
     unit =
       "temperature: Degree Celcius,
