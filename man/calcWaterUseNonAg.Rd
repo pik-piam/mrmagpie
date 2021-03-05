@@ -7,10 +7,6 @@
 calcWaterUseNonAg(
   selectyears = "all",
   source = "WATCH_ISIMIP_WATERGAP",
-  finalcells = "magpiecell",
-  time = "raw",
-  averaging_range = NULL,
-  dof = NULL,
   seasonality = "grper",
   lpjml = c(natveg = "LPJmL4_for_MAgPIE_84a69edd", crop =
     "ggcmi_phase3_nchecks_72c185fa"),
@@ -21,14 +17,6 @@ calcWaterUseNonAg(
 \item{selectyears}{years to be returned}
 
 \item{source}{data source to be used (e.g. WATERGAP2020)}
-
-\item{finalcells}{number of cells to be returned by this function magpiecell (59199) or lpjcell (67420)}
-
-\item{time}{Time smoothing: average, spline or raw (default)}
-
-\item{averaging_range}{only specify if time=="average": number of time steps to average}
-
-\item{dof}{only specify if time=="spline": degrees of freedom needed for spline}
 
 \item{seasonality}{grper (default): non-agricultural water demand in growing period per year; total: non-agricultural water demand throughout the year}
 
