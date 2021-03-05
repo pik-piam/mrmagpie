@@ -66,10 +66,12 @@ fullCELLULARMAGPIE <- function(rev=0.1, dev="", ctype="c200", climatetype="GFDL-
     calcOutput("PastYields", lsu_levels = c(seq(0, 2, 0.2), 2.5), mowing_events = "2me", lpjml = lpjml, climatetype = climatetype_past, aggregate = "cluster", file=paste0("lpj_past_yields_", ctype, ".mz"))
     calcOutput("ScaleEnvironmentData", climatetype = climatetype_past, sar = 20, aggregate="cluster", file=paste0("soilc_lab_environment_scaled", ctype, ".mz"))
     calcOutput("CollectSoilCarbonLSU", aggregate = "cluster", lsu_levels = c(seq(0, 2, 0.2), 2.5), lpjml = "LPJmL_cgrazing", climatetype = climatetype_past, sar = 20, file=paste0("soilc_lab_stocks_", ctype, ".mz"))
-    calcOutput("ClimateClass", aggregate="cluster", years="y2015", file=paste0("koeppen_geiger_", ctype, ".mz"))
+
   }
 
-  #10 land
+  calcOutput("ClimateClass", aggregate="cluster", years="y2015", file=paste0("koeppen_geiger_", ctype, ".mz"))
+
+   #10 land
   calcOutput("LanduseInitialisation", aggregate=FALSE, cellular=TRUE, cells="magpiecell", nclasses="seven", fao_corr=TRUE, input_magpie=TRUE, selectyears=mag_years_past_long, round=6, file="avl_land_t_0.5.mz")
   calcOutput("LanduseInitialisation", aggregate="cluster", cellular=TRUE, nclasses="seven", fao_corr=TRUE, input_magpie=TRUE, selectyears=mag_years_past_long, round=6, file=paste0("avl_land_t_", ctype, ".mz"))
   calcOutput("SeaLevelRise", aggregate=FALSE, cellular=TRUE, years=mag_years, round=6, file="f10_SeaLevelRise_0.5.mz")
@@ -99,7 +101,7 @@ fullCELLULARMAGPIE <- function(rev=0.1, dev="", ctype="c200", climatetype="GFDL-
   calcOutput("UrbanLandFuture", aggregate="cluster", round=6, years=short_years, file=paste0("f34_UrbanLand_", ctype, ".mz"))
 
   #35 natveg
-  calcOutput("AgeClassDistribution", aggregate="cluster", round=6, file=paste0("secdf_age_class_dist_", ctype, ".mz"))
+  calcOutput("AgeClassDistribution", aggregate="cluster", round=6, file=paste0("forestageclasses_", ctype, ".mz"))
   calcOutput("ProtectArea",          aggregate="cluster", round=6, file=paste0("protect_area_", ctype, ".mz") )
 
   #38 factor costs
