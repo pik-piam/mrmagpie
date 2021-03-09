@@ -64,8 +64,8 @@ fullCELLULARMAGPIE <- function(rev=0.1, dev="", ctype="c200", climatetype="GFDL-
   if(grepl("pasturetest",dev)){
     climatetype_past <- "HadGEM2_ES:rcp6p0:co2"
     calcOutput("PastYields", lsu_levels = c(seq(0, 2, 0.2), 2.5), mowing_events = "2me", lpjml = lpjml, climatetype = climatetype_past, aggregate = "cluster", file=paste0("lpj_past_yields_", ctype, ".mz"))
-    calcOutput("ScaleEnvironmentData", climatetype = climatetype_past, sar = 20, aggregate="cluster", file=paste0("soilc_lab_environment_scaled", ctype, ".mz"))
-    calcOutput("CollectSoilCarbonLSU", aggregate = "cluster", lsu_levels = c(seq(0, 2, 0.2), 2.5), lpjml = "LPJmL_cgrazing", climatetype = climatetype_past, sar = 20, file=paste0("soilc_lab_stocks_", ctype, ".mz"))
+    calcOutput("ScaleEnvironmentData", climatetype = climatetype_past, sar = 20, aggregate="cluster", file=paste0("soilc_ml_environment_scaled_", ctype, ".mz"))
+    calcOutput("CollectSoilCarbonLSU", aggregate = "cluster", lsu_levels = c(seq(0, 2, 0.2), 2.5), lpjml = "LPJmL_cgrazing", climatetype = climatetype_past, sar = 20, file=paste0("soilc_ml_stocks_", ctype, ".mz"))
 
   }
 
