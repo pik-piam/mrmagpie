@@ -56,10 +56,10 @@ fullCELLULARMAGPIE <- function(rev=0.1, dev="", ctype="c200", climatetype="GFDL-
 
   # 14 yields
   calcOutput("Yields", aggregate = FALSE, lpjml=lpjml, climatetype=climatetype,
-             round=6, years="y1995", file=paste0("lpj_yields_0.5.mz"))
+             round=2, years="y1995", file=paste0("lpj_yields_0.5.mz"))
 
   calcOutput("Yields", aggregate = "cluster", lpjml=lpjml, climatetype=climatetype,
-             round=6, years=lpj_years, file = paste0("lpj_yields_", ctype, ".mz"))
+             round=2, years=lpj_years, file = paste0("lpj_yields_", ctype, ".mz"))
 
   if(grepl("pasturetest",dev)){
     climatetype_past <- "HadGEM2_ES:rcp6p0:co2"
