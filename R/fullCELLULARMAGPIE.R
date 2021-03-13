@@ -133,8 +133,7 @@ fullCELLULARMAGPIE <- function(rev=0.1, dev="", ctype="c200", climatetype="GFDL-
   calcOutput("EnvmtlFlow", lpjml=lpjml, years=lpj_years, climatetype=climatetype, aggregate="cluster",
              round=6, seasonality="grper", file=paste0("lpj_envflow_grper_", ctype, ".mz"))
   calcOutput("WaterUseNonAg", source="WATCH_ISIMIP_WATERGAP", years=lpj_years, seasonality="grper",
-             lpjml=lpjml, climatetype=climatetype, finalcells="magpiecell",
-             aggregate="cluster", file=paste0("watdem_nonagr_grper_", ctype, ".mz"))
+             lpjml=lpjml, climatetype=climatetype, aggregate="cluster", file=paste0("watdem_nonagr_grper_", ctype, ".mz"))
 
   #44 biodiversity
   calcOutput("Luh2SideLayers", aggregate="cluster", round=6, file=paste0("luh2_side_layers_", ctype, ".mz"))
