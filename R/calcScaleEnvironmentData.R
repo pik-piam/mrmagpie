@@ -2,12 +2,13 @@
 #' @description Scale climate, CO2 and soil environmental conditions on cellular level
 #' @param climatetype Switch between different climate scenarios
 #' @param sar Average range for smoothing annual variations
+#' @param sel_feat features names to be included in the output file
 #' @return magpie object in cellular resolution
 #' @author Marcos Alves
 #'
 #' @examples
 #' \dontrun{
-#' calcOutput("ScaleEnvironmentData", climatetype = "HadGEM2_ES:rcp8p5:co2", sar = 20)
+#' calcOutput("ScaleEnvironmentData", climatetype = "HadGEM2_ES:rcp8p5:co2", sar = 20, sel_feat)
 #' }
 #'
 #' @import madrat
@@ -20,11 +21,26 @@
 #' @importFrom stats sd
 #'
 
-calcScaleEnvironmentData <- function(climatetype = "HadGEM2_ES:rcp8p5:co2", sar = 20){
+calcScaleEnvironmentData <- function(climatetype = "HadGEM2_ES:rcp8p5:co2", sar = 20, sel_feat = c(
+  "lsu_ha",
+  "temperature",
+  "precipitation",
+  "longwave_radiation",
+  "shortwave_radiation",
+  "wetdays",
+  "CO2ATMconcentration",
+  "Ks",
+  "Sf",
+  "w_pwp",
+  "w_fc",
+  "w_sat",
+  "hsg",
+  "soilc"
+)){
 
   # The dataset will the randomized after it is merged with labels.
   # for that reason, it is being scaled with mean and sd from the hole dataset
-  x <- calcOutput("CollectEnvironmentData", climatetype = climatetype, sar = sar, aggregate = F)
+  x <- calcOutput("CollectEnvironmentData", climatetype = climatetype, sar = sar, aggregate = F, sel_feat = sel_feat)
   xmeans <- apply(x, 3, mean)
   xstd <-  apply(x, 3, sd)
   y <- (x - as.magpie(xmeans))/as.magpie(xstd)
