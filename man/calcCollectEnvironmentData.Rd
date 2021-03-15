@@ -4,12 +4,20 @@
 \alias{calcCollectEnvironmentData}
 \title{calcCollectEnvironmentData}
 \usage{
-calcCollectEnvironmentData(climatetype = "HadGEM2_ES:rcp8p5:co2", sar = 20)
+calcCollectEnvironmentData(
+  climatetype = "HadGEM2_ES:rcp8p5:co2",
+  sar = 20,
+  sel_feat = c("lsu_ha", "temperature", "precipitation", "longwave_radiation",
+    "shortwave_radiation", "wetdays", "CO2ATMconcentration", "Ks", "Sf", "w_pwp", "w_fc",
+    "w_sat", "hsg", "soilc")
+)
 }
 \arguments{
 \item{climatetype}{Switch between different climate scenarios (default: "CRU_4")}
 
 \item{sar}{Average range for smoothing annual variations}
+
+\item{sel_feat}{features names to be included in the output file}
 }
 \value{
 magpie object in cellular resolution
@@ -19,7 +27,7 @@ Calculate climate, CO2 and soil environmental conditions on cellular level
 }
 \examples{
 \dontrun{
-calcOutput("CollectEnvironmentData", climatetype = "HadGEM2_ES:rcp8p5:co2", sar = 20)
+calcOutput("CollectEnvironmentData", climatetype = "HadGEM:rcp8p5:co2", sar = 20, sel_feat = "temp")
 }
 
 }
