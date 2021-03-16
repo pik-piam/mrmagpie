@@ -23,7 +23,7 @@
 #'
 
 calcCollectSoilCarbonLSU  <-
-  function(lsu_levels = c(seq(0, 2, 0.2), 2.5), lpjml = "LPJmL_cgrazing", climatetype = "HadGEM2_ES:rcp8p5:co2", sar = 20) {
+  function(lsu_levels = c(seq(0, 2, 0.2), 2.5), lpjml = "LPJML5.2_pasture", climatetype = "IPSL_CM6A_LR", scenario = "ssp126_co2_limN", sar = 20) {
 
     # Calculating weights
     landcoords <- as.data.frame(toolGetMapping("magpie_coord.rda", type = "cell"))
@@ -33,13 +33,15 @@ calcCollectSoilCarbonLSU  <-
     cell_size <- raster::area(landcoords)
     weight <- cell_size*landcoords
     weight <- as.magpie(weight)
-    weight <- toolOrderCells(collapseDim(addLocation(weight),dim=c("x","y")))
+    weight <- toolOrderCells(collapseDim(addLocation(weight),dim = c("x","y")))
 
     lsu_levels <- gsub("\\.", "p", lsu_levels)
     y <- list()
     for (lsu in lsu_levels) {
-      .subtype <- paste(paste(lpjml, climatetype, lsu, sep = ":"), "soilc", sep = ".")
-      x <- readSource("LPJmL", subtype = .subtype, convert = "onlycorrect")
+      .subtype <- paste(lpjml, climatetype,paste0(scenario,"_", lsu),sep = ":")
+      hist <- readSource("LPJmL_new", subtype = paste(.subtype, "soilc_past_hist", sep = ":"), convert = F)
+      scen <- readSource("LPJmL_new", subtype = paste(.subtype, "soilc_past_scen", sep = ":"), convert = F)
+      x <- mbind(hist,scen)
       getNames(x) <- gsub("soilc", lsu, getNames(x))
       y[[lsu]] <- x
     }
