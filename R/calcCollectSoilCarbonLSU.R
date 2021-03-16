@@ -4,12 +4,13 @@
 #' @param lpjml Defines LPJmL version for crop/grass and natveg specific inputs
 #' @param climatetype Switch between different climate scenarios (default: "CRU_4")
 #' @param sar Average range for smoothing annual variations
+#' @param scenario scenario specifications (eg. ssp126_co2_limN)
 #' @return magpie object in cellular resolution
 #' @author Marcos Alves
 #'
 #' @examples
 #' \dontrun{
-#' calcOutput("CollectSoilCarbonLSU ", lsu_levels = c(seq(0, 2, 0.2), 2.5))
+#' calcOutput("CollectSoilCarbonLSU ", lsu_levels = c(seq(0, 2, 0.2), 2.5), scenario)
 #' }
 #'
 #' @import madrat

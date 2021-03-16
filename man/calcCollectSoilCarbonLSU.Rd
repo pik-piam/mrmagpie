@@ -6,8 +6,9 @@
 \usage{
 calcCollectSoilCarbonLSU(
   lsu_levels = c(seq(0, 2, 0.2), 2.5),
-  lpjml = "LPJmL_cgrazing",
-  climatetype = "HadGEM2_ES:rcp8p5:co2",
+  lpjml = "LPJML5.2_pasture",
+  climatetype = "IPSL_CM6A_LR",
+  scenario = "ssp126_co2_limN",
   sar = 20
 )
 }
@@ -17,6 +18,8 @@ calcCollectSoilCarbonLSU(
 \item{lpjml}{Defines LPJmL version for crop/grass and natveg specific inputs}
 
 \item{climatetype}{Switch between different climate scenarios (default: "CRU_4")}
+
+\item{scenario}{scenario specifications (eg. ssp126_co2_limN)}
 
 \item{sar}{Average range for smoothing annual variations}
 }
@@ -28,7 +31,7 @@ Calculate soil carbon stocks for different LSU and climate conditions
 }
 \examples{
 \dontrun{
-calcOutput("CollectSoilCarbonLSU ", lsu_levels = c(seq(0, 2, 0.2), 2.5))
+calcOutput("CollectSoilCarbonLSU ", lsu_levels = c(seq(0, 2, 0.2), 2.5), scenario)
 }
 
 }
