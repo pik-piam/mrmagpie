@@ -43,7 +43,7 @@ calcCollectSoilCarbonLSU  <-
       hist <- readSource("LPJmL_new", subtype = paste(.subtype, "soilc_past_hist", sep = ":"), convert = F)
       scen <- readSource("LPJmL_new", subtype = paste(.subtype, "soilc_past_scen", sep = ":"), convert = F)
       x <- mbind(hist,scen)
-      getNames(x) <- gsub("soilc", lsu, getNames(x))
+      getNames(x) <- lsu
       y[[lsu]] <- x
     }
     y <- mbind(y)
