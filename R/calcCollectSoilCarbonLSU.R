@@ -10,7 +10,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' calcOutput("CollectSoilCarbonLSU ", lsu_levels = c(seq(0, 2, 0.2), 2.5), scenario)
+#' calcOutput("CollectSoilCarbonLSU", lsu_levels = c(seq(0, 2, 0.2), 2.5), scenario)
 #' }
 #'
 #' @import madrat
@@ -40,10 +40,9 @@ calcCollectSoilCarbonLSU  <-
     y <- list()
     for (lsu in lsu_levels) {
       .subtype <- paste(lpjml, climatetype,paste0(scenario,"_", lsu),sep = ":")
-      hist <- readSource("LPJmL_new", subtype = paste(.subtype, "soilc_past_hist", sep = ":"), convert = F)
-      scen <- readSource("LPJmL_new", subtype = paste(.subtype, "soilc_past_scen", sep = ":"), convert = F)
+      hist <- toolCoord2Isocell(readSource("LPJmL_new", subtype = paste(.subtype, "soilc_past_hist", sep = ":"), convert = F))
+      scen <- toolCoord2Isocell(readSource("LPJmL_new", subtype = paste(.subtype, "soilc_past_scen", sep = ":"), convert = F))
       x <- mbind(hist,scen)
-      x <- toolCoord2Isocell(x)
       getNames(x) <- lsu
       y[[lsu]] <- x
     }

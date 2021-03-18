@@ -65,7 +65,7 @@ fullCELLULARMAGPIE <- function(rev=0.1, dev="", ctype="c200", climatetype="GFDL-
     climatetype_past <- "HadGEM2_ES:rcp6p0:co2"
     calcOutput("PastYields", lsu_levels = c(seq(0, 2, 0.2), 2.5), mowing_events = "2me", lpjml = lpjml, climatetype = climatetype_past, aggregate = "cluster", file=paste0("lpj_past_yields_", ctype, ".mz"))
     calcOutput("ScaleEnvironmentData_new", subtype="ISIMIP3b:IPSL-CM6A-LR:ssp126:1965-2100", sar = 20, sel_feat = c("tas","pr", "lwnet", "rsds", "CO2", "Ks", "Sf", "w_pwp", "w_fc", "w_sat", "hsg"), aggregate="cluster", file=paste0("soilc_ml_environment_scaled_new", ctype, ".mz"))
-    calcOutput("CollectSoilCarbonLSU", lsu_levels = c(seq(0, 2.2, 0.2), 2.5), lpjml = "lpjml5.2_pasture", climatetype = "IPSL_CM6A_LR", scenario = "ssp126_co2_limN", sar = 20, file=paste0("soilc_ml_stocks_", ctype, ".mz"))
+    calcOutput("CollectSoilCarbonLSU", lsu_levels = c(seq(0, 2.2, 0.2), 2.5), lpjml = "lpjml5.2_pasture", climatetype = "IPSL_CM6A_LR", scenario = "ssp126_co2_limN", sar = 20, aggregate="cluster", file=paste0("soilc_ml_stocks_", ctype, ".mz"))
   }
 
   calcOutput("ClimateClass", aggregate="cluster", years="y2015", file=paste0("koeppen_geiger_", ctype, ".mz"))
