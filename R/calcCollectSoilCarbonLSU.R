@@ -43,6 +43,7 @@ calcCollectSoilCarbonLSU  <-
       hist <- readSource("LPJmL_new", subtype = paste(.subtype, "soilc_past_hist", sep = ":"), convert = F)
       scen <- readSource("LPJmL_new", subtype = paste(.subtype, "soilc_past_scen", sep = ":"), convert = F)
       x <- mbind(hist,scen)
+      x <- toolCoord2Isocell(x)
       getNames(x) <- lsu
       y[[lsu]] <- x
     }
