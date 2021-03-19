@@ -27,24 +27,15 @@ calcScaledPastSoilCarbon <-
   function(lsu_levels = c(seq(0, 2, 0.2), 2.5), lpjml = "LPJML5.2_pasture", climatetype = "IPSL_CM6A_LR", scenario = "ssp126_co2_limN", sar = 20) {
 
     x <- calcOutput("CollectSoilCarbonLSU", lsu_levels = lsu_levels, lpjml = lpjml, climatetype = climatetype, scenario = scenario, sar = sar)
-    xmeans <- apply(x, 3, mean)
-    xstd <-  apply(x, 3, sd)
-    y <- (x - as.magpie(xmeans))/as.magpie(xstd)
-
-    # Calculating weights
-    landcoords <- as.data.frame(toolGetMapping("magpie_coord.rda", type = "cell"))
-    landcoords <- cbind(landcoords, rep(1,nrow(landcoords)))
-    landcoords <- raster::rasterFromXYZ(landcoords)
-    crs(landcoords) <- "+proj=longlat"
-    cell_size <- raster::area(landcoords)
-    weight <- cell_size*landcoords
-    weight <- as.magpie(weight)
-    weight <- toolOrderCells(collapseDim(addLocation(weight),dim = c("x","y")))
+    x <- readRDS("c:/Users/pedrosa/Desktop/calcCollectSoilCarbonLSU-a5e9c15e54258cb8ceb6ca0c38037eee.rds")
+    xmax <- max(x$x)
+    xmin <-  min(x$x)
+    y <- (x$x - xmin)/xmax - xmin
 
     return(
       list(
         x = y,
-        weight = weight,
+        weight = x$weight,
         unit = NULL,
         description = "Soil carbon stocks per lsu level",
         isocountries = FALSE
