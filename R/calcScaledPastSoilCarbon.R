@@ -1,4 +1,4 @@
-#' @title calcPastSoilCarbonScaled
+#' @title calcScaledPastSoilCarbon
 #' @description calculates the mean and sd of the scaled pasture soil carbon dataset
 #' @param lsu_levels Livestock unit levels in the source folder
 #' @param lpjml Defines LPJmL version for crop/grass and natveg specific inputs
@@ -10,7 +10,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' calcOutput("PastSoilCarbonScaled", lsu_levels = c(seq(0, 2, 0.2), 2.5), scenario)
+#' calcOutput("ScaledPastSoilCarbon", lsu_levels = c(seq(0, 2, 0.2), 2.5), scenario)
 #' }
 #'
 #'
@@ -23,7 +23,7 @@
 #' @importFrom dplyr mutate select
 #'
 
-calcPastSoilCarbonScaled <-
+calcScaledPastSoilCarbon <-
   function(lsu_levels = c(seq(0, 2, 0.2), 2.5), lpjml = "LPJML5.2_pasture", climatetype = "IPSL_CM6A_LR", scenario = "ssp126_co2_limN", sar = 20) {
 
     x <- calcOutput("CollectSoilCarbonLSU", lsu_levels = lsu_levels, lpjml = lpjml, climatetype = climatetype, scenario = scenario, sar = sar)
