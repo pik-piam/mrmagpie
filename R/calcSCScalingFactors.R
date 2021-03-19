@@ -20,15 +20,13 @@ calcSCScalingFactors <-
   function(lsu_levels = c(seq(0, 2, 0.2), 2.5), lpjml = "LPJML5.2_pasture", climatetype = "IPSL_CM6A_LR", scenario = "ssp126_co2_limN", sar = 20) {
 
     x <- calcOutput("CollectSoilCarbonLSU", lsu_levels = lsu_levels, lpjml = lpjml, climatetype = climatetype, scenario = scenario, sar = sar)
-    x <- data.frame("a"=1:10,"b"=11:20)
-    y <- scale(x)
-    scmean <- attr(y, "scaled:center")
-    scsd <- attr(y, "scaled:scale")
-    w <- as.magpie(c(scmean, scsd))
+    xmeans <- apply(x, 3, mean)
+    xstd <-  apply(x, 3, sd)
+    w <- as.magpie(c(xmeans, xstd))
 
     return(
       list(
-        x = y,
+        x = w,
         weight = NULL,
         unit = "gC/m2",
         description = "Soil carbon stocks per lsu level",
