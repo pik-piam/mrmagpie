@@ -103,7 +103,7 @@ calcWaterUseNonAg <- function(selectyears="all", source="WATCH_ISIMIP_WATERGAP",
   ###########################################
   ############ Function Output  #############
   ###########################################
-  if (selectyears!="all") {
+  if (all(selectyears!="all")) {
     years         <- sort(findset(selectyears, noset="original"))
     watdem_nonagr <- watdem_nonagr[,years,]
   }
