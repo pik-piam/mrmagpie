@@ -19,9 +19,9 @@
 calcSCScalingFactors <-
   function(lsu_levels = c(seq(0, 2, 0.2), 2.5), lpjml = "LPJML5.2_pasture", climatetype = "IPSL_CM6A_LR", scenario = "ssp126_co2_limN", sar = 20) {
 
-    x <- calcOutput("CollectSoilCarbonLSU", lsu_levels = lsu_levels, lpjml = lpjml, climatetype = climatetype, scenario = scenario, sar = sar)
-    xmax <- max(x[["x"]])
-    xmin <- min(x[["x"]])
+    x <- calcOutput("CollectSoilCarbonLSU", lsu_levels = lsu_levels, lpjml = lpjml, climatetype = climatetype, scenario = scenario, sar = sar, aggregate = F)
+    xmax <- max(x)
+    xmin <- min(x)
     w <- as.magpie(c(xmin, xmax))
     getNames(w) <- c("min", "max")
 

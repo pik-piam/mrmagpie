@@ -26,10 +26,10 @@
 calcScaledPastSoilCarbon <-
   function(lsu_levels = c(seq(0, 2, 0.2), 2.5), lpjml = "LPJML5.2_pasture", climatetype = "IPSL_CM6A_LR", scenario = "ssp126_co2_limN", sar = 20) {
 
-    x <- calcOutput("CollectSoilCarbonLSU", lsu_levels = lsu_levels, lpjml = lpjml, climatetype = climatetype, scenario = scenario, sar = sar)
-    xmax <- max(x[["x"]])
-    xmin <-  min(x[["x"]])
-    y <- (x[["x"]] - xmin)/xmax - xmin
+    x <- calcOutput("CollectSoilCarbonLSU", lsu_levels = lsu_levels, lpjml = lpjml, climatetype = climatetype, scenario = scenario, sar = sar, aggregate = F)
+    xmax <- max(x)
+    xmin <-  min(x)
+    y <- (x - xmin)/xmax - xmin
 
     return(
       list(
