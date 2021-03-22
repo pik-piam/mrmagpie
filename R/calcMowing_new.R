@@ -21,7 +21,7 @@ calcMowing_new <- function(mowing_events = "me2", lpjml = "lpjml5.2_pasture", cl
   hist <- toolCoord2Isocell(readSource("LPJmL_new", subtype = paste(.subtype, "grass_pft_hist", sep = ":"), convert = F))
   scen <- toolCoord2Isocell(readSource("LPJmL_new", subtype = paste(.subtype, "grass_pft_scen", sep = ":"), convert = F))
   x <- mbind(hist,scen)
-  x <- x[, , "mgrass"]
+  x <- x[, , "mgrass"][, , "rainfed"]
   getNames(x) <- gsub("mgrass", "mowing", getNames(x))
 
   return(list(
