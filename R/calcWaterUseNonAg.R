@@ -57,7 +57,7 @@ calcWaterUseNonAg <- function(selectyears="all", source="WATCH_ISIMIP_WATERGAP",
     # historical and future ISIMIP data:
     watdem_ISIMIP <- mbind(watdem_nonagr_ISIMIP_hist, watdem_nonagr_ISIMIP_future)
 
-    if (harmon_base_time=="smoothing") {
+    if (!is.null(harmon_base_time) && harmon_base_time=="smoothing") {
       # Time-Smoothing of historical baseline and projected WATERGAP data
       watdem_ISIMIP          <- toolSmooth(watdem_ISIMIP)
       watdem_nonagr_WATERGAP <- toolSmooth(watdem_nonagr_WATERGAP)
@@ -85,7 +85,7 @@ calcWaterUseNonAg <- function(selectyears="all", source="WATCH_ISIMIP_WATERGAP",
     cells <- getCells(watdem_nonagr_WATERGAP)
     years <- getYears(watdem_nonagr_ISIMIP_hist)
     names <- getNames(watdem_nonagr_WATERGAP)
-    if (harmon_base_time=="average") {
+    if (!is.null(harmon_base_time) && harmon_base_time=="average") {
       # average around baseyear of ISIMIP baseline
       watdem_ISIMIP[,years,] <- toolTimeAverage(watdem_ISIMIP, averaging_range=8)[,baseyear,]
     }
