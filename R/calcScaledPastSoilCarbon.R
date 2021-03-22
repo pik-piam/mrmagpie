@@ -31,10 +31,20 @@ calcScaledPastSoilCarbon <-
     xmin <-  min(x)
     y <- (x - xmin)/xmax - xmin
 
+    # Calculating weights
+    landcoords <- as.data.frame(toolGetMapping("magpie_coord.rda", type = "cell"))
+    landcoords <- cbind(landcoords, rep(1,nrow(landcoords)))
+    landcoords <- raster::rasterFromXYZ(landcoords)
+    crs(landcoords) <- "+proj=longlat"
+    cell_size <- raster::area(landcoords)
+    weight <- cell_size*landcoords
+    weight <- as.magpie(weight)
+    weight <- toolOrderCells(collapseDim(addLocation(weight),dim=c("x","y")))
+
     return(
       list(
         x = y,
-        weight = x$weight,
+        weight = weight,
         unit = NULL,
         description = "Soil carbon stocks per lsu level",
         isocountries = FALSE
