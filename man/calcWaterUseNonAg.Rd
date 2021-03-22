@@ -8,6 +8,7 @@ calcWaterUseNonAg(
   selectyears = "all",
   source = "WATCH_ISIMIP_WATERGAP",
   seasonality = "grper",
+  harmon_base_time = "average",
   lpjml = c(natveg = "LPJmL4_for_MAgPIE_84a69edd", crop =
     "ggcmi_phase3_nchecks_72c185fa"),
   climatetype = "GSWP3-W5E5:historical"
@@ -19,6 +20,8 @@ calcWaterUseNonAg(
 \item{source}{data source to be used (e.g. WATERGAP2020)}
 
 \item{seasonality}{grper (default): non-agricultural water demand in growing period per year; total: non-agricultural water demand throughout the year}
+
+\item{harmon_base_time}{type of time smoothing applied before harmonization of WATERGAP data: average (average over 8-year time span around baseline year) or smoothing (time smoothing of baseline and WATERGAP scenario data) or NULL (no smoothing before harmonization)}
 
 \item{lpjml}{Defines LPJmL version for crop/grass and natveg specific inputs}
 

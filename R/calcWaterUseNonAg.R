@@ -6,6 +6,7 @@
 #' @param lpjml              Defines LPJmL version for crop/grass and natveg specific inputs
 #' @param seasonality        grper (default): non-agricultural water demand in growing period per year; total: non-agricultural water demand throughout the year
 #' @param climatetype        switch between different climate scenarios (default: "CRU_4") for calcGrowingPeriod
+#' @param harmon_base_time   type of time smoothing applied before harmonization of WATERGAP data: average (average over 8-year time span around baseline year) or smoothing (time smoothing of baseline and WATERGAP scenario data) or NULL (no smoothing before harmonization)
 #'
 #' @return magpie object in cellular resolution
 #' @author Felicitas Beier
@@ -18,7 +19,7 @@
 #' @importFrom mrcommons toolCell2isoCell toolCoord2Isocell toolGetMappingCoord2Country
 #' @importFrom magpiesets addLocation
 
-calcWaterUseNonAg <- function(selectyears="all", source="WATCH_ISIMIP_WATERGAP", seasonality="grper",
+calcWaterUseNonAg <- function(selectyears="all", source="WATCH_ISIMIP_WATERGAP", seasonality="grper", harmon_base_time="average",
                               lpjml=c(natveg="LPJmL4_for_MAgPIE_84a69edd", crop="ggcmi_phase3_nchecks_72c185fa"),
                               climatetype="GSWP3-W5E5:historical") {
 
@@ -40,6 +41,9 @@ calcWaterUseNonAg <- function(selectyears="all", source="WATCH_ISIMIP_WATERGAP",
   # New Non-Agricultural Waterdemand data (will be new default)
   if (source=="WATERGAP2020") {
 
+    years_harmonized <- paste0("y",seq(2010,2020))
+    years_future     <- paste0("y",seq(2020,2100))
+
     # Read in nonagricultural water demand:
     watdem_nonagr_WATERGAP      <- readSource("WATERGAP", convert="onlycorrect", subtype="WATERGAP2020")
     watdem_nonagr_ISIMIP_hist   <- readSource("ISIMIPinputs",subtype="ISIMIP3b:water:histsoc.waterabstraction",convert="onlycorrect")
@@ -53,9 +57,11 @@ calcWaterUseNonAg <- function(selectyears="all", source="WATCH_ISIMIP_WATERGAP",
     # historical and future ISIMIP data:
     watdem_ISIMIP <- mbind(watdem_nonagr_ISIMIP_hist, watdem_nonagr_ISIMIP_future)
 
-    # Time-Smoothing of historical baseline and projected WATERGAP data
-    watdem_ISIMIP          <- toolSmooth(watdem_ISIMIP)
-    watdem_nonagr_WATERGAP <- toolSmooth(watdem_nonagr_WATERGAP)
+    if (harmon_base_time=="smoothing") {
+      # Time-Smoothing of historical baseline and projected WATERGAP data
+      watdem_ISIMIP          <- toolSmooth(watdem_ISIMIP)
+      watdem_nonagr_WATERGAP <- toolSmooth(watdem_nonagr_WATERGAP)
+    }
 
     # empty magpie object
     cells <- getCells(watdem_nonagr_WATERGAP)
@@ -75,18 +81,26 @@ calcWaterUseNonAg <- function(selectyears="all", source="WATCH_ISIMIP_WATERGAP",
 
     # Calibration of WATERGAP data to ISIMIP baseline:
     # historical ISIMIP data in correct format for harmonization
+    baseyear <- "y2010"
     cells <- getCells(watdem_nonagr_WATERGAP)
     years <- getYears(watdem_nonagr_ISIMIP_hist)
     names <- getNames(watdem_nonagr_WATERGAP)
+    if (harmon_base_time=="average") {
+      # average around baseyear of ISIMIP baseline
+      watdem_ISIMIP[,years,] <- toolTimeAverage(watdem_ISIMIP, averaging_range=8)[,baseyear,]
+    }
     tmp     <- new.magpie(cells, years, names, sets=c("x.y", "year", "scenario.type"))
     tmp[,,] <- 1
     tmp     <- tmp * watdem_ISIMIP[,years,]
 
-    # Harmonization
-    watdem_nonagr_WATERGAP_adjusted <- toolHarmonize2Baseline(x=watdem_nonagr_WATERGAP, base=tmp, ref_year="y2005", limited=TRUE, hard_cut=FALSE)
+    # Harmonization (Ref_year: 2010 because both ISIMIP historical (available until 2014) and WATERGAP (available from 2005) data are smoothed)
+    watdem_nonagr_WATERGAP_adjusted <- toolHarmonize2Baseline(x=watdem_nonagr_WATERGAP, base=tmp, ref_year=baseyear, limited=TRUE, hard_cut=FALSE)
 
     # WATERGAP adjusted future scenario data
-    watdem_nonagr[,getYears(watdem_nonagr_WATERGAP),getNames(watdem_nonagr_WATERGAP)] <- watdem_nonagr_WATERGAP_adjusted[,getYears(watdem_nonagr_WATERGAP),getNames(watdem_nonagr_WATERGAP)]
+    # Data follows common scenario (WATERGAP SSP2) until 2020, then scenarios diverge; Note: ISIMIP stays constant for future
+    watdem_nonagr[,years_harmonized,"consumption"] <- collapseNames(watdem_nonagr_WATERGAP_adjusted[,years_harmonized,"ssp2.consumption"])
+    watdem_nonagr[,years_harmonized,"withdrawal"]  <- collapseNames(watdem_nonagr_WATERGAP_adjusted[,years_harmonized,"ssp2.withdrawal"])
+    watdem_nonagr[,years_future,getNames(watdem_nonagr_WATERGAP)] <- watdem_nonagr_WATERGAP_adjusted[,years_future,getNames(watdem_nonagr_WATERGAP)]
 
     # Correct mismatches of withdrawal and consumption (withdrawals > consumption)
     watdem_nonagr[,,"withdrawal"]  <- pmax(watdem_nonagr[,,"withdrawal"], watdem_nonagr[,,"consumption"])
