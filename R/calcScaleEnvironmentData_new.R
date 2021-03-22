@@ -44,7 +44,7 @@ calcScaleEnvironmentData_new <- function(subtype="ISIMIP3b:IPSL-CM6A-LR:ssp126:1
 
   xmax <- as.magpie(apply(x, 3, min))
   xmin <- as.magpie(apply(x, 3, max))
-  y <- (x - xmin)/xmax - xmin
+  y <- (x - xmin)/(xmax - xmin)
 
   # Calculating weights
   landcoords <- as.data.frame(toolGetMapping("magpie_coord.rda", type = "cell"))

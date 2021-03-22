@@ -29,7 +29,7 @@ calcScaledPastSoilCarbon <-
     x <- calcOutput("CollectSoilCarbonLSU", lsu_levels = lsu_levels, lpjml = lpjml, climatetype = climatetype, scenario = scenario, sar = sar, aggregate = F)
     xmax <- max(x)
     xmin <-  min(x)
-    y <- (x - xmin)/xmax - xmin
+    y <- (x - xmin)/(xmax - xmin)
 
     # Calculating weights
     landcoords <- as.data.frame(toolGetMapping("magpie_coord.rda", type = "cell"))
