@@ -26,6 +26,7 @@ calcPastYields_new <-
     x <- calcOutput("ContGrazMax_new", lsu_levels = lsu_levels, lpjml = lpjml, climatetype = climatetype, scenario = scenario, report = "harvest", aggregate = F)
     y <- calcOutput("Mowing_new", mowing_events = mowing_events, lpjml = lpjml, climatetype = climatetype, scenario = scenario,  aggregate = F)
     pasture <- mbind(x,y)
+    pasture <- toolHoldConstantBeyondEnd(pasture)
 
     # Calculating weights
     landcoords <- as.data.frame(toolGetMapping("magpie_coord.rda", type = "cell"))
