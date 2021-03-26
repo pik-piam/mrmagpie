@@ -13,11 +13,6 @@
 #' readSource("Zabel", subtype = "baseline", convert = "onlycorrect")
 #' }
 #'
-#' @import madrat
-#' @import magclass as.magpie
-#' @import mrcommons toolGetMappingCoord2Country
-#' @import raster crs raster aggregate
-#'
 #'
 
 readZabel2014 <- function(subtype = "baseline") {
