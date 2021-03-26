@@ -2,7 +2,7 @@
 #' @description Reads crop suitability data published in Zabel, F., Putzenlechner, B., & Mauser, W. (2014). Global Agricultural Land Resources – A High Resolution Suitability Evaluation and Its Perspectives until 2100 under Climate Change Conditions. PLOS ONE, 9(9), e107522. https://doi.org/10.1371/journal.pone.0107522
 #' @param subtype The different options are:
 #' \itemize{
-#' \item \code{"baseline"}: Of the total marginal land (suitability index = 0.0 - 0.33), areas with an index of 0.1 and lower are excluded.
+#' \item \code{"default"}: Of the total marginal land (suitability index = 0.0 - 0.33), areas with an index of 0.1 and lower are excluded.
 #' \item \code{"half_marginal"}: Areas with an suitability index of 0.16 and lower are excluded.
 #' \item \code{"no_marginal"}: Areas with an suitability index of 0.33 and lower are excluded.
 #' }
@@ -10,12 +10,12 @@
 #' @author Patrick v. Jeetze
 #' @examples
 #' \dontrun{
-#' readSource("Zabel", subtype = "baseline", convert = "onlycorrect")
+#' readSource("Zabel", subtype = "default", convert = "onlycorrect")
 #' }
 #'
 #'
 
-readZabel2014 <- function(subtype = "baseline") {
+readZabel2014 <- function(subtype = "default") {
 
   # read Zabel data (make sure that .hdr file is also in folder)
   zabel_raw <- raster("/cropsuitability_rainfed_and_irrigated/1981-2010/overall_cropsuit_i_1981-2010/overall_cropsuit_i_1981-2010.bil")
@@ -31,7 +31,7 @@ readZabel2014 <- function(subtype = "baseline") {
   # In Zabel et al. (2014) marginal land is defined by a suitability index <= 0.33
 
   zabel_si <- zabel_rescaled
-  if (subtype == "baseline") {
+  if (subtype == "default") {
     # for consistency with older magpie versions this is the same threshold that was applied to the previous
     # data set by Ramankutty et al. (2002)
     zabel_si[zabel_si <= 0.1] <- 0
