@@ -4,12 +4,12 @@
 \alias{readZabel2014}
 \title{readZabel2014}
 \usage{
-readZabel2014(subtype = "baseline")
+readZabel2014(subtype = "default")
 }
 \arguments{
 \item{subtype}{The different options are:
 \itemize{
-\item \code{"baseline"}: Of the total marginal land (suitability index = 0.0 - 0.33), areas with an index of 0.1 and lower are excluded.
+\item \code{"default"}: Of the total marginal land (suitability index = 0.0 - 0.33), areas with an index of 0.1 and lower are excluded.
 \item \code{"half_marginal"}: Areas with an suitability index of 0.16 and lower are excluded.
 \item \code{"no_marginal"}: Areas with an suitability index of 0.33 and lower are excluded.
 }}
@@ -22,7 +22,7 @@ Reads crop suitability data published in Zabel, F., Putzenlechner, B., & Mauser,
 }
 \examples{
 \dontrun{
-readSource("Zabel", subtype = "baseline", convert = "onlycorrect")
+readSource("Zabel", subtype = "default", convert = "onlycorrect")
 }
 
 
