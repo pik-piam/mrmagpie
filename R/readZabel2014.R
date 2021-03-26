@@ -59,6 +59,8 @@ readZabel2014 <- function(subtype = "default") {
 
   # divide by number of land cells to obtain share of suitable crop land per 0.5 degree cell
   zabel_si_share_0.5 <- zabel_si_0.5 / zabel_landcells_0.5
+  # in some cells -> 0/0=NA
+  zabel_si_share_0.5[is.na(zabel_si_share_0.5)] <- 0
 
   ### Create magpie object
 
