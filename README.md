@@ -1,6 +1,6 @@
 # madrat based MAgPIE Input Data Library
 
-R package **mrmagpie**, version **0.44.15**
+R package **mrmagpie**, version **0.44.16**
 
 [![CRAN status](https://www.r-pkg.org/badges/version/mrmagpie)](https://cran.r-project.org/package=mrmagpie) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4319612.svg)](https://doi.org/10.5281/zenodo.4319612)  [![R build status](https://github.com/pik-piam/mrmagpie/workflows/check/badge.svg)](https://github.com/pik-piam/mrmagpie/actions) [![codecov](https://codecov.io/gh/pik-piam/mrmagpie/branch/master/graph/badge.svg)](https://codecov.io/gh/pik-piam/mrmagpie)
 
@@ -38,8 +38,8 @@ In case of questions / problems please contact Kristine Karstens <karstens@pik-p
 
 To cite package **mrmagpie** in publications use:
 
-Karstens K, Dietrich J, Chen D, Windisch M, Alves M, Beier F, v. Jeetze P, Mishra A, Humpenoeder F (2020). _mrmagpie: madrat based
-MAgPIE Input Data Library_. R package version 0.26.1.
+Karstens K, Dietrich J, Chen D, Windisch M, Alves M, Beier F, v. Jeetze P, Mishra A, Humpenoeder F (2020).
+_mrmagpie: madrat based MAgPIE Input Data Library_. R package version 0.26.1.
 
 A BibTeX entry for LaTeX users is
 

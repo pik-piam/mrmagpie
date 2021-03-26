@@ -29,7 +29,6 @@ calcPastYields_new <-
     pasture <- toolHoldConstantBeyondEnd(pasture)
     pasture <- pasture * gCm2yTotDMy
 
-
     # Calculating weights
     landcoords <- as.data.frame(toolGetMapping("magpie_coord.rda", type = "cell"))
     landcoords <- cbind(landcoords, rep(1,nrow(landcoords)))
