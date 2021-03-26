@@ -27,7 +27,7 @@ calcMowing_new <- function(mowing_events = "me2", lpjml = "lpjml5.2_pasture", cl
   return(list(
     x = x,
     weight = NULL,
-    unit = "tDM/ha/yr",
+    unit = "gC/m2/y",
     description = paste("Mowing_new pasture yields"),
     isocountries = FALSE
   ))

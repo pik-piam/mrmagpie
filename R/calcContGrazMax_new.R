@@ -28,7 +28,7 @@ calcContGrazMax_new <-
     cell <- NULL
     lsu_ha <- NULL
     value <- NULL
-    toolHoldConstant
+
 
     lsu_levels <- gsub("\\.", "p", lsu_levels)
     years <- 1965:2100
@@ -66,7 +66,7 @@ calcContGrazMax_new <-
         list(
           x = max_harvest,
           weight = NULL,
-          unit = "t/DM/y",
+          unit = "gC/m2/y",
           description = "Maximum pasture yields obtained with continuous grazing",
           isocountries = FALSE
         )
