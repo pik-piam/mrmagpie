@@ -1,24 +1,24 @@
 #' @title readZabel2014
-#' @description Reads crop suitability data published in Zabel, F., Putzenlechner, B., & Mauser, W. (2014). Global Agricultural Land Resources – A High Resolution Suitability Evaluation and Its Perspectives until 2100 under Climate Change Conditions. PLOS ONE, 9(9), e107522. https://doi.org/10.1371/journal.pone.0107522
+#' @description Reads crop suitability data published in Zabel, F., Putzenlechner, B., & Mauser, W. (2014). Global Agricultural Land Resources – A High Resolution Suitability Evaluation and Its Perspectives until 2100 under Climate Change Conditions. PLOS ONE, 9(9), e107522. https://doi.org/10.1371/journal.pone.0107522 and extracts the share of suitable cropland per grid cell, depending on different suitability thresholds.
 #' @param subtype The different options are:
 #' \itemize{
-#' \item \code{"default"}: Of the total marginal land (suitability index = 0.0 - 0.33), areas with an index of 0.1 and lower are excluded.
+#' \item \code{"all_marginal"}: Of the total marginal land (suitability index = 0.0 - 0.33), areas with an index of 0.1 and lower are excluded.
 #' \item \code{"half_marginal"}: Areas with an suitability index of 0.16 and lower are excluded.
 #' \item \code{"no_marginal"}: Areas with an suitability index of 0.33 and lower are excluded.
 #' }
-#' @return Returns magpie objects with area of suitable cropland per grid cell
+#' @return Returns magpie objects with the share of suitable cropland per grid cell
 #' @author Patrick v. Jeetze
 #' @examples
 #' \dontrun{
-#' readSource("Zabel", subtype = "default", convert = "onlycorrect")
+#' readSource("Zabel2014", subtype = "all_marginal", convert = "onlycorrect")
 #' }
 #'
 #'
 
-readZabel2014 <- function(subtype = "default") {
+readZabel2014 <- function(subtype = "all_marginal") {
 
   # read Zabel data (make sure that .hdr file is also in folder)
-  zabel_raw <- raster("/cropsuitability_rainfed_and_irrigated/1981-2010/overall_cropsuit_i_1981-2010/overall_cropsuit_i_1981-2010.bil")
+  zabel_raw <- raster("./cropsuitability_rainfed_and_irrigated/1981-2010/overall_cropsuit_i_1981-2010/overall_cropsuit_i_1981-2010.bil")
   crs(zabel_raw) <- "+proj=longlat +datum=WGS84 +no_defs"
   # minimum and maximum crop suitability value in the raw data
   zabel_min <- 0
@@ -31,15 +31,15 @@ readZabel2014 <- function(subtype = "default") {
   # In Zabel et al. (2014) marginal land is defined by a suitability index <= 0.33
 
   zabel_si <- zabel_rescaled
-  if (subtype == "default") {
+  if (subtype == "all_marginal") {
     # for consistency with older magpie versions this is the same threshold that was applied to the previous
     # data set by Ramankutty et al. (2002)
     zabel_si[zabel_si <= 0.1] <- 0
     zabel_si[zabel_si > 0.1] <- 1
   } else if (subtype == "half_marginal") {
     # the suitability threshold is set at half the range of marginal land
-    zabel_si[zabel_si <= 0.16] <- 0
-    zabel_si[zabel_si > 0.16] <- 1
+    zabel_si[zabel_si <= 0.2] <- 0
+    zabel_si[zabel_si > 0.2] <- 1
   } else if (subtype == "no_marginal") {
     # marginal land is fully excluded
     zabel_si[zabel_si <= 0.33] <- 0

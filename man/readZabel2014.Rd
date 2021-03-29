@@ -4,25 +4,25 @@
 \alias{readZabel2014}
 \title{readZabel2014}
 \usage{
-readZabel2014(subtype = "default")
+readZabel2014(subtype = "all_marginal")
 }
 \arguments{
 \item{subtype}{The different options are:
 \itemize{
-\item \code{"default"}: Of the total marginal land (suitability index = 0.0 - 0.33), areas with an index of 0.1 and lower are excluded.
+\item \code{"all_marginal"}: Of the total marginal land (suitability index = 0.0 - 0.33), areas with an index of 0.1 and lower are excluded.
 \item \code{"half_marginal"}: Areas with an suitability index of 0.16 and lower are excluded.
 \item \code{"no_marginal"}: Areas with an suitability index of 0.33 and lower are excluded.
 }}
 }
 \value{
-Returns magpie objects with area of suitable cropland per grid cell
+Returns magpie objects with the share of suitable cropland per grid cell
 }
 \description{
-Reads crop suitability data published in Zabel, F., Putzenlechner, B., & Mauser, W. (2014). Global Agricultural Land Resources – A High Resolution Suitability Evaluation and Its Perspectives until 2100 under Climate Change Conditions. PLOS ONE, 9(9), e107522. https://doi.org/10.1371/journal.pone.0107522
+Reads crop suitability data published in Zabel, F., Putzenlechner, B., & Mauser, W. (2014). Global Agricultural Land Resources – A High Resolution Suitability Evaluation and Its Perspectives until 2100 under Climate Change Conditions. PLOS ONE, 9(9), e107522. https://doi.org/10.1371/journal.pone.0107522 and extracts the share of suitable cropland per grid cell, depending on different suitability thresholds.
 }
 \examples{
 \dontrun{
-readSource("Zabel", subtype = "default", convert = "onlycorrect")
+readSource("Zabel2014", subtype = "all_marginal", convert = "onlycorrect")
 }
 
 

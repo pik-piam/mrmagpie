@@ -13,7 +13,7 @@
 #'
 #' @importFrom madrat toolConditionalReplace
 
-correctHalfEarth <- function(x){
+correctZabel2014 <- function(x){
 
   x <- toolConditionalReplace(x, conditions = c("is.na()","<0"), replaceby = 0)
 
