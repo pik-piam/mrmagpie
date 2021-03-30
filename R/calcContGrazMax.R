@@ -53,7 +53,7 @@ calcContGrazMax <-
     y <- mutate(y, year = substr(year, 2, 5), lsu_ha = as.numeric(gsub("p", ".", lsu_ha)))
     y <- group_by(y, cell, year, water)
     y <- filter(y, value == max(value))
-    y <- filter(y, lsu_ha == max(lsu_ha))
+    y <- filter(y, lsu_ha == min(lsu_ha))
 
     if (report == "harvest") {
       max_harvest <- as.magpie(y[, -4], tidy = TRUE, replacement = ".")

@@ -18,7 +18,6 @@
 #'
 #'
 
-
 calcPastYields_new <-
   function(lsu_levels = c(seq(0, 2, 0.2), 2.5), mowing_events = "me2", lpjml= "lpjml5.2_pasture", climatetype = "IPSL_CM6A_LR", scenario = "ssp126_co2_limN") {
 
