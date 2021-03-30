@@ -7,21 +7,21 @@
 calcAvlCropland(cropland_scen = "all", cells = "magpiecell")
 }
 \arguments{
-\item{cropland_scen}{different are
+\item{cropland_scen}{different options are
 \itemize{
-\item \code{"allmarginal_0pNonCropVeg"}:
-\item \code{"allmarginal_10pNonCropVeg"}:
-\item \code{"allmarginal_20pNonCropVeg"}:
-\item \code{"allmarginal_30pNonCropVeg"}:
-\item \code{"halfmarginal_0pNonCropVeg"}:
-\item \code{"halfmarginal_10pNonCropVeg"}:
-\item \code{"halfmarginal_20pNonCropVeg"}:
-\item \code{"halfmarginal_30pNonCropVeg"}:
-\item \code{"nomarginal_0pNonCropVeg"}:
-\item \code{"nomarginal_10pNonCropVeg"}:
-\item \code{"nomarginal_20pNonCropVeg"}:
-\item \code{"nomarginal_30pNonCropVeg"}:
-\item \code{"all"}:
+\item \code{"allmarginal_0pNonCropVeg"}: All marginal land, 0 \% conservation of non-cropland vegetation
+\item \code{"allmarginal_10pNonCropVeg"}: All marginal land, 10 \% conservation of non-cropland vegetation
+\item \code{"allmarginal_20pNonCropVeg"}: All marginal land, 20 \% conservation of non-cropland vegetation
+\item \code{"allmarginal_30pNonCropVeg"}: All marginal land, 30 \% conservation of non-cropland vegetation
+\item \code{"halfmarginal_0pNonCropVeg"}: Half of the marginal land excluded, 0 \% conservation of non-cropland vegetation
+\item \code{"halfmarginal_10pNonCropVeg"}: Half of the marginal land excluded, 10 \% conservation of non-cropland vegetation
+\item \code{"halfmarginal_20pNonCropVeg"}: Half of the marginal land excluded, 20 \% conservation of non-cropland vegetation
+\item \code{"halfmarginal_30pNonCropVeg"}: Half of the marginal land excluded, 30 \% conservation of non-cropland vegetation
+\item \code{"nomarginal_0pNonCropVeg"}: No marginal land, 0 \% conservation of non-cropland vegetation
+\item \code{"nomarginal_10pNonCropVeg"}: No marginal land, 10 \% conservation of non-cropland vegetation
+\item \code{"nomarginal_20pNonCropVeg"}: No marginal land, 20 \% conservation of non-cropland vegetation
+\item \code{"nomarginal_30pNonCropVeg"}: No marginal land, 30 \% conservation of non-cropland vegetation
+\item \code{"all"}: Returns all information of the above options
 }}
 
 \item{cells}{magpiecell (59199 cells) or lpjcell (67420 cells)}
