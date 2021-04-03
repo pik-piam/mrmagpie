@@ -69,7 +69,7 @@ readZabel2014 <- function(subtype = "all_marginal") {
   # transform raster to magpie object
   out <- as.magpie(extract(zabel_si_share_0.5, map[c("lon", "lat")]), spatial = 1)
   # set dimension names
-  dimnames(out) <- list("x.y.iso"=paste(map$coords, map$iso, sep = "."), "t"="y1985", "data"=paste0("si0_",subtype))
+  dimnames(out) <- list("x.y.iso"=paste(map$coords, map$iso, sep = "."), "t"=NULL, "data"=paste0("si0_",subtype))
 
   return(out)
 }
