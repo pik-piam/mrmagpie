@@ -4,15 +4,15 @@
 \alias{calcAvlCropland}
 \title{calcAvlCropland}
 \usage{
-calcAvlCropland(cropland_scen = "all", cells = "magpiecell")
+calcAvlCropland(marginal_land = "default", cells = "magpiecell")
 }
 \arguments{
-\item{cropland_scen}{different options are
+\item{marginal_land}{different options are
 \itemize{
 \item \code{"all_marginal"}: Include all marginal land
 \item \code{"half_marginal"}: Half of the marginal land is excluded
 \item \code{"no_marginal"}: Marginal land is fully excluded
-\item \code{"all"}: Returns all of the above options
+\item \code{"default"}: Returns all of the above options
 }}
 
 \item{cells}{magpiecell (59199 cells) or lpjcell (67420 cells)}
@@ -26,7 +26,7 @@ cropland suitability data or other criteria, such as constraints on cropland exp
 }
 \examples{
 \dontrun{
-calcOutput("AvlCropland", cropland_scen = "all", cells = "magpiecell", aggregate = FALSE)
+calcOutput("AvlCropland", marginal_land = "default", cells = "magpiecell", aggregate = FALSE)
 }
 
 }

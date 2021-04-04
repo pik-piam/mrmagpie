@@ -2,12 +2,12 @@
 #' @description Calculates the total available cropland per grid cell, based on physical
 #' cropland suitability data or other criteria, such as constraints on cropland expansion
 #'
-#' @param cropland_scen different options are
+#' @param marginal_land different options are
 #' \itemize{
 #' \item \code{"all_marginal"}: Include all marginal land
 #' \item \code{"half_marginal"}: Half of the marginal land is excluded
 #' \item \code{"no_marginal"}: Marginal land is fully excluded
-#' \item \code{"all"}: Returns all of the above options
+#' \item \code{"default"}: Returns all of the above options
 #' }
 #' @param cells magpiecell (59199 cells) or lpjcell (67420 cells)
 #'
@@ -16,7 +16,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' calcOutput("AvlCropland", cropland_scen = "all", cells = "magpiecell", aggregate = FALSE)
+#' calcOutput("AvlCropland", marginal_land = "default", cells = "magpiecell", aggregate = FALSE)
 #' }
 #'
 #' @importFrom madrat readSource calcOutput
@@ -25,7 +25,7 @@
 #' @importFrom magpiesets addLocation
 #'
 
-calcAvlCropland <- function(cropland_scen="all", cells = "magpiecell"){
+calcAvlCropland <- function(marginal_land="default", cells = "magpiecell"){
 
   # read luh data
   luh <- calcOutput("LUH2v2", landuse_types="magpie", aggregate=FALSE, cellular=TRUE, cells="lpjcell", irrigation=FALSE, years="y1995")
@@ -38,7 +38,7 @@ calcAvlCropland <- function(cropland_scen="all", cells = "magpiecell"){
 
   x <- as.magpie(NULL)
 
-  if (any(grepl("all_marginal", cropland_scen)) | cropland_scen == "all") {
+  if (any(grepl("all_marginal", marginal_land)) | marginal_land == "default") {
     cropsuit <- readSource("Zabel2014", subtype = "all_marginal", convert = "onlycorrect")
     # cropland suitability is corrected where LUH reports cropland
     cropsuit <- pmax(cropsuit, crop_shr_luh)
@@ -50,7 +50,7 @@ calcAvlCropland <- function(cropland_scen="all", cells = "magpiecell"){
     x <- mbind(x, tmp)
   }
 
-  if (any(grepl("half_marginal", cropland_scen)) | cropland_scen == "all") {
+  if (any(grepl("half_marginal", marginal_land)) | marginal_land == "default") {
     cropsuit <- readSource("Zabel2014", subtype = "half_marginal", convert = "onlycorrect")
     # cropland suitability is corrected where LUH reports cropland
     cropsuit <- pmax(cropsuit, crop_shr_luh)
@@ -62,7 +62,7 @@ calcAvlCropland <- function(cropland_scen="all", cells = "magpiecell"){
     x <- mbind(x, tmp)
   }
 
-  if (any(grepl("no_marginal", cropland_scen)) | cropland_scen == "all") {
+  if (any(grepl("no_marginal", marginal_land)) | marginal_land == "default") {
     cropsuit <- readSource("Zabel2014", subtype = "no_marginal", convert = "onlycorrect")
     # cropland suitability is corrected where LUH reports cropland
     cropsuit <- pmax(cropsuit, crop_shr_luh)
