@@ -32,7 +32,7 @@
 
 fullCELLULARMAGPIE <- function(rev=0.1, dev="", ctype="c200", climatetype="GFDL-ESM4:ssp370",
                                lpjml=c(natveg="LPJmL4_for_MAgPIE_84a69edd", crop="ggcmi_phase3_nchecks_72c185fa",
-                                       pasture="lpjml5p2_pasture"), clusterweight=NULL) {
+                                       pasture="LPJmL_cgrazing", mowing= "LPJmL_mowing"), clusterweight=NULL) {
 
   sizelimit <- getOption("magclass_sizeLimit")
   options(magclass_sizeLimit=1e+12)
@@ -64,18 +64,19 @@ fullCELLULARMAGPIE <- function(rev=0.1, dev="", ctype="c200", climatetype="GFDL-
   if(grepl("pasturetest",dev)){
 
     if(grepl("nN",dev)){
-      calcOutput("PastYields_new", lsu_levels = c(seq(0, 2, 0.2), 2.5), mowing_events = "me2", lpjml= "lpjml5p2_pasture", climatetype = "IPSL_CM6A_LR", scenario = "ssp126_co2_noN", file=paste0("lpj_past_yields_new_", ctype, ".mz"), years = mag_years)
+      calcOutput("PastYields_new", lsu_levels = c(seq(0, 2.2, 0.2), 2.5), mowing_events = "me2", lpjml= "lpjml5p2_pasture", climatetype = "IPSL_CM6A_LR", scenario = "ssp126_co2_noN", file=paste0("lpj_past_yields_new_", ctype, ".mz"), years = mag_years)
       calcOutput("ScaleEnvironmentData_new", subtype="ISIMIP3b:IPSL-CM6A-LR:ssp126:1965-2100", sar = 20, sel_feat = c("tas","pr", "lwnet", "rsds", "CO2", "Ks", "Sf", "w_pwp", "w_fc", "w_sat", "hsg"), aggregate="cluster", file=paste0("soilc_ml_environment_scaled_new_", ctype, ".mz"))
       calcOutput("ScaleEnvironmentData_new", subtype="ISIMIP3b:IPSL-CM6A-LR:ssp126:1965-2100", sar = 20, sel_feat = c("tas","pr", "lwnet", "rsds", "CO2", "Ks", "Sf", "w_pwp", "w_fc", "w_sat", "hsg"), aggregate="cluster", file=paste0("environment_scaled_new_", ctype, ".mz"), years = mag_years)
       calcOutput("ScaledPastSoilCarbon", lsu_levels = c(seq(0, 2.2, 0.2), 2.5), lpjml = "lpjml5p2_pasture", climatetype = "IPSL_CM6A_LR", scenario = "ssp126_co2_noN", sar = 20, aggregate="cluster", file=paste0("soilc_ml_stocks_new_", ctype, ".mz"))
       calcOutput("SCScalingFactors", lsu_levels = c(seq(0, 2.2, 0.2), 2.5), lpjml = "lpjml5p2_pasture", climatetype = "IPSL_CM6A_LR", scenario = "ssp126_co2_noN", sar = 20, aggregate=F, file = paste0("SCScalingFactors_", ctype, ".mz"))
 
     } else {
-      calcOutput("PastYields_new", lsu_levels = c(seq(0, 2, 0.2), 2.5), mowing_events = "me2", lpjml= "lpjml5p2_pasture", climatetype = "IPSL_CM6A_LR", scenario = "ssp126_co2_limN", file=paste0("lpj_past_yields_new_", ctype, ".mz"), years = mag_years)
+      calcOutput("PastYields_new", lsu_levels = c(seq(0, 2.2, 0.2), 2.5), mowing_events = "me2", lpjml= "lpjml5p2_pasture", climatetype = "IPSL_CM6A_LR", scenario = "ssp126_co2_limN", file=paste0("lpj_past_yields_new_", ctype, ".mz"), years = mag_years)
       calcOutput("ScaleEnvironmentData_new", subtype="ISIMIP3b:IPSL-CM6A-LR:ssp126:1965-2100", sar = 20, sel_feat = c("tas","pr", "lwnet", "rsds", "CO2", "Ks", "Sf", "w_pwp", "w_fc", "w_sat", "hsg"), aggregate="cluster", file=paste0("soilc_ml_environment_scaled_new_", ctype, ".mz"))
       calcOutput("ScaleEnvironmentData_new", subtype="ISIMIP3b:IPSL-CM6A-LR:ssp126:1965-2100", sar = 20, sel_feat = c("tas","pr", "lwnet", "rsds", "CO2", "Ks", "Sf", "w_pwp", "w_fc", "w_sat", "hsg"), aggregate="cluster", file=paste0("environment_scaled_new_", ctype, ".mz"), years = mag_years)
       calcOutput("ScaledPastSoilCarbon", lsu_levels = c(seq(0, 2.2, 0.2), 2.5), lpjml = "lpjml5p2_pasture", climatetype = "IPSL_CM6A_LR", scenario = "ssp126_co2_limN", sar = 20, aggregate="cluster", file=paste0("soilc_ml_stocks_new_", ctype, ".mz"))
       calcOutput("SCScalingFactors", lsu_levels = c(seq(0, 2.2, 0.2), 2.5), lpjml = "lpjml5p2_pasture", climatetype = "IPSL_CM6A_LR", scenario = "ssp126_co2_limN", sar = 20, aggregate=F, file = paste0("SCScalingFactors_", ctype, ".mz"))
+    }
   }
 
   calcOutput("ClimateClass", aggregate="cluster", years="y2015", file=paste0("koeppen_geiger_", ctype, ".mz"))
