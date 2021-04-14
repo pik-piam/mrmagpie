@@ -27,9 +27,9 @@ calcScaledPastSoilCarbon <-
   function(lsu_levels = c(seq(0, 2, 0.2), 2.5), lpjml = "LPJML5.2_pasture", climatetype = "IPSL_CM6A_LR", scenario = "ssp126_co2_limN", sar = 20) {
 
     x <- calcOutput("CollectSoilCarbonLSU", lsu_levels = lsu_levels, lpjml = lpjml, climatetype = climatetype, scenario = scenario, sar = sar, aggregate = F)
-    xmax <- max(x)
-    xmin <-  min(x)
-    y <- (x - xmin)/(xmax - xmin)
+    # xmax <- max(x)
+    # xmin <-  min(x)
+    # y <- (x - xmin)/(xmax - xmin)
 
     # Calculating weights
     landcoords <- as.data.frame(toolGetMapping("magpie_coord.rda", type = "cell"))
@@ -43,7 +43,7 @@ calcScaledPastSoilCarbon <-
 
     return(
       list(
-        x = y,
+        x = x,
         weight = weight,
         unit = NULL,
         description = "Soil carbon stocks per lsu level",
