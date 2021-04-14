@@ -42,9 +42,9 @@ calcScaleEnvironmentData_new <- function(subtype="ISIMIP3b:IPSL-CM6A-LR:ssp126:1
   # xstd <-  apply(x, 3, sd)
   # y <- (x - as.magpie(xmeans))/as.magpie(xstd)
 
-  xmax <- as.magpie(apply(x, 3, min))
-  xmin <- as.magpie(apply(x, 3, max))
-  y <- (x - xmin)/(xmax - xmin)
+  # xmax <- as.magpie(apply(x, 3, min))
+  # xmin <- as.magpie(apply(x, 3, max))
+  # y <- (x - xmin)/(xmax - xmin)
 
   # Calculating weights
   landcoords <- as.data.frame(toolGetMapping("magpie_coord.rda", type = "cell"))
@@ -57,7 +57,7 @@ calcScaleEnvironmentData_new <- function(subtype="ISIMIP3b:IPSL-CM6A-LR:ssp126:1
   weight <- toolOrderCells(collapseDim(addLocation(weight),dim=c("x","y")))
 
   return(list(
-    x = y,
+    x = x,
     weight = weight,
     unit =
       "temperature: Degree Celcius,
