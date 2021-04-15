@@ -76,6 +76,7 @@ fullCELLULARMAGPIE <- function(rev=0.1, dev="", ctype="c200", climatetype="GFDL-
       calcOutput("ScaleEnvironmentData_new", subtype = "ISIMIP3b:IPSL-CM6A-LR:ssp126:1965-2100", sar = 20, sel_feat = c("tas", "pr", "lwnet", "rsds", "CO2", "Ks", "Sf", "w_pwp", "w_fc", "w_sat", "hsg"), aggregate = F, file = paste0("environment_scaled_new_", ctype, ".mz"), years = mag_years)
       calcOutput("ScaledPastSoilCarbon", lsu_levels = c(seq(0, 2.2, 0.2), 2.5), lpjml = "lpjml5p2_pasture", climatetype = "IPSL_CM6A_LR", scenario = "ssp126_co2_limN", sar = 20, aggregate = F, file = paste0("soilc_ml_stocks_new_", ctype, ".mz"))
       calcOutput("SCScalingFactors", lsu_levels = c(seq(0, 2.2, 0.2), 2.5), lpjml = "lpjml5p2_pasture", climatetype = "IPSL_CM6A_LR", scenario = "ssp126_co2_limN", sar = 20, aggregate = F, file = paste0("SCScalingFactors_", ctype, ".mz"))
+      calcOutput("CollectSoilCarbonMow", mowing_events = "me2", lpjml = "LPJML5p2_pasture", climatetype = "IPSL_CM6A_LR", aggregate ="cluster", scenario = "ssp126_co2_limN", sar = 20,  years = mag_years, file = paste0("soilc_stocks_mow_", ctype, ".mz"))
     }
   }
 
