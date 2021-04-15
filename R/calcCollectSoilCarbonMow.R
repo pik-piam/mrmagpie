@@ -24,7 +24,7 @@
 #'
 
 calcCollectSoilCarbonMow <-
-  function(mowing_events = "me2", lpjml = "LPJML5p2_pasture", climatetype = "IPSL_CM6A_LR", scenario = "ssp126_co2_limN", sar = 20) {
+  function(mowing_events = "me2", lpjml = "lpjml5p2_pasture", climatetype = "IPSL_CM6A_LR", scenario = "ssp126_co2_limN", sar = 20) {
 
     .subtype <- paste(lpjml, climatetype,paste0(scenario,"_", mowing_events),sep = ":")
     hist <- toolCoord2Isocell(readSource("LPJmL_new", subtype = paste(.subtype, "soilc_past_hist", sep = ":"), convert = F))
@@ -32,6 +32,7 @@ calcCollectSoilCarbonMow <-
     y <- mbind(hist,scen)
     y <- toolTimeAverage(y, averaging_range = sar)
     y <- toolHoldConstant(y, (max(getYears(y, as.integer = TRUE)) + 1):2150)
+    getNames(y) <- "soilc_Mow"
 
     unit_transform <- 0.01               # Transformation factor gC/m^2 --> t/ha
     y <- y * unit_transform

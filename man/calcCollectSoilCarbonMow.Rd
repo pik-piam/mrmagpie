@@ -6,7 +6,7 @@
 \usage{
 calcCollectSoilCarbonMow(
   mowing_events = "me2",
-  lpjml = "LPJML5p2_pasture",
+  lpjml = "lpjml5p2_pasture",
   climatetype = "IPSL_CM6A_LR",
   scenario = "ssp126_co2_limN",
   sar = 20
