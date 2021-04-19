@@ -25,7 +25,7 @@ calcWaterUseNonAg(
 
 \item{lpjml}{Defines LPJmL version for crop/grass and natveg specific inputs}
 
-\item{climatetype}{switch between different climate scenarios (default: "CRU_4") for calcGrowingPeriod}
+\item{climatetype}{switch between different climate scenarios for calcGrowingPeriod}
 }
 \value{
 magpie object in cellular resolution

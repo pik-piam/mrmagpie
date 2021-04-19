@@ -13,7 +13,7 @@
 #' @importFrom magpiesets findset
 #' @importFrom mrcommons toolCoord2Isocell
 
-calcTopsoilCarbon <- function(lpjml=c(natveg="LPJmL4_for_MAgPIE_84a69edd", crop="ggcmi_phase3_nchecks_72c185fa"),
+calcTopsoilCarbon <- function(lpjml=c(natveg="LPJmL4_for_MAgPIE_84a69edd", crop="ggcmi_phase3_nchecks_fbed5c8b"),
                                   climatetype="GSWP3-W5E5:historical"){
 
   if(climatetype=="GSWP3-W5E5:historical"){ stage <- "smoothed"

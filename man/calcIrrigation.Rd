@@ -14,7 +14,7 @@ calcIrrigation(
 \arguments{
 \item{lpjml}{Defines LPJmL version for crop/grass and natveg specific inputs}
 
-\item{climatetype}{Switch between different climate scenarios (default: "CRU_4")}
+\item{climatetype}{Switch between different climate scenarios}
 
 \item{rainfedweight}{For clustering airrig is weighted with cropland_irrigated + rainfedweight * cropland_rainfed (default: 0.01)}
 }

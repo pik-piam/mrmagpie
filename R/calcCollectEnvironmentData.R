@@ -1,6 +1,6 @@
 #' @title calcCollectEnvironmentData
 #' @description Calculate climate, CO2 and soil environmental conditions on cellular level
-#' @param climatetype Switch between different climate scenarios (default: "CRU_4")
+#' @param climatetype Switch between different climate scenarios
 #' @param sar Average range for smoothing annual variations
 #' @param sel_feat features names to be included in the output file
 #' @return magpie object in cellular resolution

@@ -15,7 +15,7 @@ calcGrowingPeriod(
 \arguments{
 \item{lpjml}{Defines LPJmL version for crop/grass and natveg specific inputs}
 
-\item{climatetype}{Switch between different climate scenarios (default: "CRU_4")}
+\item{climatetype}{Switch between different climate scenarios}
 
 \item{stage}{Degree of processing: raw, smoothed, harmonized, harmonized2020}
 

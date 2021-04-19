@@ -2,7 +2,7 @@
 #' @description Calculates mowing pasture yields
 #' @param mowing_events number of mowing events per year expressed as `2me`
 #' @param lpjml Defines LPJmL version for crop/grass and natveg specific inputs
-#' @param climatetype Switch between different climate scenarios (default: "CRU_4")
+#' @param climatetype Switch between different climate scenarios
 #' @return magpie object in cellular resolution
 #' @author Marcos Alves
 #'

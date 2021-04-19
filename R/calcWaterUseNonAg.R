@@ -5,7 +5,7 @@
 #' @param source      data source to be used (e.g. WATERGAP2020)
 #' @param lpjml              Defines LPJmL version for crop/grass and natveg specific inputs
 #' @param seasonality        grper (default): non-agricultural water demand in growing period per year; total: non-agricultural water demand throughout the year
-#' @param climatetype        switch between different climate scenarios (default: "CRU_4") for calcGrowingPeriod
+#' @param climatetype        switch between different climate scenarios for calcGrowingPeriod
 #' @param harmon_base_time   type of time smoothing applied before harmonization of WATERGAP data: average (average over 8-year time span around baseline year) or smoothing (time smoothing of baseline and WATERGAP scenario data) or NULL (no smoothing before harmonization)
 #'
 #' @return magpie object in cellular resolution

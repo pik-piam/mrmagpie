@@ -2,7 +2,7 @@
 #' @description This function extracts yields from LPJmL to MAgPIE
 #'
 #' @param lpjml Defines LPJmL version for crop/grass and natveg specific inputs
-#' @param climatetype Switch between different climate scenarios (default: "CRU_4")
+#' @param climatetype Switch between different climate scenarios
 #' @param cells if cellular is TRUE: "magpiecell" for 59199 cells or "lpjcell" for 67420 cells
 #' @return magpie object in cellular resolution
 #' @author Kristine Karstens, Felicitas Beier

@@ -3,7 +3,7 @@
 #' in order to determine when irrigation can take place.
 #'
 #' @param lpjml Defines LPJmL version for crop/grass and natveg specific inputs
-#' @param climatetype Switch between different climate scenarios (default: "CRU_4")
+#' @param climatetype Switch between different climate scenarios
 #' @param stage Degree of processing: raw, smoothed, harmonized, harmonized2020
 #' @param yield_ratio threshold for cell yield over global average. crops in cells below threshold will be ignored
 #'

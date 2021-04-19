@@ -2,7 +2,7 @@
 #' @description Calculate soil carbon stocks for different LSU and climate conditions
 #' @param lsu_levels Livestock unit levels in the source folder
 #' @param lpjml Defines LPJmL version for crop/grass and natveg specific inputs
-#' @param climatetype Switch between different climate scenarios (default: "CRU_4")
+#' @param climatetype Switch between different climate scenarios
 #' @param sar Average range for smoothing annual variations
 #' @param scenario scenario specifications (eg. ssp126_co2_limN)
 #' @return magpie object in cellular resolution

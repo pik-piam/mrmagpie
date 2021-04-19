@@ -13,7 +13,7 @@ calcCollectEnvironmentData(
 )
 }
 \arguments{
-\item{climatetype}{Switch between different climate scenarios (default: "CRU_4")}
+\item{climatetype}{Switch between different climate scenarios}
 
 \item{sar}{Average range for smoothing annual variations}
 

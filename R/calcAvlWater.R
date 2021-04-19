@@ -2,7 +2,7 @@
 #' @description This function calculates water availability for MAgPIE retrieved from LPJmL
 #'
 #' @param lpjml Defines LPJmL version for crop/grass and natveg specific inputs
-#' @param climatetype Switch between different climate scenarios (default: "CRU_4")
+#' @param climatetype Switch between different climate scenarios
 #' @param stage Degree of processing: raw, smoothed, harmonized, harmonized2020
 #' @param seasonality grper (default): water available in growing period per year; total: total water available throughout the year; monthly: monthly water availability (for further processing, e.g. in calcEnvmtlFlow)
 #'

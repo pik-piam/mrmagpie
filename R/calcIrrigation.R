@@ -2,7 +2,7 @@
 #' @description This function extracts irrigation water (airrig: water applied additionally to rainfall) from LPJmL to MAgPIE
 #'
 #' @param lpjml Defines LPJmL version for crop/grass and natveg specific inputs
-#' @param climatetype Switch between different climate scenarios (default: "CRU_4")
+#' @param climatetype Switch between different climate scenarios
 #' @param rainfedweight For clustering airrig is weighted with cropland_irrigated + rainfedweight * cropland_rainfed (default: 0.01)
 #'
 #' @return magpie object in cellular resolution

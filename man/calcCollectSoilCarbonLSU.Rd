@@ -17,7 +17,7 @@ calcCollectSoilCarbonLSU(
 
 \item{lpjml}{Defines LPJmL version for crop/grass and natveg specific inputs}
 
-\item{climatetype}{Switch between different climate scenarios (default: "CRU_4")}
+\item{climatetype}{Switch between different climate scenarios}
 
 \item{scenario}{scenario specifications (eg. ssp126_co2_limN)}
 

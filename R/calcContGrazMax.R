@@ -3,7 +3,7 @@
 #' @param report Either 'harvest' or 'lsu/ha' controlling what values are output by the function.
 #' @param lsu_levels Livestock unit levels in the source folder
 #' @param lpjml Defines LPJmL version for crop/grass and natveg specific inputs
-#' @param climatetype Switch between different climate scenarios (default: "CRU_4")
+#' @param climatetype Switch between different climate scenarios
 #' @return magpie object in cellular resolution
 #' @author Marcos Alves
 #'
