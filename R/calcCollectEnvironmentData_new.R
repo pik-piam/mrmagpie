@@ -43,12 +43,13 @@ calcCollectEnvironmentData_new <- function(subtype="ISIMIP3b:IPSL-CM6A-LR:ssp126
   years <- as.numeric(unlist(strsplit(x$period, "-")))
   syear <- years[1]
   fyear <- years[2]
+  sar   <- 0 # test mush be erased after
 
   # read in the individual climate variables, then smooth the dataset with toolAverage and extend the standardize the number of years)
   GCMVariables <- list()
   for (climate_variable in climate_variables) {
     GCMVariables[[climate_variable]] <- calcOutput("GCMClimate_new", aggregate = F, subtype = paste(x$version,x$climatemodel,x$scenario,full_simulation_period,climate_variable, sep = ":"))[, (syear - sar/2):fyear, ]
-    GCMVariables[[climate_variable]] <- toolTimeAverage(GCMVariables[[climate_variable]], averaging_range = sar)
+    #GCMVariables[[climate_variable]] <- toolTimeAverage(GCMVariables[[climate_variable]], averaging_range = sar)
     GCMVariables[[climate_variable]] <- toolHoldConstant(GCMVariables[[climate_variable]], (max(getYears(GCMVariables[[climate_variable]], as.integer = TRUE)) + 1):2150)
   }
   variables <- mbind(GCMVariables)

@@ -31,7 +31,7 @@ calcContGrazMax_new <-
 
 
     lsu_levels <- gsub("\\.", "p", lsu_levels)
-    years <- 1965:2100
+    years <- seq(1965,2100, 5)
     y <- list()
     for (lsu in lsu_levels) {
       .subtype <- paste(lpjml, climatetype,paste0(scenario,"_", lsu),sep = ":")

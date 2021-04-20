@@ -16,7 +16,7 @@
 
 calcMowing_new <- function(mowing_events = "me2", lpjml = "lpjml5.2_pasture", climatetype = "IPSL_CM6A_LR", scenario = "ssp126_co2_limN") {
 
-  years <- 1965:2100
+  years <- seq(1965,2100, 5)
   .subtype <- paste(lpjml, climatetype,paste0(scenario,"_", mowing_events),sep = ":")
   hist <- toolCoord2Isocell(readSource("LPJmL_new", subtype = paste(.subtype, "grass_pft_hist", sep = ":"), convert = F))
   scen <- toolCoord2Isocell(readSource("LPJmL_new", subtype = paste(.subtype, "grass_pft_scen", sep = ":"), convert = F))
