@@ -1,4 +1,4 @@
-#' @title calcSoilCarbon
+#' @title calcSoilTraining
 #' @description Calculate soil carbon stocks for different LSU and climate conditions
 #' @param lsu_levels Livestock unit levels in the source folder
 #' @param lpjml Defines LPJmL version for crop/grass and natveg specific inputs
@@ -39,6 +39,7 @@ calcSoilTraining <-
     GCM <- strsplit(climatetype, split = ":")
     GCM <- paste("soilc", GCM[[1]][1],GCM[[1]][2],sep = "_")
 
+    ###-> something is wrong here (SoilCarbon is not a valid calcOutput type like this)
     x <- calcOutput("SoilCarbon", aggregate = "cluster", lsu_levels = lsu_levels, lpjml = lpjml, climatetype = climatetype, sar = sar )
     y <- calcOutput("Environment", aggregate = "cluster", climatetype=climatetype, sar = sar )
     w <- add_columns(y, addnm = GCM)

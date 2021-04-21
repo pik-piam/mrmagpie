@@ -2,7 +2,7 @@
 % Please edit documentation in R/calcSoilTraining.R
 \name{calcSoilTraining}
 \alias{calcSoilTraining}
-\title{calcSoilCarbon}
+\title{calcSoilTraining}
 \usage{
 calcSoilTraining(
   lsu_levels = c(seq(0, 2, 0.2), 2.5),
