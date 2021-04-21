@@ -3,7 +3,6 @@
 #'
 #' @param lpjml Defines LPJmL version for crop/grass and natveg specific inputs
 #' @param climatetype Switch between different GCM climate scenarios
-#' @param pastsc2natvegsc Test switch for substituting pasture soil carbon to nat vet soil carbon
 #'
 #' @return magpie object in cellular resolution
 #' @author Kristine Karstens
@@ -15,7 +14,7 @@
 #' @importFrom magclass add_dimension
 
 calcCarbon <- function(lpjml=c(natveg="LPJmL4_for_MAgPIE_84a69edd", crop="ggcmi_phase3_nchecks_72c185fa"),
-                           climatetype="GSWP3-W5E5:historical", pastsc2natvegsc = FALSE){
+                           climatetype="GSWP3-W5E5:historical"){
 
   .getLPJmLCPools <- function(pool, cfg){
     out <- calcOutput("LPJmL_new", version=cfg$lpjml,
@@ -66,13 +65,12 @@ calcCarbon <- function(lpjml=c(natveg="LPJmL4_for_MAgPIE_84a69edd", crop="ggcmi_
 
   carbon_stocks[,,"past"]            <- grass
   grasssoil <- TRUE
-  if(pastsc2natvegsc) {
+
     if(dimSums(grass[,,"soilc"]*landuse[,,"past"], dim=c(1,2)) > dimSums(natveg[,,"soilc"]*landuse[,,"past"], dim=c(1,2))){
       # use natveg stock for soilc grassland, for too big soilc stocks in ALLCROP grass runs
       carbon_stocks[,,"past.soilc"]    <- natveg[,,"soilc"]
       grasssoil <- FALSE
     }
-  }
 
 
   carbon_stocks[,,"forestry"]        <- natveg

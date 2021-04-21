@@ -7,16 +7,13 @@
 calcCarbon(
   lpjml = c(natveg = "LPJmL4_for_MAgPIE_84a69edd", crop =
     "ggcmi_phase3_nchecks_72c185fa"),
-  climatetype = "GSWP3-W5E5:historical",
-  pastsc2natvegsc = FALSE
+  climatetype = "GSWP3-W5E5:historical"
 )
 }
 \arguments{
 \item{lpjml}{Defines LPJmL version for crop/grass and natveg specific inputs}
 
 \item{climatetype}{Switch between different GCM climate scenarios}
-
-\item{pastsc2natvegsc}{Test switch for substituting pasture soil carbon to nat vet soil carbon}
 }
 \value{
 magpie object in cellular resolution
