@@ -36,9 +36,10 @@ calcContGrazMax_new <-
     for (lsu in lsu_levels) {
       .subtype <- paste(lpjml, climatetype,paste0(scenario,"_", lsu),sep = ":")
       print(.subtype)
-      hist <- toolCoord2Isocell(readSource("LPJmL_new", subtype = paste(.subtype, "grass_pft_hist", sep = ":"), convert = F)[,years, "mgrass"])
-      scen <- toolCoord2Isocell(readSource("LPJmL_new", subtype = paste(.subtype, "grass_pft_scen", sep = ":"), convert = F)[,years, "mgrass"])
+      hist <- toolCoord2Isocell(readSource("LPJmL_new", subtype = paste(.subtype, "grass_pft_hist", sep = ":"), convert = F)[,, "mgrass"])
+      scen <- toolCoord2Isocell(readSource("LPJmL_new", subtype = paste(.subtype, "grass_pft_scen", sep = ":"), convert = F)[,, "mgrass"])
       x <- mbind(hist,scen)
+      x <- x[,years,]
       getNames(x) <- gsub("mgrass",lsu,getNames(x))
       y[[lsu]] <- x
     }
