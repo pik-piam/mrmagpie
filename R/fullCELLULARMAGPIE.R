@@ -59,8 +59,8 @@ fullCELLULARMAGPIE <- function(rev=0.1, dev="", ctype="c200", climatetype="GFDL-
   isimip_yieldswitch <- FALSE
   isimip_subtype=NULL
   if(grepl("ISIMIPyields",dev)){
-    yieldswitch=TRUE
-    isimip_subtype="ISIMIP3b:yields.EPIC-IIASA_ukesm1-0-ll_ssp585_default"
+    isimip_yieldswitch=TRUE
+    isimip_subtype="yields:EPIC-IIASA:ukesm1-0-ll:ssp585:default:3b"
   }
 
   calcOutput("Yields", aggregate = FALSE, lpjml=lpjml, climatetype=climatetype,
