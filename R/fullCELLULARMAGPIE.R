@@ -55,11 +55,21 @@ fullCELLULARMAGPIE <- function(rev=0.1, dev="", ctype="c200", climatetype="GFDL-
   # 09 drivers
 
   # 14 yields
+
+  isimip_yieldswitch <- FALSE
+  isimip_subtype=NULL
+  if(grepl("ISIMIPyields",dev)){
+    yieldswitch=TRUE
+    isimip_subtype="ISIMIP3b:yields.EPIC-IIASA_ukesm1-0-ll_ssp585_default"
+  }
+
   calcOutput("Yields", aggregate = FALSE, lpjml=lpjml, climatetype=climatetype,
-             round=2, years="y1995", file=paste0("lpj_yields_0.5.mz"))
+             round=2, years="y1995", replace_isimip3b=isimip_yieldswitch, isimip_subtype=isimip_subtype,
+             file=paste0("lpj_yields_0.5.mz"))
 
   calcOutput("Yields", aggregate = "cluster", lpjml=lpjml, climatetype=climatetype,
-             round=2, years=lpj_years, file = paste0("lpj_yields_", ctype, ".mz"))
+             round=2, years=lpj_years, replace_isimip3b=isimip_yieldswitch, isimip_subtype=isimip_subtype,
+             file = paste0("lpj_yields_", ctype, ".mz"))
 
   if(grepl("pasturetest",dev)){
 
