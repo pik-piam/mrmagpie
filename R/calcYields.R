@@ -78,6 +78,9 @@ calcYields <- function(lpjml=c(natveg="LPJmL4_for_MAgPIE_84a69edd", crop="ggcmi_
   #check again, what makes sense irrigation=FALSE/TRUE?
   crop_area_weight <- dimSums(calcOutput("Croparea", sectoral="kcr", physical=TRUE, irrigation=FALSE,
                                          cellular=TRUE, cells=cells, aggregate = FALSE, years="y1995", round=6), dim=3)
+  if (cells=="lpjcell") {
+    crop_area_weight <- addLocation(crop_area_weight)
+  }
 
 
   return(list(
