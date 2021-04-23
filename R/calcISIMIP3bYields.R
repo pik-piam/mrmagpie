@@ -13,7 +13,7 @@
 #' @importFrom mstools toolHoldConstant
 
 
-calcISIMIP3bYields <-function(subtype = "yields:EPIC-IIASA:ukesm1-0-ll:ssp585:default:3b", cells="magpiecells",
+calcISIMIP3bYields <-function(subtype = "yields:EPIC-IIASA:ukesm1-0-ll:ssp585:default:3b", cells="magpiecell",
                             time="spline", dof=4){
 
 if (grepl("historical", subtype)){
@@ -38,7 +38,7 @@ if (grepl("historical", subtype)){
   x <- mbind(past,scen)
   x <- toolCoord2Isocell(x, cells=cells)
 
-# spline or average before interpolating the 2014 and 2100 values
+# spline or average before interpolating the 2014 and 2100 values - toolSmooth? look into it -
 
   if (time=="spline"){
   x <- toolTimeSpline(x, dof=dof)
@@ -53,7 +53,7 @@ if (grepl("historical", subtype)){
   x <- time_interpolate(x, interpolated_year = 2014, integrate_interpolated_years = TRUE)
   x <- toolHoldConstant(x, 2100)
 
- # spline first then take higher yielding wheat and rice variety?
+ # spline first then take higher yielding wheat and rice variety? look at raw rices and wheats?
   wheat <- ifelse(x[,,"springwheat",]>x[,,"winterwheat",], x[,,"springwheat",], x[,,"winterwheat",])
   wheat <- add_dimension(collapseNames(wheat), dim=3.1, nm = "tece")
   rice <- ifelse(x[,,"riceA",]>x[,,"riceB",], x[,,"riceA",], x[,,"riceB",])

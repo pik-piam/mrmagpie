@@ -6,7 +6,7 @@
 \usage{
 calcISIMIP3bYields(
   subtype = "yields:EPIC-IIASA:ukesm1-0-ll:ssp585:default:3b",
-  cells = "magpiecells",
+  cells = "magpiecell",
   time = "spline",
   dof = 4
 )
