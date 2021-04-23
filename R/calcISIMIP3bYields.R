@@ -1,8 +1,6 @@
 #' @title calcISIMIP3bYields
 #' @description reads and cleans up ISIMIP3b crop yield data
 #' @param subtype subtype of yield based on readISIMIPoutputs, for crop yields
-#' @param time spline or average, if spline specify dof, if average specify averaging range
-#' @param dof degrees of freedom for spline
 #' @param cells magpie or lpjcell
 #'  @return magpie object in cellular resolution
 #' @author David Meng-Chuen Chen
@@ -13,8 +11,7 @@
 #' @importFrom mstools toolHoldConstant
 
 
-calcISIMIP3bYields <-function(subtype = "yields:EPIC-IIASA:ukesm1-0-ll:ssp585:default:3b", cells="magpiecell",
-                            time="spline", dof=4){
+calcISIMIP3bYields <-function(subtype = "yields:EPIC-IIASA:ukesm1-0-ll:ssp585:default:3b", cells="magpiecell"){
 
 if (grepl("historical", subtype)){
   stop ("Can only read full future scenarios for now, with historical already added")
@@ -39,14 +36,8 @@ if (grepl("historical", subtype)){
   x <- toolCoord2Isocell(x, cells=cells)
 
 # spline or average before interpolating the 2014 and 2100 values - toolSmooth? look into it -
-
-  if (time=="spline"){
-  x <- toolTimeSpline(x, dof=dof)
-}
-  if (time=="average"){
-    x <- toolTimeAverage(x)
-  }
-
+  x[is.na(x)] <- 0
+  x <- toolSmooth(x)
 # toolTimeSpline creates very small values, set these to 0
   x[x<=0.01] <- 0
 

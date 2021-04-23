@@ -6,9 +6,7 @@
 \usage{
 calcISIMIP3bYields(
   subtype = "yields:EPIC-IIASA:ukesm1-0-ll:ssp585:default:3b",
-  cells = "magpiecell",
-  time = "spline",
-  dof = 4
+  cells = "magpiecell"
 )
 }
 \arguments{
@@ -16,10 +14,6 @@ calcISIMIP3bYields(
 
 \item{cells}{magpie or lpjcell
 @return magpie object in cellular resolution}
-
-\item{time}{spline or average, if spline specify dof, if average specify averaging range}
-
-\item{dof}{degrees of freedom for spline}
 }
 \description{
 reads and cleans up ISIMIP3b crop yield data
