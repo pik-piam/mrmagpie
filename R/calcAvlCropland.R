@@ -5,10 +5,14 @@
 #' @param marginal_land different options are
 #' \itemize{
 #' \item \code{"all_marginal"}: Include all marginal land
-#' \item \code{"half_marginal"}: Half of the marginal land is excluded
+#' \item \code{"q33_marginal"}: The bottom tertile of the marginal land area is excluded
+#' \item \code{"q50_marginal"}: The bottom  half of the marginal land area is excluded
+#' \item \code{"q66_marginal"}: The first and second tertile of the marginal land area are excluded
+#' \item \code{"q75_marginal"}: The first, second and third quartiles of the marginal land are are excluded
 #' \item \code{"no_marginal"}: Marginal land is fully excluded
 #' \item \code{"default"}: Returns all of the above options
 #' }
+#' @param cell_upper_bound Upper bound for cropland at the grid cell level. Even if, for instance, the total available cropland area equals the land area in a grid cell, cropland cannot be expanded above this value.
 #' @param cells magpiecell (59199 cells) or lpjcell (67420 cells)
 #'
 #' @return magpie object in cellular resolution
@@ -25,7 +29,7 @@
 #' @importFrom magpiesets addLocation
 #'
 
-calcAvlCropland <- function(marginal_land="default", cells = "magpiecell"){
+calcAvlCropland <- function(marginal_land="default", cell_upper_bound = 0.9, cells = "magpiecell"){
 
   # read luh data
   luh <- calcOutput("LUH2v2", landuse_types="magpie", aggregate=FALSE, cellular=TRUE, cells="lpjcell", irrigation=FALSE, years="y1995")
@@ -50,17 +54,58 @@ calcAvlCropland <- function(marginal_land="default", cells = "magpiecell"){
     x <- mbind(x, tmp)
   }
 
-  if (any(grepl("half_marginal", marginal_land)) | marginal_land == "default") {
-    cropsuit <- readSource("Zabel2014", subtype = "half_marginal", convert = "onlycorrect")
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+  if (any(grepl("q33_marginal", marginal_land)) | marginal_land == "default") {
+    cropsuit <- readSource("Zabel2014", subtype = "q33_marginal", convert = "onlycorrect")
     # cropland suitability is corrected where LUH reports cropland
     cropsuit <- pmax(cropsuit, crop_shr_luh)
     # calculate suitable cropland area (Mha) per grid cell
     cropsuit_area <- cropsuit * landarea
 
     tmp <- cropsuit_area
-    getNames(tmp) <- "half_marginal"
+    getNames(tmp) <- "q33_marginal"
     x <- mbind(x, tmp)
   }
+
+  if (any(grepl("q50_marginal", marginal_land)) | marginal_land == "default") {
+    cropsuit <- readSource("Zabel2014", subtype = "q50_marginal", convert = "onlycorrect")
+    # cropland suitability is corrected where LUH reports cropland
+    cropsuit <- pmax(cropsuit, crop_shr_luh)
+    # calculate suitable cropland area (Mha) per grid cell
+    cropsuit_area <- cropsuit * landarea
+
+    tmp <- cropsuit_area
+    getNames(tmp) <- "q50_marginal"
+    x <- mbind(x, tmp)
+  }
+
+
+  if (any(grepl("q66_marginal", marginal_land)) | marginal_land == "default") {
+    cropsuit <- readSource("Zabel2014", subtype = "q66_marginal", convert = "onlycorrect")
+    # cropland suitability is corrected where LUH reports cropland
+    cropsuit <- pmax(cropsuit, crop_shr_luh)
+    # calculate suitable cropland area (Mha) per grid cell
+    cropsuit_area <- cropsuit * landarea
+
+    tmp <- cropsuit_area
+    getNames(tmp) <- "q66_marginal"
+    x <- mbind(x, tmp)
+  }
+
+  if (any(grepl("q75_marginal", marginal_land)) | marginal_land == "default") {
+    cropsuit <- readSource("Zabel2014", subtype = "q75_marginal", convert = "onlycorrect")
+    # cropland suitability is corrected where LUH reports cropland
+    cropsuit <- pmax(cropsuit, crop_shr_luh)
+    # calculate suitable cropland area (Mha) per grid cell
+    cropsuit_area <- cropsuit * landarea
+
+    tmp <- cropsuit_area
+    getNames(tmp) <- "q75_marginal"
+    x <- mbind(x, tmp)
+  }
+
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
   if (any(grepl("no_marginal", marginal_land)) | marginal_land == "default") {
     cropsuit <- readSource("Zabel2014", subtype = "no_marginal", convert = "onlycorrect")
@@ -73,6 +118,11 @@ calcAvlCropland <- function(marginal_land="default", cells = "magpiecell"){
     getNames(tmp) <- "no_marginal"
     x <- mbind(x, tmp)
   }
+
+  # set upper bound for cropland at grid cell level in each
+  # grid cell cropland cannot be expanded above this threshold
+  x <- x * cell_upper_bound
+
 
   if (cells == "magpiecell") {
     out <- toolCoord2Isocell(x)

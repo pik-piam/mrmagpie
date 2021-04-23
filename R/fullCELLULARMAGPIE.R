@@ -95,6 +95,8 @@ fullCELLULARMAGPIE <- function(rev=0.1, dev="", ctype="c200", climatetype="GFDL-
   #calcOutput("Croparea", sectoral="kcr", physical=TRUE, cellular=TRUE, irrigation=TRUE, aggregate = FALSE,file="f30_croparea_w_initialisation_0.5.mz")
   calcOutput("Croparea", sectoral="kcr", physical=TRUE, cellular=TRUE, irrigation=FALSE, aggregate = "cluster", file=paste0("f30_croparea_initialisation_", ctype, ".mz"))
   calcOutput("Croparea", sectoral="kcr", physical=TRUE, cellular=TRUE, irrigation=TRUE, aggregate = "cluster", file=paste0("f30_croparea_w_initialisation_", ctype, ".mz"))
+  calcOutput("AvlCropland", marginal_land="default", cell_upper_bound = 0.9,  aggregate=FALSE, round=6, file="avl_cropland_0.5.mz")
+  calcOutput("AvlCropland", marginal_land="default", cell_upper_bound = 0.9, aggregate="cluster", round=6, file=paste0("avl_cropland_", ctype, ".mz"))
 
   #32 forestry
   calcOutput("AfforestationMask", subtype="noboreal",     aggregate="cluster", round=6, file=paste0("aff_noboreal_", ctype, ".mz"))

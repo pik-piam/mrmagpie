@@ -3,8 +3,11 @@
 #' @param subtype The different options are:
 #' \itemize{
 #' \item \code{"all_marginal"}: Of the total marginal land (suitability index = 0.0 - 0.33), areas with an index of 0.1 and lower are excluded.
-#' \item \code{"half_marginal"}: Areas with an suitability index of 0.16 and lower are excluded.
-#' \item \code{"no_marginal"}: Areas with an suitability index of 0.33 and lower are excluded.
+#' \item \code{"q33_marginal"}: The bottom tertile (suitability index below 0.13) of the marginal land area is excluded.
+#' \item \code{"q50_marginal"}: The bottom  half (suitability index below 0.18) of the marginal land area is excluded.
+#' \item \code{"q66_marginal"}: The first and second tertile (suitability index below 0.23) of the marginal land area are excluded.
+#' \item \code{"q75_marginal"}: The first, second and third quartiles (suitability index below 0.25) of the marginal land are are excluded
+#' \item \code{"no_marginal"}: Areas with a suitability index of 0.33 and lower are excluded.
 #' }
 #' @return Returns magpie objects with the share of suitable cropland per grid cell
 #' @author Patrick v. Jeetze
@@ -36,12 +39,24 @@ readZabel2014 <- function(subtype = "all_marginal") {
     # data set by Ramankutty et al. (2002)
     zabel_si[zabel_si <= 0.1] <- 0
     zabel_si[zabel_si > 0.1] <- 1
-  } else if (subtype == "half_marginal") {
-    # the suitability threshold is set at half the range of marginal land
-    zabel_si[zabel_si <= 0.2] <- 0
-    zabel_si[zabel_si > 0.2] <- 1
+  } else if (subtype == "q33_marginal") {
+    # The bottom tertile (suitability index below 0.13) of the marginal land area is excluded
+    zabel_si[zabel_si <= 0.13] <- 0
+    zabel_si[zabel_si > 0.13] <- 1
+  } else if (subtype == "q50_marginal") {
+    # The bottom  half (suitability index below 0.18) of the marginal land area is excluded
+    zabel_si[zabel_si <= 0.18] <- 0
+    zabel_si[zabel_si > 0.18] <- 1
+  } else if (subtype == "q66_marginal") {
+    # The first and second tertile (suitability index below 0.23) of the marginal land area are excluded
+    zabel_si[zabel_si <= 0.23] <- 0
+    zabel_si[zabel_si > 0.23] <- 1
+  } else if (subtype == "q75_marginal") {
+    # The first, second and third quartiles (suitability index below 0.25) of the marginal land are are excluded
+    zabel_si[zabel_si <= 0.25] <- 0
+    zabel_si[zabel_si > 0.25] <- 1
   } else if (subtype == "no_marginal") {
-    # marginal land is fully excluded
+    # marginal land (suitability index below 0.33) is fully excluded
     zabel_si[zabel_si <= 0.33] <- 0
     zabel_si[zabel_si > 0.33] <- 1
   }

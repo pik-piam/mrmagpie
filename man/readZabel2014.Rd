@@ -10,8 +10,11 @@ readZabel2014(subtype = "all_marginal")
 \item{subtype}{The different options are:
 \itemize{
 \item \code{"all_marginal"}: Of the total marginal land (suitability index = 0.0 - 0.33), areas with an index of 0.1 and lower are excluded.
-\item \code{"half_marginal"}: Areas with an suitability index of 0.16 and lower are excluded.
-\item \code{"no_marginal"}: Areas with an suitability index of 0.33 and lower are excluded.
+\item \code{"q33_marginal"}: The bottom tertile (suitability index below 0.13) of the marginal land area is excluded.
+\item \code{"q50_marginal"}: The bottom  half (suitability index below 0.18) of the marginal land area is excluded.
+\item \code{"q66_marginal"}: The first and second tertile (suitability index below 0.23) of the marginal land area are excluded.
+\item \code{"q75_marginal"}: The first, second and third quartiles (suitability index below 0.25) of the marginal land are are excluded
+\item \code{"no_marginal"}: Areas with a suitability index of 0.33 and lower are excluded.
 }}
 }
 \value{

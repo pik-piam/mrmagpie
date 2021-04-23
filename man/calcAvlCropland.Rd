@@ -4,16 +4,25 @@
 \alias{calcAvlCropland}
 \title{calcAvlCropland}
 \usage{
-calcAvlCropland(marginal_land = "default", cells = "magpiecell")
+calcAvlCropland(
+  marginal_land = "default",
+  cell_upper_bound = 0.9,
+  cells = "magpiecell"
+)
 }
 \arguments{
 \item{marginal_land}{different options are
 \itemize{
 \item \code{"all_marginal"}: Include all marginal land
-\item \code{"half_marginal"}: Half of the marginal land is excluded
+\item \code{"q33_marginal"}: The bottom tertile of the marginal land area is excluded
+\item \code{"q50_marginal"}: The bottom  half of the marginal land area is excluded
+\item \code{"q66_marginal"}: The first and second tertile of the marginal land area are excluded
+\item \code{"q75_marginal"}: The first, second and third quartiles of the marginal land are are excluded
 \item \code{"no_marginal"}: Marginal land is fully excluded
 \item \code{"default"}: Returns all of the above options
 }}
+
+\item{cell_upper_bound}{Upper bound for cropland at the grid cell level. Even if, for instance, the total available cropland area equals the land area in a grid cell, cropland cannot be expanded above this value.}
 
 \item{cells}{magpiecell (59199 cells) or lpjcell (67420 cells)}
 }
