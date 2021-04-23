@@ -8,7 +8,9 @@ calcYields(
   lpjml = c(natveg = "LPJmL4_for_MAgPIE_84a69edd", crop =
     "ggcmi_phase3_nchecks_72c185fa"),
   climatetype = "GSWP3-W5E5:historical",
-  cells = "magpiecell"
+  cells = "magpiecell",
+  replace_isimip3b = FALSE,
+  isimip_subtype = "yields:EPIC-IIASA:ukesm1-0-ll:ssp585:default:3b"
 )
 }
 \arguments{
@@ -17,6 +19,10 @@ calcYields(
 \item{climatetype}{Switch between different climate scenarios}
 
 \item{cells}{if cellular is TRUE: "magpiecell" for 59199 cells or "lpjcell" for 67420 cells}
+
+\item{replace_isimip3b}{if TRUE staple crops yields are replaced by the crop model of choice}
+
+\item{isimip_subtype}{choose crop model/gcm/rcp/co2 combination}
 }
 \value{
 magpie object in cellular resolution
