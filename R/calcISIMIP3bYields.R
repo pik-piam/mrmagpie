@@ -66,7 +66,7 @@ if (grepl("historical", subtype)){
   getNames(x, dim=2) <- c("irrigated", "rainfed")
 
   crop_area_weight     <- dimSums(calcOutput("Croparea", sectoral="kcr", physical=TRUE, irrigation=FALSE,
-                                                                cellular=TRUE, cells=cells, aggregate = FALSE, years="y1995", round=6)[,,getNames(x),dim=1], dim=3)
+                                                                cellular=TRUE, cells=cells, aggregate = FALSE, years="y1995", round=6)[,,getNames(x,dim=1)], dim=3)
 
   return(list(
     x=x,
