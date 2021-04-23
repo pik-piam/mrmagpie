@@ -74,8 +74,12 @@ calcYields <- function(lpjml=c(natveg="LPJmL4_for_MAgPIE_84a69edd", crop="ggcmi_
   # recalibrate yields for proxys
   yields <- yields * Calib[,,getNames(yields, dim=1)]
 
-  if (replace_isimip3b == TRUE){
-    to_rep <- calcOutput("ISIMIP3bYields", subtype=isimip_subtype, aggregate=F)
+  if(cells=="magpiecell") {
+    yields <- toolCoord2Isocell(yields)
+  }
+
+   if (replace_isimip3b == TRUE){
+    to_rep <- calcOutput("ISIMIP3bYields", subtype=isimip_subtype, cells=cells, aggregate=F)
     common_vars <- intersect(getNames(yields),getNames(to_rep))
     common_years <- intersect(getYears(yields), getYears(to_rep))
     # convert to array for memory
@@ -84,11 +88,6 @@ calcYields <- function(lpjml=c(natveg="LPJmL4_for_MAgPIE_84a69edd", crop="ggcmi_
     yields <- as.magpie(yields); to_rep <- as.magpie(to_rep)
 
   }
-
-  if(cells=="magpiecell") {
-    yields <- toolCoord2Isocell(yields)
-  }
-
   #check again, what makes sense irrigation=FALSE/TRUE?
   crop_area_weight <- dimSums(calcOutput("Croparea", sectoral="kcr", physical=TRUE, irrigation=FALSE,
                                          cellular=TRUE, cells=cells, aggregate = FALSE, years="y1995", round=6), dim=3)

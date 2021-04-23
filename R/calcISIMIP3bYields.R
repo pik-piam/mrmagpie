@@ -3,6 +3,7 @@
 #' @param subtype subtype of yield based on readISIMIPoutputs, for crop yields
 #' @param time spline or average, if spline specify dof, if average specify averaging range
 #' @param dof degrees of freedom for spline
+#' @param cells magpie or lpjcell
 #'  @return magpie object in cellular resolution
 #' @author David Meng-Chuen Chen
 #' @import mrcommons
@@ -12,7 +13,7 @@
 #' @importFrom mstools toolHoldConstant
 
 
-calcISIMIP3bYields <-function(subtype = "yields:EPIC-IIASA:ukesm1-0-ll:ssp585:default:3b",
+calcISIMIP3bYields <-function(subtype = "yields:EPIC-IIASA:ukesm1-0-ll:ssp585:default:3b", cells="magpiecells",
                             time="spline", dof=4){
 
 if (grepl("historical", subtype)){
@@ -35,6 +36,7 @@ if (grepl("historical", subtype)){
   scen <- scen[,2100, inv=T]
 
   x <- mbind(past,scen)
+  x <- toolCoord2Isocell(x, cells=cells)
 
 # spline or average before interpolating the 2014 and 2100 values
 
@@ -63,7 +65,8 @@ if (grepl("historical", subtype)){
   getNames(x, dim=1)[1] <- "maiz"
   getNames(x, dim=2) <- c("irrigated", "rainfed")
 
-  crop_area_weight     <- calcOutput("CropArea", cellular=TRUE, irrigation=TRUE)[,,c(getNames(x))]
+  crop_area_weight     <- dimSums(calcOutput("Croparea", sectoral="kcr", physical=TRUE, irrigation=FALSE,
+                                                                cellular=TRUE, cells=cells, aggregate = FALSE, years="y1995", round=6)[,,getNames(x)], dim=3)
 
   return(list(
     x=x,
