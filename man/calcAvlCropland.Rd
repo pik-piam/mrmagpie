@@ -5,7 +5,7 @@
 \title{calcAvlCropland}
 \usage{
 calcAvlCropland(
-  marginal_land = "default",
+  marginal_land = "magpie",
   cell_upper_bound = 0.9,
   cells = "magpiecell"
 )
@@ -19,7 +19,7 @@ calcAvlCropland(
 \item \code{"q66_marginal"}: The first and second tertile of the marginal land area are excluded
 \item \code{"q75_marginal"}: The first, second and third quartiles of the marginal land are are excluded
 \item \code{"no_marginal"}: Marginal land is fully excluded
-\item \code{"default"}: Returns all of the above options
+\item \code{"magpie"}: Returns "all_marginal", "q33_marginal" and "no_marginal" in a magclass object to be used as magpie input.
 }}
 
 \item{cell_upper_bound}{Upper bound for cropland at the grid cell level. Even if, for instance, the total available cropland area equals the land area in a grid cell, cropland cannot be expanded above this value.}
@@ -35,7 +35,7 @@ cropland suitability data or other criteria, such as constraints on cropland exp
 }
 \examples{
 \dontrun{
-calcOutput("AvlCropland", marginal_land = "default", cells = "magpiecell", aggregate = FALSE)
+calcOutput("AvlCropland", marginal_land = "magpie", cells = "magpiecell", aggregate = FALSE)
 }
 
 }

@@ -10,7 +10,7 @@
 #' \item \code{"q66_marginal"}: The first and second tertile of the marginal land area are excluded
 #' \item \code{"q75_marginal"}: The first, second and third quartiles of the marginal land are are excluded
 #' \item \code{"no_marginal"}: Marginal land is fully excluded
-#' \item \code{"default"}: Returns all of the above options
+#' \item \code{"magpie"}: Returns "all_marginal", "q33_marginal" and "no_marginal" in a magclass object to be used as magpie input.
 #' }
 #' @param cell_upper_bound Upper bound for cropland at the grid cell level. Even if, for instance, the total available cropland area equals the land area in a grid cell, cropland cannot be expanded above this value.
 #' @param cells magpiecell (59199 cells) or lpjcell (67420 cells)
@@ -20,7 +20,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' calcOutput("AvlCropland", marginal_land = "default", cells = "magpiecell", aggregate = FALSE)
+#' calcOutput("AvlCropland", marginal_land = "magpie", cells = "magpiecell", aggregate = FALSE)
 #' }
 #'
 #' @importFrom madrat readSource calcOutput
@@ -29,7 +29,7 @@
 #' @importFrom magpiesets addLocation
 #'
 
-calcAvlCropland <- function(marginal_land="default", cell_upper_bound = 0.9, cells = "magpiecell"){
+calcAvlCropland <- function(marginal_land="magpie", cell_upper_bound = 0.9, cells = "magpiecell"){
 
   # read luh data
   luh <- calcOutput("LUH2v2", landuse_types="magpie", aggregate=FALSE, cellular=TRUE, cells="lpjcell", irrigation=FALSE, years="y1995")
@@ -42,7 +42,7 @@ calcAvlCropland <- function(marginal_land="default", cell_upper_bound = 0.9, cel
 
   x <- as.magpie(NULL)
 
-  if (any(grepl("all_marginal", marginal_land)) | marginal_land == "default") {
+  if (any(grepl("all_marginal", marginal_land)) | marginal_land == "magpie") {
     cropsuit <- readSource("Zabel2014", subtype = "all_marginal", convert = "onlycorrect")
     # set upper bound for cropland at grid cell level in each
     # grid cell cropland cannot be expanded above this threshold
@@ -57,9 +57,7 @@ calcAvlCropland <- function(marginal_land="default", cell_upper_bound = 0.9, cel
     x <- mbind(x, tmp)
   }
 
-# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-  if (any(grepl("q33_marginal", marginal_land)) | marginal_land == "default") {
+  if (any(grepl("q33_marginal", marginal_land)) | marginal_land == "magpie") {
     cropsuit <- readSource("Zabel2014", subtype = "q33_marginal", convert = "onlycorrect")
     # set upper bound for cropland at grid cell level in each
     # grid cell cropland cannot be expanded above this threshold
@@ -74,7 +72,7 @@ calcAvlCropland <- function(marginal_land="default", cell_upper_bound = 0.9, cel
     x <- mbind(x, tmp)
   }
 
-  if (any(grepl("q50_marginal", marginal_land)) | marginal_land == "default") {
+  if (any(grepl("q50_marginal", marginal_land))) {
     cropsuit <- readSource("Zabel2014", subtype = "q50_marginal", convert = "onlycorrect")
     # set upper bound for cropland at grid cell level in each
     # grid cell cropland cannot be expanded above this threshold
@@ -90,7 +88,7 @@ calcAvlCropland <- function(marginal_land="default", cell_upper_bound = 0.9, cel
   }
 
 
-  if (any(grepl("q66_marginal", marginal_land)) | marginal_land == "default") {
+  if (any(grepl("q66_marginal", marginal_land))) {
     cropsuit <- readSource("Zabel2014", subtype = "q66_marginal", convert = "onlycorrect")
     # set upper bound for cropland at grid cell level in each
     # grid cell cropland cannot be expanded above this threshold
@@ -105,7 +103,7 @@ calcAvlCropland <- function(marginal_land="default", cell_upper_bound = 0.9, cel
     x <- mbind(x, tmp)
   }
 
-  if (any(grepl("q75_marginal", marginal_land)) | marginal_land == "default") {
+  if (any(grepl("q75_marginal", marginal_land))) {
     cropsuit <- readSource("Zabel2014", subtype = "q75_marginal", convert = "onlycorrect")
     # set upper bound for cropland at grid cell level in each
     # grid cell cropland cannot be expanded above this threshold
@@ -120,9 +118,7 @@ calcAvlCropland <- function(marginal_land="default", cell_upper_bound = 0.9, cel
     x <- mbind(x, tmp)
   }
 
-# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-  if (any(grepl("no_marginal", marginal_land)) | marginal_land == "default") {
+  if (any(grepl("no_marginal", marginal_land)) | marginal_land == "magpie") {
     cropsuit <- readSource("Zabel2014", subtype = "no_marginal", convert = "onlycorrect")
     # set upper bound for cropland at grid cell level in each
     # grid cell cropland cannot be expanded above this threshold
