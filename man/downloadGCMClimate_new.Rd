@@ -16,6 +16,10 @@ metadata entry
 \description{
 Download GCM climate input used for Lpjml runs
 }
+\examples{
+
+\dontrun{readSource("GCMClimate_new",  convert="onlycorrect")}
+}
 \author{
 Marcos Alves
 }

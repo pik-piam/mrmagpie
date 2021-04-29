@@ -36,7 +36,12 @@ calcAgeClassDistribution <- function(){
   #getNames(forest_area) <- paste0("ac",1:15*10)
   getNames(forest_area) <- gsub(pattern = "X",replacement = "class",x = getNames(forest_area))
 
+  zero_forest_area <- dimSums(forest_area,dim=3)
+
   ac_distribution <- forest_area/dimSums(forest_area,dim=3)
+
+  ## Set age classes to 0 where forest does not exist
+  ac_distribution[where((setYears(zero_forest_area,"y2000"))==0)$true$regions,,] <- 0 ## Only checking where zero forest area exists
 
   out <- ac_distribution
 

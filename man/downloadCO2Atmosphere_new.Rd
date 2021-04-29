@@ -16,6 +16,10 @@ metadata entry
 \description{
 Download CO2 atm. inputs used for Lpjml runs
 }
+\examples{
+
+\dontrun{readSource("CO2Atmosphere_new",convert="onlycorrect")}
+}
 \author{
 Marcos Alves
 }
