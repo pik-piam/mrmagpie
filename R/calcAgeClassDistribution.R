@@ -17,7 +17,7 @@ calcAgeClassDistribution <- function(){
   lon <- mapping$lon
   lat <- mapping$lat
 
-  cb <- as.data.frame(magpie_coord)
+  cb <- as.data.frame(magpie_coord) ## magpie_coord is loaded automatically with package -- not when running line by line
   cell_area  <- (111e3*0.5)*(111e3*0.5)*cos(cb$lat/180*pi)
 
   cell_area        <- as.data.frame(cell_area)
@@ -33,17 +33,11 @@ calcAgeClassDistribution <- function(){
 
   forest_area <- dimSums(forest_area,dim=3.1)
 
-  getNames(forest_area) <- paste0("ac",1:15*10)
+  #getNames(forest_area) <- paste0("ac",1:15*10)
+  getNames(forest_area) <- gsub(pattern = "X",replacement = "class",x = getNames(forest_area))
 
-  secdf_ac <- getNames(forest_area)[c(-1,-15)] ## Last age-class in primary forest. First age class is very young
+  ac_distribution <- forest_area/dimSums(forest_area,dim=3)
 
-  ac_distribution <- forest_area[,,secdf_ac]/dimSums(forest_area[,,secdf_ac],dim=3)
-  ac_distribution <- add_columns(x = ac_distribution,addnm = "acx",dim = 3.1) ## Add back 15th age class which is primf. Keep at 0
-  ac_distribution[,,"acx"] <- 0
-  ac_distribution <- add_columns(x = ac_distribution,addnm = "ac10",dim = 3.1) ## Add back 1st age class which is young. Keep at 0
-  ac_distribution[,,"ac10"] <- 0
-  ac_distribution <- ac_distribution[,,c(paste0("ac",seq(10,140,10)),"acx")]
-  ac_distribution[is.nan(ac_distribution)] <- 1/(length(getNames(ac_distribution))-2) ## Where no forest we don't want to create a mask with 0 so we allow uniform distribtuion
   out <- ac_distribution
 
   names(dimnames(out))[1] <- "ISO.cell"
@@ -52,6 +46,6 @@ calcAgeClassDistribution <- function(){
     x=out,
     weight=cell_area_magpie,
     unit="1",
-    description="Fraction of each age class in secondary forest from each spatially explicit cell",
+    description="Fraction of each age class in secondary forest from each spatially explicit cell as described in Poulter age classes",
     isocountries=FALSE))
 }

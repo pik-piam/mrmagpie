@@ -6,9 +6,7 @@
 #' @author  Marcos Alves
 #' @examples
 #'
-#' \dontrun{
-#' readSource("GCMClimate_new", subtype=ISIMIP3b:IPSL-CM6A-LR:historical:1850-2014:tas",  convert="onlycorrect")
-#' }
+#' \dontrun{readSource("GCMClimate_new",  convert="onlycorrect")}
 
 downloadGCMClimate_new <- function(subtype="ISIMIP3b:IPSL-CM6A-LR:ssp126:2015-2100:tas") {
 

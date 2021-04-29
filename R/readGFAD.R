@@ -56,7 +56,7 @@ readGFAD <- function(){
       getSets(x) <- c("cell","t","ac")
       x <- add_dimension(x = x,dim = 3.1,add = "type",nm = forest_poulter[forest_type])
 
-      cat("Forest",getNames(x,dim=1),"ac",getNames(x,dim=2),"\n")
+      message("Forest",getNames(x,dim=1),"ac",getNames(x,dim=2))
 
       temp <- mbind(temp,x)
     }
