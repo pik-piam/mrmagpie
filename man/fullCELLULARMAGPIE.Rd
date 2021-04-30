@@ -11,6 +11,7 @@ fullCELLULARMAGPIE(
   climatetype = "GFDL-ESM4:ssp370",
   lpjml = c(natveg = "LPJmL4_for_MAgPIE_84a69edd", crop =
     "ggcmi_phase3_nchecks_72c185fa", pasture = "LPJmL_cgrazing", mowing = "LPJmL_mowing"),
+  isimip = NULL,
   clusterweight = NULL
 )
 }
@@ -28,6 +29,8 @@ cluster distribution among regions whereas normalized k-means is used for the cl
 \item{climatetype}{climate change scenario to be used}
 
 \item{lpjml}{Defines LPJmL version for crop/grass and natveg specific inputs}
+
+\item{isimip}{Defines isimip crop model input which replace maiz, tece, rice_pro and soybean}
 
 \item{clusterweight}{Should specific regions be resolved with more or less detail? Values > 1 mean higher share, < 1 lower share
 e.g. cfg$clusterweight <- c(LAM=2) means that a higher level of detail for region LAM if set to NULL all weights will be assumed to be 1.

@@ -4,8 +4,7 @@
 #' @param lpjml Defines LPJmL version for crop/grass and natveg specific inputs
 #' @param climatetype Switch between different climate scenarios
 #' @param cells if cellular is TRUE: "magpiecell" for 59199 cells or "lpjcell" for 67420 cells
-#' @param replace_isimip3b if TRUE staple crops yields are replaced by the crop model of choice
-#' @param isimip_subtype choose crop model/gcm/rcp/co2 combination
+#' @param isimip_subtype choose crop model/gcm/rcp/co2 combination formatted like this: "yields:EPIC-IIASA:ukesm1-0-ll:ssp585:default:3b"
 #' @return magpie object in cellular resolution
 #' @author Kristine Karstens, Felicitas Beier
 #'
@@ -17,8 +16,7 @@
 #' @importFrom madrat toolFillYears
 
 calcYields <- function(lpjml=c(natveg="LPJmL4_for_MAgPIE_84a69edd", crop="ggcmi_phase3_nchecks_72c185fa"),
-                           climatetype="GSWP3-W5E5:historical", cells="magpiecell",  replace_isimip3b=FALSE,
-                       isimip_subtype="yields:EPIC-IIASA:ukesm1-0-ll:ssp585:default:3b"){
+                           climatetype="GSWP3-W5E5:historical", cells="magpiecell", isimip_subtype=NULL){
 
   sizelimit <- getOption("magclass_sizeLimit")
   options(magclass_sizeLimit=1e+12)
@@ -78,7 +76,7 @@ calcYields <- function(lpjml=c(natveg="LPJmL4_for_MAgPIE_84a69edd", crop="ggcmi_
     yields <- toolCoord2Isocell(yields)
   }
 
-   if (replace_isimip3b == TRUE){
+   if (!is.null(isimip_subtype)){
     to_rep <- calcOutput("ISIMIP3bYields", subtype=isimip_subtype, cells=cells, aggregate=F)
     common_vars <- intersect(getNames(yields),getNames(to_rep))
     common_years <- intersect(getYears(yields), getYears(to_rep))

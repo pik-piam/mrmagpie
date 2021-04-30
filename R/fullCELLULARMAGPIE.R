@@ -12,6 +12,7 @@
 #' parallel lines of development.
 #' @param climatetype climate change scenario to be used
 #' @param lpjml Defines LPJmL version for crop/grass and natveg specific inputs
+#' @param isimip Defines isimip crop model input which replace maiz, tece, rice_pro and soybean
 #' @param clusterweight Should specific regions be resolved with more or less detail? Values > 1 mean higher share, < 1 lower share
 #' e.g. cfg$clusterweight <- c(LAM=2) means that a higher level of detail for region LAM if set to NULL all weights will be assumed to be 1.
 #' examples:
@@ -32,7 +33,7 @@
 
 fullCELLULARMAGPIE <- function(rev=0.1, dev="", ctype="c200", climatetype="GFDL-ESM4:ssp370",
                                lpjml=c(natveg="LPJmL4_for_MAgPIE_84a69edd", crop="ggcmi_phase3_nchecks_72c185fa",
-                                       pasture="LPJmL_cgrazing", mowing= "LPJmL_mowing"), clusterweight=NULL) {
+                                       pasture="LPJmL_cgrazing", mowing= "LPJmL_mowing"),isimip=NULL, clusterweight=NULL) {
 
   sizelimit <- getOption("magclass_sizeLimit")
   options(magclass_sizeLimit=1e+12)
@@ -59,16 +60,15 @@ fullCELLULARMAGPIE <- function(rev=0.1, dev="", ctype="c200", climatetype="GFDL-
   isimip_yieldswitch <- FALSE
   isimip_subtype=NULL
   if(grepl("ISIMIPyields",dev)){
-    isimip_yieldswitch=TRUE
-    isimip_subtype="yields:EPIC-IIASA:ukesm1-0-ll:ssp585:default:3b"
-  }
+    isimip_subtype = isimip
+  } else {isimip_subtype = NULL}
 
   calcOutput("Yields", aggregate = FALSE, lpjml=lpjml, climatetype=climatetype,
-             round=2, years="y1995", replace_isimip3b=isimip_yieldswitch, isimip_subtype=isimip_subtype,
+             round=2, years="y1995", isimip_subtype=isimip_subtype,
              file=paste0("lpj_yields_0.5.mz"))
 
   calcOutput("Yields", aggregate = "cluster", lpjml=lpjml, climatetype=climatetype,
-             round=2, years=lpj_years, replace_isimip3b=isimip_yieldswitch, isimip_subtype=isimip_subtype,
+             round=2, years=lpj_years, isimip_subtype=isimip_subtype,
              file = paste0("lpj_yields_", ctype, ".mz"))
 
   if(grepl("pasturetest",dev)){
