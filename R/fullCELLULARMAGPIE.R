@@ -57,7 +57,6 @@ fullCELLULARMAGPIE <- function(rev=0.1, dev="", ctype="c200", climatetype="GFDL-
 
   # 14 yields
 
-  isimip_yieldswitch <- FALSE
   isimip_subtype=NULL
   if(grepl("ISIMIPyields",dev)){
     isimip_subtype = isimip

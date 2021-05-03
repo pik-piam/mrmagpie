@@ -28,33 +28,44 @@ if (grepl("historical", subtype)){
   past<- readSource("ISIMIP", subtype=past_subtype, convert=FALSE)
   scen <- readSource("ISIMIP", subtype=subtype, convert=FALSE)
 
-  ### last year of both are chopped off due to GGCMI processing, dont use and rather interpolate
+  ### last year of both are chopped off due to GGCMI processing, dont use and rather interpolate 2014 and hold 2100 constant
   past <- past[,2014,inv=T]
   scen <- scen[,2100, inv=T]
 
   x <- mbind(past,scen)
   x <- toolCoord2Isocell(x, cells=cells)
 
-# spline or average before interpolating the 2014 and 2100 values - toolSmooth? look into it -
-  x[is.na(x)] <- 0
-  x <- toolSmooth(x)
-# toolTimeSpline creates very small values, set these to 0
-  x[x<=0.01] <- 0
 
-  x <- time_interpolate(x, interpolated_year = 2014, integrate_interpolated_years = TRUE)
-  x <- toolHoldConstant(x, 2100)
-
- # spline first then take higher yielding wheat and rice variety? look at raw rices and wheats?
-  wheat <- ifelse(x[,,"springwheat",]>x[,,"winterwheat",], x[,,"springwheat",], x[,,"winterwheat",])
+  # take higher yielding variety  based on highest mean yield between 1981 and 2011
+  higherw <- magpply(x[,1981:2011,"springwheat",], FUN = mean, MARGIN = c(1,3))>magpply(x[,1981:2011,"winterwheat",], FUN = mean, MARGIN = c(1,3))
+  higherw<- time_interpolate(setYears(higherw, 1961), interpolated_year = getYears(x), integrate_interpolated_years = TRUE)
+  wheat <- ifelse(higherw==1, x[,,"springwheat",], x[,,"winterwheat",])
   wheat <- add_dimension(collapseNames(wheat), dim=3.1, nm = "tece")
-  rice <- ifelse(x[,,"riceA",]>x[,,"riceB",], x[,,"riceA",], x[,,"riceB",])
-  rice <- add_dimension(collapseNames(rice), dim=3.1, nm = "rice_pro")
+
+  higherr <- magpply(x[,1981:2011,"riceA",], FUN = mean, MARGIN = c(1,3))>magpply(x[,1981:2011,"riceB",], FUN = mean, MARGIN = c(1,3))
+  higherr<- time_interpolate(setYears(higherr, 1961), interpolated_year = getYears(x), integrate_interpolated_years = TRUE)
+  rice <- ifelse(higherr==1, x[,,"riceA",], x[,,"riceB",])
+  rice <- add_dimension(collapseNames(rice), dim=3.1, nm="rice_pro")
 
   x <- x[,,c("riceA", "riceB", "springwheat", "winterwheat"), inv=T]
 
   x <- mbind(x, wheat, rice)
-  getNames(x, dim=1)[1] <- "maiz"
-  getNames(x, dim=2) <- c("irrigated", "rainfed")
+
+  #smooth with spline
+  x[is.na(x)] <- 0
+  x <- toolSmooth(x)
+  #set very small yields from smoothing to 0
+  x[x<=0.01] <- 0
+
+  ### here interpolate 2014 and hold 2100 constant after smoothing
+  x <- time_interpolate(x, interpolated_year = 2014, integrate_interpolated_years = TRUE)
+  x <- toolHoldConstant(x, 2100)
+
+
+
+  getNames(x, dim=1)[getNames(x,dim=1)=="maize"] <- "maiz"
+  getNames(x, dim=2)[getNames(x,dim=2)=="fullyirrigated"] <- "irrigated"
+  getNames(x, dim=2)[getNames(x,dim=2)=="noirrigation"] <- "rainfed"
 
   crop_area_weight     <- dimSums(calcOutput("Croparea", sectoral="kcr", physical=TRUE, irrigation=FALSE,
                                                                 cellular=TRUE, cells=cells, aggregate = FALSE, years="y1995", round=6)[,,getNames(x,dim=1)], dim=3)

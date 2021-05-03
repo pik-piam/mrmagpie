@@ -1,8 +1,8 @@
 Package: mrmagpie
 Type: Package
 Title: madrat based MAgPIE Input Data Library
-Version: 0.47.8
-Date: 2021-04-30
+Version: 0.47.9
+Date: 2021-05-03
 Authors@R: c(person("Kristine", "Karstens", email = "karstens@pik-potsdam.de", role = c("aut","cre")),
              person("Jan Philipp", "Dietrich", email = "dietrich@pik-potsdam.de", role = "aut"),
              person("David", "Chen", role = "aut"),
