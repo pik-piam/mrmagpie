@@ -26,7 +26,7 @@ readLabourProdImpactOrlov <- function(subtype="IPSL-CM5A-LR_rcp85_wbgtod_hothaps
   years <- ncvar_get(nc, "years")
   buf <-ncvar_get(nc,names(nc$var)[1])
   #define dims
-  mapping<-toolMappingFile(type="cell",name="CountryToCellMapping.csv",readcsv=TRUE)
+  mapping <- toolGetMapping(type = "cell", name = "CountryToCellMapping.csv")
   cellNames <- mapping$celliso
   lon <- seq(-179.75,179.75,by=0.5)
   lat <- rev(seq(-89.75,89.75,by=0.5))

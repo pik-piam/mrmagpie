@@ -20,7 +20,7 @@ readLUH2UrbanFuture <- function() {
   offset <- 2015 #year 2016=1, y2100=86
 
   #define dims
-  mapping<-toolMappingFile(type="cell",name="CountryToCellMapping.csv",readcsv=TRUE)
+  mapping <- toolGetMapping(type = "cell", name = "CountryToCellMapping.csv")
   cellNames <- mapping$celliso
   lon <- seq(-179.75,179.75,by=0.5)
   lat <- rev(seq(-89.75,89.75,by=0.5))

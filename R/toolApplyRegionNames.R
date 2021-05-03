@@ -16,7 +16,7 @@
 #' rather than country names
 #' @author Jan Philipp Dietrich
 #' @seealso \code{\link{calcClusterKMeans}}, \code{\link{calcClusterBase}}
-#' @importFrom madrat toolMappingFile regionscode
+#' @importFrom madrat toolGetMapping regionscode
 #' @importFrom mrland spatial_header
 
 toolApplyRegionNames <- function(cdata,regionscode){
@@ -24,7 +24,7 @@ toolApplyRegionNames <- function(cdata,regionscode){
   ### regionscode needs to be checked and provided as argument to ensure
   ### that caching is not mixing up aggregations with different regional
   ### mapping.
-  map <- toolMappingFile("regional",getConfig("regionmapping"),readcsv = TRUE)
+  map <- toolGetMapping(type = "regional", name = getConfig("regionmapping"))
   if(regionscode!=regionscode(map)) stop("Provided regionscode does not match regionscode of regional mapping!")
   getCells(cdata) <- paste(sub("\\..*$", "", dimnames(cdata)[[1]]), spatial_header(map), sep=".")
   getSets(cdata,fulldim=FALSE)[1] <- "country.region.cell"

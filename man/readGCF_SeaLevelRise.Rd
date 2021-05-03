@@ -10,7 +10,7 @@ readGCF_SeaLevelRise()
 A MAgPIE object, cellular 0.5deg resolution, of fraction of land lost to SLR by cell.
 }
 \description{
-Reads in an extreme sea level rise dataset from Daniel Linke of Global Climate Forum, 
+Reads in an extreme sea level rise dataset from Daniel Linke of Global Climate Forum,
 original dataset a binary (0/1) 3arcsec grid with 1 indicating grid lost.
 Scenario is high-end 1.7m global average sea level rise, with no adaptation (only current levels of dykes and dams).
 agg.tif file is original grid aggregated to 0.5deg resolution (factor 600) by sum.
