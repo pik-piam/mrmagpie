@@ -38,6 +38,10 @@ calcYields <- function(lpjml=c(natveg="LPJmL4_for_MAgPIE_84a69edd", crop="ggcmi_
     yields  <- mbind(yields, tmp)
   }
 
+  # include garbage collector to solve recurring memory problems
+  gc()
+
+  # LPJmL to MAgPIE crops
   yields    <- toolAggregate(yields, LPJ2MAG, from = "LPJmL", to = "MAgPIE", dim=3.1, partrel=TRUE)
 
   # Check for NAs
