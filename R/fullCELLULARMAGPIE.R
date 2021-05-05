@@ -41,6 +41,12 @@ fullCELLULARMAGPIE <- function(rev=0.1, dev="", ctype="c200", climatetype="GFDL-
 
   setConfig(debug=TRUE)
 
+  cat(paste0("Start preprocessing for \n climatescenario: ", climatetype,
+                 "\n LPJmL-Versions: ", paste(names(lpjml), lpjml, sep = "->", collapse = ", "),
+                 "\n clusterweight: ", paste(names(clusterweight), clusterweight, sep = ":", collapse = ", "),
+                 "\n isimip yield subtype: ", paste(names(isimip), isimip, sep = ":", collapse = ", ")))
+
+
   mag_years_past_short <- c("y1995","y2000","y2005","y2010")
   mag_years_past_long  <- c("y1995","y2000","y2005","y2010","y2015")
   mag_years <- findset("time")

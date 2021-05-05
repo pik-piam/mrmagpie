@@ -37,19 +37,22 @@ if (grepl("historical", subtype)){
 
 
   # take higher yielding variety  based on highest mean yield between 1981 and 2011
+  if (st$model=="CYGMA1p74"){ #CYGMA has no winter wheat
+          getNames(x, dim=1)[getNames(x,dim=1)=="springwheat"] <- "tece"
+  } else {
   higherw <- magpply(x[,1981:2011,"springwheat",], FUN = mean, MARGIN = c(1,3))>magpply(x[,1981:2011,"winterwheat",], FUN = mean, MARGIN = c(1,3))
   higherw<- time_interpolate(setYears(higherw, 1961), interpolated_year = getYears(x), integrate_interpolated_years = TRUE)
   wheat <- ifelse(higherw==1, x[,,"springwheat",], x[,,"winterwheat",])
   wheat <- add_dimension(collapseNames(wheat), dim=3.1, nm = "tece")
-
+  x <- x[,,c("springwheat", "winterwheat"), inv=T]
+  x <- mbind(x, wheat)
+ }
   higherr <- magpply(x[,1981:2011,"riceA",], FUN = mean, MARGIN = c(1,3))>magpply(x[,1981:2011,"riceB",], FUN = mean, MARGIN = c(1,3))
   higherr<- time_interpolate(setYears(higherr, 1961), interpolated_year = getYears(x), integrate_interpolated_years = TRUE)
   rice <- ifelse(higherr==1, x[,,"riceA",], x[,,"riceB",])
   rice <- add_dimension(collapseNames(rice), dim=3.1, nm="rice_pro")
-
-  x <- x[,,c("riceA", "riceB", "springwheat", "winterwheat"), inv=T]
-
-  x <- mbind(x, wheat, rice)
+  x <- x[,,c("riceA", "riceB"), inv=T]
+  x <- mbind(x,rice)
 
   #smooth with spline
   x[is.na(x)] <- 0
