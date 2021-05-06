@@ -35,6 +35,11 @@ if (grepl("historical", subtype)){
   x <- mbind(past,scen)
   x <- toolCoord2Isocell(x, cells=cells)
 
+  #pdssat has reverse naming and extra yields name ## These special cases need to be cleaned up
+  if (st$model=="pDSSAT"){
+  x <- collapseNames(x)
+  x <- dimOrder(x=x, perm=c(2,1))}
+
 
   # take higher yielding variety  based on highest mean yield between 1981 and 2011
   if (st$model=="CYGMA1p74"){ #CYGMA has no winter wheat
@@ -69,6 +74,8 @@ if (grepl("historical", subtype)){
   getNames(x, dim=1)[getNames(x,dim=1)=="maize"] <- "maiz"
   getNames(x, dim=2)[getNames(x,dim=2)=="fullyirrigated"] <- "irrigated"
   getNames(x, dim=2)[getNames(x,dim=2)=="noirrigation"] <- "rainfed"
+  getNames(x, dim=2)[getNames(x,dim=2)=="firr"] <- "irrigated"
+  getNames(x, dim=2)[getNames(x,dim=2)=="noirr"] <- "rainfed"
 
   crop_area_weight     <- dimSums(calcOutput("Croparea", sectoral="kcr", physical=TRUE, irrigation=FALSE,
                                                                 cellular=TRUE, cells=cells, aggregate = FALSE, years="y1995", round=6)[,,getNames(x,dim=1)], dim=3)
