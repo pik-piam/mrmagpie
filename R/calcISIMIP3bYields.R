@@ -47,11 +47,11 @@ if (grepl("historical", subtype)){
   x <- x[,,c("springwheat", "winterwheat"), inv=T]
   x <- mbind(x, wheat)
  }
-  higherr <- magpply(x[,1981:2011,"riceA",], FUN = mean, MARGIN = c(1,3))>magpply(x[,1981:2011,"riceB",], FUN = mean, MARGIN = c(1,3))
+  higherr <- magpply(x[,1981:2011,"ricea",], FUN = mean, MARGIN = c(1,3))>magpply(x[,1981:2011,"riceb",], FUN = mean, MARGIN = c(1,3))
   higherr<- time_interpolate(setYears(higherr, 1961), interpolated_year = getYears(x), integrate_interpolated_years = TRUE)
-  rice <- ifelse(higherr==1, x[,,"riceA",], x[,,"riceB",])
+  rice <- ifelse(higherr==1, x[,,"ricea",], x[,,"riceb",])
   rice <- add_dimension(collapseNames(rice), dim=3.1, nm="rice_pro")
-  x <- x[,,c("riceA", "riceB"), inv=T]
+  x <- x[,,c("ricea", "riceb"), inv=T]
   x <- mbind(x,rice)
 
   #smooth with spline
