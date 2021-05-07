@@ -39,6 +39,7 @@ if (grepl("historical", subtype)){
   if (st$model=="pDSSAT"){
   x <- collapseNames(x)
   x <- dimOrder(x=x, perm=c(2,1))}
+  x[is.na(x)] <- 0
 
 
   # take higher yielding variety  based on highest mean yield between 1981 and 2011
@@ -60,10 +61,8 @@ if (grepl("historical", subtype)){
   x <- mbind(x,rice)
 
   #smooth with spline
-  x[is.na(x)] <- 0
   x <- toolSmooth(x)
   #set very small yields from smoothing to 0
-  x[x<=0.01] <- 0
 
   ### here interpolate 2014 and hold 2100 constant after smoothing
   x <- time_interpolate(x, interpolated_year = 2014, integrate_interpolated_years = TRUE)

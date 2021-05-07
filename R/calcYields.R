@@ -86,7 +86,8 @@ calcYields <- function(lpjml=c(natveg="LPJmL4_for_MAgPIE_84a69edd", crop="ggcmi_
     common_years <- intersect(getYears(yields), getYears(to_rep))
     # convert to array for memory
     yields <- as.array(yields); to_rep <- as.array(to_rep)
-    yields[,common_years,common_vars] <- to_rep[,common_years,common_vars]
+    #yields[,common_years,common_vars] <- ifelse(to_rep[,common_years,common_vars] >0, to_rep[,common_years,common_vars], yields[,common_years, common_vars])
+    yields[,common_years, common_vars] <- to_rep[,common_years,common_vars]
     yields <- as.magpie(yields); to_rep <- as.magpie(to_rep)
 
   }
