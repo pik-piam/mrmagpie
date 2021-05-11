@@ -37,7 +37,7 @@ calcScaleEnvironmentData_new <- function(subtype="ISIMIP3b:IPSL-CM6A-LR:ssp126:1
 
   # The dataset will the randomized after it is merged with labels.
   # for that reason, it is being scaled with mean and sd from the hole dataset
-  x <- calcOutput("CollectEnvironmentData_new", subtype = subtype, sar = sar, aggregate = "cluster", sel_feat = sel_feat)
+  x <- calcOutput("CollectEnvironmentData_new", subtype = subtype, sar = sar, aggregate = aggregate, sel_feat = sel_feat)
   # xmeans <- apply(x, 3, mean)
   # xstd <-  apply(x, 3, sd)
   # y <- (x - as.magpie(xmeans))/as.magpie(xstd)
