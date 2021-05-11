@@ -5,6 +5,7 @@
 #' @param climatetype Switch between different climate scenarios (default: "CRU_4")
 #' @param sar Average range for smoothing annual variations
 #' @param scenario scenario specifications (eg. ssp126_co2_limN)
+#' @param aggr aggregation level
 #' @return magpie object in cellular resolution
 #' @author Marcos Alves
 #'
@@ -24,9 +25,9 @@
 #'
 
 calcScaledPastSoilCarbon <-
-  function(lsu_levels = c(seq(0, 2, 0.2), 2.5), lpjml = "LPJML5.2_pasture", climatetype = "IPSL_CM6A_LR", scenario = "ssp126_co2_limN", sar = 20) {
+  function(lsu_levels = c(seq(0, 2, 0.2), 2.5), lpjml = "LPJML5.2_pasture", climatetype = "IPSL_CM6A_LR", scenario = "ssp126_co2_limN", sar = 20, aggr = F) {
 
-    x <- calcOutput("CollectSoilCarbonLSU", lsu_levels = lsu_levels, lpjml = lpjml, climatetype = climatetype, scenario = scenario, sar = sar, aggregate = aggregate)
+    x <- calcOutput("CollectSoilCarbonLSU", lsu_levels = lsu_levels, lpjml = lpjml, climatetype = climatetype, scenario = scenario, sar = sar, aggregate = aggr)
     xmax <- max(x)
     xmin <-  min(x)
     y <- (x - xmin)/(xmax - xmin)

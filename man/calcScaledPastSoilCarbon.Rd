@@ -9,7 +9,8 @@ calcScaledPastSoilCarbon(
   lpjml = "LPJML5.2_pasture",
   climatetype = "IPSL_CM6A_LR",
   scenario = "ssp126_co2_limN",
-  sar = 20
+  sar = 20,
+  aggr = F
 )
 }
 \arguments{
@@ -22,6 +23,8 @@ calcScaledPastSoilCarbon(
 \item{scenario}{scenario specifications (eg. ssp126_co2_limN)}
 
 \item{sar}{Average range for smoothing annual variations}
+
+\item{aggr}{aggregation level}
 }
 \value{
 magpie object in cellular resolution
