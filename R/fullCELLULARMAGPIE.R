@@ -30,22 +30,29 @@
 #' }
 #' @importFrom madrat setConfig getConfig
 #' @importFrom magpiesets findset
+#' @importFrom digest digest
 
 fullCELLULARMAGPIE <- function(rev=0.1, dev="", ctype="c200", climatetype="GFDL-ESM4:ssp370",
                                lpjml=c(natveg="LPJmL4_for_MAgPIE_84a69edd", crop="ggcmi_phase3_nchecks_72c185fa",
-                                       pasture="LPJmL_cgrazing", mowing= "LPJmL_mowing"),isimip=NULL, clusterweight=NULL) {
+                                       pasture="LPJmL_cgrazing", mowing= "LPJmL_mowing"), isimip=NULL, clusterweight=NULL) {
 
   sizelimit <- getOption("magclass_sizeLimit")
   options(magclass_sizeLimit=1e+12)
   on.exit(options(magclass_sizeLimit=sizelimit))
-
-  setConfig(debug=TRUE)
 
   cat(paste0("Start preprocessing for \n climatescenario: ", climatetype,
                  "\n LPJmL-Versions: ", paste(names(lpjml), lpjml, sep = "->", collapse = ", "),
                  "\n clusterweight: ", paste(names(clusterweight), clusterweight, sep = ":", collapse = ", "),
                  "\n isimip yield subtype: ", paste(names(isimip), isimip, sep = ":", collapse = ", ")))
 
+  # Create version tag (will be returned at the very end of this function)
+  version_tag <- paste(ctype,
+                       gsub(":","-", climatetype),
+                       paste0("lpjml-",digest::digest(lpjml, algo=getConfig("hash"))),
+                       sep="_")
+  version_tag <- ifelse(is.null(isimip),
+                        version_tag,
+                        paste0(version_tag, "_isimip-",digest::digest(isimip,algo=getConfig("hash"))))
 
   mag_years_past_short <- c("y1995","y2000","y2005","y2010")
   mag_years_past_long  <- c("y1995","y2000","y2005","y2010","y2015")
@@ -59,21 +66,14 @@ fullCELLULARMAGPIE <- function(rev=0.1, dev="", ctype="c200", climatetype="GFDL-
   toolStoreMapping(map,clustermapname,type="regional",where=c("mappingfolder","outputfolder"),error.existing = FALSE)
   setConfig(extramappings = clustermapname)
 
-  # 09 drivers
-
   # 14 yields
 
-  isimip_subtype=NULL
-  if(grepl("ISIMIPyields",dev)){
-    isimip_subtype = isimip
-  } else {isimip_subtype = NULL}
-
   calcOutput("Yields", aggregate = FALSE, lpjml=lpjml, climatetype=climatetype,
-             round=2, years="y1995", isimip_subtype=isimip_subtype,
+             round=2, years="y1995", isimip_subtype=isimip,
              file=paste0("lpj_yields_0.5.mz"))
 
   calcOutput("Yields", aggregate = "cluster", lpjml=lpjml, climatetype=climatetype,
-             round=2, years=lpj_years, isimip_subtype=isimip_subtype,
+             round=2, years=lpj_years, isimip_subtype=isimip,
              file = paste0("lpj_yields_", ctype, ".mz"))
 
   calcOutput("PastYields_new", lsu_levels = c(seq(0, 2.2, 0.2), 2.5), mowing_events = "me2", lpjml = "lpjml5p2_pasture", climatetype = "IPSL_CM6A_LR", scenario = "ssp126_co2_Nreturn0p5_limN", file = paste0("lpj_past_yields_new_", ctype, ".mz"), years = mag_years, aggregate = "cluster")
@@ -220,4 +220,7 @@ fullCELLULARMAGPIE <- function(rev=0.1, dev="", ctype="c200", climatetype="GFDL-
     base::cat(info,file=file,sep='\n')
   }
   writeInfo(file=paste0(getConfig("outputfolder"),'/info.txt'), lpjml_data=climatetype, res_high="0.5", res_out=ctype, rev=rev)
+
+  return(list(tag = version_tag))
+
 }
