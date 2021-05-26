@@ -68,11 +68,11 @@ fullCELLULARMAGPIE <- function(rev=0.1, dev="", ctype="c200", climatetype="GFDL-
 
   # 14 yields
 
-  calcOutput("Yields", aggregate = FALSE, source=c(lpjml=as.vector(lpjml["crop"]), isimip=isimip), climatetype=climatetype,
+  calcOutput("Yields", aggregate = FALSE, source=c(lpjml=lpjml[["crop"]], isimip=isimip), climatetype=climatetype,
              round=2, years="y1995",
              file=paste0("lpj_yields_0.5.mz"))
 
-  calcOutput("Yields", aggregate = "cluster", source=c(lpjml=as.vector(lpjml["crop"]), isimip=isimip), climatetype=climatetype,
+  calcOutput("Yields", aggregate = "cluster", source=c(lpjml=lpjml[["crop"]], isimip=isimip), climatetype=climatetype,
              round=2, years=lpj_years,
              file = paste0("lpj_yields_", ctype, ".mz"))
 
