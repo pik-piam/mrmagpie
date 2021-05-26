@@ -14,7 +14,7 @@ calcClusterBase <- function(clusterdata="yield_airrig", lpjml=c(natveg="LPJmL4_f
   d <- list()
   # read in data which should be used to determine cluster
   if (clusterdata=="yield_airrig") {
-    d$yld    <- calcOutput("Yields",     lpjml=lpjml, years=1995, aggregate=FALSE)
+    d$yld    <- calcOutput("Yields",     source=as.vector(lpjml["crop"]), years=1995, aggregate=FALSE)
     d$irrig  <- calcOutput("Irrigation", lpjml=lpjml, years=1995, aggregate=FALSE)
     d$td     <- calcOutput("TransportDistance",      aggregate=FALSE)[,,rep(1,floor(ndata(d$yld)/2))]
   } else if (clusterdata=="yield_increment") {
