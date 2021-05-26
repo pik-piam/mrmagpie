@@ -33,7 +33,7 @@ calcYields <- function(source=c(lpjml="ggcmi_phase3_nchecks_72c185fa", isimip=NU
   for(crop in lpjml_crops){
 
     subdata <- as.vector(outer(crop, irrig_types, paste, sep="."))
-    tmp     <- calcOutput("LPJmL_new", version=as.vector(source["lpjml"]), climatetype=climatetype,
+    tmp     <- calcOutput("LPJmL_new", version=source["lpjml"], climatetype=climatetype,
                           subtype="harvest", subdata=subdata, stage=stage, aggregate=FALSE)
     yields  <- mbind(yields, tmp)
   }
