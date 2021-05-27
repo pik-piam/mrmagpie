@@ -38,12 +38,10 @@ if (grepl("historical", subtype)){
   #pdssat has reverse naming and extra yields name ## These special cases need to be cleaned up
   if (st$model == "pDSSAT"){
   x <- collapseNames(x)
-  x <- dimOrder(x=x, perm=c(2,1))}
-
-   else if (st$model == "LPJmL"){
+  x <- dimOrder(x=x, perm=c(2,1))} else if (st$model == "LPJmL"){
     x <- collapseNames(x)
     x <- dimOrder(x=x, perm=c(2,1))
-    getNames(x, dim=1)["soy"] <- "soybean"
+    getNames(x, dim=1)[getNames(x,dim=1)=="soy"] <- "soybean"
     }
 
   x[is.na(x)] <- 0
