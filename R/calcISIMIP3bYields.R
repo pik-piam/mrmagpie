@@ -35,37 +35,51 @@ if (grepl("historical", subtype)){
   x <- mbind(past,scen)
   x <- toolCoord2Isocell(x, cells=cells)
 
+  #pdssat has reverse naming and extra yields name ## These special cases need to be cleaned up
+  if (st$model == "pDSSAT"){
+  x <- collapseNames(x)
+  x <- dimOrder(x=x, perm=c(2,1))}
+  if (st$model == "LPJmL"){
+    x <- collapseNames(x)
+    x <- dimOrder(x=x, perm=c(2,1))
+    }
+
+  x[is.na(x)] <- 0
+
 
   # take higher yielding variety  based on highest mean yield between 1981 and 2011
+  if (st$model=="CYGMA1p74"){ #CYGMA has no winter wheat
+          getNames(x, dim=1)[getNames(x,dim=1)=="springwheat"] <- "tece"
+  } else {
   higherw <- magpply(x[,1981:2011,"springwheat",], FUN = mean, MARGIN = c(1,3))>magpply(x[,1981:2011,"winterwheat",], FUN = mean, MARGIN = c(1,3))
   higherw<- time_interpolate(setYears(higherw, 1961), interpolated_year = getYears(x), integrate_interpolated_years = TRUE)
   wheat <- ifelse(higherw==1, x[,,"springwheat",], x[,,"winterwheat",])
   wheat <- add_dimension(collapseNames(wheat), dim=3.1, nm = "tece")
-
-  higherr <- magpply(x[,1981:2011,"riceA",], FUN = mean, MARGIN = c(1,3))>magpply(x[,1981:2011,"riceB",], FUN = mean, MARGIN = c(1,3))
+  x <- x[,,c("springwheat", "winterwheat"), inv=T]
+  x <- mbind(x, wheat)
+ }
+  higherr <- magpply(x[,1981:2011,"ricea",], FUN = mean, MARGIN = c(1,3))>magpply(x[,1981:2011,"riceb",], FUN = mean, MARGIN = c(1,3))
   higherr<- time_interpolate(setYears(higherr, 1961), interpolated_year = getYears(x), integrate_interpolated_years = TRUE)
-  rice <- ifelse(higherr==1, x[,,"riceA",], x[,,"riceB",])
+  rice <- ifelse(higherr==1, x[,,"ricea",], x[,,"riceb",])
   rice <- add_dimension(collapseNames(rice), dim=3.1, nm="rice_pro")
-
-  x <- x[,,c("riceA", "riceB", "springwheat", "winterwheat"), inv=T]
-
-  x <- mbind(x, wheat, rice)
+  x <- x[,,c("ricea", "riceb"), inv=T]
+  x <- mbind(x,rice)
 
   #smooth with spline
-  x[is.na(x)] <- 0
   x <- toolSmooth(x)
   #set very small yields from smoothing to 0
-  x[x<=0.01] <- 0
 
   ### here interpolate 2014 and hold 2100 constant after smoothing
   x <- time_interpolate(x, interpolated_year = 2014, integrate_interpolated_years = TRUE)
   x <- toolHoldConstant(x, 2100)
 
 
-
+  getNames(x, dim=1)[getNames(x,dim=1)=="soy"] <- "soybean"
   getNames(x, dim=1)[getNames(x,dim=1)=="maize"] <- "maiz"
   getNames(x, dim=2)[getNames(x,dim=2)=="fullyirrigated"] <- "irrigated"
   getNames(x, dim=2)[getNames(x,dim=2)=="noirrigation"] <- "rainfed"
+  getNames(x, dim=2)[getNames(x,dim=2)=="firr"] <- "irrigated"
+  getNames(x, dim=2)[getNames(x,dim=2)=="noirr"] <- "rainfed"
 
   crop_area_weight     <- dimSums(calcOutput("Croparea", sectoral="kcr", physical=TRUE, irrigation=FALSE,
                                                                 cellular=TRUE, cells=cells, aggregate = FALSE, years="y1995", round=6)[,,getNames(x,dim=1)], dim=3)
@@ -73,7 +87,7 @@ if (grepl("historical", subtype)){
   return(list(
     x=x,
     weight=crop_area_weight,
-    unit="none",
+    unit="t/ha",
     description="ISIMIP3b GGCMI yields for soy rice wheat maize",
     isocountries=FALSE))
 }

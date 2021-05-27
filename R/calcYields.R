@@ -1,10 +1,10 @@
 #' @title calcYields
 #' @description This function extracts yields from LPJmL to MAgPIE
 #'
-#' @param lpjml Defines LPJmL version for crop/grass and natveg specific inputs
+#' @param source Defines LPJmL version for main crop inputs and isimip replacement.
+#' For isimip choose crop model/gcm/rcp/co2 combination formatted like this: "yields:EPIC-IIASA:ukesm1-0-ll:ssp585:default:3b"
 #' @param climatetype Switch between different climate scenarios
 #' @param cells if cellular is TRUE: "magpiecell" for 59199 cells or "lpjcell" for 67420 cells
-#' @param isimip_subtype choose crop model/gcm/rcp/co2 combination formatted like this: "yields:EPIC-IIASA:ukesm1-0-ll:ssp585:default:3b"
 #' @return magpie object in cellular resolution
 #' @author Kristine Karstens, Felicitas Beier
 #'
@@ -15,8 +15,8 @@
 #' @importFrom magclass getYears add_columns dimSums time_interpolate
 #' @importFrom madrat toolFillYears
 
-calcYields <- function(lpjml=c(natveg="LPJmL4_for_MAgPIE_84a69edd", crop="ggcmi_phase3_nchecks_72c185fa"),
-                           climatetype="GSWP3-W5E5:historical", cells="magpiecell", isimip_subtype=NULL){
+calcYields <- function(source=c(lpjml="ggcmi_phase3_nchecks_72c185fa", isimip=NULL),
+                           climatetype="GSWP3-W5E5:historical", cells="magpiecell"){
 
   sizelimit <- getOption("magclass_sizeLimit")
   options(magclass_sizeLimit=1e+12)
@@ -33,7 +33,7 @@ calcYields <- function(lpjml=c(natveg="LPJmL4_for_MAgPIE_84a69edd", crop="ggcmi_
   for(crop in lpjml_crops){
 
     subdata <- as.vector(outer(crop, irrig_types, paste, sep="."))
-    tmp     <- calcOutput("LPJmL_new", version=lpjml["crop"], climatetype=climatetype,
+    tmp     <- calcOutput("LPJmL_new", version=source[["lpjml"]], climatetype=climatetype,
                           subtype="harvest", subdata=subdata, stage=stage, aggregate=FALSE)
     yields  <- mbind(yields, tmp)
   }
@@ -63,7 +63,7 @@ calcYields <- function(lpjml=c(natveg="LPJmL4_for_MAgPIE_84a69edd", crop="ggcmi_
 
   matchingFAOyears <- intersect(getYears(yields),getYears(FAOYields))
   FAOYields        <- FAOYields[,matchingFAOyears,]
-  Calib            <- new.magpie("GLO", getYears(yields), c(getNames(FAOYields), "pasture"), fill=1, sets=c("iso","year","data"))
+  Calib            <- new.magpie("GLO", matchingFAOyears, c(getNames(FAOYields), "pasture"), fill=1, sets=c("iso","year","data"))
   Calib[,matchingFAOyears,"oilpalm"]   <- FAOYields[,,"oilpalm"]/FAOYields[,,"groundnut"]      # LPJmL proxy for oil palm is groundnut
   Calib[,matchingFAOyears,"cottn_pro"] <- FAOYields[,,"cottn_pro"]/FAOYields[,,"groundnut"]    # LPJmL proxy for cotton is groundnut
   Calib[,matchingFAOyears,"foddr"]     <- FAOYields[,,"foddr"]/FAOYields[,,"maiz"]             # LPJmL proxy for fodder is maize
@@ -80,13 +80,14 @@ calcYields <- function(lpjml=c(natveg="LPJmL4_for_MAgPIE_84a69edd", crop="ggcmi_
     yields <- toolCoord2Isocell(yields)
   }
 
-   if (!is.null(isimip_subtype)){
-    to_rep <- calcOutput("ISIMIP3bYields", subtype=isimip_subtype, cells=cells, aggregate=F)
+   if (!is.na(source["isimip"])){
+    to_rep <- calcOutput("ISIMIP3bYields", subtype=source[["isimip"]], cells=cells, aggregate=F)
     common_vars <- intersect(getNames(yields),getNames(to_rep))
     common_years <- intersect(getYears(yields), getYears(to_rep))
     # convert to array for memory
     yields <- as.array(yields); to_rep <- as.array(to_rep)
-    yields[,common_years,common_vars] <- to_rep[,common_years,common_vars]
+    #yields[,common_years,common_vars] <- ifelse(to_rep[,common_years,common_vars] >0, to_rep[,common_years,common_vars], yields[,common_years, common_vars])
+    yields[,common_years, common_vars] <- to_rep[,common_years,common_vars]
     yields <- as.magpie(yields); to_rep <- as.magpie(to_rep)
 
   }

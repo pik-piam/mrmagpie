@@ -5,21 +5,18 @@
 \title{calcYields}
 \usage{
 calcYields(
-  lpjml = c(natveg = "LPJmL4_for_MAgPIE_84a69edd", crop =
-    "ggcmi_phase3_nchecks_72c185fa"),
+  source = c(lpjml = "ggcmi_phase3_nchecks_72c185fa", isimip = NULL),
   climatetype = "GSWP3-W5E5:historical",
-  cells = "magpiecell",
-  isimip_subtype = NULL
+  cells = "magpiecell"
 )
 }
 \arguments{
-\item{lpjml}{Defines LPJmL version for crop/grass and natveg specific inputs}
+\item{source}{Defines LPJmL version for main crop inputs and isimip replacement.
+For isimip choose crop model/gcm/rcp/co2 combination formatted like this: "yields:EPIC-IIASA:ukesm1-0-ll:ssp585:default:3b"}
 
 \item{climatetype}{Switch between different climate scenarios}
 
 \item{cells}{if cellular is TRUE: "magpiecell" for 59199 cells or "lpjcell" for 67420 cells}
-
-\item{isimip_subtype}{choose crop model/gcm/rcp/co2 combination formatted like this: "yields:EPIC-IIASA:ukesm1-0-ll:ssp585:default:3b"}
 }
 \value{
 magpie object in cellular resolution
