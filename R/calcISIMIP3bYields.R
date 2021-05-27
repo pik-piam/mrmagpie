@@ -38,10 +38,10 @@ if (grepl("historical", subtype)){
   #pdssat has reverse naming and extra yields name ## These special cases need to be cleaned up
   if (st$model == "pDSSAT"){
   x <- collapseNames(x)
-  x <- dimOrder(x=x, perm=c(2,1))} else if (st$model == "LPJmL"){
+  x <- dimOrder(x=x, perm=c(2,1))}
+  if (st$model == "LPJmL"){
     x <- collapseNames(x)
     x <- dimOrder(x=x, perm=c(2,1))
-    getNames(x, dim=1)[getNames(x,dim=1)=="soy"] <- "soybean"
     }
 
   x[is.na(x)] <- 0
@@ -74,7 +74,7 @@ if (grepl("historical", subtype)){
   x <- toolHoldConstant(x, 2100)
 
 
-
+  getNames(x, dim=1)[getNames(x,dim=1)=="soy"] <- "soybean"
   getNames(x, dim=1)[getNames(x,dim=1)=="maize"] <- "maiz"
   getNames(x, dim=2)[getNames(x,dim=2)=="fullyirrigated"] <- "irrigated"
   getNames(x, dim=2)[getNames(x,dim=2)=="noirrigation"] <- "rainfed"
@@ -87,7 +87,7 @@ if (grepl("historical", subtype)){
   return(list(
     x=x,
     weight=crop_area_weight,
-    unit="none",
+    unit="t/ha",
     description="ISIMIP3b GGCMI yields for soy rice wheat maize",
     isocountries=FALSE))
 }
