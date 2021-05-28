@@ -14,7 +14,7 @@
 #' @importFrom magpiesets findset
 #' @importFrom magclass add_dimension
 
-calcCarbon <- function(lpjml=c(natveg="LPJmL4_for_MAgPIE_84a69edd", crop="ggcmi_phase3_nchecks_72c185fa"),
+calcCarbonTests <- function(lpjml=c(natveg="LPJmL4_for_MAgPIE_84a69edd", crop="ggcmi_phase3_nchecks_72c185fa"),
                            climatetype="GSWP3-W5E5:historical", stage="raw"){
 
   .getLPJmLCPools <- function(pool, cfg){
