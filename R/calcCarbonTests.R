@@ -20,26 +20,30 @@ calcCarbonTests <- function(lpjml=c(natveg="LPJmL4_for_MAgPIE_84a69edd", crop="g
   .getLPJmLCPools <- function(pool, cfg){
     out <- calcOutput("LPJmL_new", version=cfg$lpjml,
                       climatetype=cfg$climatetype,
-                      subtype=pool, stage=stage,
+                      subtype=pool, stage=cfg$stage,
                       aggregate=FALSE)
     out <- toolCoord2Isocell(out)
     out <- setNames(out, pool)
     return(out)
   }
 
-  cfg    <- list(lpjml=lpjml["natveg"], climatetype=climatetype)
+  cfg    <- list(lpjml=lpjml["natveg"], climatetype=climatetype, stage=stage)
   natveg <- mbind(.getLPJmLCPools("vegc", cfg),
                   .getLPJmLCPools("soilc", cfg),
                   .getLPJmLCPools("litc", cfg))
 
-  cfg    <- list(lpjml=lpjml["crop"], climatetype=climatetype)
+  cfg    <- list(lpjml=lpjml["crop"], climatetype=climatetype, stage=stage)
   grass  <- mbind(.getLPJmLCPools("vegc_grass", cfg),
                   .getLPJmLCPools("soilc_grass", cfg),
                   .getLPJmLCPools("litc_grass", cfg))
 
   getNames(grass) <- getNames(natveg)
 
-  topsoilc       <- calcOutput("TopsoilCarbon", lpjml=lpjml, climatetype=climatetype, aggregate=FALSE)
+  soilc_layer_natveg <- toolCoord2Isocell(calcOutput("LPJmL_new", version=lpjml["natveg"], climatetype=climatetype,
+                                                     subtype="soilc_layer", stage=stage, aggregate=FALSE))
+  topsoilc           <- soilc_layer_natveg[,,1] + 1/3 * soilc_layer_natveg[,,2]
+
+  #topsoilc       <- calcOutput("TopsoilCarbon", lpjml=lpjml, climatetype=climatetype, aggregate=FALSE)
   cshare         <- calcOutput("SOCLossShare", aggregate=FALSE, years="y1995")
 
   ####################################################
