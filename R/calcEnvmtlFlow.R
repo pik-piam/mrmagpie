@@ -14,7 +14,7 @@
 #' @import magclass
 #' @import madrat
 #' @importFrom stats quantile
-#' @importFrom mrcommons toolHarmonize2Baseline
+#' @importFrom mrcommons toolHarmonize2Baseline toolLPJmLVersion
 #'
 #' @return magpie object in cellular resolution
 #' @author Felicitas Beier, Abhijeet Mishra
@@ -28,12 +28,8 @@ calcEnvmtlFlow <- function(lpjml=c(natveg="LPJmL4_for_MAgPIE_84a69edd", crop="gg
                            LFR_val=0.1, HFR_LFR_less10=0.2, HFR_LFR_10_20=0.15, HFR_LFR_20_30=0.07, HFR_LFR_more30=0.00,
                            seasonality="grper"){
 
-  ##### CONFIG #####
-  baseline_hist <- "GSWP3-W5E5:historical"
-  ref_year_hist <- "y2010"
-  baseline_gcm  <- "GFDL-ESM4:ssp370"
-  ref_year_gcm  <- "y2020"
-  ##### CONFIG #####
+  # Create settings for LPJmL from version and climatetype argument
+  cfg <- toolLPJmLVersion(version=lpjml$natveg, climatetype=climatetype)
 
   if(stage%in%c("raw","smoothed")){
 
@@ -202,22 +198,22 @@ calcEnvmtlFlow <- function(lpjml=c(natveg="LPJmL4_for_MAgPIE_84a69edd", crop="gg
 
   } else if(stage=="harmonized"){
 
-    if(climatetype == baseline_hist) stop("You can not harmonize the historical baseline.")
+    if(climatetype == cfg$baseline_hist) stop("You can not harmonize the historical baseline.")
 
     # Load baseline and climate EFR:
-    baseline <- calcOutput("EnvmtlFlow", lpjml=lpjml, climatetype=baseline_hist,
+    baseline <- calcOutput("EnvmtlFlow", lpjml=lpjml, climatetype=cfg$baseline_hist,
                            seasonality=seasonality, aggregate=FALSE, stage="smoothed")
     x        <- calcOutput("EnvmtlFlow", lpjml=lpjml, climatetype=climatetype,
                            seasonality=seasonality, aggregate=FALSE, stage="smoothed")
     # Harmonize to baseline
-    out <- toolHarmonize2Baseline(x=x, base=baseline, ref_year=ref_year_hist)
+    out <- toolHarmonize2Baseline(x=x, base=baseline, ref_year=cfg$ref_year_hist)
 
   } else if(stage == "harmonized2020"){
 
-    baseline2020 <- calcOutput("EnvmtlFlow", lpjml=lpjml, climatetype=baseline_gcm,
+    baseline2020 <- calcOutput("EnvmtlFlow", lpjml=lpjml, climatetype=cfg$baseline_gcm,
                                seasonality=seasonality, aggregate=FALSE, stage="harmonized")
 
-    if(climatetype == baseline_gcm){
+    if(climatetype == cfg$baseline_gcm){
 
       out <- baseline2020
 
@@ -225,7 +221,7 @@ calcEnvmtlFlow <- function(lpjml=c(natveg="LPJmL4_for_MAgPIE_84a69edd", crop="gg
 
       x        <- calcOutput("EnvmtlFlow", lpjml=lpjml, climatetype=climatetype,
                              seasonality=seasonality, aggregate=FALSE, stage="smoothed")
-      out      <- toolHarmonize2Baseline(x, baseline2020, ref_year=ref_year_gcm)
+      out      <- toolHarmonize2Baseline(x, baseline2020, ref_year=cfg$ref_year_gcm)
     }
 
   } else { stop("Stage argument not supported!") }

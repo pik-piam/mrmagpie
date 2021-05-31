@@ -8,7 +8,7 @@
 #'
 #' @import magclass
 #' @import madrat
-#' @importFrom mrcommons toolHarmonize2Baseline
+#' @importFrom mrcommons toolHarmonize2Baseline toolLPJmLVersion
 #'
 #' @return magpie object in cellular resolution
 #' @author Felicitas Beier, Kristine Karstens, Abhijeet Mishra
@@ -20,13 +20,7 @@
 calcAvlWater <- function(lpjml=c(natveg="LPJmL4_for_MAgPIE_84a69edd", crop="ggcmi_phase3_nchecks_72c185fa"),
                          climatetype="GSWP3-W5E5:historical", stage="harmonized2020", seasonality="grper"){
 
-  ##### CONFIG #####
-  baseline_hist <- "GSWP3-W5E5:historical"
-  ref_year_hist <- "y2010"
-  baseline_gcm  <- "GFDL-ESM4:ssp370"
-  ref_year_gcm  <- "y2020"
-  ##### CONFIG #####
-
+  cfg <- toolLPJmLVersion(version=lpjml$natveg, climatetype=climatetype)
 
   ######################################################
   ############ Water availability per cell #############
@@ -139,30 +133,30 @@ calcAvlWater <- function(lpjml=c(natveg="LPJmL4_for_MAgPIE_84a69edd", crop="ggcm
 
   }  else if(stage=="harmonized"){
 
-    if(climatetype == baseline_hist) stop("You can not harmonize the historical baseline.")
+    if(climatetype == cfg$baseline_hist) stop("You can not harmonize the historical baseline.")
 
     # load smoothed data
-    baseline <- calcOutput("AvlWater", lpjml=lpjml, climatetype=baseline_hist, seasonality=seasonality,
+    baseline <- calcOutput("AvlWater", lpjml=lpjml, climatetype=cfg$baseline_hist, seasonality=seasonality,
                            aggregate=FALSE, stage="smoothed")
     x        <- calcOutput("AvlWater", lpjml=lpjml, climatetype=climatetype, seasonality=seasonality,
                            aggregate=FALSE, stage="smoothed")
     # Harmonize to baseline
-    out <- toolHarmonize2Baseline(x=x, base=baseline, ref_year=ref_year_hist)
+    out <- toolHarmonize2Baseline(x=x, base=baseline, ref_year=cfg$ref_year_hist)
 
   } else if(stage == "harmonized2020"){
 
     #read in historical data for subtype
-    baseline2020 <- calcOutput("AvlWater", lpjml=lpjml, climatetype=baseline_gcm, seasonality=seasonality,
+    baseline2020 <- calcOutput("AvlWater", lpjml=lpjml, climatetype=cfg$baseline_gcm, seasonality=seasonality,
                                aggregate=FALSE, stage="harmonized")
 
-    if(climatetype == baseline_gcm){
+    if(climatetype == cfg$baseline_gcm){
       out <- baseline2020
 
     } else {
 
       x        <- calcOutput("AvlWater", lpjml=lpjml, climatetype=climatetype, seasonality=seasonality,
                              aggregate=FALSE, stage="smoothed")
-      out      <- toolHarmonize2Baseline(x, baseline2020, ref_year=ref_year_gcm)
+      out      <- toolHarmonize2Baseline(x, baseline2020, ref_year=cfg$ref_year_gcm)
     }
 
   } else { stop("Stage argument not supported!") }

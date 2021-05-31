@@ -15,18 +15,14 @@
 #'
 #' @importFrom madrat toolGetMapping toolAggregate
 #' @importFrom magclass collapseNames getNames new.magpie getYears dimSums magpie_expand
-#' @importFrom mrcommons toolHarmonize2Baseline toolSmooth
+#' @importFrom mrcommons toolHarmonize2Baseline toolSmooth toolLPJmLVersion
 #'
 #' @export
 
 calcGrowingPeriod <- function(lpjml=c(natveg="LPJmL4_for_MAgPIE_84a69edd", crop="ggcmi_phase3_nchecks_72c185fa"),
                               climatetype="GSWP3-W5E5:historical", stage="harmonized2020", yield_ratio=0.1) {
-  ##### CONFIG #####
-  baseline_hist <- "GSWP3-W5E5:historical"
-  ref_year_hist <- "y2010"
-  baseline_gcm  <- "GFDL-ESM4:ssp370"
-  ref_year_gcm  <- "y2020"
-  ##### CONFIG #####
+
+  cfg <- toolLPJmLVersion(version=lpjml$natveg, climatetype=climatetype)
 
   if(stage%in%c("raw","smoothed")){
 
@@ -256,31 +252,31 @@ calcGrowingPeriod <- function(lpjml=c(natveg="LPJmL4_for_MAgPIE_84a69edd", crop=
 
   }  else if(stage=="harmonized"){
 
-    if(climatetype == baseline_hist) stop("You can not harmonize the historical baseline.")
+    if(climatetype == cfg$baseline_hist) stop("You can not harmonize the historical baseline.")
 
     # load smoothed data
-    baseline <- calcOutput("GrowingPeriod", lpjml=lpjml, climatetype=baseline_hist,
+    baseline <- calcOutput("GrowingPeriod", lpjml=lpjml, climatetype=cfg$baseline_hist,
                            stage="smoothed", yield_ratio=yield_ratio, aggregate = FALSE)
     x        <- calcOutput("GrowingPeriod", lpjml=lpjml, climatetype=climatetype,
                            stage="smoothed", yield_ratio=yield_ratio, aggregate = FALSE)
     # Harmonize to baseline
-    out <- toolHarmonize2Baseline(x=x, base=baseline, ref_year=ref_year_hist)
+    out <- toolHarmonize2Baseline(x=x, base=baseline, ref_year=cfg$ref_year_hist)
 
 
   } else if(stage == "harmonized2020"){
 
     #read in historical data for subtype
-    baseline2020    <- calcOutput("GrowingPeriod", lpjml=lpjml, climatetype=baseline_gcm,
+    baseline2020    <- calcOutput("GrowingPeriod", lpjml=lpjml, climatetype=cfg$baseline_gcm,
                                   stage="harmonized", yield_ratio=yield_ratio, aggregate = FALSE)
 
-    if(climatetype == baseline_gcm){
+    if(climatetype == cfg$baseline_gcm){
       out <- baseline2020
 
     } else {
 
       x        <- calcOutput("GrowingPeriod", lpjml=lpjml, climatetype=climatetype,
                              stage="smoothed", yield_ratio=yield_ratio, aggregate = FALSE)
-      out <- toolHarmonize2Baseline(x, baseline2020, ref_year=ref_year_gcm)
+      out <- toolHarmonize2Baseline(x, baseline2020, ref_year=cfg$ref_year_gcm)
     }
 
   } else { stop("Stage argument not supported!") }
