@@ -20,7 +20,7 @@ readIPCCClimate <-  function(){
 
   map           <- as.data.frame(magpie_coord)
   mag           <- clean_magpie(as.magpie(raster::extract(raster_1d2,map), spatial=1))
-  cellNames     <- toolMappingFile(type="cell",name="CountryToCellMapping.csv",readcsv=TRUE)$celliso
+  cellNames     <- toolGetMapping(type = "cell", name="CountryToCellMapping.csv")$celliso
   getNames(mag) <- "NA"
   getYears(mag) <- NULL
   getCells(mag) <- cellNames

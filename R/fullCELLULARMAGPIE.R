@@ -205,8 +205,7 @@ fullCELLULARMAGPIE <- function(rev=0.1, dev="", ctype="c200", climatetype="GFDL-
   writeInfo <- function(file,lpjml_data, res_high, res_out, rev) {
     functioncall <- paste(deparse(sys.call(-2)), collapse = "")
 
-    map <- toolMappingFile("regional", getConfig("regionmapping"),
-                           readcsv = TRUE)
+    map <- toolGetMapping(type = "regional", name = getConfig("regionmapping"))
     regionscode <- regionscode(map)
 
     info <- c('lpj2magpie settings:',

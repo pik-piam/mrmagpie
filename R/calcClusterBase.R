@@ -7,7 +7,7 @@
 #' @author Jan Philipp Dietrich, Felicitas Beier
 #' @seealso \code{\link{calcCluster}}
 #' @importFrom magclass wrap read.magpie ndata
-#' @importFrom madrat toolMappingFile
+#' @importFrom madrat toolGetMapping
 calcClusterBase <- function(clusterdata="yield_airrig", lpjml=c(natveg="LPJmL4_for_MAgPIE_84a69edd",
                                                                 crop="ggcmi_phase3_nchecks_72c185fa")) {
 
@@ -32,7 +32,7 @@ calcClusterBase <- function(clusterdata="yield_airrig", lpjml=c(natveg="LPJmL4_f
   colnames(cdata) <- paste0("i",1:ncol(cdata))
 
   #make sure that spatial dimension contains country information
-  iso <- toolMappingFile("cell", "CountryToCellMapping.csv", readcsv = TRUE)$iso
+  iso <- toolGetMapping(type = "cell", name = "CountryToCellMapping.csv")$iso
   dimnames(cdata)[[1]] <- paste(iso, 1:length(iso), sep = ".")
 
   return(list(

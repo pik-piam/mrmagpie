@@ -26,7 +26,7 @@ calcAreaActuallyIrrigated<-function(aggregationlevel="iso",selectyears="y1995"){
 
   if (aggregationlevel=="iso") {
     # country to cell mapping
-    CountryToCell <- toolMappingFile(type="cell", name="CountryToCellMapping.csv", readcsv=TRUE)
+    CountryToCell <- toolGetMapping(type = "cell", name = "CountryToCellMapping.csv")
     # aggregate data
     toolAggregate(x, dim=1, rel=CountryToCell)
 
