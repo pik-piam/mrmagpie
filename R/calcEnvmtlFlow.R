@@ -29,7 +29,7 @@ calcEnvmtlFlow <- function(lpjml=c(natveg="LPJmL4_for_MAgPIE_84a69edd", crop="gg
                            seasonality="grper"){
 
   # Create settings for LPJmL from version and climatetype argument
-  cfg <- toolLPJmLVersion(version=lpjml$natveg, climatetype=climatetype)
+  cfg <- toolLPJmLVersion(version=lpjml["natveg"], climatetype=climatetype)
 
   if(stage%in%c("raw","smoothed")){
 
