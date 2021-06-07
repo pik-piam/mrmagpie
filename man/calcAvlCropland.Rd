@@ -7,7 +7,8 @@
 calcAvlCropland(
   marginal_land = "magpie",
   cell_upper_bound = 0.9,
-  cells = "magpiecell"
+  cells = "magpiecell",
+  country_level = FALSE
 )
 }
 \arguments{
@@ -25,6 +26,8 @@ calcAvlCropland(
 \item{cell_upper_bound}{Upper bound for cropland at the grid cell level. Even if, for instance, the total available cropland area equals the land area in a grid cell, cropland cannot be expanded above this value.}
 
 \item{cells}{magpiecell (59199 cells) or lpjcell (67420 cells)}
+
+\item{country_level}{Whether output shall be at country level}
 }
 \value{
 magpie object in cellular resolution
@@ -35,7 +38,8 @@ cropland suitability data or other criteria, such as constraints on cropland exp
 }
 \examples{
 \dontrun{
-calcOutput("AvlCropland", marginal_land = "magpie", cells = "magpiecell", aggregate = FALSE)
+calcOutput("AvlCropland", marginal_land = "magpie", cells = "magpiecell",
+           country_level = FALSE, aggregate = FALSE)
 }
 
 }

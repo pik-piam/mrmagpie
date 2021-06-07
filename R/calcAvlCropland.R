@@ -14,13 +14,15 @@
 #' }
 #' @param cell_upper_bound Upper bound for cropland at the grid cell level. Even if, for instance, the total available cropland area equals the land area in a grid cell, cropland cannot be expanded above this value.
 #' @param cells magpiecell (59199 cells) or lpjcell (67420 cells)
+#' @param country_level Whether output shall be at country level
 #'
 #' @return magpie object in cellular resolution
 #' @author Patrick v. Jeetze
 #'
 #' @examples
 #' \dontrun{
-#' calcOutput("AvlCropland", marginal_land = "magpie", cells = "magpiecell", aggregate = FALSE)
+#' calcOutput("AvlCropland", marginal_land = "magpie", cells = "magpiecell",
+#'            country_level = FALSE, aggregate = FALSE)
 #' }
 #'
 #' @importFrom madrat readSource calcOutput
@@ -29,7 +31,7 @@
 #' @importFrom magpiesets addLocation
 #'
 
-calcAvlCropland <- function(marginal_land="magpie", cell_upper_bound = 0.9, cells = "magpiecell"){
+calcAvlCropland <- function(marginal_land="magpie", cell_upper_bound = 0.9, cells = "magpiecell", country_level=FALSE){
 
   # read luh data
   luh <- calcOutput("LUH2v2", landuse_types="magpie", aggregate=FALSE, cellular=TRUE, cells="lpjcell", irrigation=FALSE, years="y1995")
@@ -134,12 +136,16 @@ calcAvlCropland <- function(marginal_land="magpie", cell_upper_bound = 0.9, cell
   }
 
 
-  if (cells == "magpiecell") {
-    out <- toolCoord2Isocell(x)
-  } else if (cells == "lpjcell") {
-    out <- x
+  if (country_level){
+    out <- toolAggregateCell2Country(collapseDim(x, dim="iso"))
   } else {
-    stop("Please specify cells argument")
+    if (cells == "magpiecell") {
+      out <- toolCoord2Isocell(x)
+    } else if (cells == "lpjcell") {
+      out <- x
+    } else {
+      stop("Please specify cells argument")
+    }
   }
 
   return(list(
