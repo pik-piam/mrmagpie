@@ -137,7 +137,7 @@ calcAvlCropland <- function(marginal_land="magpie", cell_upper_bound = 0.9, cell
 
 
   if (country_level){
-    out <- toolAggregateCell2Country(collapseDim(x, dim="iso"))
+    out <- toolAggregateCell2Country(collapseDim(x, dim="iso"), fill = 0)
   } else {
     if (cells == "magpiecell") {
       out <- toolCoord2Isocell(x)

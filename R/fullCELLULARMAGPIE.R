@@ -105,6 +105,7 @@ fullCELLULARMAGPIE <- function(rev=0.1, dev="", ctype="c200", climatetype="GFDL-
    #10 land
   calcOutput("LanduseInitialisation", aggregate=FALSE, cellular=TRUE, cells="magpiecell", nclasses="seven", fao_corr=TRUE, input_magpie=TRUE, selectyears=mag_years_past_long, round=6, file="avl_land_t_0.5.mz")
   calcOutput("LanduseInitialisation", aggregate="cluster", cellular=TRUE, nclasses="seven", fao_corr=TRUE, input_magpie=TRUE, selectyears=mag_years_past_long, round=6, file=paste0("avl_land_t_", ctype, ".mz"))
+  calcOutput("LanduseInitialisation", aggregate=FALSE, cellular=TRUE, fao_corr=TRUE, input_magpie=TRUE, selectyears=mag_years_past_long, round=6, country_level=TRUE, file=paste0("avl_land_t_iso.mz"))
   calcOutput("SeaLevelRise", aggregate=FALSE, cellular=TRUE, years=mag_years, round=6, file="f10_SeaLevelRise_0.5.mz")
   calcOutput("AvlLandSi", aggregate=FALSE, round=6, file="avl_land_si_0.5.mz")
   calcOutput("AvlLandSi", aggregate="cluster", round=6, file=paste0("avl_land_si_", ctype, ".mz"))
@@ -116,6 +117,7 @@ fullCELLULARMAGPIE <- function(rev=0.1, dev="", ctype="c200", climatetype="GFDL-
   calcOutput("Croparea", sectoral="kcr", physical=TRUE, cellular=TRUE, irrigation=TRUE, aggregate = "cluster", file=paste0("f30_croparea_w_initialisation_", ctype, ".mz"))
   calcOutput("AvlCropland", marginal_land="magpie", cell_upper_bound = 0.9,  aggregate=FALSE, round=6, file="avl_cropland_0.5.mz")
   calcOutput("AvlCropland", marginal_land="magpie", cell_upper_bound = 0.9, aggregate="cluster", round=6, file=paste0("avl_cropland_", ctype, ".mz"))
+  calcOutput("AvlCropland", marginal_land="magpie", cell_upper_bound = 0.9, aggregate=FALSE, country_level=TRUE, round=6, file=paste0("avl_cropland_iso.mz"))
 
   #32 forestry
   calcOutput("AfforestationMask", subtype="noboreal",     aggregate="cluster", round=6, file=paste0("aff_noboreal_", ctype, ".mz"))
