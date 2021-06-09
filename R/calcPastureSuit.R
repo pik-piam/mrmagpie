@@ -53,6 +53,7 @@ calcPastureSuit <- function(subtype = "ISIMIP3b:IPSL-CM6A-LR:1850-2100"){
   pasture_suit[pop_density<5] <- 0
   pasture_suit_area = pasture_suit * cell_size/1e6*100
   pasture_suit_area <- collapseDim(pasture_suit_area, dim = 3.3)
+  pasture_suit_area <- toolHoldConstantBeyondEnd(pasture_suit_area)
 
   return(list(
     x = pasture_suit_area,
