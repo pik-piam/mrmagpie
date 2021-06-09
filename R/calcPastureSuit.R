@@ -21,7 +21,7 @@ calcPastureSuit <- function(subtype = "ISIMIP3b:IPSL-CM6A-LR:1850-2100"){
     #write a script that reads different SPPs scenarios
     # subtype = paste(x$version, x$climatemodel,ssps,x$period, "pr", sep = ":")
     subtype = "ISIMIP3b:IPSL-CM6A-LR:ssp126:1850-2100:pr"
-    precipitation[[ssp]] <- setNames(calcOutput("GCMClimate_new", subtype = subtype, aggregate = F),paste0("past_",ssp))
+    precipitation[[ssp]] <- setNames(calcOutput("GCMClimate_new", subtype = subtype, aggregate = F),paste0("past_suit.",ssp))
   }
   precipitation <- mbind(precipitation)
 
@@ -52,7 +52,7 @@ calcPastureSuit <- function(subtype = "ISIMIP3b:IPSL-CM6A-LR:1850-2100"){
   pasture_suit <- aridity
   pasture_suit[pop_density<5] <- 0
   pasture_suit_area = pasture_suit * cell_size/1e6*100
-  pasture_suit_area <- collapseDim(pasture_suit_area, dim = 3.2)
+  pasture_suit_area <- collapseDim(pasture_suit_area, dim = 3.3)
 
   return(list(
     x = pasture_suit_area,
