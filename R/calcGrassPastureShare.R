@@ -22,7 +22,7 @@ calcGrassPastureShare <- function(){
   pasture_hist_share <- setNames(LUH2v2[,t_past,"pastr"]/grass_area, "past_share")
   pasture_hist_share[is.nan(pasture_hist_share)] <- 0
   pasture_hist_share[is.infinite(pasture_hist_share)] <- 0
-  pasture_hist_share <- toolHoldConstantBeyondEnd(pasture_hist_share)
+
 
   # Cell area calculation
   landcoords <- as.data.frame(toolGetMapping("magpie_coord.rda", type = "cell"))

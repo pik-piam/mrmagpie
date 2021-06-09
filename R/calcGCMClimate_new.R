@@ -32,14 +32,14 @@ calcGCMClimate_new <- function(subtype = "ISIMIP3b:IPSL-CM6A-LR:ssp126:1850-2100
   getNames(y) <- gsub("-", "_", paste(x$variable, x$climatemodel, x$scenario, sep = "_"))
 
 
-  .unit <- switch(x$variable,
+  unit <- switch(x$variable,
     "tas"       = "Degree Celcius",
     "pr"        = "mm3 per year",
     "lwnet"     = "watt per m2",
     "rsds"      = "watt per m2"
   )
 
-  .description <- switch(x$variable,
+  description <- switch(x$variable,
     "temperature"          = "Average annual air temperature",
     "precipitation"        = "Average precipitation",
     "longwave_radiation"   = "?",
@@ -49,8 +49,8 @@ calcGCMClimate_new <- function(subtype = "ISIMIP3b:IPSL-CM6A-LR:ssp126:1850-2100
   return(list(
     x = y,
     weight = NULL,
-    unit = .unit,
-    description = .description,
+    unit = unit,
+    description = description,
     isocountries = FALSE
   ))
 }
