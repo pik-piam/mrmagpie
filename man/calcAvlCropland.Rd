@@ -27,7 +27,7 @@ calcAvlCropland(
 
 \item{cells}{magpiecell (59199 cells) or lpjcell (67420 cells)}
 
-\item{country_level}{Whether output shall be at country level}
+\item{country_level}{Whether output shall be at country level. Requires aggregate=FALSE in calcOutput.}
 }
 \value{
 magpie object in cellular resolution

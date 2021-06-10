@@ -14,7 +14,7 @@
 #' }
 #' @param cell_upper_bound Upper bound for cropland at the grid cell level. Even if, for instance, the total available cropland area equals the land area in a grid cell, cropland cannot be expanded above this value.
 #' @param cells magpiecell (59199 cells) or lpjcell (67420 cells)
-#' @param country_level Whether output shall be at country level
+#' @param country_level Whether output shall be at country level. Requires aggregate=FALSE in calcOutput.
 #'
 #' @return magpie object in cellular resolution
 #' @author Patrick v. Jeetze
