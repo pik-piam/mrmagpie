@@ -9,7 +9,7 @@
 
 calcLabourProdImpactEmu <- function(timestep = "5year", cellular = TRUE) {
 
-  out <- readSource("LabourImpactEmu", convert = FALSE)
+  out <- readSource("LabourProdImpactEmu", convert = FALSE)
 
   if (timestep == "5year") {
     out <- out[, seq(1995, 2095, 5), ]
