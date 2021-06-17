@@ -1,7 +1,7 @@
 #' @title readLabourProdImpactEmu
 #' @description read in labour productivity impacts from climate change emulated by the LAMACLIMA project
 #' @description based on method of Orlov et al. 2019. Economics of Disasters and Climate Change, 3(3), 191-211.
-#' @return magpie object of gridded productivity as share of 1 (full productivity)
+#' @return magpie object of gridded productivity loss in percent (0-100)
 #' @author Michael Windisch
 #' @seealso \code{\link{readSource}}
 #' @importFrom magclass new.magpie read.magpie mbind

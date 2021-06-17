@@ -3,13 +3,13 @@
 #' @description based on method of Orlov et al. 2019. Economics of Disasters and Climate Change, 3(3), 191-211.
 #' @param timestep 5-year or yearly
 #' @param cellular cellular is true
-#' @return List of magpie object of gridded (0.5) productivity as share of 1 (full productivity)
+#' @return List of magpie object of gridded (0.5) productivity productivity loss in percent (0-100)
 #' @author Michael Windisch
 #' @importFrom magclass dimSums
 
 calcLabourProdImpactEmu <- function(timestep = "5year", cellular = TRUE) {
 
-  out <- readSource("LabourProdImpactEmu", convert = FALSE)
+  out <- readSource("LabourProdImpactEmu", convert = "onlycorrect")
 
   if (timestep == "5year") {
     out <- out[, seq(1995, 2095, 5), ]
@@ -25,8 +25,8 @@ calcLabourProdImpactEmu <- function(timestep = "5year", cellular = TRUE) {
   return(list(
     x = out,
     weight = crop_area_weight,
-    unit = "Percentage of total labour productivity",
-    description = "Labour productivity impacts as percentage of full labour prod 1",
+    unit = "Percentage of total labour productivity loss",
+    description = "Labour productivity loss as percentage (0-100)",
     isocountries = FALSE))
 
 }

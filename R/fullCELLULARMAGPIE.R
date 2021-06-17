@@ -139,6 +139,11 @@ fullCELLULARMAGPIE <- function(rev=0.1, dev="", ctype="c200", climatetype="GFDL-
   calcOutput("AgeClassDistribution", aggregate="cluster", round=6, file=paste0("forestageclasses_", ctype, ".mz"))
   calcOutput("ProtectArea",          aggregate="cluster", round=6, file=paste0("protect_area_", ctype, ".mz") )
 
+  #37 labour prod
+   if(grepl("labourprodtest",dev)){
+     calcOutput("LabourProdImpactEmu", aggregate="cluster", round=6, file=paste0("f37_labourprodimpact_",ctype,".mz"))
+   }
+
   #38 factor costs
   calcOutput("LabourProdImpact", aggregate=FALSE, round=6, years=short_years, file="labour_impact.mz")
 

@@ -7,7 +7,7 @@
 readLabourProdImpactEmu()
 }
 \value{
-magpie object of gridded productivity as share of 1 (full productivity)
+magpie object of gridded productivity loss in percent (0-100)
 }
 \description{
 read in labour productivity impacts from climate change emulated by the LAMACLIMA project
