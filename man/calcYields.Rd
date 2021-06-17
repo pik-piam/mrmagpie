@@ -5,7 +5,7 @@
 \title{calcYields}
 \usage{
 calcYields(
-  source = c(lpjml = "ggcmi_phase3_nchecks_72c185fa", isimip = NULL),
+  source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimip = NULL),
   climatetype = "GSWP3-W5E5:historical",
   cells = "magpiecell"
 )

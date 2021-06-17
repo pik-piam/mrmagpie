@@ -15,7 +15,7 @@
 #' @importFrom magclass getYears add_columns dimSums time_interpolate
 #' @importFrom madrat toolFillYears
 
-calcYields <- function(source=c(lpjml="ggcmi_phase3_nchecks_72c185fa", isimip=NULL),
+calcYields <- function(source=c(lpjml="ggcmi_phase3_nchecks_9ca735cb", isimip=NULL),
                            climatetype="GSWP3-W5E5:historical", cells="magpiecell"){
 
   sizelimit <- getOption("magclass_sizeLimit")

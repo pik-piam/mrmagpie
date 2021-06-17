@@ -19,7 +19,7 @@
 #'
 #' @export
 
-calcGrowingPeriod <- function(lpjml=c(natveg="LPJmL4_for_MAgPIE_84a69edd", crop="ggcmi_phase3_nchecks_72c185fa"),
+calcGrowingPeriod <- function(lpjml=c(natveg="LPJmL4_for_MAgPIE_44ac93de", crop="ggcmi_phase3_nchecks_9ca735cb"),
                               climatetype="GSWP3-W5E5:historical", stage="harmonized2020", yield_ratio=0.1) {
 
   cfg <- toolLPJmLVersion(version=lpjml["natveg"], climatetype=climatetype)

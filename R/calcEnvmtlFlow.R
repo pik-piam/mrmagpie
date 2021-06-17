@@ -23,7 +23,7 @@
 #' \dontrun{ calcOutput("EnvmtlFlow", aggregate = FALSE) }
 #'
 
-calcEnvmtlFlow <- function(lpjml=c(natveg="LPJmL4_for_MAgPIE_84a69edd", crop="ggcmi_phase3_nchecks_72c185fa"),
+calcEnvmtlFlow <- function(lpjml=c(natveg="LPJmL4_for_MAgPIE_44ac93de", crop="ggcmi_phase3_nchecks_9ca735cb"),
                            climatetype="GSWP3-W5E5:historical", stage="harmonized2020",
                            LFR_val=0.1, HFR_LFR_less10=0.2, HFR_LFR_10_20=0.15, HFR_LFR_20_30=0.07, HFR_LFR_more30=0.00,
                            seasonality="grper"){

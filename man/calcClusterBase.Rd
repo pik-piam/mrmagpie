@@ -6,8 +6,8 @@
 \usage{
 calcClusterBase(
   clusterdata = "yield_airrig",
-  lpjml = c(natveg = "LPJmL4_for_MAgPIE_84a69edd", crop =
-    "ggcmi_phase3_nchecks_72c185fa")
+  lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de", crop =
+    "ggcmi_phase3_nchecks_9ca735cb")
 )
 }
 \arguments{
