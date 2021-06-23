@@ -12,7 +12,7 @@ calcLabourProdImpactEmu(timestep = "5year", cellular = TRUE)
 \item{cellular}{cellular is true}
 }
 \value{
-List of magpie object of gridded (0.5) productivity productivity loss in percent (0-100)
+List of magpie object of gridded (0.5) productivity as percentage of full labour prod 1
 }
 \description{
 Spatial and temporal aggr. of labour productivity impacts from climate change emulated by LAMACLIMA
