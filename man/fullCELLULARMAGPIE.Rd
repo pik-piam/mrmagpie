@@ -45,9 +45,8 @@ Function that produces the complete cellular data set required for running the
 MAgPIE model.
 }
 \examples{
-
 \dontrun{
-retrieveData("CELLULARMAGPIE", revision=12, mainfolder="pathtowhereallfilesarestored")
+retrieveData("CELLULARMAGPIE", revision = 12, mainfolder = "pathtowhereallfilesarestored")
 }
 }
 \seealso{

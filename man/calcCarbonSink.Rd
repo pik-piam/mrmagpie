@@ -7,7 +7,8 @@
 calcCarbonSink(
   version = "LPJmL4_for_MAgPIE_44ac93de",
   climatetype = "GSWP3-W5E5:historical",
-  stage = "harmonized2020"
+  stage = "harmonized2020",
+  pool = "all"
 )
 }
 \arguments{
@@ -16,6 +17,9 @@ calcCarbonSink(
 \item{climatetype}{Switch between different GCM climate scenarios}
 
 \item{stage}{Degree of processing: raw, smoothed, harmonized, harmonized2020}
+
+\item{pool}{Switch to select specific pool, or return all three pools (vegc, litc, soilc).
+(Here also soilc_layer might be selected.)}
 }
 \value{
 magpie object in cellular resolution
