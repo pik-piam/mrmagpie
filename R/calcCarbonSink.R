@@ -69,13 +69,13 @@ calcCarbonSink <- function(version     = "LPJmL4_for_MAgPIE_44ac93de",
 
     if (climatetype == cfgLPJmL$baseline_hist) {
 
-      out    <- Baseline
+      out    <- baseline
 
     } else {
 
       x      <- calcOutput("CarbonSink", version = version, climatetype = climatetype,
                            stage = "smoothed", pool = pool, aggregate = FALSE)
-      out    <- toolHarmonize2Baseline(x, Baseline, ref_year = cfgLPJmL$ref_year_hist)
+      out    <- toolHarmonize2Baseline(x, baseline, ref_year = cfgLPJmL$ref_year_hist)
     }
 
   } else if (stage == "harmonized2020") {
@@ -85,13 +85,13 @@ calcCarbonSink <- function(version     = "LPJmL4_for_MAgPIE_44ac93de",
                                   stage = "harmonized", pool = pool, aggregate = FALSE)
 
     if (climatetype == cfgLPJmL$baseline_gcm) {
-      out <- Baseline2020
+      out <- baseline2020
 
     } else {
 
       x      <- calcOutput("CarbonSink", version = version, climatetype = climatetype,
                            stage = "smoothed", pool = pool, aggregate = FALSE)
-      out    <- toolHarmonize2Baseline(x, Baseline2020, ref_year = cfgLPJmL$ref_year_gcm)
+      out    <- toolHarmonize2Baseline(x, baseline2020, ref_year = cfgLPJmL$ref_year_gcm)
     }
 
   } else {
