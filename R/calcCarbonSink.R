@@ -20,12 +20,12 @@
 calcCarbonSink <- function(version     = "LPJmL4_for_MAgPIE_44ac93de",
                            climatetype = "GSWP3-W5E5:historical",
                            stage       = "harmonized2020",
-                           pool        = "all"){
+                           pool        = "all") {
 
   # Create settings for LPJmL from version and climatetype argument
   cfgLPJmL <- toolLPJmLVersion(version = version, climatetype = climatetype)
 
-  if (stage %in% c("raw","smoothed")) {
+  if (stage %in% c("raw", "smoothed")) {
 
     .getLPJmLCFlows <- function(pool, cfg) {
       out <- calcOutput("LPJmL_new", version = cfg$lpjml,
@@ -64,7 +64,7 @@ calcCarbonSink <- function(version     = "LPJmL4_for_MAgPIE_44ac93de",
   } else if (stage == "harmonized") {
 
     #read in historical data for subtype
-    Baseline <- calcOutput("CarbonSink", version = version, climatetype = cfgLPJmL$baseline_hist,
+    baseline <- calcOutput("CarbonSink", version = version, climatetype = cfgLPJmL$baseline_hist,
                            stage = "smoothed", pool = pool, aggregate = FALSE)
 
     if (climatetype == cfgLPJmL$baseline_hist) {
@@ -81,8 +81,8 @@ calcCarbonSink <- function(version     = "LPJmL4_for_MAgPIE_44ac93de",
   } else if (stage == "harmonized2020") {
 
     #read in historical data for subtype
-    Baseline2020    <- calcOutput("CarbonSink", version = version, climatetype = cfgLPJmL$baseline_gcm,
-                                  stage = "smoothed", pool = pool, aggregate = FALSE)
+    baseline2020    <- calcOutput("CarbonSink", version = version, climatetype = cfgLPJmL$baseline_gcm,
+                                  stage = "harmonized", pool = pool, aggregate = FALSE)
 
     if (climatetype == cfgLPJmL$baseline_gcm) {
       out <- Baseline2020

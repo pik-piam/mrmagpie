@@ -15,9 +15,9 @@
 #' @importFrom magclass add_dimension
 
 calcCarbon_new <- function(lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de", crop = "ggcmi_phase3_nchecks_9ca735cb"),
-                           climatetype = "GSWP3-W5E5:historical", fromFlows = FALSE){
+                           climatetype = "GSWP3-W5E5:historical", fromFlows = FALSE) {
 
-  .getLPJmLCPools <- function(pool, cfg){
+  .getLPJmLCPools <- function(pool, cfg) {
     out <- calcOutput("LPJmL_new", version = cfg$lpjml,
                       climatetype = cfg$climatetype,
                       subtype = pool, stage = "harmonized2020",
@@ -33,19 +33,20 @@ calcCarbon_new <- function(lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de", crop
                   .getLPJmLCPools("litc", cfg))
 
 
-  cfg    <- list(lpjml=lpjml["crop"], climatetype = climatetype)
+  cfg    <- list(lpjml = lpjml["crop"], climatetype = climatetype)
   grass  <- mbind(.getLPJmLCPools("vegc_grass", cfg),
                   .getLPJmLCPools("soilc_grass", cfg),
                   .getLPJmLCPools("litc_grass", cfg))
 
   getNames(grass) <- getNames(natveg)
 
-  if (fromFlows){
+  if (fromFlows) {
 
     .getCPoolsFromFlows <- function(pool, flow, refYear) {
       # calculate carbon pools from carbon flows
       years <- getYears(flow, as.integer = TRUE)
-      for (y in years[years > refYear]) pool[, y, ] <- setYears(pool[, y - 1, ], y) + flow[, y, ]
+      out   <- pool[, years <= refYear, ]
+      for (y in years[years > refYear]) out <- mbind(out, setYears(pool[, y - 1, ], y) + flow[, y, ])
       return(pool)
     }
 
@@ -71,7 +72,7 @@ calcCarbon_new <- function(lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de", crop
                               names = getNames(natveg))
 
   carbonStocks <- add_dimension(carbonStocks, dim = 3.1, add = "landtype",
-                                nm = c("crop","past","forestry","primforest","secdforest", "urban", "other"))
+                                nm = c("crop", "past", "forestry", "primforest", "secdforest", "urban", "other"))
 
   landuse <- calcOutput("LanduseInitialisation", aggregate = FALSE, cellular = TRUE, nclasses = "seven",
                         fao_corr = TRUE, input_magpie = TRUE, years = "y1995", round = 6)
