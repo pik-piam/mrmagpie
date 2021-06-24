@@ -45,9 +45,9 @@ calcCarbon_new <- function(lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de", crop
     .getCPoolsFromFlows <- function(pool, flow, refYear) {
       # calculate carbon pools from carbon flows
       years <- getYears(pool, as.integer = TRUE)
-      out   <- pool[, years <= refYear, ]
-      for (y in years[years > refYear]) out <- mbind(out, setYears(pool[, y - 1, ], y) + flow[, y, ])
-      return(pool)
+      out   <- pool
+      for (y in years[years > refYear]) out[, y, ] <- setYears(pool[, y - 1, ], y) + flow[, y, ]
+      return(out)
     }
 
     flowNatveg <- calcOutput("CarbonSink", version = lpjml["natveg"], climatetype = climatetype,
