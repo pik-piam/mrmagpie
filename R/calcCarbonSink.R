@@ -32,7 +32,7 @@ calcCarbonSink <- function(version     = "LPJmL4_for_MAgPIE_44ac93de",
                         climatetype = cfg$climatetype,
                         subtype = pool, stage = "raw",
                         aggregate = FALSE)
-      out   <- setNames(out, pool)
+      out   <- add_dimension(out, dim = 3.1, add = "pool", nm = pool)
       out   <- toolCoord2Isocell(out)
       years <- getYears(out, as.integer = TRUE)
       out   <- out[, years[-1], ] - setYears(out[, years[-length(years)], ], years[-1])

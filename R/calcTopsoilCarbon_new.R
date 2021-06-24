@@ -33,9 +33,11 @@ calcTopsoilCarbon_new <- function(lpjml=c(natveg="LPJmL4_for_MAgPIE_44ac93de", c
   if (fromFlows) {
 
     .getCPoolsFromFlows <- function(pool, flow, refYear) {
-      years <- getYears(flow, as.integer = TRUE)
-      for (y in years[years > refYear]) pool[, y, ] <- setYears(pool[, y - 1, ], y) + flow[, y, ]
-      return(pool)
+      # calculate carbon pools from carbon flows
+      years <- getYears(pool, as.integer = TRUE)
+      out   <- pool
+      for (y in years[years > refYear]) out[, y, ] <- setYears(pool[, y - 1, ], y) + flow[, y, ]
+      return(out)
     }
 
     flow     <- calcOutput("CarbonSink", version = lpjml["natveg"], climatetype = climatetype,
