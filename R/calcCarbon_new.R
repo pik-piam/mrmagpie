@@ -47,6 +47,7 @@ calcCarbon_new <- function(lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de", crop
       years <- getYears(pool, as.integer = TRUE)
       out   <- pool
       for (y in years[years > refYear]) out[, y, ] <- setYears(pool[, y - 1, ], y) + flow[, y, ]
+      out   <- toolConditionalReplace(out, "<0", 0)
       return(out)
     }
 
@@ -56,6 +57,7 @@ calcCarbon_new <- function(lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de", crop
 
     flowGrass  <- calcOutput("CarbonSink", version = lpjml["crop"], climatetype = climatetype,
                              stage = "harmonized2020", pool = "all_grass", aggregate = FALSE)
+    getNames(flowGrass) <- getNames(flowNatveg)
     grass      <- .getCPoolsFromFlows(grass, flowGrass, 1995)
   }
 
