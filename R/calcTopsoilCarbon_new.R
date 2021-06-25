@@ -22,8 +22,6 @@ calcTopsoilCarbon_new <- function(lpjml=c(natveg="LPJmL4_for_MAgPIE_44ac93de", c
 
   soilc_layer_natveg <- toolCoord2Isocell(calcOutput("LPJmL_new", version=lpjml["natveg"], climatetype=climatetype,
                                                      subtype="soilc_layer", stage=stage, aggregate=FALSE))
-  topsoilc           <- soilc_layer_natveg[,,1] + 1/3 * soilc_layer_natveg[,,2]
-  getNames(topsoilc) <- "topsoilc"
 
   # Check for NAs
   if(any(is.na(topsoilc))){
@@ -37,15 +35,19 @@ calcTopsoilCarbon_new <- function(lpjml=c(natveg="LPJmL4_for_MAgPIE_44ac93de", c
       years <- getYears(pool, as.integer = TRUE)
       out   <- pool
       for (y in years[years > refYear]) out[, y, ] <- setYears(pool[, y - 1, ], y) + flow[, y, ]
+      out   <- toolConditionalReplace(out, "<0", 0)
       return(out)
     }
 
-    flow     <- calcOutput("CarbonSink", version = lpjml["natveg"], climatetype = climatetype,
-                           stage = "harmonized2020", pool = "soilc_layer", aggregate = FALSE)
-    topsoilc <- .getCPoolsFromFlows(topsoilc, flow, 1995)
+    flow <- calcOutput("CarbonSink", version = lpjml["natveg"], climatetype = climatetype,
+                       stage = "harmonized2020", pool = "soilc_layer", aggregate = FALSE)
+    soilc_layer_natveg <- .getCPoolsFromFlows(soilc_layer_natveg, flow, 1995)
   }
 
-  weight <- dimSums(calcOutput("LanduseInitialisation", aggregate=FALSE, cellular=TRUE, nclasses="seven", fao_corr=TRUE, input_magpie=TRUE, years="y1995", round=6), dim=3)
+  topsoilc           <- soilc_layer_natveg[,,1] + 1/3 * soilc_layer_natveg[,,2]
+  getNames(topsoilc) <- "topsoilc"
+  weight             <- dimSums(calcOutput("LanduseInitialisation", aggregate=FALSE, cellular=TRUE, nclasses="seven",
+                                           fao_corr=TRUE, input_magpie=TRUE, years="y1995", round=6), dim=3)
 
   return(list(
     x=topsoilc,
