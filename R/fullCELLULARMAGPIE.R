@@ -75,14 +75,13 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "", ctype = "c200", climatetype 
   calcOutput("Yields", aggregate = "cluster", source = c(lpjml = lpjml[["crop"]], isimip = isimip),
              climatetype = climatetype, round = 2, years = lpj_years, file = paste0("lpj_yields_", ctype, ".mz"))
 
-  calcOutput("PastYields_new", lsu_levels = c(seq(0, 2.2, 0.2), 2.5), mowing_events = "me2",
-             lpjml = "lpjml5p2_pasture", climatetype = "IPSL_CM6A_LR", scenario = "ssp126_co2_Nreturn0p5_limN",
-             file = paste0("lpj_past_yields_new_", ctype, ".mz"), years = mag_years, aggregate = "cluster")
-  calcOutput("LUH2v2",  aggregate = "cluster", landuse_types = "LUH2v2", cellular = TRUE, file =
-               paste0("f14_LUH2v2_", ctype, ".mz"))
-  calcOutput("PastureSuit",  aggregate = "cluster", subtype = "ISIMIP3b:IPSL-CM6A-LR:1850-2100",
-             file = paste0("f14_past_suitability_", ctype, ".mz"), years = mag_years)
+  calcOutput("PastYields_new", lsu_levels = c(seq(0, 2.2, 0.2), 2.5), mowing_events = "me2", lpjml = "lpjml5p2_pasture", climatetype = "IPSL_CM6A_LR", scenario = "ssp126_co2_Nreturn0p5_limN", file = paste0("lpj_past_yields_new_", ctype, ".mz"), years = mag_years, aggregate = "cluster")
+  calcOutput("PastYields_new", lsu_levels = c(seq(0, 2.2, 0.2), 2.5), mowing_events = "me2", lpjml = "lpjml5p2_pasture", climatetype = "IPSL_CM6A_LR", scenario = "ssp126_co2_Nreturn0p5_limN", file = paste0("lpj_past_yields_new.mz"), years = mag_years, aggregate = F)
+  calcOutput("LUH2v2",  aggregate = "cluster", landuse_types = "LUH2v2", cellular=TRUE, file = paste0("f14_LUH2v2_", ctype, ".mz"))
+  calcOutput("LUH2v2",  aggregate = F, landuse_types = "LUH2v2", cellular=TRUE, file = paste0("f14_LUH2v2.mz"))
+  calcOutput("PastureSuit",  aggregate = "cluster", subtype = "ISIMIP3b:IPSL-CM6A-LR:1850-2100", file = paste0("f14_past_suitability_", ctype, ".mz"), years = mag_years)
   calcOutput("GrassPastureShare", aggregate = "cluster", file = paste0("f14_past_share_", ctype, ".mz"))
+  calcOutput("PastureYield", cellular = TRUE,  max_yields = 30, max_iter = 60, aggregate = "cluster", file = paste0("f14_past_yields_hist", ctype, ".mz"))
 
   # if(grepl("pasturetest",dev)){
   #
