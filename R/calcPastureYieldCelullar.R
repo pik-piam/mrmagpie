@@ -11,7 +11,7 @@
 #' \code{\link{readSource}}
 #' @examples
 #' \dontrun{
-#' calcOutput("PastureYield")
+#' calcOutput("PastureYieldCelullar")
 #' }
 #' @importFrom stats quantile
 
