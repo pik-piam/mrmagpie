@@ -23,7 +23,7 @@ Provides Pasture yields defined as ratio of grazed biomass to grazed area
 }
 \examples{
 \dontrun{
-calcOutput("PastureYield")
+calcOutput("PastureYieldCelullar")
 }
 }
 \seealso{
