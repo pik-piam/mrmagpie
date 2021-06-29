@@ -1,15 +1,14 @@
-#' @title calcContGrazMax_new
-#' @description Calculates continuous grazing maximum output
+#' @title calcRangelandsMax
+#' @description Calculates rangelands maximum output
 #' @param report Either 'harvest' or 'lsu/ha' controlling what values are output by the function.
 #' @param lsu_levels Livestock unit levels in the source folder
 #' @param lpjml Defines LPJmL version for crop/grass and natveg specific inputs
-#' @param climatetype Switch between different climate scenarios (default: "CRU_4")
-#' @param scenario specify ssp scenario
+#' @param climatetype Switch between different climate scenarios
 #' @return magpie object in cellular resolution
 #' @author Marcos Alves
 #'
 #' @examples
-#' \dontrun{calcOutput("ContGrazMax_new", lsu_levels = 0, lpjml, climatetype, report)}
+#' \dontrun{calcOutput("ContGrazMax", lsu_levels = 0, lpjml, climatetype, report)}
 #'
 #' @import madrat
 #' @import magclass
@@ -19,8 +18,8 @@
 #'
 
 
-calcContGrazMax_new <-
-  function(lsu_levels = c(seq(0, 2.2, 0.2), 2.5),lpjml = "lpjml5.2_pasture", climatetype = "IPSL_CM6A_LR", scenario = "ssp126_co2_limN", report = "harvest") {
+calcRangelandsMax <-
+  function(lsu_levels = c(seq(0, 2, 0.2), 2.5), lpjml = "LPJmL_range", climatetype = "HadGEM2_ES:rcp8p5:co2", report = "harvest") {
 
     #tidyr variables initiation to avoid problems with buildlibrary()
     water <- NULL
@@ -31,15 +30,11 @@ calcContGrazMax_new <-
 
 
     lsu_levels <- gsub("\\.", "p", lsu_levels)
-    years <- seq(1965,2100, 5)
     y <- list()
     for (lsu in lsu_levels) {
-      .subtype <- paste(lpjml, climatetype,paste0(scenario,"_", lsu),sep = ":")
-      print(.subtype)
-      hist <- toolCoord2Isocell(readSource("LPJmL_new", subtype = paste(.subtype, "grass_pft_hist", sep = ":"), convert = F)[,, "mgrass"])
-      scen <- toolCoord2Isocell(readSource("LPJmL_new", subtype = paste(.subtype, "grass_pft_scen", sep = ":"), convert = F)[,, "mgrass"])
-      x <- mbind(hist,scen)
-      x <- x[,years,]
+      .subtype <- paste(paste(lpjml, climatetype, lsu, sep = ":"), "harvest", sep = ".")
+      x <- readSource("LPJmL", subtype = .subtype, convert = "onlycorrect")
+      x <- x[, , "mgrass"]
       getNames(x) <- gsub("mgrass",lsu,getNames(x))
       y[[lsu]] <- x
     }
@@ -62,13 +57,13 @@ calcContGrazMax_new <-
 
     if (report == "harvest") {
       max_harvest <- as.magpie(y[, -4], tidy = TRUE, replacement = ".")
-      max_harvest <- add_dimension(max_harvest, dim = 3.1, add = "CO2", nm = "cont_grazing")
+      max_harvest <- add_dimension(max_harvest, dim = 3.1, add = "CO2", nm = "range")
       return(
         list(
           x = max_harvest,
           weight = NULL,
-          unit = "gC/m2/y",
-          description = "Maximum pasture yields obtained with continuous grazing",
+          unit = "t/DM/y",
+          description = "Maximum pasture yields obtained with rangelands",
           isocountries = FALSE
         )
       )
@@ -76,7 +71,7 @@ calcContGrazMax_new <-
     if (report == "lsu/ha") {
       optm_lsu <- as.magpie(y[, -5], tidy = TRUE, replacement = ".")
       optm_lsu[optm_lsu > 2.5] <- 2.5
-      optm_lsu <- add_dimension(optm_lsu, dim = 3.1, add = "CO2", nm = "cont_grazing")
+      optm_lsu <- add_dimension(optm_lsu, dim = 3.1, add = "CO2", nm = "range")
       return(
         list(
           x = optm_lsu,

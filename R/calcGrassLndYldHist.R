@@ -1,6 +1,6 @@
-#' Calculate Pasture Yields
+#' Calculate historical grasslands yields split between pastures and rangelands weighted by livestock densities
 #'
-#' Provides Pasture yields defined as ratio of grazed biomass to grazed area
+#' Provides Pasture yields defined as ratio of removed biomass to grassland area
 #' @param max_yields Maximum yields in tDM/ha allowed in a cell.
 #' @param max_iter Maximum number of iterations of the disaggregation algorithm
 #' @description `max_yields` and `max_iter` are only affecting the calculations if `cellular` is TRUE.
@@ -11,11 +11,11 @@
 #' \code{\link{readSource}}
 #' @examples
 #' \dontrun{
-#' calcOutput("PastureYieldCelullar")
+#' calcOutput("GrassLndYldHist", max_yields = 20, max_iter = 30)
 #' }
 #' @importFrom stats quantile
 
-calcPastureYieldCelullar <- function(max_yields = 20, max_iter = 30) {
+calcGrassLndYldHist <- function(max_yields = 20, max_iter = 30) {
   mag_years_past <- findset("past")[c(7, 8, 9, 10)]
   biomass <- calcOutput("FAOmassbalance", aggregate = FALSE)[, , "production.dm"][, mag_years_past, "pasture"]
   biomass <- collapseNames(biomass)

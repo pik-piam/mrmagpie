@@ -1,6 +1,6 @@
-#' @title calcCollectSoilCarbonMow
-#' @description calculates soil carbon content for mowing areas
-#' @param mowing_events number of mowing events
+#' @title calcCollectSoilCarbonPastr
+#' @description calculates soil carbon content for pasture areas
+#' @param past_mngmt pasture areas management option
 #' @param lpjml Defines LPJmL version for crop/grass and natveg specific inputs
 #' @param climatetype Switch between different climate scenarios (default: "CRU_4")
 #' @param sar Average range for smoothing annual variations
@@ -10,7 +10,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' calcOutput("CollectSoilCarbonMow", mowing_events = "me2")
+#' calcOutput("CollectSoilCarbonPastr", past_mngmt = "me2")
 #' }
 #'
 #'
@@ -23,16 +23,16 @@
 #' @importFrom dplyr mutate select
 #'
 
-calcCollectSoilCarbonMow <-
-  function(mowing_events = "me2", lpjml = "lpjml5p2_pasture", climatetype = "IPSL_CM6A_LR", scenario = "ssp126_co2_limN", sar = 20) {
+calcCollectSoilCarbonPastr <-
+  function(past_mngmt = "me2", lpjml = "lpjml5p2_pasture", climatetype = "IPSL_CM6A_LR", scenario = "ssp126_co2_limN", sar = 20) {
 
-    .subtype <- paste(lpjml, climatetype,paste0(scenario,"_", mowing_events),sep = ":")
+    .subtype <- paste(lpjml, climatetype,paste0(scenario,"_", past_mngmt),sep = ":")
     hist <- toolCoord2Isocell(readSource("LPJmL_new", subtype = paste(.subtype, "soilc_past_hist", sep = ":"), convert = F))
     scen <- toolCoord2Isocell(readSource("LPJmL_new", subtype = paste(.subtype, "soilc_past_scen", sep = ":"), convert = F))
     y <- mbind(hist,scen)
     y <- toolTimeAverage(y, averaging_range = sar)
     y <- toolHoldConstant(y, (max(getYears(y, as.integer = TRUE)) + 1):2150)
-    getNames(y) <- "soilc_Mow"
+    getNames(y) <- "soilc_pastr"
 
     unit_transform <- 0.01               # Transformation factor gC/m^2 --> t/ha
     y <- y * unit_transform
@@ -52,7 +52,7 @@ calcCollectSoilCarbonMow <-
         x = y,
         weight = weight,
         unit = NULL,
-        description = "Soil carbon stocks for mowing areas",
+        description = "Soil carbon stocks for managed pastures areas",
         isocountries = FALSE
       )
     )
