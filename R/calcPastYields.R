@@ -24,7 +24,7 @@ calcPastYields <-
   function(lsu_levels = c(seq(0, 2, 0.2), 2.5), past_mngmt = "2me", lpjml = c(range = "LPJmL_range", pastr = "LPJmL_pastr"), climatetype = "HadGEM2_ES:rcp8p5:co2") {
 
     years <- 1995:2100
-    x <- calcOutput("ContGrazMax", lsu_levels = lsu_levels, lpjml = lpjml["range"], climatetype = climatetype, report = "harvest", aggregate = F)
+    x <- calcOutput("RangelandsMax_new", lsu_levels = lsu_levels, lpjml = lpjml["range"], climatetype = climatetype, report = "harvest", aggregate = F)
     y <- calcOutput("Pastr", past_mngmt = past_mngmt, lpjml = lpjml["pastr"], climatetype = climatetype, aggregate = F)
     x <- toolFillYears(x, years = years)
     y <- toolFillYears(y, years =  years)

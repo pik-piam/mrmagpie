@@ -16,12 +16,13 @@
 #' @importFrom stats quantile
 
 calcGrassLndYldHist <- function(max_yields = 20, max_iter = 30) {
-  mag_years_past <- findset("past")[c(7, 8, 9, 10)]
+  mag_years_past <- findset("past")[c(7,8,9,10)]
   biomass <- calcOutput("FAOmassbalance", aggregate = FALSE)[, , "production.dm"][, mag_years_past, "pasture"]
   biomass <- collapseNames(biomass)
 
   biomass <- toolIso2CellCountries(biomass)
   land <- calcOutput("LanduseInitialisation", cellular = TRUE, nclasses = "nine", aggregate = FALSE)[, mag_years_past, ]
+  land_total <- dimSums(land, dim = 3)
   grassl_land <- land[, , c("past", "range")]
   grassl_land <- setNames(grassl_land, c("pastr", "range"))
   grassl_shares <- setNames(grassl_land[, , "pastr"] / dimSums(grassl_land, dim = 3), "pastr")
@@ -57,7 +58,7 @@ calcGrassLndYldHist <- function(max_yields = 20, max_iter = 30) {
 
   # Cluster glassland types and biomass areas into country
 
-  cellular_yield_calc <- function(biomass_split_cell, grassl_land, livst_split, mapping, grassl_thres, max_yields, max_iter) {
+  cellular_yield_calc <- function(biomass_split_cell, grassl_land, livst_split, mapping, grassl_thres_percent, max_yields, max_iter) {
     m <- cbind(getNames(biomass_split_cell), getNames(grassl_land), getNames(livst_split))
     check_names <- sum(rowSums(m == m[, 1]) - ncol(m))
     if (check_names != 0) {
@@ -65,10 +66,13 @@ calcGrassLndYldHist <- function(max_yields = 20, max_iter = 30) {
     }
     print(paste0("#--------- Report ---------#"))
 
-    print(paste0("Grassland removed: ", sum(grassl_land[grassl_land < grassl_thres])))
-    grassl_land[grassl_land < grassl_thres] <- 0
+    mem_grassl_land <- grassl_land
+    rel_grassl <- grassl_land/land_total < grassl_thres_percent
+    rel_grassl[is.na(rel_grassl)] <- FALSE
+    grassl_land[rel_grassl] <- 0
+    print(paste0("Grassland removed: ", sum(mem_grassl_land) - sum(grassl_land)))
     bin_grassl_land <- grassl_land
-    bin_grassl_land[bin_grassl_land >= grassl_thres] <- 1
+    bin_grassl_land[!rel_grassl] <- 1
     biomass_split_cell <- toolAggregate(biomass_split, rel = mapping, weight = livst_split, from = "iso", to = "celliso")
     pstr_yield <- biomass_split_cell / grassl_land
     pstr_yield[is.nan(pstr_yield)] <- 0
@@ -77,15 +81,16 @@ calcGrassLndYldHist <- function(max_yields = 20, max_iter = 30) {
     iso_id <- unique(mapping$iso)
     iso_count <- setNames(rep(0, length(iso_id)), iso_id)
     croped_livst_split <- livst_split * bin_grassl_land
-
-    while (max(pstr_yield) > max_yields && iter < max_iter) {
+    while (floor(max(pstr_yield)) > max_yields && iter < max_iter) {
       print(paste0("Iteration: ", iter + 1))
       print(paste0("       ", "           ", "old max", "       --> ", "new max"))
       for (iso in iso_id) {
         for (dim in getNames(pstr_yield)) {
           tmp_pstr_yield <- pstr_yield[iso, , dim]
-          if (max(tmp_pstr_yield) > max_yields) {
-            tmp_pstr_yield[tmp_pstr_yield < max_yields] <- 0
+          if (floor(max(tmp_pstr_yield)) > max_yields) {
+            mem_past_yield <- tmp_pstr_yield
+            tmp_pstr_yield <- tmp_pstr_yield - max_yields
+            tmp_pstr_yield[tmp_pstr_yield < 0] <- 0
             tmp_exc_biomass <- grassl_land[iso, , dim] * tmp_pstr_yield
             tmp_exc_biomass_reg <- dimSums(tmp_exc_biomass, dim = 1)
             redstr_exc_biomass <- toolAggregate(tmp_exc_biomass_reg, rel = mapping[grepl(iso, mapping$celliso), ], weight = croped_livst_split[iso, , dim], from = "iso", to = "celliso")
@@ -93,13 +98,21 @@ calcGrassLndYldHist <- function(max_yields = 20, max_iter = 30) {
             tmp_caped_yields <- tmp_redstr_biomass / grassl_land[iso, , dim]
             tmp_caped_yields[is.nan(tmp_caped_yields)] <- 0
             tmp_caped_yields[is.infinite(tmp_caped_yields)] <- 0
-            if (iso_count[iso] > 10 && abs((max(tmp_caped_yields) - max(tmp_pstr_yield)) / max(tmp_pstr_yield)) <= 0.05 && max(tmp_caped_yields) > max_yields) {
-              tmp_caped_yields[tmp_caped_yields > max_yields] <- max_yields
+            if (iso_count[iso] > max_iter/2 && abs((max(tmp_caped_yields) - max(tmp_pstr_yield)) / max(tmp_pstr_yield)) <= 0.05 && max(tmp_caped_yields) > max_yields) {
+              mem_caped_yields <- tmp_caped_yields - max_yields
+              mem_caped_yields[mem_caped_yields < 0] <- 0
+              mem_exc_biomass <- grassl_land[iso, , dim] * mem_caped_yields
+              mem_exc_biomass_reg <- dimSums(mem_exc_biomass, dim = 1)
+              mem_redstr_exc_biomass <- toolAggregate(mem_exc_biomass_reg, rel = mapping[grepl(iso, mapping$celliso), ], weight = grassl_land[iso, , dim], from = "iso", to = "celliso")
+              tmp_redstr_biomass <- tmp_redstr_biomass - mem_exc_biomass + mem_redstr_exc_biomass
+              tmp_caped_yields <- tmp_redstr_biomass/grassl_land[iso, , dim]
+              tmp_caped_yields[is.nan(tmp_caped_yields)] <- 0
+              tmp_caped_yields[is.infinite(tmp_caped_yields)] <- 0
             }
             pstr_yield[iso, , dim] <- tmp_caped_yields
             biomass_split_cell[iso, , dim] <- tmp_redstr_biomass
             iso_count[iso] <- iso_count[iso] + 1
-            print(paste0(iso, ": ", dim, "      ", max(tmp_pstr_yield), " --> ", max(tmp_caped_yields)))
+            print(paste0(iso, ": ", dim, "       ", max(mem_past_yield), " --> ", max(tmp_caped_yields)))
           }
         }
       }
@@ -118,9 +131,9 @@ calcGrassLndYldHist <- function(max_yields = 20, max_iter = 30) {
     }
     print("#--------- END ---------#")
 
-    return(list(pstr_yield, abs(pstr_yield * grassl_land - biomass_split_cell)))
+    return(pstr_yield)
   }
-  pstr_yield <- cellular_yield_calc(biomass_split_cell, grassl_land, livst_split, mapping, grassl_thres = 0.00001, max_yields = max_yields, max_iter = max_iter)[[1]]
+  pstr_yield <- cellular_yield_calc(biomass_split_cell, grassl_land, livst_split, mapping, grassl_thres_percent = 0.001, max_yields = max_yields, max_iter = max_iter)
   pstr_yield <- toolCell2isoCell(pstr_yield)
 
   return(list(
@@ -131,3 +144,8 @@ calcGrassLndYldHist <- function(max_yields = 20, max_iter = 30) {
     description = "Pasture yields"
   ))
 }
+#
+# rel <- readRDS("/p/projects/landuse/users/pedrosa/MAgPIE/magpie/output/grass_mgnt_no_share_2_2021-06-15_16.58.14/clustermap_rev4.59_c200_h12.rds")
+# pstr_yield_cluster <- toolAggregate(pstr_yield, rel = rel, weight = grassl_land, to = "cluster", from = "cell")
+# pstr_yield_cell <- toolAggregate(pstr_yield_cluster, rel = rel, from = "cluster", to = "cell")
+# luplot::plotmap2(pstr_yield_cell[,4,], legend_range = c(0,15), midcol = "white", midpoint = 0)
