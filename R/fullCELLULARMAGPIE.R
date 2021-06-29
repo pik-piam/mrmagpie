@@ -81,7 +81,7 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "", ctype = "c200", climatetype 
   calcOutput("LUH2v2",  aggregate = F, landuse_types = "LUH2v2", cellular=TRUE, file = paste0("f14_LUH2v2.mz"))
   calcOutput("PastureSuit",  aggregate = "cluster", subtype = "ISIMIP3b:IPSL-CM6A-LR:1850-2100", file = paste0("f14_past_suitability_", ctype, ".mz"), years = mag_years)
   calcOutput("GrassPastureShare", aggregate = "cluster", file = paste0("f14_past_share_", ctype, ".mz"))
-  calcOutput("PastureYieldCelullar", max_yields = 30, max_iter = 60, aggregate = "cluster", file = paste0("f14_past_yields_hist", ctype, ".mz"))
+  calcOutput("PastureYieldCelullar", max_yields = 30, max_iter = 60, aggregate = "cluster", file = paste0("f14_past_yields_hist_", ctype, ".mz"))
 
   # if(grepl("pasturetest",dev)){
   #
