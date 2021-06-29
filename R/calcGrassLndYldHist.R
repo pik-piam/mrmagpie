@@ -133,7 +133,7 @@ calcGrassLndYldHist <- function(max_yields = 20, max_iter = 30) {
 
     return(pstr_yield)
   }
-  pstr_yield <- cellular_yield_calc(biomass_split_cell, grassl_land, livst_split, mapping, grassl_thres_percent = 0.001, max_yields = max_yields, max_iter = max_iter)
+  pstr_yield <- cellular_yield_calc(biomass_split_cell, grassl_land, livst_split, mapping, grassl_thres_percent = 3/100, max_yields = max_yields, max_iter = max_iter)
   pstr_yield <- toolCell2isoCell(pstr_yield)
 
   return(list(

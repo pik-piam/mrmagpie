@@ -24,7 +24,7 @@ calcGrasslandsYields <-
   function(lsu_levels = c(seq(0, 2, 0.2), 2.5), past_mngmt = "me2", lpjml = "lpjml5p2_pasture", climatetype = "IPSL_CM6A_LR", scenario = "ssp126_co2_limN") {
 
     gCm2yTotDMy <- (10000 * 2.21 / 1e6)
-    x <- calcOutput("ContGrazMax_new", lsu_levels = lsu_levels, lpjml = lpjml, climatetype = climatetype, scenario = scenario, report = "harvest", aggregate = F)
+    x <- calcOutput("RangelandsMax_new", lsu_levels = lsu_levels, lpjml = lpjml, climatetype = climatetype, scenario = scenario, report = "harvest", aggregate = F)
     y <- calcOutput("Pastr_new", past_mngmt = past_mngmt, lpjml = lpjml, climatetype = climatetype, scenario = scenario,  aggregate = F)
     pasture <- mbind(x, y)
     pasture <- toolHoldConstantBeyondEnd(pasture)
