@@ -53,10 +53,12 @@ calcGrassLndYldHist <- function(cellular=TRUE, max_yields = 20, max_iter = 30) {
   grassl_land_ctry <- toolAggregate(grassl_land, rel = mapping, to = "iso", from = "celliso")
 
   if(!cellular){
+
     pstr_yield <- biomass_split / grassl_land_ctry
     pstr_yield[is.nan(pstr_yield)] <- 1
     pstr_yield[pstr_yield > 100] <- 100
     pstr_yield <- toolCountryFill(pstr_yield)
+    pstr_yield[pstr_yield==0] <- 1
 
     return(list(
       x = pstr_yield,
