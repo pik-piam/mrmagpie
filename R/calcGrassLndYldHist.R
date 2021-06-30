@@ -2,6 +2,7 @@
 #'
 #' Provides Pasture yields defined as ratio of removed biomass to grassland area
 #' @param max_yields Maximum yields in tDM/ha allowed in a cell.
+#' @param cellular Boolean to indicate if the results should be aggregated on regional or celullar level
 #' @param max_iter Maximum number of iterations of the disaggregation algorithm
 #' @description `max_yields` and `max_iter` are only affecting the calculations if `cellular` is TRUE.
 #' @return Pasture yields and corresponding weights as a list of
@@ -15,7 +16,8 @@
 #' }
 #' @importFrom stats quantile
 
-calcGrassLndYldHist <- function(max_yields = 20, max_iter = 30) {
+calcGrassLndYldHist <- function(cellular=TRUE, max_yields = 20, max_iter = 30) {
+
   mag_years_past <- findset("past")[c(7,8,9,10)]
   biomass <- calcOutput("FAOmassbalance", aggregate = FALSE)[, , "production.dm"][, mag_years_past, "pasture"]
   biomass <- collapseNames(biomass)
@@ -48,9 +50,22 @@ calcGrassLndYldHist <- function(max_yields = 20, max_iter = 30) {
   # within a country.
 
   biomass_split <- biomass * livst_share_ctry
-  biomass_split_cell <- toolAggregate(biomass_split, rel = mapping, weight = livst_split, from = "iso", to = "celliso")
   grassl_land_ctry <- toolAggregate(grassl_land, rel = mapping, to = "iso", from = "celliso")
 
+  if(!cellular){
+    pstr_yield <- biomass_split / grassl_land_ctry
+    pstr_yield[is.nan(pstr_yield)] <- 1
+    pstr_yield[pstr_yield > 100] <- 100
+    return(list(
+      x = pstr_yield,
+      weight = grassl_land,
+      isocountries = FALSE,
+      unit = "ton DM per ha",
+      description = "Pasture yields"
+    ))
+  }
+
+  biomass_split_cell <- toolAggregate(biomass_split, rel = mapping, weight = livst_split, from = "iso", to = "celliso")
   pstr_yield <- biomass_split / grassl_land_ctry
   pstr_yield[is.nan(pstr_yield) | is.infinite(pstr_yield)] <- 0
   pstr_yield_cell <- toolAggregate(pstr_yield, weight = dimSums(land, dim = 3), rel = mapping, from = "iso", to = "celliso")

@@ -4,9 +4,11 @@
 \alias{calcGrassLndYldHist}
 \title{Calculate historical grasslands yields split between pastures and rangelands weighted by livestock densities}
 \usage{
-calcGrassLndYldHist(max_yields = 20, max_iter = 30)
+calcGrassLndYldHist(cellular = TRUE, max_yields = 20, max_iter = 30)
 }
 \arguments{
+\item{cellular}{Boolean to indicate if the results should be aggregated on regional or celullar level}
+
 \item{max_yields}{Maximum yields in tDM/ha allowed in a cell.}
 
 \item{max_iter}{Maximum number of iterations of the disaggregation algorithm}
