@@ -198,15 +198,21 @@ calcEnvmtlFlow <- function(lpjml=c(natveg="LPJmL4_for_MAgPIE_44ac93de", crop="gg
 
   } else if(stage=="harmonized"){
 
-    if(climatetype == cfg$baseline_hist) stop("You can not harmonize the historical baseline.")
-
     # Load baseline and climate EFR:
     baseline <- calcOutput("EnvmtlFlow", lpjml=lpjml, climatetype=cfg$baseline_hist,
                            seasonality=seasonality, aggregate=FALSE, stage="smoothed")
-    x        <- calcOutput("EnvmtlFlow", lpjml=lpjml, climatetype=climatetype,
-                           seasonality=seasonality, aggregate=FALSE, stage="smoothed")
-    # Harmonize to baseline
-    out <- toolHarmonize2Baseline(x=x, base=baseline, ref_year=cfg$ref_year_hist)
+
+    if (climatetype == cfg$baseline_hist) {
+
+      out <- baseline
+
+    } else {
+
+      x   <- calcOutput("EnvmtlFlow", lpjml=lpjml, climatetype=climatetype,
+                        seasonality=seasonality, aggregate=FALSE, stage="smoothed")
+      # Harmonize to baseline
+      out <- toolHarmonize2Baseline(x=x, base=baseline, ref_year=cfg$ref_year_hist)
+    }
 
   } else if(stage == "harmonized2020"){
 

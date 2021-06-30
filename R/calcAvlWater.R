@@ -133,15 +133,21 @@ calcAvlWater <- function(lpjml=c(natveg="LPJmL4_for_MAgPIE_44ac93de", crop="ggcm
 
   }  else if(stage=="harmonized"){
 
-    if(climatetype == cfg$baseline_hist) stop("You can not harmonize the historical baseline.")
-
     # load smoothed data
     baseline <- calcOutput("AvlWater", lpjml=lpjml, climatetype=cfg$baseline_hist, seasonality=seasonality,
                            aggregate=FALSE, stage="smoothed")
-    x        <- calcOutput("AvlWater", lpjml=lpjml, climatetype=climatetype, seasonality=seasonality,
-                           aggregate=FALSE, stage="smoothed")
-    # Harmonize to baseline
-    out <- toolHarmonize2Baseline(x=x, base=baseline, ref_year=cfg$ref_year_hist)
+
+    if (climatetype == cfg$baseline_hist) {
+
+      out <- baseline
+
+    } else {
+
+      x   <- calcOutput("AvlWater", lpjml=lpjml, climatetype=climatetype, seasonality=seasonality,
+                        aggregate=FALSE, stage="smoothed")
+      # Harmonize to baseline
+      out <- toolHarmonize2Baseline(x=x, base=baseline, ref_year=cfg$ref_year_hist)
+    }
 
   } else if(stage == "harmonized2020"){
 

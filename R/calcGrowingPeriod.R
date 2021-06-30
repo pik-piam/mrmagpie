@@ -252,16 +252,21 @@ calcGrowingPeriod <- function(lpjml=c(natveg="LPJmL4_for_MAgPIE_44ac93de", crop=
 
   }  else if(stage=="harmonized"){
 
-    if(climatetype == cfg$baseline_hist) stop("You can not harmonize the historical baseline.")
-
     # load smoothed data
     baseline <- calcOutput("GrowingPeriod", lpjml=lpjml, climatetype=cfg$baseline_hist,
                            stage="smoothed", yield_ratio=yield_ratio, aggregate = FALSE)
-    x        <- calcOutput("GrowingPeriod", lpjml=lpjml, climatetype=climatetype,
-                           stage="smoothed", yield_ratio=yield_ratio, aggregate = FALSE)
-    # Harmonize to baseline
-    out <- toolHarmonize2Baseline(x=x, base=baseline, ref_year=cfg$ref_year_hist)
 
+    if (climatetype == cfg$baseline_hist) {
+
+      out <- baseline
+
+    } else {
+
+      x        <- calcOutput("GrowingPeriod", lpjml=lpjml, climatetype=climatetype,
+                             stage="smoothed", yield_ratio=yield_ratio, aggregate = FALSE)
+      # Harmonize to baseline
+      out <- toolHarmonize2Baseline(x=x, base=baseline, ref_year=cfg$ref_year_hist)
+    }
 
   } else if(stage == "harmonized2020"){
 
