@@ -83,7 +83,7 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "", ctype = "c200", climatetype 
   calcOutput("GrassPastureShare", aggregate = "cluster", file = paste0("f31_pastr_share_", ctype, ".mz"))
   if(grepl("MPPA",dev)){
   calcOutput("GrassLndYldHist", max_yields = 30, max_iter = 40, aggregate = "cluster", file = paste0("f14_grassL_yld_hist_", ctype, ".mz"))
-  calcOutput("GrassLndYldHist", aggregate = TRUE, cellular = FALSE, file = paste0("f14_grassL_yld_hist.cs3"))
+  # calcOutput("GrassLndYldHist", aggregate = TRUE, cellular = FALSE, file = paste0("f14_grassL_yld_hist.cs3"))
   }
   # if(grepl("pasturetest",dev)){
   #
