@@ -14,16 +14,20 @@
 #' @importFrom magpiesets findset
 #' @importFrom magclass getYears add_columns dimSums time_interpolate
 #' @importFrom madrat toolFillYears
+#' @importFrom mrcommons toolLPJmLVersion
 
 calcYields <- function(source=c(lpjml="ggcmi_phase3_nchecks_9ca735cb", isimip=NULL),
                            climatetype="GSWP3-W5E5:historical", cells="magpiecell"){
+
+  cfg <- toolLPJmLVersion(version = source["lpjml"], climatetype = climatetype)
 
   sizelimit <- getOption("magclass_sizeLimit")
   options(magclass_sizeLimit=1e+12)
   on.exit(options(magclass_sizeLimit=sizelimit))
 
-  if(climatetype=="GSWP3-W5E5:historical"){ stage <- "smoothed"
-  } else{                                   stage <- "harmonized2020"}
+  if(climatetype == "GSWP3-W5E5:historical"){ stage       <- "smoothed"
+                                              climatetype <- cfg$baseline_hist
+  } else{                                     stage <- "harmonized2020"}
 
   LPJ2MAG      <- toolGetMapping("MAgPIE_LPJmL.csv", type = "sectoral", where = "mappingfolder")
   lpjml_crops  <- unique(LPJ2MAG$LPJmL)
