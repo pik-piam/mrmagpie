@@ -17,12 +17,15 @@
 calcIrrigation <- function(lpjml=c(natveg="LPJmL4_for_MAgPIE_44ac93de", crop="ggcmi_phase3_nchecks_9ca735cb"),
                            climatetype="GSWP3-W5E5:historical", rainfedweight=0.01){
 
-  if(climatetype=="GSWP3-W5E5:historical"){ stage <- "smoothed"
-  } else{                                   stage <- "harmonized2020"}
+  cfg <- toolLPJmLVersion(version = lpjml["crop"], climatetype = climatetype)
 
   sizelimit <- getOption("magclass_sizeLimit")
-  options(magclass_sizeLimit=1e+10)
+  options(magclass_sizeLimit=1e+12)
   on.exit(options(magclass_sizeLimit=sizelimit))
+
+  if(climatetype == "GSWP3-W5E5:historical"){ stage       <- "smoothed"
+                                              climatetype <- cfg$baseline_hist
+  } else{                                     stage <- "harmonized2020"}
 
   # Read in airrig (irrigation water applied additionally to rainfall where irrigation takes place):
   lpj_airrig   <- toolCoord2Isocell(collapseNames(calcOutput("LPJmL_new", version=lpjml["crop"], climatetype=climatetype,
