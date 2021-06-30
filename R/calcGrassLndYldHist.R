@@ -56,6 +56,8 @@ calcGrassLndYldHist <- function(cellular=TRUE, max_yields = 20, max_iter = 30) {
     pstr_yield <- biomass_split / grassl_land_ctry
     pstr_yield[is.nan(pstr_yield)] <- 1
     pstr_yield[pstr_yield > 100] <- 100
+    pstr_yield <- toolCountryFill(pstr_yield)
+
     return(list(
       x = pstr_yield,
       weight = grassl_land,
