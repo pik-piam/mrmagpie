@@ -32,7 +32,7 @@
 
 fullCELLULARMAGPIE <- function(rev = 0.1, dev = "", ctype = "c200", climatetype = "MRI-ESM2-0:ssp370",
                                lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de",
-                                 crop = "ggcmi_phase3_nchecks_9ca735cb"),
+                                         crop = "ggcmi_phase3_nchecks_9ca735cb"),
                                isimip = NULL, clusterweight = NULL) {
 
   sizelimit <- getOption("magclass_sizeLimit")
@@ -46,12 +46,18 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "", ctype = "c200", climatetype 
 
   # Create version tag (will be returned at the very end of this function)
   version_tag <- paste(ctype,
-    gsub(":", "-", climatetype),
-    paste0("lpjml-", digest::digest(lpjml, algo = getConfig("hash"))),
-    sep = "_")
+                       gsub(":", "-", climatetype),
+                       paste0("lpjml-", digest::digest(lpjml, algo = getConfig("hash"))),
+                       sep = "_")
   version_tag <- ifelse(is.null(isimip),
-    version_tag,
-    paste0(version_tag, "_isimip-", digest::digest(isimip, algo = getConfig("hash"))))
+                        version_tag,
+                        paste0(version_tag, "_isimip-",
+                               digest::digest(isimip, algo = getConfig("hash"))))
+  version_tag <- ifelse(is.null(clusterweight),
+                        version_tag,
+                        paste0(version_tag, "_clusterweight-",
+                               digest::digest(clusterweight, algo = getConfig("hash"))))
+
 
   mag_years_past_long  <- c("y1995", "y2000", "y2005", "y2010", "y2015")
   mag_years <- findset("time")
