@@ -19,13 +19,13 @@ calcLabourProdImpactEmu <- function(timestep = "5year", cellular = TRUE) {
 
   out <- (100-out)/100
 
-  crop_area_weight <- dimSums(calcOutput("Croparea", sectoral = "kcr", physical = TRUE, irrigation = FALSE,
-    cellular = TRUE, cells = "magpiecell", aggregate = FALSE, years = "y1995", round = 6), dim = 3)
+  avl_crop_area_weight <- calcOutput("AvlCropland",marginal_land="all_marginal",cells="magpiecell",country_level=FALSE,aggregate=FALSE)
+  avl_crop_area_weight[avl_crop_area_weight == 0] <- 10^-10
 
 
   return(list(
     x = out,
-    weight = crop_area_weight,
+    weight = avl_crop_area_weight,
     unit = "Percentage of total labour productivity loss",
     description = "Labour productivity impacts as percentage of full labour prod 1",
     isocountries = FALSE))

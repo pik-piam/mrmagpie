@@ -10,7 +10,7 @@ readLabourProdImpactEmu <- function() {
 
   x <- new.magpie(cells_and_regions = 1:59199, years = 1995:2095)
 
-  for (exp in (c("CTL", "FRST", "CROP", "HARV", "IRR"))) {
+  for (exp in (c("CTL_rcp585","CTL_rcp119", "FRST", "CROP", "HARV", "IRR"))) {
     for (int in c("300", "400")) {
       for (sta in c("ensmean", "ensstd")) {
         for (fct in c("ISO", "HOTHAPS")) {
