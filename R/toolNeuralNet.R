@@ -11,6 +11,7 @@
 #'  activation function can be passed using a "." to indicate where the layer inputs should be piped.
 #' @return The evaluated result of the neural network for the \code{input_ml} parameter.
 #' @author Marcos Alves
+#' @import dplyr
 #' @export toolNeuralNet
 
 toolNeuralNet <- function(inputs_ml, weights, activation) {
