@@ -4,13 +4,18 @@
 \alias{toolNeuralNet}
 \title{Neural Network Reconstruction}
 \usage{
-toolNeuralNet(inputs_ml, weights)
+toolNeuralNet(inputs_ml, weights, activation)
 }
 \arguments{
 \item{inputs_ml}{Neural Network input features properly scaled with
-the scale and center attributes of the scaled training set.}
+the scale and center attributes of the scaled training set in a matrix format.}
 
-\item{weights}{The learned weights and biases in a list format as outputed by the function \code{keras::get_weights()}. This function works with magpie objects}
+\item{weights}{The learned weights and biases in a list format as outputed by the
+function \code{keras::get_weights()}.}
+
+\item{activation}{Name of the activation function used for training.
+Currently implemented functions: `relu`, `softplus`, `sigmoid`. Optionally, a custom
+activation function can be passed using a "." to indicate where the layer inputs should be piped.}
 }
 \value{
 The evaluated result of the neural network for the \code{input_ml} parameter.
