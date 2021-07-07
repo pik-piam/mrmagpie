@@ -178,8 +178,10 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "", ctype = "c200", climatetype 
 
   # 37 labour prod
   if (grepl("labourprodtest", dev)) {
-    calcOutput("LabourProdImpactEmu", aggregate = "cluster", round = 6,
+    calcOutput("LabourProdImpactEmu", aggregate = "cluster", round = 6, subtype="impact",
       file = paste0("f37_labourprodimpact_", ctype, ".mz"))
+    calcOutput("LabourProdImpactEmu", aggregate = "cluster", round = 6, subtype="relief",
+      file = paste0("f37_labourprodrelief_", ctype, ".mz"))
   }
 
   # 38 factor costs

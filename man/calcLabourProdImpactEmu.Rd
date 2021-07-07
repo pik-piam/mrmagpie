@@ -4,12 +4,18 @@
 \alias{calcLabourProdImpactEmu}
 \title{calcLabourProdImpactEmu}
 \usage{
-calcLabourProdImpactEmu(timestep = "5year", cellular = TRUE)
+calcLabourProdImpactEmu(
+  timestep = "5year",
+  cellular = TRUE,
+  subtype = "impact"
+)
 }
 \arguments{
 \item{timestep}{5-year or yearly}
 
 \item{cellular}{cellular is true}
+
+\item{subtype}{impact for rcp based laborprod decrease, relief for LCLM based relief of impact}
 }
 \value{
 List of magpie object of gridded (0.5) productivity as percentage of full labour prod 1
