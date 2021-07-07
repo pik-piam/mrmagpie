@@ -20,13 +20,13 @@ The additional repository can be made available permanently by adding the line a
 
 After that the most recent version of the package can be installed using `install.packages`:
 
-```r 
+```r
 install.packages("mrmagpie")
 ```
 
 Package updates can be installed using `update.packages` (make sure that the additional repository has been added before running that command):
 
-```r 
+```r
 update.packages()
 ```
 
@@ -38,14 +38,8 @@ In case of questions / problems please contact Kristine Karstens <karstens@pik-p
 
 To cite package **mrmagpie** in publications use:
 
-Karstens K, Dietrich J, Chen D,
-Windisch M, Alves M, Beier F, v. Jeetze
-P, Mishra A, Humpenoeder F (2021).
-_mrmagpie: madrat based MAgPIE Input
-Data Library_. doi:
-10.5281/zenodo.4319612 (URL:
-https://doi.org/10.5281/zenodo.4319612),
-R package version 1.9.6, <URL:
+Karstens K, Dietrich J, Chen D, Windisch M, Alves M, Beier F, v. Jeetze P, Mishra A, Humpenoeder F (2021). _mrmagpie: madrat based MAgPIE
+Input Data Library_. doi: 10.5281/zenodo.4319612 (URL: https://doi.org/10.5281/zenodo.4319612), R package version 1.9.6, <URL:
 https://github.com/pik-piam/mrmagpie>.
 
 A BibTeX entry for LaTeX users is
@@ -60,4 +54,3 @@ A BibTeX entry for LaTeX users is
   url = {https://github.com/pik-piam/mrmagpie},
 }
 ```
-
