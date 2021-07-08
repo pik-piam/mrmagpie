@@ -12,7 +12,7 @@
 #' @import madrat
 #'
 
-calGrassSoilEmu <-
+calcGrassSoilEmu <-
   function(subtype = "ISIMIP3b:IPSL_CM6A_LR:ssp126:1965_2100:5f5fa2:weights") {
 
     x <- readSource("GrassSoilEmu", subtype = subtype, convert = F)
