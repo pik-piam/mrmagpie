@@ -90,8 +90,11 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "", ctype = "c200", climatetype 
     calcOutput("GrassPastureShare", aggregate = "cluster", file = paste0("f31_pastr_share_", ctype, ".mz"))
     calcOutput("GrassLndYldHist", aggregate = "cluster", file = paste0("f14_grassL_yld_hist_", ctype, ".mz"))
     calcOutput("GrassSoilEmu", subtype = "ISIMIP3b:IPSL_CM6A_LR:ssp126:1965_2100", model = "5f5fa2", mfile = "weights", aggregate = F)
-    calcOutput("GrassSoilEmu", subtype = "ISIMIP3b:IPSL_CM6A_LR:ssp126:1965_2100", model = "5f5fa2", mfile = "mean", aggregate = F)
-    calcOutput("GrassSoilEmu", subtype = "ISIMIP3b:IPSL_CM6A_LR:ssp126:1965_2100", model = "5f5fa2", mfile = "std", aggregate = F)
+    calcOutput("GrassSoilEmu", subtype = "ISIMIP3b:IPSL_CM6A_LR:ssp126:1965_2100", model = "5f5fa2", mfile = "mean_col", aggregate = F)
+    calcOutput("GrassSoilEmu", subtype = "ISIMIP3b:IPSL_CM6A_LR:ssp126:1965_2100", model = "5f5fa2", mfile = "stddevs_col", aggregate = F)
+    calcOutput("GrassSoilEmu", subtype = "ISIMIP3b:IPSL_CM6A_LR:ssp126:1965_2100", model = "5f5fa2", mfile = "mean_lab", aggregate = F)
+    calcOutput("GrassSoilEmu", subtype = "ISIMIP3b:IPSL_CM6A_LR:ssp126:1965_2100", model = "5f5fa2", mfile = "stddevs_lab", aggregate = F)
+    calcOutput("GrassSoilEmu", subtype = "ISIMIP3b:IPSL_CM6A_LR:ssp126:1965_2100", model = "5f5fa2", mfile = "inputs", aggregate = F)
 
   #  calcOutput("ScaleEnvironmentData_new", subtype = "ISIMIP3b:IPSL-CM6A-LR:ssp126:1965-2100", sar = 1, sel_feat = c("tas", "pr", "lwnet", "rsds", "CO2", "Ks", "Sf", "w_pwp", "w_fc", "w_sat", "hsg"), aggregate = F, file = paste0("environment_scaled.mz"), years = mag_years)
   #  calcOutput("ScaledPastSoilCarbon", lsu_levels = c(seq(0, 2.2, 0.2), 2.5), lpjml = "lpjml5p2_pasture", climatetype = "IPSL_CM6A_LR", scenario = "ssp126_co2_Nreturn0p5_limN", sar = 1, aggregate = F, file = paste0("soilc_stocks_gramnt.mz"), years = mag_years)
