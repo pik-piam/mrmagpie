@@ -17,7 +17,7 @@ readLabourProdImpactEmu <- function() {
 
           inter <- read.magpie(paste0(exp, "/", exp, "_", sta, "_laborprod_wby_grdays_", fct, "_", int, "_0.5.nc"))[, , 2]
           getYears(inter) <- seq(from = 1995, to = 2095, by = 1)
-          getNames(inter) <- paste0(exp, ".", fct, ".", int, ".", sta)
+          getNames(inter) <- paste0(exp, ".", fct, ".",int,"W", ".", sta)
           x <- mbind(x, inter)
 
 

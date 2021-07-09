@@ -29,14 +29,20 @@ calcLabourProdImpactEmu <- function(timestep = "5year", cellular = TRUE, subtype
     out <- mbind(out[,,"FRST"],out[,,"CROP"],out[,,"HARV"],out[,,"IRR"])
   }
 
-  mean <- out[,,"ensmean"]
-  upper <- out[,,"ensmean"]+out[,,"ensstd"]
-  lower <- out[,,"ensmean"]-out[,,"ensstd"]
+  middle <- out[,,"ensmean"]
+  getNames(middle) <- gsub("ensmean","ensvalue",getNames(middle))
+  std <- out[,,"ensstd"]
+  getNames(std) <- gsub("ensstd","ensvalue",getNames(std))
 
-  getNames(upper) <- gsub("ensmean.ensstd","ensupper",getNames(upper))
-  getNames(lower) <- gsub("ensmean.ensstd","enslower",getNames(lower))
 
-  out <- mbind(lower,mean,upper)
+  upper <- middle+std
+  lower <- middle-std
+
+  getNames(upper) <- gsub("ensvalue","ensupper",getNames(upper))
+  getNames(lower) <- gsub("ensvalue","enslower",getNames(lower))
+  getNames(middle) <- gsub("ensvalue","ensmean",getNames(lower))
+
+  out <- mbind(lower,middle,upper)
 
   avl_crop_area_weight <- calcOutput("AvlCropland",marginal_land="all_marginal",cells="magpiecell",country_level=FALSE,aggregate=FALSE)
   avl_crop_area_weight[avl_crop_area_weight == 0] <- 10^-10
