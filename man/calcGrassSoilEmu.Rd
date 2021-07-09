@@ -5,12 +5,18 @@
 \title{calcGrassSoilEmu}
 \usage{
 calcGrassSoilEmu(
-  subtype = "ISIMIP3b:IPSL_CM6A_LR:ssp126:1965_2100:5f5fa2:weights"
+  subtype = "ISIMIP3b:IPSL_CM6A_LR:ssp126:1965_2100",
+  model = "5f5fa2",
+  mfile = "weights"
 )
 }
 \arguments{
 \item{subtype}{Subtype of file to be opened. Subtypes available:
 'weights', 'inputs',  'stddevs' and 'means'.}
+
+\item{model}{trained model ID}
+
+\item{mfile}{model file name}
 }
 \value{
 Magpie objects with a diverse inforamtion
@@ -20,7 +26,8 @@ Read files related to the training and optimization of the LPJml emulators.
 }
 \examples{
 \dontrun{
-readSource("GrassSoilEmu", subtype = "ISIMIP3b:IPSL_CM6A_LR:ssp126:1965_2100:5f5fa2:weights")
+readSource("GrassSoilEmu", subtype = "ISIMIP3b:IPSL_CM6A_LR:ssp126:1965_2100",
+ model = "5f5fa2", mfile = "weights")
 }
 
 }
