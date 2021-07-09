@@ -40,7 +40,7 @@ calcLabourProdImpactEmu <- function(timestep = "5year", cellular = TRUE, subtype
 
   getNames(upper) <- gsub("ensvalue","ensupper",getNames(upper))
   getNames(lower) <- gsub("ensvalue","enslower",getNames(lower))
-  getNames(middle) <- gsub("ensvalue","ensmean",getNames(lower))
+  getNames(middle) <- gsub("ensvalue","ensmean",getNames(middle))
 
   out <- mbind(lower,middle,upper)
 
