@@ -45,15 +45,28 @@ calcPastureSuit <- function(subtype = "ISIMIP3b:IPSL-CM6A-LR:1850-2100"){
 
   # Aridity (the real aridity is measured as the ratio between evapotranspiration and precipitarion (I have complete this calculation))
   aridity <- precipitation[,getYears(pop_density),]
-  aridity[aridity<1.3] = 0
-  aridity[aridity>=1.3] = 1
+  aridity[aridity<2] = 0
+  aridity[aridity>=2] = 1
 
-  #pasture suitability check
+  # pasture suitability check
   pasture_suit <- aridity
-  pasture_suit[pop_density<5] <- 0
+  pasture_suit[pop_density<10] <- 0
   pasture_suit_area = pasture_suit * cell_size/1e6*100
   pasture_suit_area <- collapseDim(pasture_suit_area, dim = 3.3)
   pasture_suit_area <- toolHoldConstantBeyondEnd(pasture_suit_area)
+
+  # # calibration to historical values
+  #
+  # hist_pastr <- calcOutput("LUH2v2", aggregate = F, landuse_types = "LUH2v2", cellular = TRUE)[,,"pastr"]
+  # years <- intersect(getYears(hist_pastr), getYears(pasture_suit_area))
+  # pasture_suit_area[,years,] <- hist_pastr[,years,]
+  #
+  # past <- findset("past")
+  # past <- past[length(past)]
+  # future <- setdiff(getYears(pasture_suit_area),years)
+  # pasture_suit_area[,future,] <- hist_pastr[,past,] - pasture_suit_area[,past,] + pasture_suit_area[,future,]
+  #
+  # pasture_suit_area[pasture_suit_area < 0] <- 0
 
   return(list(
     x = pasture_suit_area,
