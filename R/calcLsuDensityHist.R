@@ -37,12 +37,14 @@ calcLsuDensityHist <- function(disagg_type = "grassland"){
 
   if (disagg_type == "livestock") {
     weight = livst_split
-  }
-  if(disagg_type == "grassland") {
-    weight = grassl_land
   } else {
-    stop(paste0("disagg_type " , disagg_type, " is not supported"))
+    if(disagg_type == "grassland") {
+      weight = grassl_land
+    } else {
+      stop(paste0("disagg_type " , disagg_type, " is not supported"))
+    }
   }
+
 
   biomass_split <- biomass * livst_share_ctry
   biomass_split_cell <- toolAggregate(biomass_split, rel = mapping, weight = weight, from = "iso", to = "celliso")

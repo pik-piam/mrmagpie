@@ -12,6 +12,7 @@
 #' @return The evaluated result of the neural network for the \code{input_ml} parameter.
 #' @author Marcos Alves
 #' @import dplyr
+#' @import from pbapply pbapply
 #' @export toolNeuralNet
 
 toolNeuralNet <- function(inputs_ml, weights, activation) {
@@ -39,6 +40,7 @@ toolNeuralNet <- function(inputs_ml, weights, activation) {
   }
   x <- append(x, "return(y)}")
   func <- eval(parse(text = x))
-  out <- apply(inputs_ml, 1, func)
+  pboptions(type = "txt", style = 3, char = "=")
+  out <- system.time(pbapply(inputs_ml, 1, func))
   return(out)
 }
