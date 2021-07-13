@@ -41,6 +41,6 @@ toolNeuralNet <- function(inputs_ml, weights, activation) {
   x <- append(x, "return(y)}")
   func <- eval(parse(text = x))
   pboptions(type = "txt", style = 3, char = "=")
-  out <- system.time(pbapply(inputs_ml, 1, func))
+  out <- pbapply(inputs_ml, 1, func)
   return(out)
 }
