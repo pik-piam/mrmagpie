@@ -12,7 +12,7 @@
 #' @return The evaluated result of the neural network for the \code{input_ml} parameter.
 #' @author Marcos Alves
 #' @import dplyr
-#' @import from pbapply pbapply
+#' @importFrom pbapply pboptions pbapply
 #' @export toolNeuralNet
 
 toolNeuralNet <- function(inputs_ml, weights, activation) {
