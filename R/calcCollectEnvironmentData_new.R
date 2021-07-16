@@ -50,11 +50,11 @@ calcCollectEnvironmentData_new <- function(subtype="ISIMIP3b:IPSL-CM6A-LR:ssp126
   GCMVariables <- list()
   for (climate_variable in climate_variables) {
     GCMVariables[[climate_variable]] <- calcOutput("GCMClimate_new", aggregate = F, subtype = paste(x$version,x$climatemodel,x$scenario,full_simulation_period,climate_variable, sep = ":"))
-    GCMVariables[[climate_variable]] <- toolHoldConstant(GCMVariables[[climate_variable]], seq((max(getYears(GCMVariables[[climate_variable]], as.integer = TRUE))),2150, 5))
+    GCMVariables[[climate_variable]] <- toolHoldConstant(GCMVariables[[climate_variable]], seq((max(getYears(GCMVariables[[climate_variable]], as.integer = TRUE))+1),2150, 5))
   }
   variables <- mbind(GCMVariables)
   co2 <- calcOutput("CO2Atmosphere_new", aggregate = F, subtype = paste(x$version, x$scenario, sep = ":"), co2_evolution = "rising")[, (syear - sar/2):fyear, ]
-  co2 <- toolHoldConstant(co2,  seq((max(getYears(co2, as.integer = TRUE))),2150, 5))
+  co2 <- toolHoldConstant(co2,  seq((max(getYears(co2, as.integer = TRUE))+1),2150, 5))
   soil <- calcOutput("SoilCharacteristics", aggregate = F)[, getYears(co2), ]
 
   constants <- mbind(co2, soil)
