@@ -19,6 +19,8 @@ calcGCMClimate_new <- function(subtype = "ISIMIP3b:IPSL-CM6A-LR:ssp126:1850-2100
   ###### CONFIG ######
   spliting_year <- 2014
   hist_name <- "historical"
+  time <- findset("time")
+  time <- time[1:match("y2100", time)]
   ###### CONFIG ######
 
   x <- toolSplitSubtype(subtype, list(version = NULL, climatemodel = NULL, scenario = NULL, period = NULL, variable = NULL))
@@ -30,13 +32,14 @@ calcGCMClimate_new <- function(subtype = "ISIMIP3b:IPSL-CM6A-LR:ssp126:1850-2100
     readSource("GCMClimate_new", subtype = .subtype_scen, convert = "onlycorrect")
   )
   getNames(y) <- gsub("-", "_", paste(x$variable, x$climatemodel, x$scenario, sep = "_"))
-
+  y <- y[,time,]
 
   unit <- switch(x$variable,
     "tas"       = "Degree Celcius",
     "pr"        = "mm3 per year",
     "lwnet"     = "watt per m2",
-    "rsds"      = "watt per m2"
+    "rsds"      = "watt per m2",
+    "wet"       = "number of rainy days"
   )
 
   description <- switch(x$variable,
@@ -44,6 +47,7 @@ calcGCMClimate_new <- function(subtype = "ISIMIP3b:IPSL-CM6A-LR:ssp126:1850-2100
     "precipitation"        = "Average precipitation",
     "longwave_radiation"   = "?",
     "shortwave_radiation"  = "?",
+    "wet days"             = "number of rainy days"
   )
 
   return(list(

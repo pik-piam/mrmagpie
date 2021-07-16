@@ -16,9 +16,8 @@ MAgPIE objects with results on cellular level.
 Read Climate data used as LPJmL inputs into MAgPIE objects
 }
 \examples{
-
 \dontrun{
-readSource("GCMClimate_new", subtype, convert="onlycorrect")
+readSource("GCMClimate_new", subtype, convert = "onlycorrect")
 }
 
 }

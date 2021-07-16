@@ -31,16 +31,17 @@ calcCollectEnvironmentData_new <- function(subtype="ISIMIP3b:IPSL-CM6A-LR:ssp126
   "w_pwp",
   "w_fc",
   "w_sat",
-  "hsg"
+  "hsg",
+  "wet"
 )) {
 
   ##### CONFIG ######
-  climate_variables <- c("tas", "pr", "lwnet", "rsds")
+  climate_variables <- c("tas", "pr", "lwnet", "rsds", "wet")
   full_simulation_period <- "1850-2100"
   ##### CONFIG ######
 
   x <- toolSplitSubtype(subtype, list(version=NULL, climatemodel=NULL, scenario=NULL, period = NULL))
-  years <- as.numeric(unlist(strsplit(x$period, "-")))
+  years <- as.numeric(unlist(strsplit(x$period, "_|-")))
   syear <- years[1]
   fyear <- years[2]
   sar   <- 0 # test mush be erased after
@@ -48,14 +49,13 @@ calcCollectEnvironmentData_new <- function(subtype="ISIMIP3b:IPSL-CM6A-LR:ssp126
   # read in the individual climate variables, then smooth the dataset with toolAverage and extend the standardize the number of years)
   GCMVariables <- list()
   for (climate_variable in climate_variables) {
-    GCMVariables[[climate_variable]] <- calcOutput("GCMClimate_new", aggregate = F, subtype = paste(x$version,x$climatemodel,x$scenario,full_simulation_period,climate_variable, sep = ":"))[, (syear - sar/2):fyear, ]
-    #GCMVariables[[climate_variable]] <- toolTimeAverage(GCMVariables[[climate_variable]], averaging_range = sar)
-    GCMVariables[[climate_variable]] <- toolHoldConstant(GCMVariables[[climate_variable]], (max(getYears(GCMVariables[[climate_variable]], as.integer = TRUE)) + 1):2150)
+    GCMVariables[[climate_variable]] <- calcOutput("GCMClimate_new", aggregate = F, subtype = paste(x$version,x$climatemodel,x$scenario,full_simulation_period,climate_variable, sep = ":"))
+    GCMVariables[[climate_variable]] <- toolHoldConstant(GCMVariables[[climate_variable]], seq((max(getYears(GCMVariables[[climate_variable]], as.integer = TRUE))),2150, 5))
   }
   variables <- mbind(GCMVariables)
   co2 <- calcOutput("CO2Atmosphere_new", aggregate = F, subtype = paste(x$version, x$scenario, sep = ":"), co2_evolution = "rising")[, (syear - sar/2):fyear, ]
-  co2 <- toolHoldConstant(co2, (max(getYears(co2, as.integer = TRUE))+1):2150)
-  soil <- calcOutput("SoilCharacteristics", aggregate = F)[, (syear - sar/2):2150, ]
+  co2 <- toolHoldConstant(co2,  seq((max(getYears(co2, as.integer = TRUE))),2150, 5))
+  soil <- calcOutput("SoilCharacteristics", aggregate = F)[, getYears(co2), ]
 
   constants <- mbind(co2, soil)
   constants <- constants[, getYears(variables), ]
@@ -94,7 +94,8 @@ calcCollectEnvironmentData_new <- function(subtype="ISIMIP3b:IPSL-CM6A-LR:ssp126
     tdiff100: mm^2/s ,
     cond_pwp:W/m^2/K) ,
     cond_100: W/m^2/K) ,
-    cond_100_ice: W/m^2/K)",
+    cond_100_ice: W/m^2/K) ,
+    wet: number of wet days",
     description = "Climate, CO2 and soil characteristics on cellular level",
     isocountries = FALSE
   ))

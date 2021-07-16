@@ -57,7 +57,7 @@ calcCollectSoilCarbonLSU  <-
       list(
         x = y,
         weight = weight,
-        unit = "gC/m2",
+        unit = "t/ha",
         description = "Soil carbon stocks per lsu level",
         isocountries = FALSE
       )
