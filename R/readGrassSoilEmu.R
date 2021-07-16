@@ -18,7 +18,6 @@ readGrassSoilEmu <-
     . <- NULL
     subtype_split <- toolSplitSubtype(subtype, list(version = NULL, climatemodel = NULL, scenario = NULL, years = NULL, model = NULL, variable = NULL))
     file <- subtype_split$variable
-    dirs <- c(".", "./ISIMIP3b_IPSL_CM6A_LR_ssp126_1965_2100_5f5fa2")
     dirs <- list.dirs()
     subtype <- paste(subtype_split[1], subtype_split[2], subtype_split[3], subtype_split[4], sep = "_")
     subtype <- subtype %>% gsub("[:-]", "_", .)
