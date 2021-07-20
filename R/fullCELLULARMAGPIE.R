@@ -108,8 +108,8 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "", ctype = "c200", climatetype 
   #  calcOutput("ScaledPastSoilCarbon", lsu_levels = c(seq(0, 2.2, 0.2), 2.5), lpjml = "lpjml5p2_pasture", climatetype = "IPSL_CM6A_LR", scenario = "ssp126_co2_Nreturn0p5_limN", sar = 1, aggregate = F, file = paste0("soilc_stocks_gramnt.mz"), years = mag_years)
   #  calcOutput("SCScalingFactors", lsu_levels = c(seq(0, 2.2, 0.2), 2.5), lpjml = "lpjml5p2_pasture", climatetype = "IPSL_CM6A_LR", scenario = "ssp126_co2_Nreturn0p5_limN", sar = 1, aggregate = F, file = paste0("SCScalingFactors_gramnt.mz"))
 
-    calcOutput("CollectSoilCarbonLSU", lsu_levels = c(seq(0, 2, 0.2), 2.5), lpjml = "lpjml5p2_pasture", climatetype = "IPSL_CM6A_LR", scenario = "ssp126_co2_Nreturn0p5_limN", sar = 1, aggregate = F, file = paste0("soilc_stocks_gramnt.mz"), years = mag_years)
-    calcOutput("CollectEnvironmentData_new", subtype = "ISIMIP3b:IPSL-CM6A-LR:ssp126:1965_2100", sar = 1, aggregate = F, sel_feat = c("tas", "pr", "lwnet", "rsds", "CO2", "Ks", "Sf", "w_pwp", "w_fc", "w_sat", "hsg", "wet"), file = paste0("environment_gramnt.mz"), years = mag_years)
+    calcOutput("CollectSoilCarbonLSU", lsu_levels = c(seq(0, 2, 0.2), 2.5), lpjml = "lpjml5p2_pasture", climatetype = "IPSL_CM6A_LR", scenario = "ssp126_co2_Nreturn0p5_limN", sar = 1, aggregate = F, file = paste0("soilc_stocks_gramnt.mz"), years = lpj_years)
+    calcOutput("CollectEnvironmentData_new", subtype = "ISIMIP3b:IPSL-CM6A-LR:ssp126:1965_2100", sar = 1, aggregate = F, sel_feat = c("tas", "pr", "lwnet", "rsds", "CO2", "Ks", "Sf", "w_pwp", "w_fc", "w_sat", "hsg", "wet"), file = paste0("environment_gramnt.mz"), years = lpj_years)
   }
 
   # if(grepl("pasturetest",dev)){
