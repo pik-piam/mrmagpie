@@ -32,7 +32,7 @@ calcCollectSoilCarbonPastr <-
     y <- mbind(hist,scen)
     y <- toolTimeAverage(y, averaging_range = sar)
     y <- toolHoldConstant(y, (max(getYears(y, as.integer = TRUE)) + 1):2150)
-    getNames(y) <- "soilc_pastr"
+    getNames(y) <- "pastr"
 
     unit_transform <- 0.01               # Transformation factor gC/m^2 --> t/ha
     y <- y * unit_transform
