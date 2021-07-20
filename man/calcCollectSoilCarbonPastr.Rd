@@ -9,7 +9,7 @@ calcCollectSoilCarbonPastr(
   lpjml = "lpjml5p2_pasture",
   climatetype = "IPSL_CM6A_LR",
   scenario = "ssp126_co2_limN",
-  sar = 20
+  sar = 1
 )
 }
 \arguments{
