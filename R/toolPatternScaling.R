@@ -50,7 +50,7 @@ toolPatternScaling <- function(scen, scen_mean, ref_mean, ref_year="y2010", vari
   ###########################################
 
   lambda <- sqrt( scen_mean / ref_mean )
-  lambda[scen_mean <= ref_mean] <- 1
+  lambda[scen_mean >= ref_mean] <- 1
   lambda[is.nan(lambda)]        <- 1
 
   out <- (1 + (ref_mean - scen_mean) / scen * toolConditionalReplace(scen / scen_mean,

@@ -5,6 +5,7 @@
 #' For isimip choose crop model/gcm/rcp/co2 combination formatted like this: "yields:EPIC-IIASA:ukesm1-0-ll:ssp585:default:3b"
 #' @param climatetype Switch between different climate scenarios
 #' @param cells if cellular is TRUE: "magpiecell" for 59199 cells or "lpjcell" for 67420 cells
+#' @param weighting use of different weights (totalCrop (default), totalLUspecific, avlCropland, cropSpecific, crop+irrigSpecific)
 #' @return magpie object in cellular resolution
 #' @author Kristine Karstens, Felicitas Beier
 #'
@@ -17,7 +18,7 @@
 #' @importFrom mrcommons toolLPJmLVersion
 
 calcYields <- function(source=c(lpjml="ggcmi_phase3_nchecks_9ca735cb", isimip=NULL),
-                           climatetype="GSWP3-W5E5:historical", cells="magpiecell"){
+                           climatetype="GSWP3-W5E5:historical", cells="magpiecell", weighting = "totalCrop"){
 
   cfg <- toolLPJmLVersion(version = source["lpjml"], climatetype = climatetype)
 
@@ -94,10 +95,59 @@ calcYields <- function(source=c(lpjml="ggcmi_phase3_nchecks_9ca735cb", isimip=NU
     yields[,common_years, common_vars] <- to_rep[,common_years,common_vars]
     yields <- as.magpie(yields); to_rep <- as.magpie(to_rep)
 
+   }
+
+
+  if (weighting == "totalCrop") {
+
+    crop_area_weight <- dimSums(calcOutput("Croparea", sectoral="kcr", physical=TRUE, irrigation=FALSE,
+                                           cellular=TRUE, cells=cells, aggregate = FALSE, years="y1995", round=6), dim = 3)
+
+  } else if (weighting %in% c("totalLUspecific", "cropSpecific", "crop+irrigSpecific")) {
+
+    crop <- calcOutput("Croparea", sectoral="kcr", physical=TRUE, irrigation=TRUE,
+                       cellular=TRUE, cells=cells, aggregate = FALSE, years="y1995", round=6)
+
+    past <- calcOutput("LanduseInitialisation", aggregate=FALSE, cellular=TRUE, nclasses="seven", fao_corr=TRUE,
+                       input_magpie=TRUE, cells = cells, years="y1995", round=6)[, ,"past" ]
+
+    if (weighting == "crop+irrigSpecific"){
+
+      crop_area_weight <- new.magpie(cells_and_regions = getCells(yields), years = NULL,
+                                     names = getNames(yields), fill = NA)
+      crop_area_weight[, , findset("kcr")] <- crop + 10^-10
+      crop_area_weight[, , "pasture"]      <- mbind(setNames(past + 10^-10, "irrigated"),
+                                                    setNames(past + 10^-10, "rainfed"))
+
+    } else if (weighting == "cropSpecific") {
+
+      crop_area_weight <- new.magpie(cells_and_regions = getCells(yields), years = NULL,
+                                     names = getNames(yields, dim = 1), fill = NA)
+
+      crop_area_weight[, , findset("kcr")] <- dimSums(crop, dim = 3.1) + 10^-10
+      crop_area_weight[, , "pasture"]      <- past + 10^-10
+
+    } else {
+
+      crop_area_weight <- new.magpie(cells_and_regions = getCells(yields), years = NULL,
+                                     names = getNames(yields, dim = 1), fill = (dimSums(crop, dim = 3) + 10^-10))
+
+      crop_area_weight[, , "pasture"]      <- past  + 10^-10
+
+    }
+
+  } else if (weighting == "avlCropland"){
+
+    crop_area_weight <- setNames(calcOutput("AvlCropland", marginal_land = "all_marginal", cells = cells,
+                                   country_level = FALSE, aggregate = FALSE), NULL)
+
+  } else {
+
+    stop("Weighting setting is not available.")
   }
-  #check again, what makes sense irrigation=FALSE/TRUE?
-  crop_area_weight <- dimSums(calcOutput("Croparea", sectoral="kcr", physical=TRUE, irrigation=FALSE,
-                                         cellular=TRUE, cells=cells, aggregate = FALSE, years="y1995", round=6), dim=3)
+
+  if(any(is.na(crop_area_weight))) stop("NAs in weights.")
+
   if (cells=="lpjcell") {
     crop_area_weight <- addLocation(crop_area_weight)
   }
