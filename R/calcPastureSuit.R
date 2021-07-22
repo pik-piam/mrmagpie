@@ -50,23 +50,27 @@ calcPastureSuit <- function(subtype = "ISIMIP3b:IPSL-CM6A-LR:1850-2100"){
 
   # pasture suitability check
   pasture_suit <- aridity
-  pasture_suit[pop_density<10] <- 0
+  pasture_suit[pop_density<5] <- 0
   pasture_suit_area = pasture_suit * cell_size/1e6*100
   pasture_suit_area <- collapseDim(pasture_suit_area, dim = 3.3)
   pasture_suit_area <- toolHoldConstantBeyondEnd(pasture_suit_area)
 
-  # # calibration to historical values
-  #
-  # hist_pastr <- calcOutput("LUH2v2", aggregate = F, landuse_types = "LUH2v2", cellular = TRUE)[,,"pastr"]
-  # years <- intersect(getYears(hist_pastr), getYears(pasture_suit_area))
-  # pasture_suit_area[,years,] <- hist_pastr[,years,]
-  #
-  # past <- findset("past")
-  # past <- past[length(past)]
-  # future <- setdiff(getYears(pasture_suit_area),years)
-  # pasture_suit_area[,future,] <- hist_pastr[,past,] - pasture_suit_area[,past,] + pasture_suit_area[,future,]
-  #
-  # pasture_suit_area[pasture_suit_area < 0] <- 0
+  # calibration to historical values
+
+  hist_pastr <- calcOutput("LUH2v2", aggregate = F, landuse_types = "LUH2v2", cellular = TRUE)[,,"pastr"]
+  past_all <- intersect(getYears(hist_pastr), getYears(pasture_suit_area))
+
+  past_ly <- findset("past")
+  past_ly <- past_ly[length(past_ly)] #past last year
+  future <- setdiff(getYears(pasture_suit_area),past_all)
+  # pasture_suit_area[,future,] <- hist_pastr[,past_ly,] - pasture_suit_area[,past_ly,] + pasture_suit_area[,future,]
+  # pasture_suit_area[,future,] <- (hist_pastr[,past_ly,] / pasture_suit_area[,past_ly,]+ 1e-6) * (pasture_suit_area[,future,] + 1e-6)
+  pasture_suit_area[,future,] <- (dimSums(hist_pastr[,past_ly,], dim =1) / dimSums(pasture_suit_area[,past_ly,], dim = 1)) *  pasture_suit_area[,future,]
+  pasture_suit_area[is.infinite(pasture_suit_area) | is.nan(pasture_suit_area)] <- 0
+  pasture_suit_area[pasture_suit_area < 0] <- 0
+  pasture_suit_area[,past_all,] <- hist_pastr[,past_all,]
+
+  pasture_suit_area <- toolTimeAverage(pasture_suit_area, averaging_range = 10 , annual = F)
 
   return(list(
     x = pasture_suit_area,
