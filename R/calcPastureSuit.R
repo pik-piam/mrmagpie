@@ -71,6 +71,7 @@ calcPastureSuit <- function(subtype = "ISIMIP3b:IPSL-CM6A-LR:1850-2100"){
   pasture_suit_area[,past_all,] <- hist_pastr[,past_all,]
 
   pasture_suit_area <- toolTimeAverage(pasture_suit_area, averaging_range = 10 , annual = F)
+  pasture_suit_area <- toolHoldConstant(pasture_suit_area, findset("time"))
 
   return(list(
     x = pasture_suit_area,
