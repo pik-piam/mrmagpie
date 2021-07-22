@@ -2,7 +2,7 @@
 #' @description This functions calibrates extracted yields from LPJmL to FAO levels on country level
 #'
 #' @param source Defines LPJmL version for main crop inputs and isimip replacement.
-#' For isimip choose crop model/gcm/rcp/co2 combination formatted like this: "yields:EPIC-IIASA:ukesm1-0-ll:ssp585:default:3b"
+#'               For isimip choose crop model/gcm/rcp/co2 combination formatted like this: "yields:EPIC-IIASA:ukesm1-0-ll:ssp585:default:3b"
 #' @param climatetype Switch between different climate scenarios
 #' @param refYear reference year for calibration
 #' @return magpie object in cellular resolution from reference year on
@@ -31,12 +31,12 @@ calcCalibratedYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735
 
     years           <- getYears(yieldLPJmL_grid$x, as.integer = TRUE)
     years           <- years[years >= as.integer(gsub("y", "", refYear))]
-    otherYields     <- yieldLPJmL_grid$x[, years, setdiff(getNames(yieldLPJmL_grid, dim = 1), crops)]
-    weight          <- yieldLPJmL_grid$weight[, years, crops]
+    otherYields     <- yieldLPJmL_grid$x[, years, setdiff(getNames(yieldLPJmL_grid$x, dim = 1), crops)]
+    weight          <- yieldLPJmL_grid$weight
     yieldLPJmL_grid <- yieldLPJmL_grid$x[, years, crops]
 
     areaMAG_grid    <- calcOutput("Croparea", sectoral = "kcr", physical = TRUE, cellular = TRUE,
-                                  irrigation = TRUE, aggregate = FALSE)[, refYear, ]
+                                  irrigation = TRUE, aggregate = FALSE)[, refYear, crops]
     CountryToCell   <- toolGetMapping(type = "cell", name = "CountryToCellMapping.csv")
     areaMAG_iso     <- toolAggregate(dimSums(areaMAG_grid, dim = 3.1), rel = CountryToCell,
                                      from = "celliso", to = "iso", dim = 1)
@@ -63,4 +63,3 @@ calcCalibratedYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735
               isocountries = FALSE)
   )
 }
-
