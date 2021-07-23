@@ -76,16 +76,20 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "", ctype = "c200", climatetype 
   # 14 yields
 
   calcOutput("Yields", aggregate = FALSE, source = c(lpjml = lpjml[["crop"]], isimip = isimip),
-    climatetype = climatetype, round = 2, years = "y1995", file = paste0("lpj_yields_0.5.mz"))
+    climatetype = climatetype, round = 2, years = "y1995", file = paste0("lpj_yields_0.5.mz"),
+    weighting = ifelse(grepl("YieldWeights_", dev), gsub("YieldWeights_", "", dev), "totalCrop"))
 
   calcOutput("Yields", aggregate = "cluster", source = c(lpjml = lpjml[["crop"]], isimip = isimip),
-    climatetype = climatetype, round = 2, years = lpj_years, file = paste0("lpj_yields_", ctype, ".mz"))
+    climatetype = climatetype, round = 2, years = lpj_years, file = paste0("lpj_yields_", ctype, ".mz"),
+    weighting = ifelse(grepl("YieldWeights_", dev), gsub("YieldWeights_", "", dev), "totalCrop"))
 
   if (dev == "+calibYield") {
 
     calcOutput("CalibratedYields", aggregate = "cluster", source = c(lpjml = lpjml[["crop"]], isimip = isimip),
                climatetype = climatetype, round = 2, years = lpj_years, file = paste0("lpj_yields_", ctype, ".mz"))
   }
+
+
 
   if (grepl("MPPA", dev)) {
     calcOutput("GrasslandsYields", lsu_levels = c(seq(0, 2.2, 0.2), 2.5), past_mngmt = "me2", lpjml = "lpjml5p2_pasture", climatetype = "IPSL_CM6A_LR", scenario = "ssp126_co2_Nreturn0p5_limN", file = paste0("f14_grassl_yld_", ctype, ".mz"), years = mag_years, aggregate = "cluster")

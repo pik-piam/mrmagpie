@@ -19,7 +19,8 @@ For isimip choose crop model/gcm/rcp/co2 combination formatted like this: "yield
 
 \item{cells}{if cellular is TRUE: "magpiecell" for 59199 cells or "lpjcell" for 67420 cells}
 
-\item{weighting}{use of different weights (totalCrop (default), totalLUspecific, avlCropland, cropSpecific, crop+irrigSpecific)}
+\item{weighting}{use of different weights (totalCrop (default), totalLUspecific, cropSpecific, crop+irrigSpecific,
+avlCropland, avlCropland+avlPasture)}
 }
 \value{
 magpie object in cellular resolution

@@ -5,7 +5,8 @@
 #' For isimip choose crop model/gcm/rcp/co2 combination formatted like this: "yields:EPIC-IIASA:ukesm1-0-ll:ssp585:default:3b"
 #' @param climatetype Switch between different climate scenarios
 #' @param cells if cellular is TRUE: "magpiecell" for 59199 cells or "lpjcell" for 67420 cells
-#' @param weighting use of different weights (totalCrop (default), totalLUspecific, avlCropland, cropSpecific, crop+irrigSpecific)
+#' @param weighting use of different weights (totalCrop (default), totalLUspecific, cropSpecific, crop+irrigSpecific,
+#'                                            avlCropland, avlCropland+avlPasture)
 #' @return magpie object in cellular resolution
 #' @author Kristine Karstens, Felicitas Beier
 #'
@@ -136,10 +137,26 @@ calcYields <- function(source=c(lpjml="ggcmi_phase3_nchecks_9ca735cb", isimip=NU
 
     }
 
-  } else if (weighting == "avlCropland"){
+  } else if (weighting == "avlCropland") {
 
     crop_area_weight <- setNames(calcOutput("AvlCropland", marginal_land = "all_marginal", cells = cells,
                                    country_level = FALSE, aggregate = FALSE), NULL)
+
+  } else if (weighting == "avlCropland+avlPasture") {
+
+    avlCrop <- setNames(calcOutput("AvlCropland", marginal_land = "all_marginal", cells = cells,
+                        country_level = FALSE, aggregate = FALSE), "avlCrop")
+
+    LU1995  <- setYears(calcOutput("LanduseInitialisation", aggregate = FALSE, cellular = TRUE, nclasses = "seven",
+                                   fao_corr = TRUE, input_magpie = TRUE, cells = cells, years = "y1995", round = 6), NULL)
+
+    crop_area_weight <- new.magpie(cells_and_regions = getCells(yields), years = NULL,
+                                   names = getNames(yields, dim = 1), fill = NA)
+
+    crop_area_weight[, ,  findset("kcr")] <- new.magpie(cells_and_regions = getCells(yields), years = NULL,
+                                                        names = getNames(yields, dim = 1), fill = avlCrop)
+    crop_area_weight[, , "pasture"]       <- pmax(avlCrop,
+                                             dimSums(LU1995[, , c("primforest", "secdforest", "forestry", "past")], dim = 3))
 
   } else {
 
