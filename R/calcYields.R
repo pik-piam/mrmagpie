@@ -151,10 +151,8 @@ calcYields <- function(source=c(lpjml="ggcmi_phase3_nchecks_9ca735cb", isimip=NU
                                    fao_corr = TRUE, input_magpie = TRUE, cells = cells, years = "y1995", round = 6), NULL)
 
     crop_area_weight <- new.magpie(cells_and_regions = getCells(yields), years = NULL,
-                                   names = getNames(yields, dim = 1), fill = NA)
+                                   names = getNames(yields, dim = 1), fill = avlCrop)
 
-    crop_area_weight[, ,  findset("kcr")] <- new.magpie(cells_and_regions = getCells(yields), years = NULL,
-                                                        names = getNames(yields, dim = 1), fill = avlCrop)
     crop_area_weight[, , "pasture"]       <- pmax(avlCrop,
                                              dimSums(LU1995[, , c("primforest", "secdforest", "forestry", "past")], dim = 3))
 
