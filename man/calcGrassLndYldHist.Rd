@@ -29,7 +29,7 @@ calcOutput("GrassLndYldHist", max_yields = 20, max_iter = 30)
 }
 }
 \seealso{
-\code{\link{calcOutput}}, \code{\link{calcFAOmassbalance}},
+\code{\link{calcOutput}},
 \code{\link{readSource}}
 }
 \author{

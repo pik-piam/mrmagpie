@@ -8,7 +8,7 @@
 #' @return Pasture yields and corresponding weights as a list of
 #' two MAgPIE objects
 #' @author Marcos Alves
-#' @seealso \code{\link{calcOutput}}, \code{\link{calcFAOmassbalance}},
+#' @seealso \code{\link{calcOutput}},
 #' \code{\link{readSource}}
 #' @examples
 #' \dontrun{
