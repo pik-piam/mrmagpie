@@ -8,12 +8,12 @@ fullCELLULARMAGPIE(
   rev = 0.1,
   dev = "",
   ctype = "c200",
-  climatemodel = "MRI-ESM2-0",
-  scenario = "ssp370",
+  climatetype = "MRI-ESM2-0:ssp370",
   lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de", crop =
     "ggcmi_phase3_nchecks_9ca735cb", grass = "lpjml5p2_pasture"),
   isimip = NULL,
-  clusterweight = NULL
+  clusterweight = NULL,
+  isimip_version = "ISIMIP3b"
 )
 }
 \arguments{
@@ -27,9 +27,7 @@ indicating the number of resulting clusters. Available methodologies are hierarc
 (n) and combined hierarchical/normalized k-means clustering (c). In the latter hierarchical clustering is used to determine the
 cluster distribution among regions whereas normalized k-means is used for the clustering within a region.}
 
-\item{climatemodel}{Global Circulation Model to be used}
-
-\item{scenario}{ssp scenario to be used}
+\item{climatetype}{Global Circulation Model to be used}
 
 \item{lpjml}{Defines LPJmL version for crop/grass and natveg specific inputs}
 
@@ -42,6 +40,8 @@ c(LAM=1.5,SSA=1.5,OAS=1.5)
 c(LAM=2,SSA=2,OAS=2)
 \code{\link{setConfig}} (e.g. for setting the mainfolder if not already set
 properly).}
+
+\item{isimip_version}{isimip version being used for loading climate data}
 }
 \description{
 Function that produces the complete cellular data set required for running the
