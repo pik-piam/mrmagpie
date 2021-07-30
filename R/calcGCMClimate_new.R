@@ -24,7 +24,7 @@ calcGCMClimate_new <- function(subtype = "ISIMIP3b:IPSL-CM6A-LR:ssp126:1850-2100
   ###### CONFIG ######
 
   x <- toolSplitSubtype(subtype, list(version = NULL, climatemodel = NULL, scenario = NULL, period = NULL, variable = NULL))
-  period <- unlist(strsplit(x$period, "-"))
+  period <- unlist(strsplit(x$period, "-|_"))
   .subtype_hist <- paste(x$version, x$climatemodel, hist_name, paste(period[1], spliting_year, sep = "-"), x$variable, sep = ":")
   .subtype_scen <- paste(x$version, x$climatemodel, x$scenario, paste((spliting_year + 1), period[2], sep = "-"), x$variable, sep = ":")
   y <- mbind(

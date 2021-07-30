@@ -2,15 +2,13 @@
 #' @description Calculates rangelands maximum output and managed pastures yields
 #' @param past_mngmt pasture areas management option
 #' @param lsu_levels Livestock unit levels in the source folder
-#' @param lpjml Defines LPJmL version for crop/grass and natveg specific inputs
-#' @param climatetype Switch between different climate scenarios (default: "CRU_4")
-#' @param scenario specify ssp scenario
+#' @param subtype Switch between different climate scenarios
 #' @return magpie object in cellular resolution
 #' @author Marcos Alves
 #'
 #' @examples
 #' \dontrun{
-#' calcOutput("GrasslandsYields", lsu_levels, past_mngmt = "2me", lpjml, climatetype)
+#' calcOutput("GrasslandsYields", lsu_levels, past_mngmt = "2me", subtype)
 #' }
 #'
 #' @import madrat
@@ -21,11 +19,14 @@
 #'
 
 calcGrasslandsYields <-
-  function(lsu_levels = c(seq(0, 2, 0.2), 2.5), past_mngmt = "me2", lpjml = "lpjml5p2_pasture", climatetype = "IPSL_CM6A_LR", scenario = "ssp126_co2_limN") {
+  function(lsu_levels = c(seq(0, 2, 0.2), 2.5), past_mngmt = "me2",
+           subtype = "lpjml5p2_pasture:IPSL_CM6A_LR:ssp126_co2_limN") {
+
+    x <- toolSplitSubtype(subtype, list(lpjml = NULL, climatetype = NULL, scenario = NULL))
 
     gCm2yTotDMy <- (10000 * 2.21 / 1e6)
-    x <- calcOutput("RangelandsMax_new", lsu_levels = lsu_levels, lpjml = lpjml, climatetype = climatetype, scenario = scenario, report = "harvest", aggregate = F)
-    y <- calcOutput("Pastr_new", past_mngmt = past_mngmt, lpjml = lpjml, climatetype = climatetype, scenario = scenario,  aggregate = F)
+    x <- calcOutput("RangelandsMax_new", lsu_levels = lsu_levels, lpjml = x$lpjml, climatetype = x$climatetype, scenario = x$scenario, report = "harvest", aggregate = F)
+    y <- calcOutput("Pastr_new", past_mngmt = past_mngmt,         lpjml = x$lpjml, climatetype = x$climatetype, scenario = x$scenario, aggregate = F)
     pasture <- mbind(x, y)
     pasture <- toolHoldConstantBeyondEnd(pasture)
     pasture <- pasture * gCm2yTotDMy

@@ -23,17 +23,20 @@ readGrassSoilEmu <-
     subtype <- subtype %>% gsub("[:-]", "_", .)
     folder <- grep(subtype, dirs, value = T)
 
-    if (dir.exists(file.path(folder))) {
+    if (length(dir.exists(file.path(folder))) != 0) {
       files_list <- list.files(folder)
       files <- files_list[grep(file, files_list)]
+      x <- readRDS(file.path(folder, files))
+      x <- as.magpie(as.matrix(x), spatial = 1)
+      getNames(x) <- file
+      return(x)
     } else {
-      stop(paste(
+      print(paste(
         "Path", folder, "does not exist. Check the defition of your",
-        "subtype or the folder structure you are trying to access."
+        "subtype and if an emulator with this inputs have already been trained."
       ))
+      x <- magclass::population_magpie * 0
+      return(x)
     }
-    x <- readRDS(file.path(folder, files))
-    x <- as.magpie(as.matrix(x), spatial = 1)
-    getNames(x) <- file
-    return(x)
+
   }

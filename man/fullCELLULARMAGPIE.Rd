@@ -8,9 +8,10 @@ fullCELLULARMAGPIE(
   rev = 0.1,
   dev = "",
   ctype = "c200",
-  climatetype = "MRI-ESM2-0:ssp370",
+  climatemodel = "MRI-ESM2-0",
+  scenario = "ssp370",
   lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de", crop =
-    "ggcmi_phase3_nchecks_9ca735cb"),
+    "ggcmi_phase3_nchecks_9ca735cb", grass = "lpjml5p2_pasture"),
   isimip = NULL,
   clusterweight = NULL
 )
@@ -26,7 +27,9 @@ indicating the number of resulting clusters. Available methodologies are hierarc
 (n) and combined hierarchical/normalized k-means clustering (c). In the latter hierarchical clustering is used to determine the
 cluster distribution among regions whereas normalized k-means is used for the clustering within a region.}
 
-\item{climatetype}{climate change scenario to be used}
+\item{climatemodel}{Global Circulation Model to be used}
+
+\item{scenario}{ssp scenario to be used}
 
 \item{lpjml}{Defines LPJmL version for crop/grass and natveg specific inputs}
 

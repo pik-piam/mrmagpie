@@ -13,10 +13,18 @@ downloadGCMClimate_new <- function(subtype="ISIMIP3b:IPSL-CM6A-LR:ssp126:2015-21
   x           <- toolSplitSubtype(subtype, list(version=NULL, climatemodel=NULL, scenario=NULL, period = NULL, variable=NULL))
   storage     <- "/p/projects/lpjml/input/scenarios"
   path        <- file.path(storage, x$version, gsub("_", "/", x$scenario), x$climatemodel)
+
+  if(!dir.exists(path)) {
+    path      <- file.path(storage, x$version, gsub("_", "/", x$scenario), gsub("_","-", x$climatemodel))
+  }
+
   list_files  <- list.files(path)
+
   if (x$variable == "wet") {x$variable = "pr"} # Wet days are calculated from the precipitation
   file        <- grep(paste0(x$variable,"_"), list_files, value=TRUE)
+
   file        <- grep(x$period,file, value = TRUE)
+
   file_path   <- file.path(path, file)
 
   if (file.exists(file_path)) {

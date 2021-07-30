@@ -7,7 +7,7 @@
 calcCollectSoilCarbonPastr(
   past_mngmt = "me2",
   lpjml = "lpjml5p2_pasture",
-  climatetype = "IPSL_CM6A_LR",
+  climatemodel = "IPSL_CM6A_LR",
   scenario = "ssp126_co2_limN",
   sar = 1
 )
@@ -17,7 +17,7 @@ calcCollectSoilCarbonPastr(
 
 \item{lpjml}{Defines LPJmL version for crop/grass and natveg specific inputs}
 
-\item{climatetype}{Switch between different climate scenarios (default: "CRU_4")}
+\item{climatemodel}{Switch between different climate scenarios (default: "CRU_4")}
 
 \item{scenario}{scenario specifications (eg. ssp126_co2_limN)}
 

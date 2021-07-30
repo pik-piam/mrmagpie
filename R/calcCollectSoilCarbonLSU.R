@@ -2,7 +2,7 @@
 #' @description Calculate soil carbon stocks for different LSU and climate conditions
 #' @param lsu_levels Livestock unit levels in the source folder
 #' @param lpjml Defines LPJmL version for crop/grass and natveg specific inputs
-#' @param climatetype Switch between different climate scenarios
+#' @param climatemodel Switch between different climate scenarios
 #' @param sar Average range for smoothing annual variations
 #' @param scenario scenario specifications (eg. ssp126_co2_limN)
 #' @return magpie object in cellular resolution
@@ -24,7 +24,7 @@
 #'
 
 calcCollectSoilCarbonLSU  <-
-  function(lsu_levels = c(seq(0, 2, 0.2), 2.5), lpjml = "LPJML5.2_pasture", climatetype = "IPSL_CM6A_LR", scenario = "ssp126_co2_limN", sar = 20) {
+  function(lsu_levels = c(seq(0, 2, 0.2), 2.5), lpjml = "LPJML5.2_pasture", climatemodel = "IPSL_CM6A_LR", scenario = "ssp126_co2_limN", sar = 20) {
 
     # Calculating weights
     landcoords <- as.data.frame(toolGetMapping("magpie_coord.rda", type = "cell"))
@@ -39,7 +39,7 @@ calcCollectSoilCarbonLSU  <-
     lsu_levels <- gsub("\\.", "p", lsu_levels)
     y <- list()
     for (lsu in lsu_levels) {
-      .subtype <- paste(lpjml, climatetype,paste0(scenario,"_", lsu),sep = ":")
+      .subtype <- paste(lpjml, climatemodel,paste0(scenario,"_", lsu),sep = ":")
       hist <- toolCoord2Isocell(readSource("LPJmL_new", subtype = paste(.subtype, "soilc_past_hist", sep = ":"), convert = F))
       scen <- toolCoord2Isocell(readSource("LPJmL_new", subtype = paste(.subtype, "soilc_past_scen", sep = ":"), convert = F))
       x <- mbind(hist,scen)

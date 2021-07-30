@@ -2,7 +2,7 @@
 #' @description calculates soil carbon content for pasture areas
 #' @param past_mngmt pasture areas management option
 #' @param lpjml Defines LPJmL version for crop/grass and natveg specific inputs
-#' @param climatetype Switch between different climate scenarios (default: "CRU_4")
+#' @param climatemodel Switch between different climate scenarios (default: "CRU_4")
 #' @param sar Average range for smoothing annual variations
 #' @param scenario scenario specifications (eg. ssp126_co2_limN)
 #' @return magpie object in cellular resolution
@@ -24,9 +24,9 @@
 #'
 
 calcCollectSoilCarbonPastr <-
-  function(past_mngmt = "me2", lpjml = "lpjml5p2_pasture", climatetype = "IPSL_CM6A_LR", scenario = "ssp126_co2_limN", sar = 1) {
+  function(past_mngmt = "me2", lpjml = "lpjml5p2_pasture", climatemodel = "IPSL_CM6A_LR", scenario = "ssp126_co2_limN", sar = 1) {
 
-    .subtype <- paste(lpjml, climatetype,paste0(scenario,"_", past_mngmt),sep = ":")
+    .subtype <- paste(lpjml, climatemodel,paste0(scenario,"_", past_mngmt),sep = ":")
     hist <- toolCoord2Isocell(readSource("LPJmL_new", subtype = paste(.subtype, "soilc_past_hist", sep = ":"), convert = F))
     scen <- toolCoord2Isocell(readSource("LPJmL_new", subtype = paste(.subtype, "soilc_past_scen", sep = ":"), convert = F))
     y <- mbind(hist,scen)

@@ -15,15 +15,22 @@ calcPastureSuit <- function(subtype = "ISIMIP3b:IPSL-CM6A-LR:1850-2100"){
 
   # pasture drivers
   population <- calcOutput("GridPop_new", subtype="all", cellular=TRUE,FiveYear=TRUE, harmonize_until=2015, aggregate=F)
+
   precipitation <- list()
-  ssps <- c("ssp126","ssp230","ssp340","ssp460","ssp585")
-  for (ssp in ssps) {
-    #write a script that reads different SPPs scenarios
-    # subtype = paste(x$version, x$climatemodel,ssps,x$period, "pr", sep = ":")
-    subtype = "ISIMIP3b:IPSL-CM6A-LR:ssp126:1850-2100:pr"
-    precipitation[[ssp]] <- setNames(calcOutput("GCMClimate_new", subtype = subtype, aggregate = F),paste0("past_suit.",ssp))
+  scenarios <- c("ssp126","ssp370","ssp585") # Current ISIMIP3b scenarios
+  for (scenario in scenarios) {
+    # write a script that reads different SPPs scenarios
+    subtype = paste(x$version, x$climatemodel,scenario,x$period, "pr", sep = ":")
+    # subtype = "ISIMIP3b:IPSL_CM6A_LR:ssp126:1850-2100:pr"
+    precipitation[[scenario]] <- setNames(calcOutput("GCMClimate_new", subtype = subtype, aggregate = F),paste0("past_suit.",scenario))
   }
   precipitation <- mbind(precipitation)
+
+  #matching available ssps scenarios
+  regex <- paste0("+",strtrim(scenarios, 4), "+", collapse = "|")
+  avl_ssps <- grep(regex, getNames(population), ignore.case = T)
+  population <- population[,,avl_ssps]
+
 
   # Cell area calculation
   landcoords <- as.data.frame(toolGetMapping("magpie_coord.rda", type = "cell"))

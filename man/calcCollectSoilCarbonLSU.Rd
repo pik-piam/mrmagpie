@@ -7,7 +7,7 @@
 calcCollectSoilCarbonLSU(
   lsu_levels = c(seq(0, 2, 0.2), 2.5),
   lpjml = "LPJML5.2_pasture",
-  climatetype = "IPSL_CM6A_LR",
+  climatemodel = "IPSL_CM6A_LR",
   scenario = "ssp126_co2_limN",
   sar = 20
 )
@@ -17,7 +17,7 @@ calcCollectSoilCarbonLSU(
 
 \item{lpjml}{Defines LPJmL version for crop/grass and natveg specific inputs}
 
-\item{climatetype}{Switch between different climate scenarios}
+\item{climatemodel}{Switch between different climate scenarios}
 
 \item{scenario}{scenario specifications (eg. ssp126_co2_limN)}
 
