@@ -109,10 +109,10 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "", ctype = "c200", climatetype=
     calcOutput("LsuDensityHist", disagg_type = "livestock", aggregate = F,  file = "f31_lsu_ha_livestock.mz")
     calcOutput("LUH2v2", aggregate = "cluster", landuse_types = "LUH2v2", cellular = TRUE, file = paste0("fm_LUH2v2_", ctype, ".mz"))
     calcOutput("LUH2v2", aggregate = F, landuse_types = "LUH2v2", cellular = TRUE, file = paste0("fm_LUH2v2.mz"))
-    calcOutput("CollectSoilCarbonLSU", lsu_levels = c(seq(0, 2, 0.2), 2.5), lpjml = lpjml[["grass"]], climatemodel = "MRI_ESM2_0", scenario = "ssp370_co2_Nreturn0p5_limN", sar = 1, aggregate = F, file = paste0("soilc_stocks_gramnt.mz"), years = lpj_years)
-    calcOutput("CollectSoilCarbonPastr", past_mngmt = "me2", lpjml = lpjml[["grass"]], climatemodel = "MRI_ESM2_0", aggregate = F, scenario = "ssp370_co2_Nreturn0p5_limN", sar = 1, file = paste0("soilc_stocks_pastr.mz"), years = lpj_years)
+    calcOutput("CollectSoilCarbonLSU", lsu_levels = c(seq(0, 2, 0.2), 2.5), lpjml = lpjml[["grass"]], climatemodel = "MRI_ESM2_0", scenario = "ssp370_co2_Nreturn0p5_limN", sar = 1, aggregate = F, file = paste0("soilc_stocks_gramnt.mz"), years = seq(1965, 2100, by = 5))
+    calcOutput("CollectSoilCarbonPastr", past_mngmt = "me2", lpjml = lpjml[["grass"]], climatemodel = "MRI_ESM2_0", aggregate = F, scenario = "ssp370_co2_Nreturn0p5_limN", sar = 1, file = paste0("soilc_stocks_pastr.mz"), years = seq(1965, 2100, by = 5))
     calcOutput("CollectEnvironmentData_new", subtype = paste(isimip_version, climatemodel, scenario, "1965_2100", sep = ":"), sar = 1, aggregate = F,
-               sel_feat = c("tas", "pr", "lwnet", "rsds", "CO2", "Ks", "Sf", "w_pwp", "w_fc", "w_sat", "hsg", "wet"), file = paste0("environment_gramnt.mz"), years = lpj_years)
+               sel_feat = c("tas", "pr", "lwnet", "rsds", "CO2", "Ks", "Sf", "w_pwp", "w_fc", "w_sat", "hsg", "wet"), file = paste0("environment_gramnt.mz"), years = seq(1965, 2100, by = 5))
 
     # calcOutput("GrassPastureShare", aggregate = "cluster", file = paste0("f31_pastr_share_", ctype, ".mz"))
     # calcOutput("GrassLndYldHist", aggregate = "cluster", file = paste0("f14_grassl_yld_hist_cell", ctype, ".mz"))
