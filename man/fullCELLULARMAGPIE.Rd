@@ -13,7 +13,8 @@ fullCELLULARMAGPIE(
     "ggcmi_phase3_nchecks_9ca735cb", grass = "lpjml5p2_pasture"),
   isimip = NULL,
   clusterweight = NULL,
-  isimip_version = "ISIMIP3b"
+  isimip_version = "ISIMIP3b",
+  emu_id = "0d9d46"
 )
 }
 \arguments{
@@ -42,6 +43,8 @@ c(LAM=2,SSA=2,OAS=2)
 properly).}
 
 \item{isimip_version}{isimip version being used for loading climate data}
+
+\item{emu_id}{Pasture Soil carbon emulator ID}
 }
 \description{
 Function that produces the complete cellular data set required for running the

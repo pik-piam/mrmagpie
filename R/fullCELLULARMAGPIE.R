@@ -13,6 +13,7 @@
 #' @param lpjml Defines LPJmL version for crop/grass and natveg specific inputs
 #' @param isimip Defines isimip crop model input which replace maiz, tece, rice_pro and soybean
 #' @param isimip_version isimip version being used for loading climate data
+#' @param emu_id Pasture Soil carbon emulator ID
 #' @param clusterweight Should specific regions be resolved with more or less detail? Values > 1 mean higher share, < 1 lower share
 #' e.g. cfg$clusterweight <- c(LAM=2) means that a higher level of detail for region LAM if set to NULL all weights will be assumed to be 1.
 #' examples:
@@ -32,11 +33,16 @@
 #' @importFrom digest digest
 #' @importFrom stringr str_split
 
-fullCELLULARMAGPIE <- function(rev = 0.1, dev = "", ctype = "c200", climatetype= "MRI-ESM2-0:ssp370",
+fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
+                               ctype = "c200",
+                               climatetype= "MRI-ESM2-0:ssp370",
                                lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de",
                                          crop = "ggcmi_phase3_nchecks_9ca735cb",
                                          grass = "lpjml5p2_pasture"),
-                               isimip = NULL, clusterweight = NULL, isimip_version = "ISIMIP3b") {
+                               isimip = NULL,
+                               clusterweight = NULL,
+                               isimip_version = "ISIMIP3b",
+                               emu_id = "0d9d46") {
 
   sizelimit <- getOption("magclass_sizeLimit")
   options(magclass_sizeLimit = 1e+12)
@@ -99,12 +105,12 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "", ctype = "c200", climatetype=
     calcOutput("GrasslandsYields", subtype = paste(lpjml[["grass"]],paste0(paste(climatemodel, scenario, sep = ":"), "_co2_Nreturn0p5_limN"), sep = ":"), lsu_levels = c(seq(0, 2.2, 0.2), 2.5), past_mngmt = "me2", file = paste0("f14_grassl_yld_", ctype, ".mz"), years = mag_years, aggregate = "cluster")
     calcOutput("GrasslandsYields", subtype = paste(lpjml[["grass"]],paste0(paste(climatemodel, scenario, sep = ":"), "_co2_Nreturn0p5_limN"), sep = ":"), lsu_levels = c(seq(0, 2.2, 0.2), 2.5), past_mngmt = "me2", file = paste0("f14_grassl_yld.mz"), years = mag_years, aggregate = F)
     calcOutput("PastureSuit",  subtype = paste(isimip_version, climatemodel, "1850_2100", sep = ":"), file = paste0("f31_pastr_suitability_", ctype, ".mz"), years = mag_years, aggregate = "cluster")
-    calcOutput("GrassSoilEmu", subtype = paste(isimip_version, climatemodel, scenario, "1965_2100", sep = ":"), model = "9eaf9b", mfile = "weights", aggregate = F)
-    calcOutput("GrassSoilEmu", subtype = paste(isimip_version, climatemodel, scenario, "1965_2100", sep = ":"), model = "9eaf9b", mfile = "mean_col", aggregate = F)
-    calcOutput("GrassSoilEmu", subtype = paste(isimip_version, climatemodel, scenario, "1965_2100", sep = ":"), model = "9eaf9b", mfile = "stddevs_col", aggregate = F)
-    calcOutput("GrassSoilEmu", subtype = paste(isimip_version, climatemodel, scenario, "1965_2100", sep = ":"), model = "9eaf9b", mfile = "mean_lab", aggregate = F)
-    calcOutput("GrassSoilEmu", subtype = paste(isimip_version, climatemodel, scenario, "1965_2100", sep = ":"), model = "9eaf9b", mfile = "stddevs_lab", aggregate = F)
-    calcOutput("GrassSoilEmu", subtype = paste(isimip_version, climatemodel, scenario, "1965_2100", sep = ":"), model = "9eaf9b", mfile = "inputs", aggregate = F)
+    calcOutput("GrassSoilEmu", subtype = paste(isimip_version, climatemodel, scenario, "1965_2100", sep = ":"), model = emu_id, mfile = "weights", aggregate = F)
+    calcOutput("GrassSoilEmu", subtype = paste(isimip_version, climatemodel, scenario, "1965_2100", sep = ":"), model = emu_id, mfile = "mean_col", aggregate = F)
+    calcOutput("GrassSoilEmu", subtype = paste(isimip_version, climatemodel, scenario, "1965_2100", sep = ":"), model = emu_id, mfile = "stddevs_col", aggregate = F)
+    calcOutput("GrassSoilEmu", subtype = paste(isimip_version, climatemodel, scenario, "1965_2100", sep = ":"), model = emu_id, mfile = "mean_lab", aggregate = F)
+    calcOutput("GrassSoilEmu", subtype = paste(isimip_version, climatemodel, scenario, "1965_2100", sep = ":"), model = emu_id, mfile = "stddevs_lab", aggregate = F)
+    calcOutput("GrassSoilEmu", subtype = paste(isimip_version, climatemodel, scenario, "1965_2100", sep = ":"), model = emu_id, mfile = "inputs", aggregate = F)
     calcOutput("LsuDensityHist", disagg_type = "grassland", aggregate = F,  file = "f31_lsu_ha_grassl.mz")
     calcOutput("LsuDensityHist", disagg_type = "livestock", aggregate = F,  file = "f31_lsu_ha_livestock.mz")
     calcOutput("LUH2v2", aggregate = "cluster", landuse_types = "LUH2v2", cellular = TRUE, file = paste0("fm_LUH2v2_", ctype, ".mz"))
