@@ -2,7 +2,7 @@
 #'
 #' @description Past and future (SSP1-5) population based on HYDE3.2 and Jones & O'Neill (2016)
 #' Data is scaled to match WDI data from calcPopulation
-#' NOTE that some scaling factors for the future (for small countries...Gambia and Djibouti) are somewhat off, data read in is 50% of WDI data, most likely due to large resolution
+#' NOTE that some scaling factors for the future (for small countries Gambia and Djibouti) are somewhat off, data read in is 50% of WDI data, most likely due to large resolution
 #' @param subtype past (1965-2005), future (2005-2010) or all (divergence changed to start at 2015)
 #' @param cellular only cellular
 #' @param FiveYear TRUE for 5 year time steps, otherwise yearly from source
@@ -71,8 +71,8 @@ calcGridPop_new <- function(subtype="all", cellular=TRUE,FiveYear=TRUE, harmoniz
   if (subtype=="all"){
     past <- calcOutput("GridPop_new",subtype="past", aggregate=F, FiveYear=F)
     future <- calcOutput("GridPop_new", subtype="future", aggregate=F, FiveYear=F)
-    #harmonize future SSPs to divergence year
 
+    #harmonize future SSPs to divergence year by making them SSP2
     harm_y <- getYears(future, as.integer = T)[1:(harmonize_until-2009)]
     for (i in 1:5){
       future[,harm_y,i] <- future[,harm_y,"pop_SSP2"]}
@@ -85,7 +85,8 @@ calcGridPop_new <- function(subtype="all", cellular=TRUE,FiveYear=TRUE, harmoniz
   if (FiveYear==TRUE){
     years <- findset("time")
     x <- x[,intersect(years,getYears(x)),]
-  }
+    x <- toolHoldConstantBeyondEnd(x)
+      }
 
   return(list(x=x,
               weight=NULL,

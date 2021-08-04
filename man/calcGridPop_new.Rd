@@ -26,7 +26,7 @@ Population in millions.
 \description{
 Past and future (SSP1-5) population based on HYDE3.2 and Jones & O'Neill (2016)
 Data is scaled to match WDI data from calcPopulation
-NOTE that some scaling factors for the future (for small countries...Gambia and Djibouti) are somewhat off, data read in is 50% of WDI data, most likely due to large resolution
+NOTE that some scaling factors for the future (for small countries Gambia and Djibouti) are somewhat off, data read in is 50% of WDI data, most likely due to large resolution
 }
 \author{
 David Chen
