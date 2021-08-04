@@ -128,7 +128,7 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
 
   # 09 drivers
   calcOutput("GridPop_new", subtype="all", cellular=TRUE, FiveYear=TRUE, harmonize_until=2015,
-             years = mag_years, round=6, file="f09_pop_0.5.mz")
+             aggregate="cluster", years = mag_years, round=6, file="f09_pop_0.5.mz")
 
   # 10 land
   calcOutput("LanduseInitialisation", aggregate = FALSE, cellular = TRUE, cells = "magpiecell", nclasses = "seven",
