@@ -13,7 +13,7 @@ fullCELLULARMAGPIE(
     "ggcmi_phase3_nchecks_9ca735cb", grass = "lpjml5p2_pasture"),
   isimip = NULL,
   clusterweight = NULL,
-  isimip_version = "ISIMIP3b",
+  version_isimip = "ISIMIP3b",
   emu_id = "0d9d46"
 )
 }
@@ -42,7 +42,7 @@ c(LAM=2,SSA=2,OAS=2)
 \code{\link{setConfig}} (e.g. for setting the mainfolder if not already set
 properly).}
 
-\item{isimip_version}{isimip version being used for loading climate data}
+\item{version_isimip}{isimip version being used for loading climate data}
 
 \item{emu_id}{Pasture Soil carbon emulator ID}
 }
