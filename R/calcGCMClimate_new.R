@@ -31,8 +31,8 @@ calcGCMClimate_new <- function(subtype = "ISIMIP3b:IPSL-CM6A-LR:ssp126:1850-2100
     readSource("GCMClimate_new", subtype = .subtype_hist, convert = "onlycorrect"),
     readSource("GCMClimate_new", subtype = .subtype_scen, convert = "onlycorrect")
   )
-  getNames(y) <- gsub("-", "_", paste(x$variable, x$climatemodel, x$scenario, sep = "_"))
-  y <- y[,time,]
+  getNames(y) <- gsub("-", "_", paste(x$variable, x$version, x$climatemodel, x$scenario, sep = "_"))
+  y <- y[, time, ]
 
   unit <- switch(x$variable,
     "tas"       = "Degree Celcius",

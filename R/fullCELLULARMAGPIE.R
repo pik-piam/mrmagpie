@@ -35,7 +35,7 @@
 
 fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
                                ctype = "c200",
-                               climatetype= "MRI-ESM2-0:ssp370",
+                               climatetype = "MRI-ESM2-0:ssp370",
                                lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de",
                                          crop = "ggcmi_phase3_nchecks_9ca735cb",
                                          grass = "lpjml5p2_pasture"),
@@ -48,8 +48,8 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
   options(magclass_sizeLimit = 1e+12)
   on.exit(options(magclass_sizeLimit = sizelimit))
 
-  climatemodel <- str_split(climatetype,":")[[1]][1]
-  scenario <- str_split(climatetype,":")[[1]][2]
+  climatemodel <- str_split(climatetype, ":")[[1]][1]
+  scenario <- str_split(climatetype, ":")[[1]][2]
 
   cat(paste0("Start preprocessing for \n climatescenario: ", climatetype,
     "\n LPJmL-Versions: ", paste(names(lpjml), lpjml, sep = "->", collapse = ", "),
@@ -102,8 +102,8 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
   }
 
   if (grepl("MPPA", dev)) {
-    calcOutput("GrasslandsYields", subtype = paste(lpjml[["grass"]],paste0(paste(climatemodel, scenario, sep = ":"), "_co2_Nreturn0p5_limN"), sep = ":"), lsu_levels = c(seq(0, 2.2, 0.2), 2.5), past_mngmt = "me2", file = paste0("f14_grassl_yld_", ctype, ".mz"), years = mag_years, aggregate = "cluster")
-    calcOutput("GrasslandsYields", subtype = paste(lpjml[["grass"]],paste0(paste(climatemodel, scenario, sep = ":"), "_co2_Nreturn0p5_limN"), sep = ":"), lsu_levels = c(seq(0, 2.2, 0.2), 2.5), past_mngmt = "me2", file = paste0("f14_grassl_yld.mz"), years = mag_years, aggregate = F)
+    calcOutput("GrasslandsYields", subtype = paste(lpjml[["grass"]], paste0(paste(climatemodel, scenario, sep = ":"), "_co2_Nreturn0p5_limN"), sep = ":"), lsu_levels = c(seq(0, 2.2, 0.2), 2.5), past_mngmt = "me2", file = paste0("f14_grassl_yld_", ctype, ".mz"), years = mag_years, aggregate = "cluster")
+    calcOutput("GrasslandsYields", subtype = paste(lpjml[["grass"]], paste0(paste(climatemodel, scenario, sep = ":"), "_co2_Nreturn0p5_limN"), sep = ":"), lsu_levels = c(seq(0, 2.2, 0.2), 2.5), past_mngmt = "me2", file = paste0("f14_grassl_yld.mz"), years = mag_years, aggregate = F)
     calcOutput("PastureSuit",  subtype = paste(version_isimip, climatemodel, "1850_2100", sep = ":"), file = paste0("f31_pastr_suitability_", ctype, ".mz"), years = mag_years, aggregate = "cluster")
     calcOutput("GrassSoilEmu", subtype = paste(version_isimip, climatemodel, scenario, "1965_2100", sep = ":"), model = emu_id, mfile = "weights", aggregate = F)
     calcOutput("GrassSoilEmu", subtype = paste(version_isimip, climatemodel, scenario, "1965_2100", sep = ":"), model = emu_id, mfile = "mean_col", aggregate = F)
@@ -111,6 +111,7 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
     calcOutput("GrassSoilEmu", subtype = paste(version_isimip, climatemodel, scenario, "1965_2100", sep = ":"), model = emu_id, mfile = "mean_lab", aggregate = F)
     calcOutput("GrassSoilEmu", subtype = paste(version_isimip, climatemodel, scenario, "1965_2100", sep = ":"), model = emu_id, mfile = "stddevs_lab", aggregate = F)
     calcOutput("GrassSoilEmu", subtype = paste(version_isimip, climatemodel, scenario, "1965_2100", sep = ":"), model = emu_id, mfile = "inputs", aggregate = F)
+    calcOutput("RangeSoilCarbonHist", subtype = paste(version_isimip, climatemodel, scenario, "1965_2100", sep = ":"), model = emu_id, lpjml = lpjml[["grass"]], file = "f31_range_soilc_hist.mz", aggregate = F)
     calcOutput("LsuDensityHist", disagg_type = "grassland", aggregate = F,  file = "f31_lsu_ha_grassl.mz")
     calcOutput("LsuDensityHist", disagg_type = "livestock", aggregate = F,  file = "f31_lsu_ha_livestock.mz")
     calcOutput("LUH2v2", aggregate = "cluster", landuse_types = "LUH2v2", cellular = TRUE, file = paste0("fm_LUH2v2_", ctype, ".mz"))
@@ -119,7 +120,6 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
     calcOutput("CollectSoilCarbonPastr", past_mngmt = "me2", lpjml = lpjml[["grass"]], climatemodel = "MRI_ESM2_0", aggregate = F, scenario = "ssp370_co2_Nreturn0p5_limN", sar = 1, file = paste0("soilc_stocks_pastr.mz"), years = seq(1965, 2100, by = 5))
     calcOutput("CollectEnvironmentData_new", subtype = paste(version_isimip, climatemodel, scenario, "1965_2100", sep = ":"), sar = 1, aggregate = F,
                sel_feat = c("tas", "pr", "lwnet", "rsds", "CO2", "Ks", "Sf", "w_pwp", "w_fc", "w_sat", "hsg", "wet"), file = paste0("environment_gramnt.mz"), years = seq(1965, 2100, by = 5))
-
     # calcOutput("GrassPastureShare", aggregate = "cluster", file = paste0("f31_pastr_share_", ctype, ".mz"))
     # calcOutput("GrassLndYldHist", aggregate = "cluster", file = paste0("f14_grassl_yld_hist_cell", ctype, ".mz"))
   }
@@ -188,9 +188,9 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
 
   # 37 labour prod
   if (grepl("labourprodtest", dev)) {
-    calcOutput("LabourProdImpactEmu", aggregate = "cluster", round = 6, subtype="impact",
+    calcOutput("LabourProdImpactEmu", aggregate = "cluster", round = 6, subtype = "impact",
       file = paste0("f37_labourprodimpact_", ctype, ".mz"))
-    calcOutput("LabourProdImpactEmu", aggregate = "cluster", round = 6, subtype="relief",
+    calcOutput("LabourProdImpactEmu", aggregate = "cluster", round = 6, subtype = "relief",
       file = paste0("f37_labourprodrelief_", ctype, ".mz"))
   }
 

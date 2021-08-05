@@ -15,19 +15,22 @@
 
 readGrassSoilEmu <-
   function(subtype = "ISIMIP3b:IPSL_CM6A_LR:ssp126:1965_2100:5f5fa2:weights") {
-    . <- NULL
+
     subtype_split <- toolSplitSubtype(subtype, list(version = NULL, climatemodel = NULL, scenario = NULL, years = NULL, model = NULL, variable = NULL))
     file <- subtype_split$variable
     dirs <- list.dirs()
-    subtype <- paste(subtype_split[1], subtype_split[2], subtype_split[3], subtype_split[4], sep = "_")
-    subtype <- subtype %>% gsub("[:-]", "_", .)
-    folder <- grep(subtype, dirs, value = T)
-
+    folder <- grep(subtype_split$model, dirs, value = T)
     if (length(dir.exists(file.path(folder))) != 0) {
       files_list <- list.files(folder)
       files <- files_list[grep(file, files_list)]
+      files <- files[grep(".rds", files)]
       x <- readRDS(file.path(folder, files))
-      x <- as.magpie(as.matrix(x), spatial = 1)
+      if (length(x) == 1) {
+spatial <- NULL
+} else {
+ spatial <- 1
+ }
+      x <- as.magpie(as.matrix(x), spatial = spatial)
       getNames(x) <- file
       return(x)
     } else {
