@@ -4,6 +4,7 @@
 #' 'weights', 'inputs',  'stddevs' and 'means'.
 #' @param model trained model ID
 #' @param mfile model file name
+#' @param random number generator do guratee this function will not use cache files
 #' @return Magpie objects with a diverse inforamtion
 #' @author Marcos Alves
 #' @examples
@@ -13,10 +14,11 @@
 #' }
 #'
 #' @import madrat
+#' @importFrom stats runif
 #'
 
 calcGrassSoilEmu <-
-  function(subtype = "ISIMIP3b:IPSL_CM6A_LR:ssp126:1965_2100", model = "5f5fa2", mfile = "weights") {
+  function(subtype = "ISIMIP3b:IPSL_CM6A_LR:ssp126:1965_2100", model = "5f5fa2", mfile = "weights", random = runif(1)) {
 
     subtype <- paste(subtype, model, mfile, sep = ":")
     subtype_split <-
