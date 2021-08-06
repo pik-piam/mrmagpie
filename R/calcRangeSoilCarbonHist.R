@@ -13,6 +13,7 @@
 #' calcOutput("GrassSoilCarbonHist ", subtype, model)
 #' }
 #' @importFrom tidyr pivot_wider
+#' @importFrom dplyr left_join
 
 calcRangeSoilCarbonHist <- function(subtype = "ISIMIP3b:IPSL-CM6A-LR:ssp126:1965-2100", lpjml ,model = "9eaf9b") {
 

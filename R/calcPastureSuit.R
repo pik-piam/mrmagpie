@@ -51,12 +51,13 @@ calcPastureSuit <- function(subtype = "ISIMIP3b:IPSL-CM6A-LR:1850-2100"){
   # pop_density[pop_density>=5] <- 1
 
   # Aridity (the real aridity is measured as the ratio between evapotranspiration and precipitarion (I have complete this calculation))
-  aridity <- precipitation[,getYears(pop_density),]
+  aridity <- precipitation[, intersect(getYears(pop_density), getYears(precipitation)),]
   aridity[aridity<2] = 0
   aridity[aridity>=2] = 1
 
   # pasture suitability check
   pasture_suit <- aridity
+  pop_density <- pop_density[,getYears(pasture_suit),]
   pasture_suit[pop_density<5] <- 0
   pasture_suit_area = pasture_suit * cell_size/1e6*100
   pasture_suit_area <- collapseDim(pasture_suit_area, dim = 3.3)
@@ -79,6 +80,7 @@ calcPastureSuit <- function(subtype = "ISIMIP3b:IPSL-CM6A-LR:1850-2100"){
 
   pasture_suit_area <- toolTimeAverage(pasture_suit_area, averaging_range = 10 , annual = F)
   pasture_suit_area <- toolHoldConstant(pasture_suit_area, findset("time"))
+  pasture_suit_area <- collapseNames(pasture_suit_area)
 
   return(list(
     x = pasture_suit_area,

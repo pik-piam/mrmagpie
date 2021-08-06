@@ -14,7 +14,7 @@ fullCELLULARMAGPIE(
   isimip = NULL,
   clusterweight = NULL,
   version_isimip = "ISIMIP3b",
-  emu_id = "0d9d46"
+  emu_id = "d74aa2"
 )
 }
 \arguments{

@@ -42,7 +42,7 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
                                isimip = NULL,
                                clusterweight = NULL,
                                version_isimip = "ISIMIP3b",
-                               emu_id = "0d9d46") {
+                               emu_id = "d74aa2") {
 
   sizelimit <- getOption("magclass_sizeLimit")
   options(magclass_sizeLimit = 1e+12)
