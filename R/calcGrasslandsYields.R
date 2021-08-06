@@ -41,7 +41,7 @@ calcGrasslandsYields <-
     # weight <- as.magpie(weight)
     # weight <- toolOrderCells(collapseDim(addLocation(weight), dim = c("x", "y")))
 
-    weight <- calcOutput("LUH2v2", aggregate = "cluster", landuse_types = "LUH2v2", cellular = TRUE)[,,c("range", "pastr")]
+    weight <- calcOutput("LUH2v2", aggregate = "cluster", landuse_types = "LUH2v2", cellular = TRUE)[,1995,c("range", "pastr")]
 
     return(
       list(
