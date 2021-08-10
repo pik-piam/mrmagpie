@@ -31,17 +31,17 @@ calcGrasslandsYields <-
     pasture <- toolHoldConstantBeyondEnd(pasture)
     pasture <- pasture * gCm2yTotDMy
 
-    # # Calculating weights
-    # landcoords <- as.data.frame(toolGetMapping("magpie_coord.rda", type = "cell"))
-    # landcoords <- cbind(landcoords, rep(1, nrow(landcoords)))
-    # landcoords <- raster::rasterFromXYZ(landcoords)
-    # crs(landcoords) <- "+proj=longlat"
-    # cell_size <- raster::area(landcoords)
-    # weight <- cell_size * landcoords
-    # weight <- as.magpie(weight)
-    # weight <- toolOrderCells(collapseDim(addLocation(weight), dim = c("x", "y")))
+    # Calculating weights
+    landcoords <- as.data.frame(toolGetMapping("magpie_coord.rda", type = "cell"))
+    landcoords <- cbind(landcoords, rep(1, nrow(landcoords)))
+    landcoords <- raster::rasterFromXYZ(landcoords)
+    crs(landcoords) <- "+proj=longlat"
+    cell_size <- raster::area(landcoords)
+    weight <- cell_size * landcoords
+    weight <- as.magpie(weight)
+    weight <- toolOrderCells(collapseDim(addLocation(weight), dim = c("x", "y")))
 
-    weight <- calcOutput("LUH2v2", aggregate = "cluster", landuse_types = "LUH2v2", cellular = TRUE)[,1995,c("range", "pastr")]
+    # weight <- calcOutput("LUH2v2", aggregate = "cluster", landuse_types = "LUH2v2", cellular = TRUE)[,1995,c("range", "pastr")]
 
     return(
       list(
