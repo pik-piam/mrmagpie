@@ -57,7 +57,7 @@ calcYields <- function(source=c(lpjml="ggcmi_phase3_nchecks_9ca735cb", isimip=NU
 
   FAOproduction     <- collapseNames(calcOutput("FAOmassbalance_pre", aggregate=FALSE)[,,"production"][,,"dm"])
   MAGarea           <- calcOutput("Croparea", sectoral="kcr", physical=TRUE, aggregate=FALSE)
-
+  faoyears          <- intersect(getYears(FAOproduction),getYears(MAGarea))
 
   MAGcroptypes  <- findset("kcr")
   missing       <- c("betr","begr")
@@ -65,7 +65,7 @@ calcYields <- function(source=c(lpjml="ggcmi_phase3_nchecks_9ca735cb", isimip=NU
   FAOproduction <- add_columns(FAOproduction[,,MAGcroptypes],addnm = missing,dim = 3.1)
   FAOproduction[,,missing] <- 0
 
-  FAOYields         <- dimSums(FAOproduction,dim=1)/dimSums(MAGarea, dim=1)
+  FAOYields         <- dimSums(FAOproduction[,faoyears,],dim=1)/dimSums(MAGarea[,faoyears,], dim=1)
 
   matchingFAOyears <- intersect(getYears(yields),getYears(FAOYields))
   FAOYields        <- FAOYields[,matchingFAOyears,]
