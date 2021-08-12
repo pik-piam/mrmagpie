@@ -20,8 +20,10 @@ Read files related to the training and optimization of the LPJml emulators.
 }
 \examples{
 \dontrun{
-readSource("GrassSoilEmu", subtype =
-"ISIMIP3b:IPSL_CM6A_LR:ssp126:1965_2100:5f5fa2:weights", convert = F)
+readSource("GrassSoilEmu",
+  subtype =
+    "ISIMIP3b:IPSL_CM6A_LR:ssp126:1965_2100:5f5fa2:weights", convert = F
+)
 }
 
 }
