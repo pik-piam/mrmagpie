@@ -49,7 +49,7 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
   on.exit(options(magclass_sizeLimit = sizelimit))
 
   ### Version settings ###
-  if(rev < 4.63) stop("mrmagpie(>= 1.14.0) does not support revision under 4.63 anymore.
+  if(rev < 4.63) stop("mrmagpie(>= 1.14.0) does not support revision below 4.63 anymore.
                        Please use a older snapshot/version of the library, if you need older revisions.")
 
 
