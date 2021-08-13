@@ -48,6 +48,12 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
   options(magclass_sizeLimit = 1e+12)
   on.exit(options(magclass_sizeLimit = sizelimit))
 
+  ### Version settings ###
+  if(rev < 4.63) stop("mrmagpie(>= 1.14.0) does not support revision under 4.63 anymore.
+                       Please use a older snapshot/version of the library, if you need older revisions.")
+
+
+
   climatemodel <- str_split(climatetype, ":")[[1]][1]
   scenario <- str_split(climatetype, ":")[[1]][2]
 
