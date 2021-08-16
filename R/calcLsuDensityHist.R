@@ -49,6 +49,7 @@ calcLsuDensityHist <- function(disagg_type = "grassland"){
   biomass_split <- biomass * livst_share_ctry
   biomass_split_cell <- toolAggregate(biomass_split, rel = mapping, weight = weight, from = "iso", to = "celliso")
 
+  #removing values above simulation
   lsu_eq <- (8.9 * 365)/1000 # tDM y-1
   lsus <- biomass_split_cell/lsu_eq
   lsu_ha <- lsus/grassl_land
