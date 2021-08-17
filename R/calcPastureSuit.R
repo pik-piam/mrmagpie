@@ -73,7 +73,14 @@ calcPastureSuit <- function(subtype = "ISIMIP3b:IPSL-CM6A-LR:1850-2100"){
   future <- setdiff(getYears(pasture_suit_area),past_all)
   # pasture_suit_area[,future,] <- hist_pastr[,past_ly,] - pasture_suit_area[,past_ly,] + pasture_suit_area[,future,]
   # pasture_suit_area[,future,] <- (hist_pastr[,past_ly,] / pasture_suit_area[,past_ly,]+ 1e-6) * (pasture_suit_area[,future,] + 1e-6)
-  pasture_suit_area[,future,] <- (dimSums(hist_pastr[,past_ly,], dim =1) / dimSums(pasture_suit_area[,past_ly,], dim = 1)) *  pasture_suit_area[,future,]
+  # pasture_suit_area[,future,] <- (dimSums(hist_pastr[,past_ly,], dim =1) / dimSums(pasture_suit_area[,past_ly,], dim = 1)) *  pasture_suit_area[,future,]
+
+  map <- toolGetMapping("clustermapping.csv", type = "regional")
+  pasture_suit_area_reg <- toolAggregate(pasture_suit_area, rel = map, from = "cell", to = "region")
+  hist_pastr_reg <- toolAggregate(hist_pastr, rel = map, from = "cell", to = "region")
+  corr_reg <- hist_pastr_reg[,past_ly,] / pasture_suit_area_reg[,past_ly,]
+  pasture_suit_area[,future,] <- toolAggregate(corr_reg, rel = map, from = "region", to = "cell") *  pasture_suit_area[,future,]
+
   pasture_suit_area[is.infinite(pasture_suit_area) | is.nan(pasture_suit_area)] <- 0
   pasture_suit_area[pasture_suit_area < 0] <- 0
   pasture_suit_area[,past_all,] <- hist_pastr[,past_all,]
@@ -82,6 +89,7 @@ calcPastureSuit <- function(subtype = "ISIMIP3b:IPSL-CM6A-LR:1850-2100"){
   pasture_suit_area[,intersect(past_all, getYears(pasture_suit_area)),] <- hist_pastr[,intersect(past_all, getYears(pasture_suit_area)),]
   pasture_suit_area <- toolHoldConstant(pasture_suit_area, findset("time"))
   pasture_suit_area <- collapseNames(pasture_suit_area)
+  pasture_suit_area[,past_all,] <- hist_pastr[,past_all,]
 
   return(list(
     x = pasture_suit_area,
@@ -91,4 +99,3 @@ calcPastureSuit <- function(subtype = "ISIMIP3b:IPSL-CM6A-LR:1850-2100"){
     isocountries = FALSE
   ))
 }
-

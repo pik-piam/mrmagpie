@@ -117,7 +117,7 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
     calcOutput("GrassSoilEmu", subtype = paste(version_isimip, climatemodel, scenario, "1965_2100", sep = ":"), model = emu_id, mfile = "mean_lab", aggregate = F,  random = runif(1))
     calcOutput("GrassSoilEmu", subtype = paste(version_isimip, climatemodel, scenario, "1965_2100", sep = ":"), model = emu_id, mfile = "stddevs_lab", aggregate = F,  random = runif(1))
     calcOutput("GrassSoilEmu", subtype = paste(version_isimip, climatemodel, scenario, "1965_2100", sep = ":"), model = emu_id, mfile = "inputs", aggregate = F,  random = runif(1))
-    calcOutput("GrassSoilEmu", subtype = paste(version_isimip, climatemodel, scenario, "1965_2100", sep = ":"), model = emu_id, mfile = "baselines", aggregate = F, file = paste0("f31_grassl_baselines.mz"), random = 1)
+    # calcOutput("GrassSoilEmu", subtype = paste(version_isimip, climatemodel, scenario, "1965_2100", sep = ":"), model = emu_id, mfile = "baselines", aggregate = F, file = paste0("f31_grassl_baselines.mz"), random = 1)
     calcOutput("RangeSoilCarbonHist", subtype = paste(version_isimip, climatemodel, scenario, "1965_2100", sep = ":"), model = emu_id, lpjml = lpjml[["grass"]], file = "f31_range_soilc_hist.mz", aggregate = F)
     calcOutput("LsuDensityHist", disagg_type = "grassland", aggregate = F,  file = "f31_lsu_ha_grassl.mz")
     calcOutput("LsuDensityHist", disagg_type = "livestock", aggregate = F,  file = "f31_lsu_ha_livestock.mz")
