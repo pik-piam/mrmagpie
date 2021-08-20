@@ -9,8 +9,8 @@ fullCELLULARMAGPIE(
   dev = "",
   ctype = "c200",
   climatetype = "MRI-ESM2-0:ssp370",
-  lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de", crop =
-    "ggcmi_phase3_nchecks_9ca735cb", grass = "lpjml5p2_pasture"),
+  lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de+oldGSWP3", crop =
+    "ggcmi_phase3_nchecks_9ca735cb+oldGSWP3", grass = "lpjml5p2_pasture"),
   isimip = NULL,
   clusterweight = NULL,
   version_isimip = "ISIMIP3b",
