@@ -27,7 +27,7 @@ calcClusterBase <- function(clusterdata="yield_airrig", lpjml=c(natveg="LPJmL4_f
   }
 
   cdata <- do.call(cbind,lapply(d,wrap,list(1,c(2,3))))
-  cdata <- cdata[,dimSums(cdata,dim=1)!=0]
+  cdata <- cdata[, colSums(cdata) != 0]
   cdata <- scale(cdata)
   colnames(cdata) <- paste0("i",1:ncol(cdata))
 
