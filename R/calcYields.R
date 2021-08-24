@@ -11,108 +11,114 @@
 #' @author Kristine Karstens, Felicitas Beier
 #'
 #' @examples
-#' \dontrun{ calcOutput("Yields", aggregate = FALSE) }
+#' \dontrun{
+#' calcOutput("Yields", aggregate = FALSE)
+#' }
 #'
 #' @importFrom magpiesets findset
 #' @importFrom magclass getYears add_columns dimSums time_interpolate
 #' @importFrom madrat toolFillYears
 #' @importFrom mrcommons toolLPJmLVersion
 
-calcYields <- function(source=c(lpjml="ggcmi_phase3_nchecks_9ca735cb", isimip=NULL),
-                           climatetype="GSWP3-W5E5:historical", cells="magpiecell", weighting = "totalCrop"){
+calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimip = NULL),
+                           climatetype = "GSWP3-W5E5:historical", cells = "magpiecell", weighting = "totalCrop") {
 
   cfg <- toolLPJmLVersion(version = source["lpjml"], climatetype = climatetype)
 
   sizelimit <- getOption("magclass_sizeLimit")
-  options(magclass_sizeLimit=1e+12)
-  on.exit(options(magclass_sizeLimit=sizelimit))
+  options(magclass_sizeLimit = 1e+12)
+  on.exit(options(magclass_sizeLimit = sizelimit))
 
-  if(climatetype == "GSWP3-W5E5:historical"){ stage       <- "smoothed"
+  if (climatetype == "GSWP3-W5E5:historical") {
+ stage       <- "smoothed"
                                               climatetype <- cfg$baseline_hist
-  } else{                                     stage <- "harmonized2020"}
+  } else {
+                                     stage <- "harmonized2020"
+}
 
   LPJ2MAG      <- toolGetMapping("MAgPIE_LPJmL.csv", type = "sectoral", where = "mappingfolder")
   lpjml_crops  <- unique(LPJ2MAG$LPJmL)
-  irrig_types  <- c("irrigated","rainfed")
-  yields       <- NULL
+  irrig_types  <- c("irrigated", "rainfed")
+  yields       <- list()
 
-  for(crop in lpjml_crops){
-
-    subdata <- as.vector(outer(crop, irrig_types, paste, sep="."))
-    tmp     <- calcOutput("LPJmL_new", version=source[["lpjml"]], climatetype=climatetype,
-                          subtype="harvest", subdata=subdata, stage=stage, aggregate=FALSE)
-    yields  <- mbind(yields, tmp)
+  for (crop in lpjml_crops) {
+    subdata <- as.vector(outer(crop, irrig_types, paste, sep = "."))
+    yields[[crop]] <- calcOutput("LPJmL_new", version = source[["lpjml"]], climatetype = climatetype,
+                                 subtype = "harvest", subdata = subdata, stage = stage, aggregate = FALSE)
   }
+  yields  <- mbind(yields)
 
   # include garbage collector to solve recurring memory problems
   gc()
 
   # LPJmL to MAgPIE crops
-  yields    <- toolAggregate(yields, LPJ2MAG, from = "LPJmL", to = "MAgPIE", dim=3.1, partrel=TRUE)
+  yields    <- toolAggregate(yields, LPJ2MAG, from = "LPJmL", to = "MAgPIE", dim = 3.1, partrel = TRUE)
 
   # Check for NAs
-  if(any(is.na(yields))){
+  if (any(is.na(yields))) {
     stop("produced NA yields")
   }
 
-  FAOproduction     <- collapseNames(calcOutput("FAOmassbalance_pre", aggregate=FALSE)[,,"production"][,,"dm"])
-  MAGarea           <- calcOutput("Croparea", sectoral="kcr", physical=TRUE, aggregate=FALSE)
-  faoyears          <- intersect(getYears(FAOproduction),getYears(MAGarea))
+  FAOproduction     <- collapseNames(calcOutput("FAOmassbalance_pre", aggregate = FALSE)[, , "production"][, , "dm"])
+  MAGarea           <- calcOutput("Croparea", sectoral = "kcr", physical = TRUE, aggregate = FALSE)
+  faoyears          <- intersect(getYears(FAOproduction), getYears(MAGarea))
 
   MAGcroptypes  <- findset("kcr")
-  missing       <- c("betr","begr")
+  missing       <- c("betr", "begr")
   MAGcroptypes  <- setdiff(MAGcroptypes, missing)
-  FAOproduction <- add_columns(FAOproduction[,,MAGcroptypes],addnm = missing,dim = 3.1)
-  FAOproduction[,,missing] <- 0
+  FAOproduction <- add_columns(FAOproduction[, , MAGcroptypes], addnm = missing, dim = 3.1)
+  FAOproduction[, , missing] <- 0
 
-  FAOYields         <- dimSums(FAOproduction[,faoyears,],dim=1)/dimSums(MAGarea[,faoyears,], dim=1)
+  FAOYields         <- dimSums(FAOproduction[, faoyears, ], dim = 1) / dimSums(MAGarea[, faoyears, ], dim = 1)
 
-  matchingFAOyears <- intersect(getYears(yields),getYears(FAOYields))
-  FAOYields        <- FAOYields[,matchingFAOyears,]
-  Calib            <- new.magpie("GLO", matchingFAOyears, c(getNames(FAOYields), "pasture"), fill=1, sets=c("iso","year","data"))
-  Calib[,matchingFAOyears,"oilpalm"]   <- FAOYields[,,"oilpalm"]/FAOYields[,,"groundnut"]      # LPJmL proxy for oil palm is groundnut
-  Calib[,matchingFAOyears,"cottn_pro"] <- FAOYields[,,"cottn_pro"]/FAOYields[,,"groundnut"]    # LPJmL proxy for cotton is groundnut
-  Calib[,matchingFAOyears,"foddr"]     <- FAOYields[,,"foddr"]/FAOYields[,,"maiz"]             # LPJmL proxy for fodder is maize
-  Calib[,matchingFAOyears,"others"]    <- FAOYields[,,"others"]/FAOYields[,,"maiz"]            # LPJmL proxy for others is maize
-  Calib[,matchingFAOyears,"potato"]    <- FAOYields[,,"potato"]/FAOYields[,,"sugr_beet"]       # LPJmL proxy for potato is sugar beet
+  matchingFAOyears <- intersect(getYears(yields), getYears(FAOYields))
+  FAOYields        <- FAOYields[, matchingFAOyears, ]
+  Calib            <- new.magpie("GLO", matchingFAOyears, c(getNames(FAOYields), "pasture"), fill = 1, sets = c("iso", "year", "data"))
+  Calib[, matchingFAOyears, "oilpalm"]   <- FAOYields[, , "oilpalm"] / FAOYields[, , "groundnut"]      # LPJmL proxy for oil palm is groundnut
+  Calib[, matchingFAOyears, "cottn_pro"] <- FAOYields[, , "cottn_pro"] / FAOYields[, , "groundnut"]    # LPJmL proxy for cotton is groundnut
+  Calib[, matchingFAOyears, "foddr"]     <- FAOYields[, , "foddr"] / FAOYields[, , "maiz"]             # LPJmL proxy for fodder is maize
+  Calib[, matchingFAOyears, "others"]    <- FAOYields[, , "others"] / FAOYields[, , "maiz"]            # LPJmL proxy for others is maize
+  Calib[, matchingFAOyears, "potato"]    <- FAOYields[, , "potato"] / FAOYields[, , "sugr_beet"]       # LPJmL proxy for potato is sugar beet
 
   # interpolate between FAO years
   Calib <- toolFillYears(Calib, getYears(yields))
 
   # recalibrate yields for proxys
-  yields <- yields * Calib[,,getNames(yields, dim=1)]
+  yields <- yields * Calib[, , getNames(yields, dim = 1)]
 
-  if(cells=="magpiecell") {
+  if (cells == "magpiecell") {
     yields <- toolCoord2Isocell(yields)
   }
 
-   if (!is.na(source["isimip"])){
-    to_rep <- calcOutput("ISIMIP3bYields", subtype=source[["isimip"]], cells=cells, aggregate=F)
-    common_vars <- intersect(getNames(yields),getNames(to_rep))
+   if (!is.na(source["isimip"])) {
+    to_rep <- calcOutput("ISIMIP3bYields", subtype = source[["isimip"]], cells = cells, aggregate = F)
+    common_vars <- intersect(getNames(yields), getNames(to_rep))
     common_years <- intersect(getYears(yields), getYears(to_rep))
     # convert to array for memory
-    yields <- as.array(yields); to_rep <- as.array(to_rep)
-    #yields[,common_years,common_vars] <- ifelse(to_rep[,common_years,common_vars] >0, to_rep[,common_years,common_vars], yields[,common_years, common_vars])
-    yields[,common_years, common_vars] <- to_rep[,common_years,common_vars]
-    yields <- as.magpie(yields); to_rep <- as.magpie(to_rep)
+    yields <- as.array(yields)
+to_rep <- as.array(to_rep)
+    # yields[,common_years,common_vars] <- ifelse(to_rep[,common_years,common_vars] >0, to_rep[,common_years,common_vars], yields[,common_years, common_vars])
+    yields[, common_years, common_vars] <- to_rep[, common_years, common_vars]
+    yields <- as.magpie(yields)
+to_rep <- as.magpie(to_rep)
 
    }
 
 
   if (weighting == "totalCrop") {
 
-    crop_area_weight <- dimSums(calcOutput("Croparea", sectoral="kcr", physical=TRUE, irrigation=FALSE,
-                                           cellular=TRUE, cells=cells, aggregate = FALSE, years="y1995", round=6), dim = 3)
+    crop_area_weight <- dimSums(calcOutput("Croparea", sectoral = "kcr", physical = TRUE, irrigation = FALSE,
+                                           cellular = TRUE, cells = cells, aggregate = FALSE, years = "y1995", round = 6), dim = 3)
 
   } else if (weighting %in% c("totalLUspecific", "cropSpecific", "crop+irrigSpecific")) {
 
-    crop <- calcOutput("Croparea", sectoral="kcr", physical=TRUE, irrigation=TRUE,
-                       cellular=TRUE, cells=cells, aggregate = FALSE, years="y1995", round=6)
+    crop <- calcOutput("Croparea", sectoral = "kcr", physical = TRUE, irrigation = TRUE,
+                       cellular = TRUE, cells = cells, aggregate = FALSE, years = "y1995", round = 6)
 
-    past <- calcOutput("LanduseInitialisation", aggregate=FALSE, cellular=TRUE, nclasses="seven", fao_corr=TRUE,
-                       input_magpie=TRUE, cells = cells, years="y1995", round=6)[, ,"past" ]
+    past <- calcOutput("LanduseInitialisation", aggregate = FALSE, cellular = TRUE, nclasses = "seven", fao_corr = TRUE,
+                       input_magpie = TRUE, cells = cells, years = "y1995", round = 6)[, , "past"]
 
-    if (weighting == "crop+irrigSpecific"){
+    if (weighting == "crop+irrigSpecific") {
 
       crop_area_weight <- new.magpie(cells_and_regions = getCells(yields), years = NULL,
                                      names = getNames(yields), fill = NA)
@@ -161,17 +167,17 @@ calcYields <- function(source=c(lpjml="ggcmi_phase3_nchecks_9ca735cb", isimip=NU
     stop("Weighting setting is not available.")
   }
 
-  if(any(is.na(crop_area_weight))) stop("NAs in weights.")
+  if (any(is.na(crop_area_weight))) stop("NAs in weights.")
 
-  if (cells=="lpjcell") {
+  if (cells == "lpjcell") {
     crop_area_weight <- addLocation(crop_area_weight)
   }
 
 
   return(list(
-    x=yields,
-    weight=crop_area_weight,
-    unit="t per ha",
-    description="Yields in tons per hectar for different crop types.",
-    isocountries=FALSE))
+    x = yields,
+    weight = crop_area_weight,
+    unit = "t per ha",
+    description = "Yields in tons per hectar for different crop types.",
+    isocountries = FALSE))
 }

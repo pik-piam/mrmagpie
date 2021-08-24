@@ -29,7 +29,9 @@ magpie object in cellular resolution
 This function extracts yields from LPJmL to MAgPIE
 }
 \examples{
-\dontrun{ calcOutput("Yields", aggregate = FALSE) }
+\dontrun{
+calcOutput("Yields", aggregate = FALSE)
+}
 
 }
 \author{
