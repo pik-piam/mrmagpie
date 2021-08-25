@@ -16,9 +16,8 @@ magpie object on cellular level
 correct HalfEarth data
 }
 \examples{
-
 \dontrun{
-  readSource("HalfEarth", convert="onlycorrect")
+readSource("HalfEarth", convert = "onlycorrect")
 }
 
 }
