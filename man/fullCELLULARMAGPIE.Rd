@@ -13,8 +13,8 @@ fullCELLULARMAGPIE(
     "ggcmi_phase3_nchecks_9ca735cb+oldGSWP3", grass = "lpjml5p2_pasture"),
   isimip = NULL,
   clusterweight = NULL,
-  version_isimip = "ISIMIP3b",
-  emu_id = "d74aa2"
+  version_isimip = NULL,
+  emu_id = NULL
 )
 }
 \arguments{
