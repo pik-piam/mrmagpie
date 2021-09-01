@@ -12,7 +12,6 @@
 #' @param climatetype Global Circulation Model to be used
 #' @param lpjml Defines LPJmL version for crop/grass and natveg specific inputs
 #' @param isimip Defines isimip crop model input which replace maiz, tece, rice_pro and soybean
-#' @param version_isimip isimip version being used for loading climate data
 #' @param emu_id Pasture Soil carbon emulator ID
 #' @param clusterweight Should specific regions be resolved with more or less detail? Values > 1 mean higher share, < 1 lower share
 #' e.g. cfg$clusterweight <- c(LAM=2) means that a higher level of detail for region LAM if set to NULL all weights will be assumed to be 1.
@@ -41,7 +40,6 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
                                          grass = "lpjml5p2_pasture"),
                                isimip = NULL,
                                clusterweight = NULL,
-                               version_isimip = NULL,
                                emu_id = NULL) {
 
   sizelimit <- getOption("magclass_sizeLimit")
@@ -75,6 +73,9 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
                         version_tag,
                         paste0(version_tag, "_clusterweight-",
                                digest::digest(clusterweight, algo = getConfig("hash"))))
+  version_tag <- ifelse(is.null(emu_id),
+                        version_tag,
+                        paste0(version_tag, "_gsoilc-", emu_id))
 
 
   mag_years_past_long  <- c("y1995", "y2000", "y2005", "y2010", "y2015")
@@ -108,6 +109,7 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
   }
 
   if (grepl("MPPA", dev)) {
+    version_isimip = "ISIMIP3b"
     calcOutput("GrasslandsYields", subtype = paste(lpjml[["grass"]], paste0(paste(climatemodel, scenario, sep = ":"), "_co2_Nreturn0p5_limN"), sep = ":"), lsu_levels = c(seq(0, 2.2, 0.2), 2.5), past_mngmt = "me2", file = paste0("f14_grassl_yld_", ctype, ".mz"), years = mag_years, aggregate = "cluster")
     calcOutput("GrasslandsYields", subtype = paste(lpjml[["grass"]], paste0(paste(climatemodel, scenario, sep = ":"), "_co2_Nreturn0p5_limN"), sep = ":"), lsu_levels = c(seq(0, 2.2, 0.2), 2.5), past_mngmt = "me2", file = paste0("f14_grassl_yld.mz"), years = mag_years, aggregate = F)
     calcOutput("PastureSuit",  subtype = paste(version_isimip, climatemodel, "1850_2100", sep = ":"), file = paste0("f31_pastr_suitability_", ctype, ".mz"), years = mag_years, aggregate = "cluster")
