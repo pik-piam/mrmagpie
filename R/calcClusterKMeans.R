@@ -12,7 +12,8 @@
 #' @param cpr cells-per-region information as returned by cluster_per_region. Weight and ncluster are
 #' ignored in case that cpr is provided!
 #' @param seed a single value, interpreted as an integer, or NULL, to define seed for random calculations
-#' @param clusterdata similarity data to be used to determine clusters: yield_airrig (current default) or yield_increment
+#' @param clusterdata similarity data to be used to determine clusters: yield_airrig (current default)
+#' or yield_increment
 #' @param lpjml defines LPJmL version for crop/grass and natveg specific inputs
 #' @return A mapping between regions and clusters
 #' @author Jan Philipp Dietrich
@@ -20,23 +21,25 @@
 #' @seealso \code{\link{toolClusterPerRegion}}, \code{\link{calcClusterHierarchical}}
 #' @export
 
-calcClusterKMeans <- function(regionscode, ncluster, weight=NULL, cpr=NULL, seed=42, lpjml=c(natveg="LPJmL4", crop="LPJmL5"), clusterdata="yield_airrig") {
+calcClusterKMeans <- function(regionscode, ncluster, weight = NULL, cpr = NULL, seed = 42,
+                              lpjml = c(natveg = "LPJmL4", crop = "LPJmL5"), clusterdata = "yield_airrig") {
 
-  cdata <- toolApplyRegionNames(calcOutput("ClusterBase", aggregate=FALSE, lpjml=lpjml, clusterdata=clusterdata),regionscode)
+  cdata <- toolApplyRegionNames(calcOutput("ClusterBase", aggregate = FALSE, lpjml = lpjml, clusterdata = clusterdata),
+                                regionscode)
 
-  if(is.null(cpr)) cpr <- toolClusterPerRegion(sub("^[^\\.]*\\.","",getCells(cdata)),ncluster,weight)
+  if (is.null(cpr)) cpr <- toolClusterPerRegion(sub("^[^\\.]*\\.", "", getCells(cdata)), ncluster, weight)
 
-  cdata <- as.array(cdata)[,,]
+  cdata <- as.array(cdata)[, , ]
 
-  out <- new.magpie(dimnames(cdata)[[1]],fill=1)
-  getSets(out,fulldim = FALSE)[1] <- "country.region.cell.cluster"
+  out <- new.magpie(dimnames(cdata)[[1]], fill = 1)
+  getSets(out, fulldim = FALSE)[1] <- "country.region.cell.cluster"
   ccount <- 0
   set.seed(seed)
-  for(r in dimnames(cpr)[[1]]) {
-    cells <- grep(r,dimnames(cdata)[[1]])
-    fit <- kmeans(cdata[cells,],cpr[r,"clusters"],iter.max=10000)
-    getCells(out)[cells] <- paste(getCells(out)[cells],fit$cluster+ccount, sep=".")
-    ccount <- ccount + cpr[r,"clusters"]
+  for (r in dimnames(cpr)[[1]]) {
+    cells <- grep(paste0(".", r, "."), dimnames(cdata)[[1]], fixed = TRUE)
+    fit <- kmeans(cdata[cells, ], cpr[r, "clusters"], iter.max = 10000)
+    getCells(out)[cells] <- paste(getCells(out)[cells], fit$cluster + ccount, sep = ".")
+    ccount <- ccount + cpr[r, "clusters"]
   }
   set.seed(NULL)
   return(list(
