@@ -12,7 +12,8 @@
 #' with the regionscode of the mapping mentioned in the madrat config! Can be
 #' retrieved via \code{regionscode()}.
 #' @param ncluster The desired total number of clusters.
-#' @param clusterdata similarity data to be used to determine clusters: yield_airrig (current default) or yield_increment
+#' @param clusterdata similarity data to be used to determine clusters:
+#' yield_airrig (current default) or yield_increment
 #' @param mode Clustering type. At the moment you can choose between complete
 #' linkage clustering (h), single linkage clustering (s) and Ward clustering (w).
 #' @param lpjml defines LPJmL version for crop/grass and natveg specific inputs
@@ -25,24 +26,27 @@
 #' @importFrom stats hclust cutree
 #' @seealso \code{\link{calcCluster}}, \code{\link{calcClusterKMeans}}
 #' @export
-calcClusterHierarchical <- function(regionscode, ncluster, lpjml=c(natveg="LPJmL4", crop="LPJmL5"), clusterdata="yield_airrig", mode="h", weight=NULL) {
+calcClusterHierarchical <- function(regionscode, ncluster, lpjml = c(natveg = "LPJmL4", crop = "LPJmL5"),
+                                    clusterdata = "yield_airrig", mode = "h", weight = NULL) {
 
-  fullfit <- attributes(calcOutput("ClusterTreeHierarchical", regionscode=regionscode,
-                        mode=mode, weight=weight, lpjml=lpjml, clusterdata=clusterdata, aggregate=FALSE))$hclust
+  fullfit <- attributes(calcOutput("ClusterTreeHierarchical", regionscode = regionscode, mode = mode, weight = weight,
+                                   lpjml = lpjml, clusterdata = clusterdata, aggregate = FALSE))$hclust
 
-  clusters <- cutree(fullfit,k=ncluster)
-  #sort clusters by regions
+  clusters <- cutree(fullfit, k = ncluster)
+  # sort clusters by regions
   cl <- NULL
-  regions <- unique(sub("^.*\\.(.*)\\..*$","\\1",fullfit$labels))
-  for(r in regions) {
-    cl <- c(cl,unique(clusters[grep(paste0(r,"."),names(clusters),fixed=TRUE)]))
+  regions <- unique(sub("^.*\\.(.*)\\..*$", "\\1", fullfit$labels))
+  for (r in regions) {
+    cl <- c(cl, unique(clusters[grep(paste0(".", r, "."), names(clusters), fixed = TRUE)]))
   }
-  if(length(cl)!=ncluster) stop("Something went wrong during the clustering. Some cluster seem to exist across region borders or there are less clusters than demanded!")
+  if (length(cl) != ncluster) {
+    stop("Some cluster seem to exist across region borders or there are less clusters than demanded!")
+  }
   tmp <- order(cl)[clusters]
   names(tmp) <- names(clusters)
   clusters <- tmp
-  out <- new.magpie(paste(names(clusters),clusters,sep="."),fill=1)
-  getSets(out,fulldim = FALSE)[1] <- "country.region.cell.cluster"
+  out <- new.magpie(paste(names(clusters), clusters, sep = "."), fill = 1)
+  getSets(out, fulldim = FALSE)[1] <- "country.region.cell.cluster"
   return(list(
     x = out,
     weight = NULL,

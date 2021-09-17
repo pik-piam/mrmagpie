@@ -22,7 +22,8 @@ retrieved via \code{regionscode()}.}
 
 \item{lpjml}{defines LPJmL version for crop/grass and natveg specific inputs}
 
-\item{clusterdata}{similarity data to be used to determine clusters: yield_airrig (current default) or yield_increment}
+\item{clusterdata}{similarity data to be used to determine clusters:
+yield_airrig (current default) or yield_increment}
 
 \item{mode}{Clustering type. At the moment you can choose between complete
 linkage clustering (h), single linkage clustering (s) and Ward clustering (w).}
