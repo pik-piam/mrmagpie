@@ -7,27 +7,33 @@
 calcCalibratedYields(
   source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimip = NULL),
   climatetype = "GSWP3-W5E5:historical",
-  refYear = "y1995"
+  refYear = "y1995",
+  cells = "magpiecell"
 )
 }
 \arguments{
 \item{source}{Defines LPJmL version for main crop inputs and isimip replacement.
-For isimip choose crop model/gcm/rcp/co2 combination formatted like this: "yields:EPIC-IIASA:ukesm1-0-ll:ssp585:default:3b"}
+For isimip choose crop model/gcm/rcp/co2 combination formatted like this:
+"yields:EPIC-IIASA:ukesm1-0-ll:ssp585:default:3b"}
 
-\item{climatetype}{Switch between different climate scenarios}
+\item{climatetype}{switch between different climate scenarios}
 
 \item{refYear}{reference year for calibration}
+
+\item{cells}{number of cells "magpiecell" for 59199 cells or
+"lpjcell" for 67420 cells}
 }
 \value{
-magpie object in cellular resolution from reference year on
+magpie object in cellular resolution from reference year onwards
 }
 \description{
-This functions calibrates extracted yields from LPJmL to FAO levels on country level
+This functions calibrates extracted yields from LPJmL to
+             FAO country level yields
 }
 \examples{
 \dontrun{ calcOutput("CalibratedYields", aggregate = FALSE) }
 
 }
 \author{
-Kristine Karstens
+Kristine Karstens, Felicitas Beier
 }
