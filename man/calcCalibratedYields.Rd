@@ -31,7 +31,9 @@ This functions calibrates extracted yields from LPJmL to
              FAO country level yields
 }
 \examples{
-\dontrun{ calcOutput("CalibratedYields", aggregate = FALSE) }
+\dontrun{
+calcOutput("CalibratedYields", aggregate = FALSE)
+}
 
 }
 \author{

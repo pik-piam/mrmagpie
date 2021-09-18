@@ -88,7 +88,10 @@ calcCalibratedYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735
 
     # Yield calibration of LPJmL yields to FAO country yield levels
     out <- toolPatternScaling(yieldLPJmLgrid, yieldLPJmLiso, yieldFAOiso, ref_year = refYear)
-    out <- mbind(out, otherYields)
+
+    # Combine with pasture, betr, begr yields that were not calibrated
+    getCells(out) <- getCells(otherYields)
+    out           <- mbind(out, otherYields)
 
     return(list(x            = out,
                 weight       = weight,
