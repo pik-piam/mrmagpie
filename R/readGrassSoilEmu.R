@@ -13,6 +13,7 @@
 #' }
 #'
 #' @import madrat
+#' @importFrom stringr str_c
 #'
 
 readGrassSoilEmu <-
@@ -24,29 +25,33 @@ readGrassSoilEmu <-
     if (length(dir.exists(file.path(folder))) != 0) {
       files_list <- list.files(folder)
       files <- files_list[grep(file, files_list)]
-      if (file != "baselines") {
+
+      if (file %in% "weights") {
         files <- files[grep(".rds", files)]
         x <- readRDS(file.path(folder, files))
-        if (length(x) == 1) {
-          spatial <- NULL
-        } else {
-          spatial <- 1
+        x_dims <- lapply(x, dim)
+        x_names <- NULL
+        for (i in 1:length(x_dims)) {
+          x_names[i] <- str_c(x_dims[[i]], collapse = "_")
         }
-        x <- as.magpie(as.matrix(x), spatial = spatial)
-        getNames(x) <- file
-        return(x)
-      } else {
-        files <- files[grep(".mz", files)]
-        x <- read.magpie(file.path(folder, files))
-        getNames(x) <- file
-        return(x)
+        names(x) <- paste(paste0("l", 1:length(x)), paste0(x_names, "."), sep = ".")
+        x <- as.magpie(unlist(x))
       }
-    } else {
-      print(paste(
-        "Path", folder, "does not exist. Check the defition of your",
-        "subtype and if an emulator with this inputs have already been trained."
-      ))
-      x <- magclass::population_magpie * 0
+      if (file %in% c("mean_col", "stddevs_col", "mean_lab", "stddevs_lab")) {
+        files <- files[grep(".rds", files)]
+        x <- readRDS(file.path(folder, files))
+        x <- as.magpie(x, spatial = 1)
+        getNames(x) <- file
+      }
+
+      if (file %in% c("inputs")) {
+        files <- files[grep(".rds", files)]
+        tmp <- readRDS(file.path(folder, files))
+        x <- new.magpie(1:length(tmp))
+        getCells(x) <- tmp
+      }
       return(x)
     }
   }
+
+

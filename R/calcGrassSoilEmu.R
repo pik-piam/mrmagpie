@@ -36,30 +36,30 @@ calcGrassSoilEmu <-
       )
     x <- readSource("GrassSoilEmu", subtype = subtype, convert = F)
 
-    if (mfile != "baselines") {
-      mf <- getConfig("outputfolder")
-      fname <-
-        paste0(mf, "/", "f31_", subtype_split$variable, ".rds")
-      attr(x, "model") <- model
-      write.magpie(x, fname)
-      return(
-        list(
-          x = magclass::population_magpie * 0, # not the real output of the function
-          weight = NULL,
-          unit = NULL,
-          description = "Ghost calc function to write .rds into the outputfolder",
-          isocountries = FALSE
-        )
+    # if (mfile != "baselines") {
+    #   mf <- getConfig("outputfolder")
+    #   fname <-
+    #     paste0(mf, "/", "f31_", subtype_split$variable, ".rds")
+    #   attr(x, "model") <- model
+    #   write.magpie(x, fname)
+    #   return(
+    #     list(
+    #       x = magclass::population_magpie * 0, # not the real output of the function
+    #       weight = NULL,
+    #       unit = NULL,
+    #       description = "Ghost calc function to write .rds into the outputfolder",
+    #       isocountries = FALSE
+    #     )
+    #   )
+    # } else {
+    return(
+      list(
+        x = x,
+        weight = NULL,
+        unit = NULL,
+        description = "Baselines values for soil carbon emulator",
+        isocountries = FALSE
       )
-    } else {
-      return(
-        list(
-          x = x,
-          weight = NULL,
-          unit = NULL,
-          description = "Baselines values for soil carbon emulator",
-          isocountries = FALSE
-        )
-      )
-    }
+    )
   }
+# }
