@@ -210,12 +210,15 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
   calcOutput("ProtectArea",          aggregate = "cluster", round = 6, file = paste0("protect_area_", ctype, ".mz"))
 
   # 37 labour prod
-  calcOutput("LabourProdImpactEmu", aggregate = "cluster", round = 6, subtype = "impact",
-             file = paste0("f37_labourprodimpact_", ctype, ".mz"))
-  calcOutput("LabourProdImpactEmu", aggregate = "cluster", round = 6, subtype = "relief",
-             file = paste0("f37_labourprodrelief_", ctype, ".mz"))
-  #todo: labour prod impacts from ISIMIP data
-  #calcOutput("LabourProdImpact", aggregate = FALSE, round = 6, years = short_years, file = "labour_impact.mz")
+  if (grepl("labourprodtest", dev)) {
+    calcOutput("LabourProdImpactEmu", aggregate = "cluster", round = 6, subtype = "impact",
+               file = paste0("f37_labourprodimpact_", ctype, ".mz"))
+    calcOutput("LabourProdImpactEmu", aggregate = "cluster", round = 6, subtype = "relief",
+               file = paste0("f37_labourprodrelief_", ctype, ".mz"))
+  }
+
+  # 38 factor costs
+  calcOutput("LabourProdImpact", aggregate = FALSE, round = 6, years = short_years, file = "labour_impact.mz")
 
   # 40
   calcOutput("TransportDistance", aggregate = "cluster", round = 6, file = paste0("transport_distance_", ctype, ".mz"))
