@@ -5,7 +5,7 @@
 \title{readGrassSoilEmu}
 \usage{
 readGrassSoilEmu(
-  subtype = "ISIMIP3b:IPSL_CM6A_LR:ssp126:1965_2100:5f5fa2:weights"
+  subtype = "ISIMIP3b:IPSL_CM6A_LR:ssp126:1965_2100:5f5fa2:stddevs_lab"
 )
 }
 \arguments{

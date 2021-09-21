@@ -17,7 +17,7 @@
 #'
 
 readGrassSoilEmu <-
-  function(subtype = "ISIMIP3b:IPSL_CM6A_LR:ssp126:1965_2100:5f5fa2:weights") {
+  function(subtype = "ISIMIP3b:IPSL_CM6A_LR:ssp126:1965_2100:5f5fa2:stddevs_lab") {
     subtype_split <- toolSplitSubtype(subtype, list(version = NULL, climatemodel = NULL, scenario = NULL, years = NULL, model = NULL, variable = NULL))
     file <- subtype_split$variable
     dirs <- list.dirs()
@@ -27,7 +27,7 @@ readGrassSoilEmu <-
       files <- files_list[grep(file, files_list)]
 
       if (file %in% "weights") {
-        files <- files[grep(".rds", files)]
+        files <- files[grep(".rds", files, ignore.case = TRUE)]
         x <- readRDS(file.path(folder, files))
         x_dims <- lapply(x, dim)
         x_names <- NULL
@@ -37,11 +37,11 @@ readGrassSoilEmu <-
         names(x) <- paste(paste0("l", 1:length(x)), paste0(x_names, "."), sep = ".")
         x <- as.magpie(unlist(x))
       }
-      if (file %in% c("mean_col", "stddevs_col", "mean_lab", "stddevs_lab")) {
-        files <- files[grep(".rds", files)]
+
+      if (file %in% c("mean_lab", "stddevs_lab", "mean_col", "stddevs_col")) {
+        files <- files[grep(".rds", files, ignore.case = TRUE)]
         x <- readRDS(file.path(folder, files))
-        x <- as.magpie(x, spatial = 1)
-        getNames(x) <- file
+        x <- as.magpie(x, data = 1)
       }
 
       if (file %in% c("inputs")) {
