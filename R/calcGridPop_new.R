@@ -81,12 +81,11 @@ calcGridPop_new <- function(subtype="all", cellular=TRUE, FiveYear=TRUE, harmoni
     x <- time_interpolate(x, interpolated_year = 1965:2100)
   }
 
-
   if (FiveYear==TRUE){
     years <- findset("time")
     x <- x[,intersect(years,getYears(x)),]
+    x <- toolHoldConstantBeyondEnd(x)
       }
-  x <- toolHoldConstantBeyondEnd(x)
 
   return(list(x=x,
               weight=NULL,
