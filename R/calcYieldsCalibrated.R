@@ -1,4 +1,4 @@
-#' @title calcCalibratedYields
+#' @title calcYieldsCalibrated
 #' @description This functions calibrates extracted yields from LPJmL to
 #'              FAO country level yields
 #'
@@ -16,7 +16,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' calcOutput("CalibratedYields", aggregate = FALSE)
+#' calcOutput("YieldsCalibrated", aggregate = FALSE)
 #' }
 #'
 #' @importFrom magpiesets findset
@@ -24,7 +24,7 @@
 #' @importFrom madrat calcOutput toolConditionalReplace
 #' @importFrom mrcommons toolCoord2Isocell toolIso2CellCountries
 
-calcCalibratedYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimip = NULL),
+calcYieldsCalibrated <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimip = NULL),
                                  climatetype = "GSWP3-W5E5:historical", refYear = "y1995", cells = "magpiecell") {
 
     sizelimit <- getOption("magclass_sizeLimit")
@@ -56,7 +56,7 @@ calcCalibratedYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735
       yieldLPJmLgrid <- toolCoord2Isocell(yieldLPJmLgrid, cells = cells)
     }
 
-    # crop-specific cropland area
+    # crop-specific cropland area split by irrigation and rainfed
     cropareaMAGgrid <- calcOutput("Croparea", sectoral = "kcr", physical = TRUE,
                                   cellular = TRUE,  cells = cells,
                                   irrigation = TRUE, aggregate = FALSE)[, refYear, crops]
@@ -65,8 +65,8 @@ calcCalibratedYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735
     proxyMAGgrid    <- dimSums(cropareaMAGgrid, dim = "MAG")
 
     # Aggregate to country values
-    # Crop-specific cropland area per country
-    cropareaMAGiso  <- dimSums(cropareaMAGgrid, dim = "cell")
+    # Crop-specific total cropland area per country
+    cropareaMAGiso  <- dimSums(cropareaMAGgrid, dim = c("cell", "irrigation"))
 
     # Averaged LPJmL yield per country (LPJmL production / area)
     yieldLPJmLiso   <- dimSums(dimSums(yieldLPJmLgrid[, refYear, ] * cropareaMAGgrid,
