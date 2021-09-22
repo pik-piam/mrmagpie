@@ -92,6 +92,7 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
     error.existing = FALSE)
   setConfig(extramappings = clustermapname)
 
+
   # 14 yields
 
   calcOutput("Yields", aggregate = FALSE, source = c(lpjml = lpjml[["crop"]], isimip = isimip),
@@ -150,8 +151,8 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
   calcOutput("ClimateClass", aggregate = "cluster", years = "y2015", file = paste0("koeppen_geiger_", ctype, ".mz"))
 
   # 09 drivers
-  calcOutput("GridPop_new", subtype="all", cellular=TRUE, FiveYear=TRUE, harmonize_until=2015,
-             aggregate="cluster", years = mag_years, round=6, file="f09_pop_0.5.mz")
+  calcOutput("GridPop_new", subtype="all", cellular=TRUE, harmonize_until=2015,
+             aggregate="cluster", years = mag_years, round=6, file="f09_pop_grid.cs3")
 
   # 10 land
   calcOutput("LanduseInitialisation", aggregate = FALSE, cellular = TRUE, cells = "magpiecell", nclasses = "seven",
@@ -163,8 +164,7 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
   calcOutput("LanduseInitialisation", aggregate = FALSE, cellular = TRUE, fao_corr = TRUE, input_magpie = TRUE,
     selectyears = mag_years_past_long, round = 6, country_level = TRUE, file = paste0("avl_land_t_iso.cs3"))
 
-  calcOutput("SeaLevelRise", aggregate = FALSE, cellular = TRUE, years = mag_years, round = 6,
-    file = "f10_SeaLevelRise_0.5.mz")
+
   calcOutput("AvlLandSi", aggregate = FALSE, round = 6, file = "avl_land_si_0.5.mz")
   calcOutput("AvlLandSi", aggregate = "cluster", round = 6, file = paste0("avl_land_si_", ctype, ".mz"))
 

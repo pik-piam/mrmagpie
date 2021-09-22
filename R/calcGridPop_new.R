@@ -2,11 +2,11 @@
 #'
 #' @description Past and future (SSP1-5) population based on HYDE3.2 and Jones & O'Neill (2016)
 #' Data is scaled to match WDI data from calcPopulation
-#' NOTE that some scaling factors for the future (for small countries Gambia and Djibouti) are somewhat off, data read in is 50% of WDI data, most likely due to large resolution
-#' @param subtype past (1965-2005), future (2005-2010) or all (divergence changed to start at 2015)
+#' NOTE that some scaling factors for the future (for small countries Gambia and Djibouti) are off, data read in is 50% of WDI data, most likely due to large resolution
+#' @param subtype past (1965-2005), future (2005-2010) or all (divergence starts at year in harmonize_until)
 #' @param cellular only cellular
 #' @param FiveYear TRUE for 5 year time steps, otherwise yearly from source
-#' @param harmonize_until 2005 default divergence of SSPs
+#' @param harmonize_until 2015 default divergence of SSPs
 #' @return Population in millions.
 #' @author David Chen
 #' @importFrom magclass add_columns collapseNames
@@ -52,7 +52,7 @@ calcGridPop_new <- function(subtype="all", cellular=TRUE,FiveYear=TRUE, harmoniz
     agg   <- toolAggregate(gridpop, rel=CountryToCell, from="celliso", to="iso", partrel=TRUE)
 
     ## scale to match madrat country-level pop
-    pop <- calcOutput("Population",aggregate=F)[,,1:5]
+    pop <- calcOutput("Population",aggregate=F)[,,c(paste0("pop_SSP",1:5))]
     pop <- time_interpolate(pop, interpolated_year=getYears(agg))
 
     #scaling factor sc_f applied to every cell
@@ -81,12 +81,11 @@ calcGridPop_new <- function(subtype="all", cellular=TRUE,FiveYear=TRUE, harmoniz
   }
 
 
-
   if (FiveYear==TRUE){
     years <- findset("time")
     x <- x[,intersect(years,getYears(x)),]
-    x <- toolHoldConstantBeyondEnd(x)
       }
+  x <- toolHoldConstantBeyondEnd(x)
 
   return(list(x=x,
               weight=NULL,
