@@ -12,13 +12,13 @@ calcGridPop_new(
 )
 }
 \arguments{
-\item{subtype}{past (1965-2005), future (2005-2010) or all (divergence changed to start at 2015)}
+\item{subtype}{past (1965-2005), future (2005-2010) or all (divergence starts at year in harmonize_until)}
 
 \item{cellular}{only cellular}
 
 \item{FiveYear}{TRUE for 5 year time steps, otherwise yearly from source}
 
-\item{harmonize_until}{2005 default divergence of SSPs}
+\item{harmonize_until}{2015 default divergence of SSPs}
 }
 \value{
 Population in millions.
@@ -26,7 +26,8 @@ Population in millions.
 \description{
 Past and future (SSP1-5) population based on HYDE3.2 and Jones & O'Neill (2016)
 Data is scaled to match WDI data from calcPopulation
-NOTE that some scaling factors for the future (for small countries Gambia and Djibouti) are somewhat off, data read in is 50% of WDI data, most likely due to large resolution
+NOTE that some scaling factors for the future (for small countries Gambia and Djibouti) are off,
+data read in is 50% of WDI data, most likely due to large resolution
 }
 \author{
 David Chen

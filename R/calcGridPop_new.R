@@ -2,7 +2,8 @@
 #'
 #' @description Past and future (SSP1-5) population based on HYDE3.2 and Jones & O'Neill (2016)
 #' Data is scaled to match WDI data from calcPopulation
-#' NOTE that some scaling factors for the future (for small countries Gambia and Djibouti) are off, data read in is 50% of WDI data, most likely due to large resolution
+#' NOTE that some scaling factors for the future (for small countries Gambia and Djibouti) are off,
+#' data read in is 50% of WDI data, most likely due to large resolution
 #' @param subtype past (1965-2005), future (2005-2010) or all (divergence starts at year in harmonize_until)
 #' @param cellular only cellular
 #' @param FiveYear TRUE for 5 year time steps, otherwise yearly from source
@@ -14,18 +15,18 @@
 #' @importFrom madrat calcOutput toolGetMapping toolAggregate
 
 
-calcGridPop_new <- function(subtype="all", cellular=TRUE,FiveYear=TRUE, harmonize_until=2015) {
-  if(!cellular)(stop("Run calcPopulation instead"))
+calcGridPop_new <- function(subtype="all", cellular=TRUE, FiveYear=TRUE, harmonize_until=2015) {
+  if (!cellular)(stop("Run calcPopulation instead"))
   ##past
-  if (subtype=="past"){
+  if (subtype=="past") {
 
-    gridpop <- readSource("GridPop_new",subtype="past",convert=F)
+    gridpop <- readSource("GridPop_new", subtype="past", convert=F)
     CountryToCell     <- toolGetMapping("CountryToCellMapping.csv", type = "cell")
     agg   <- toolAggregate(gridpop, rel=CountryToCell, from="celliso", to="iso", partrel=TRUE)
 
     ## scale to match WDI country-level pop
 
-    pop <- calcOutput("Population",aggregate=F)
+    pop <- calcOutput("Population", aggregate=F)
     pop <- time_interpolate(pop, interpolated_year=getYears(agg))
 
     #scaling factor sc_f applied to every cell
