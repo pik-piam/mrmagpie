@@ -1,4 +1,4 @@
-#' @title calcCalibratedYields
+#' @title calcYieldsCalibrated
 #' @description This functions calibrates extracted yields from LPJmL to
 #'              FAO country level yields
 #'
@@ -16,7 +16,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' calcOutput("CalibratedYields", aggregate = FALSE)
+#' calcOutput("YieldsCalibrated", aggregate = FALSE)
 #' }
 #'
 #' @importFrom magpiesets findset
@@ -24,7 +24,7 @@
 #' @importFrom madrat calcOutput toolConditionalReplace
 #' @importFrom mrcommons toolCoord2Isocell toolIso2CellCountries
 
-calcCalibratedYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimip = NULL),
+calcYieldsCalibrated <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimip = NULL),
                                  climatetype = "GSWP3-W5E5:historical", refYear = "y1995", cells = "magpiecell") {
 
     sizelimit <- getOption("magclass_sizeLimit")
