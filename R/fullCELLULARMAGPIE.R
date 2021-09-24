@@ -155,15 +155,26 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
              aggregate="cluster", years = mag_years, round=6, file="f09_pop_grid.cs3")
 
   # 10 land
+  #seven land classes
   calcOutput("LanduseInitialisation", aggregate = FALSE, cellular = TRUE, cells = "magpiecell", nclasses = "seven",
     fao_corr = TRUE, input_magpie = TRUE, selectyears = mag_years_past_long, round = 6,
     file = "avl_land_t_0.5.mz")
   calcOutput("LanduseInitialisation", aggregate = "cluster", cellular = TRUE, nclasses = "seven", fao_corr = TRUE,
     input_magpie = TRUE, selectyears = mag_years_past_long, round = 6,
     file = paste0("avl_land_t_", ctype, ".mz"))
-  calcOutput("LanduseInitialisation", aggregate = FALSE, cellular = TRUE, fao_corr = TRUE, input_magpie = TRUE,
+  calcOutput("LanduseInitialisation", aggregate = FALSE, cellular = TRUE, nclasses = "seven", fao_corr = TRUE, input_magpie = TRUE,
     selectyears = mag_years_past_long, round = 6, country_level = TRUE, file = paste0("avl_land_t_iso.cs3"))
 
+  #nine land classes
+  calcOutput("LanduseInitialisation", aggregate = FALSE, cellular = TRUE, cells = "magpiecell", nclasses = "nine",
+             fao_corr = TRUE, input_magpie = TRUE, selectyears = mag_years_past_long, round = 6,
+             file = "avl_land_full_t_0.5.mz")
+  calcOutput("LanduseInitialisation", aggregate = "cluster", cellular = TRUE, nclasses = "nine", fao_corr = TRUE,
+             input_magpie = TRUE, selectyears = mag_years_past_long, round = 6,
+             file = paste0("avl_land_full_t_", ctype, ".mz"))
+  calcOutput("LanduseInitialisation", aggregate = FALSE, cellular = TRUE, nclasses = "nine", fao_corr = TRUE,
+             input_magpie = TRUE, selectyears = mag_years_past_long, round = 6, country_level = TRUE,
+             file = paste0("avl_land_full_t_iso.cs3"))
 
   calcOutput("AvlLandSi", aggregate = FALSE, round = 6, file = "avl_land_si_0.5.mz")
   calcOutput("AvlLandSi", aggregate = "cluster", round = 6, file = paste0("avl_land_si_", ctype, ".mz"))
