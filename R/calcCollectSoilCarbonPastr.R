@@ -26,7 +26,7 @@
 calcCollectSoilCarbonPastr <-
   function(past_mngmt = "me2", lpjml = "lpjml5p2_pasture", climatemodel = "IPSL_CM6A_LR", scenario = "ssp126_co2_limN", sar = 1) {
 
-    .subtype <- paste(lpjml, climatemodel,paste0(scenario,"_", past_mngmt),sep = ":")
+    .subtype <- paste(lpjml, climatemodel,paste0(scenario,"/", past_mngmt),sep = ":")
     hist <- toolCoord2Isocell(readSource("LPJmL_new", subtype = paste(.subtype, "soilc_past_hist", sep = ":"), convert = F))
     scen <- toolCoord2Isocell(readSource("LPJmL_new", subtype = paste(.subtype, "soilc_past_scen", sep = ":"), convert = F))
     y <- mbind(hist,scen)

@@ -114,7 +114,7 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
     version_isimip <- "ISIMIP3b"
 
     #--- Module 14_yields: Grasslands / LHU2 for yield calibration  ---#
-    calcOutput("GrasslandsYields", subtype = paste(lpjml[["grass"]], paste0(paste(climatemodel, scenario, sep = ":"), "_co2_Nreturn0p5_limN"), sep = ":"), lsu_levels = c(seq(0, 2.2, 0.2), 2.5), past_mngmt = "me2", file = paste0("f14_grassl_yld_", ctype, ".mz"), years = mag_years, aggregate = "cluster")
+    calcOutput("GrasslandsYields", subtype = paste(lpjml[["grass"]], paste0(paste(climatemodel, scenario, sep = ":"), "/co2/Nreturn0p5/limN"), sep = ":"), lsu_levels = c(seq(0, 2.2, 0.2), 2.5), past_mngmt = "me2", file = paste0("f14_grassl_yld_", ctype, ".mz"), years = mag_years, aggregate = "cluster")
     calcOutput("LUH2v2", aggregate = "cluster", landuse_types = "LUH2v2", cellular = TRUE, file = paste0("fm_LUH2v2_", ctype, ".mz"))
 
     #--- Module 31_past: suitable managed pasture areas ---#
@@ -134,7 +134,7 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
 
     #--- Post-processing: files for disaggregation of outputs---#
     calcOutput("RangeSoilCarbonHist", subtype = paste(version_isimip, climatemodel, scenario, "1965_2100", sep = ":"), model = emu_id, lpjml = lpjml[["grass"]], file = "f31_range_soilc_hist.mz", aggregate = F)
-    calcOutput("GrasslandsYields", subtype = paste(lpjml[["grass"]], paste0(paste(climatemodel, scenario, sep = ":"), "_co2_Nreturn0p5_limN"), sep = ":"), lsu_levels = c(seq(0, 2.2, 0.2), 2.5), past_mngmt = "me2", file = paste0("f14_grassl_yld.mz"), years = mag_years, aggregate = F)
+    calcOutput("GrasslandsYields", subtype = paste(lpjml[["grass"]], paste0(paste(climatemodel, scenario, sep = ":"),"/co2/Nreturn0p5/limN"), sep = ":"), lsu_levels = c(seq(0, 2.2, 0.2), 2.5), past_mngmt = "me2", file = paste0("f14_grassl_yld.mz"), years = mag_years, aggregate = F)
     calcOutput("LsuDensityHist", disagg_type = "grassland", aggregate = F,  file = "f31_lsu_ha_grassl.mz")
     calcOutput("LsuDensityHist", disagg_type = "livestock", aggregate = F,  file = "f31_lsu_ha_livestock.mz")
     calcOutput("LUH2v2", aggregate = F, landuse_types = "LUH2v2", cellular = TRUE, file = paste0("fm_LUH2v2.mz"))
