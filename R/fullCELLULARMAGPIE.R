@@ -140,8 +140,8 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
     calcOutput("LUH2v2", aggregate = F, landuse_types = "LUH2v2", cellular = TRUE, file = paste0("fm_LUH2v2.mz"))
 
     #--- Post-processing: Soil carbon ---#
-    calcOutput("CollectSoilCarbonLSU", lsu_levels = c(seq(0, 2, 0.2), 2.5), lpjml = lpjml[["grass"]], climatemodel = climatemodel, scenario = paste0(scenario, "_co2_Nreturn0p5_limN"), sar = 1, aggregate = F, file = paste0("soilc_stocks_gramnt.mz"), years = seq(1965, 2100, by = 5))
-    calcOutput("CollectSoilCarbonPastr", past_mngmt = "me2", lpjml = lpjml[["grass"]], climatemodel = climatemodel, aggregate = F, scenario = paste0(scenario, "_co2_Nreturn0p5_limN"), sar = 1, file = paste0("soilc_stocks_pastr.mz"), years = seq(1965, 2100, by = 5))
+    calcOutput("CollectSoilCarbonLSU", lsu_levels = c(seq(0, 2, 0.2), 2.5), lpjml = lpjml[["grass"]], climatemodel = climatemodel, scenario = paste0(scenario, "/co2/Nreturn0p5/limN"), sar = 1, aggregate = F, file = paste0("soilc_stocks_gramnt.mz"), years = seq(1965, 2100, by = 5))
+    calcOutput("CollectSoilCarbonPastr", past_mngmt = "me2", lpjml = lpjml[["grass"]], climatemodel = climatemodel, aggregate = F, scenario = paste0(scenario, "/co2/Nreturn0p5/limN"), sar = 1, file = paste0("soilc_stocks_pastr.mz"), years = seq(1965, 2100, by = 5))
 
     #--- Experimental functions ----#
     # calcOutput("GrassPastureShare", aggregate = "cluster", file = paste0("f31_pastr_share_", ctype, ".mz"))
