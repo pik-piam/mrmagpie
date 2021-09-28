@@ -16,16 +16,20 @@ calcIrrigation(
 
 \item{climatetype}{Switch between different climate scenarios}
 
-\item{rainfedweight}{For clustering airrig is weighted with cropland_irrigated + rainfedweight * cropland_rainfed (default: 0.01)}
+\item{rainfedweight}{For clustering airrig is weighted with
+cropland_irrigated + rainfedweight * cropland_rainfed (default: 0.01)}
 }
 \value{
 magpie object in cellular resolution
 }
 \description{
-This function extracts irrigation water (airrig: water applied additionally to rainfall) from LPJmL to MAgPIE
+This function extracts irrigation water (airrig: water applied additionally to rainfall)
+             from LPJmL to MAgPIE
 }
 \examples{
-\dontrun{ calcOutput("Irrigation", aggregate = FALSE) }
+\dontrun{
+calcOutput("Irrigation", aggregate = FALSE)
+}
 
 }
 \author{

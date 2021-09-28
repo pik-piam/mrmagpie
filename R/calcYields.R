@@ -21,7 +21,7 @@
 #' @importFrom mrcommons toolLPJmLVersion
 
 calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimip = NULL),
-                           climatetype = "GSWP3-W5E5:historical", cells = "magpiecell", weighting = "totalCrop") {
+                       climatetype = "GSWP3-W5E5:historical", cells = "magpiecell", weighting = "totalCrop") {
 
   cfg <- toolLPJmLVersion(version = source["lpjml"], climatetype = climatetype)
 
@@ -29,12 +29,12 @@ calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimi
   options(magclass_sizeLimit = 1e+12)
   on.exit(options(magclass_sizeLimit = sizelimit))
 
-  if (climatetype == "GSWP3-W5E5:historical") {
- stage       <- "smoothed"
-                                              climatetype <- cfg$baseline_hist
+  if (grepl("GSWP3-W5E5", climatetype)) {
+    stage       <- "smoothed"
+    climatetype <- cfg$baseline_hist
   } else {
-                                     stage <- "harmonized2020"
-}
+    stage <- "harmonized2020"
+  }
 
   LPJ2MAG      <- toolGetMapping("MAgPIE_LPJmL.csv", type = "sectoral", where = "mappingfolder")
   lpjml_crops  <- unique(LPJ2MAG$LPJmL)
@@ -90,25 +90,26 @@ calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimi
     yields <- toolCoord2Isocell(yields)
   }
 
-   if (!is.na(source["isimip"])) {
+  if (!is.na(source["isimip"])) {
     to_rep <- calcOutput("ISIMIP3bYields", subtype = source[["isimip"]], cells = cells, aggregate = F)
     common_vars <- intersect(getNames(yields), getNames(to_rep))
     common_years <- intersect(getYears(yields), getYears(to_rep))
     # convert to array for memory
     yields <- as.array(yields)
-to_rep <- as.array(to_rep)
+    to_rep <- as.array(to_rep)
     # yields[,common_years,common_vars] <- ifelse(to_rep[,common_years,common_vars] >0, to_rep[,common_years,common_vars], yields[,common_years, common_vars])
     yields[, common_years, common_vars] <- to_rep[, common_years, common_vars]
     yields <- as.magpie(yields)
-to_rep <- as.magpie(to_rep)
+    to_rep <- as.magpie(to_rep)
 
-   }
+  }
 
 
   if (weighting == "totalCrop") {
 
     crop_area_weight <- dimSums(calcOutput("Croparea", sectoral = "kcr", physical = TRUE, irrigation = FALSE,
-                                           cellular = TRUE, cells = cells, aggregate = FALSE, years = "y1995", round = 6), dim = 3)
+                                           cellular = TRUE, cells = cells, aggregate = FALSE,
+                                           years = "y1995", round = 6), dim = 3)
 
   } else if (weighting %in% c("totalLUspecific", "cropSpecific", "crop+irrigSpecific")) {
 
@@ -146,21 +147,23 @@ to_rep <- as.magpie(to_rep)
   } else if (weighting == "avlCropland") {
 
     crop_area_weight <- setNames(calcOutput("AvlCropland", marginal_land = "all_marginal", cells = cells,
-                                   country_level = FALSE, aggregate = FALSE), NULL)
+                                            country_level = FALSE, aggregate = FALSE), NULL)
 
   } else if (weighting == "avlCropland+avlPasture") {
 
     avlCrop <- setNames(calcOutput("AvlCropland", marginal_land = "all_marginal", cells = cells,
-                        country_level = FALSE, aggregate = FALSE), "avlCrop")
+                                   country_level = FALSE, aggregate = FALSE), "avlCrop")
 
     LU1995  <- setYears(calcOutput("LanduseInitialisation", aggregate = FALSE, cellular = TRUE, nclasses = "seven",
-                                   fao_corr = TRUE, input_magpie = TRUE, cells = cells, years = "y1995", round = 6), NULL)
+                                   fao_corr = TRUE, input_magpie = TRUE, cells = cells,
+                                   years = "y1995", round = 6), NULL)
 
     crop_area_weight <- new.magpie(cells_and_regions = getCells(yields), years = NULL,
                                    names = getNames(yields, dim = 1), fill = avlCrop)
 
     crop_area_weight[, , "pasture"]       <- pmax(avlCrop,
-                                             dimSums(LU1995[, , c("primforest", "secdforest", "forestry", "past")], dim = 3))
+                                                  dimSums(LU1995[, , c("primforest", "secdforest",
+                                                                       "forestry", "past")], dim = 3))
 
   } else {
 

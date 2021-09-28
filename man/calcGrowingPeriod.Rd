@@ -29,7 +29,9 @@ This function determines a mean sowing date and a mean growing period for each c
 in order to determine when irrigation can take place.
 }
 \examples{
-\dontrun{ calcOutput("GrowingPeriod", aggregate = FALSE) }
+\dontrun{
+calcOutput("GrowingPeriod", aggregate = FALSE)
+}
 
 }
 \author{

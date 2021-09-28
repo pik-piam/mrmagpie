@@ -9,7 +9,9 @@
 #' @author Kristine Karstens
 #'
 #' @examples
-#' \dontrun{ calcOutput("TopsoilCarbon", aggregate = FALSE) }
+#' \dontrun{
+#' calcOutput("TopsoilCarbon", aggregate = FALSE)
+#' }
 #'
 #' @importFrom magpiesets findset
 #' @importFrom mrcommons toolCoord2Isocell
@@ -18,7 +20,7 @@ calcTopsoilCarbon_new <- function(lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de
                                             crop = "ggcmi_phase3_nchecks_9ca735cb"),
                                   climatetype = "GSWP3-W5E5:historical", fromFlows = FALSE) {
 
-  if (climatetype == "GSWP3-W5E5:historical") stage <- "smoothed"
+  if (grepl("GSWP3-W5E5", climatetype)) stage <- "smoothed"
   else                                        stage <- "harmonized2020"
 
   soilc_layer_natveg <- toolCoord2Isocell(calcOutput("LPJmL_new", version = lpjml["natveg"], climatetype = climatetype,
