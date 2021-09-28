@@ -87,6 +87,7 @@ calcGridPop_new <- function(subtype="all", cellular=TRUE, FiveYear=TRUE, harmoni
     x <- toolHoldConstantBeyondEnd(x)
       }
 
+  getNames(x) <- gsub("pop_", "", getNames(x))
   return(list(x=x,
               weight=NULL,
               unit="million",
