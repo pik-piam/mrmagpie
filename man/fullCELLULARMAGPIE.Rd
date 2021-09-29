@@ -9,8 +9,8 @@ fullCELLULARMAGPIE(
   dev = "",
   ctype = "c200",
   climatetype = "MRI-ESM2-0:ssp370",
-  lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de+oldGSWP3", crop =
-    "ggcmi_phase3_nchecks_9ca735cb+oldGSWP3", grass = "lpjml5p2_pasture"),
+  lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de", crop =
+    "ggcmi_phase3_nchecks_9ca735cb", grass = "lpjml5p2_pasture"),
   isimip = NULL,
   clusterweight = NULL,
   emu_id = NULL
@@ -19,13 +19,14 @@ fullCELLULARMAGPIE(
 \arguments{
 \item{rev}{data revision which should be used as input (positive numeric).}
 
-\item{dev}{development suffix to distinguish development versions for the same data revision. This can be useful to distinguish
-parallel lines of development.}
+\item{dev}{development suffix to distinguish development versions for the same data revision.
+This can be useful to distinguish parallel lines of development.}
 
-\item{ctype}{aggregation clustering type, which is a combination of a single letter, indicating the cluster methodology, and a number,
-indicating the number of resulting clusters. Available methodologies are hierarchical clustering (h), normalized k-means clustering
-(n) and combined hierarchical/normalized k-means clustering (c). In the latter hierarchical clustering is used to determine the
-cluster distribution among regions whereas normalized k-means is used for the clustering within a region.}
+\item{ctype}{aggregation clustering type, which is a combination of a single letter, indicating the cluster
+methodology, and a number, indicating the number of resulting clusters. Available methodologies are hierarchical
+clustering (h), normalized k-means clustering (n) and combined hierarchical/normalized k-means clustering (c).
+In the latter hierarchical clustering is used to determine the cluster distribution among regions whereas
+normalized k-means is used for the clustering within a region.}
 
 \item{climatetype}{Global Circulation Model to be used}
 
@@ -33,8 +34,9 @@ cluster distribution among regions whereas normalized k-means is used for the cl
 
 \item{isimip}{Defines isimip crop model input which replace maiz, tece, rice_pro and soybean}
 
-\item{clusterweight}{Should specific regions be resolved with more or less detail? Values > 1 mean higher share, < 1 lower share
-e.g. cfg$clusterweight <- c(LAM=2) means that a higher level of detail for region LAM if set to NULL all weights will be assumed to be 1.
+\item{clusterweight}{Should specific regions be resolved with more or less detail? Values > 1 mean higher share,
+< 1 lower share e.g. cfg$clusterweight <- c(LAM=2) means that a higher level of detail for region LAM if set to NULL
+all weights will be assumed to be 1.
 examples:
 c(LAM=1.5,SSA=1.5,OAS=1.5)
 c(LAM=2,SSA=2,OAS=2)
