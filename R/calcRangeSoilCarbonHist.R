@@ -41,7 +41,7 @@ calcRangeSoilCarbonHist <- function(subtype = "ISIMIP3b:IPSL-CM6A-LR:ssp126:1965
     bins <- cut(bin_hist_lsu_ha$Value, breaks = breaks, labels = labels, include.lowest = TRUE, right = F)
     bin_hist_lsu_ha$Value <- as.numeric(levels(bins)[bins])
 
-    sc <- calcOutput("CollectSoilCarbonLSU", lsu_levels = c(seq(0, 2, 0.2), 2.5), lpjml = lpjml, climatemodel = x$climatemodel, scenario = paste0(x$scenario, "_co2_Nreturn0p5_limN"), sar = 1, aggregate = F, years = seq(1965, 2100, by = 5))
+    sc <- calcOutput("CollectSoilCarbonLSU", lsu_levels = c(seq(0, 2, 0.2), 2.5), lpjml = lpjml, climatemodel = x$climatemodel, scenario = paste0(x$scenario, "/co2/Nreturn0p5/limN"), sar = 1, aggregate = F, years = seq(1965, 2100, by = 5))
     sc_df <- as.data.frame(sc[, past[1], ])
     sc_df$Data1 <- gsub("p", ".", as.character.factor(sc_df$Data1))
     sc_df$Data1 <- as.numeric(sc_df$Data1)
