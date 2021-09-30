@@ -4,10 +4,18 @@
 \alias{calcPastureSuit}
 \title{calcPastureSuit}
 \usage{
-calcPastureSuit(subtype = "ISIMIP3b:IPSL-CM6A-LR:1850-2100")
+calcPastureSuit(
+  subtype = "ISIMIP3b:IPSL-CM6A-LR:1850-2100",
+  smooth_precipitation = 20,
+  smooth_out = 5
+)
 }
 \arguments{
 \item{subtype}{Select version, climate model and period.}
+
+\item{smooth_precipitation}{Smooth precipitation climate data over time}
+
+\item{smooth_out}{smooth the Pasture suitability areas variations over time}
 }
 \value{
 List of magpie object with results on cluster level

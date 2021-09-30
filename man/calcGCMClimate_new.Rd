@@ -4,10 +4,15 @@
 \alias{calcGCMClimate_new}
 \title{calcGCMClimate_new}
 \usage{
-calcGCMClimate_new(subtype = "ISIMIP3b:IPSL-CM6A-LR:ssp126:1850-2100:tas")
+calcGCMClimate_new(
+  subtype = "ISIMIP3b:IPSL-CM6A-LR:ssp126:1850-2100:tas",
+  smooth = 0
+)
 }
 \arguments{
 \item{subtype}{type of climate data to collect}
+
+\item{smooth}{set averaging value for smoothing trajectories}
 }
 \value{
 magpie object in cellular resolution
