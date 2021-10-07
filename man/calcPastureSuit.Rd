@@ -6,8 +6,8 @@
 \usage{
 calcPastureSuit(
   subtype = "ISIMIP3b:IPSL-CM6A-LR:1850-2100",
-  smooth_precipitation = 20,
-  smooth_out = 5
+  smooth_precipitation = 10,
+  smooth_out = 10
 )
 }
 \arguments{

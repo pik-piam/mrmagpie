@@ -35,8 +35,11 @@ calcLabourProdImpactEmu <- function(timestep = "5year", cellular = TRUE, subtype
   getNames(std) <- gsub("ensstd", "ensvalue", getNames(std))
 
 
-  upper <- middle + std
-  lower <- middle - std
+  upper <- middle + (1-std)
+  lower <- middle - (1-std)
+
+  upper[upper>1] <- 1
+  lower[lower<0] <- 0
 
   getNames(upper) <- gsub("ensvalue", "ensupper", getNames(upper))
   getNames(lower) <- gsub("ensvalue", "enslower", getNames(lower))
