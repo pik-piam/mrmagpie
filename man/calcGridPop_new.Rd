@@ -8,7 +8,8 @@ calcGridPop_new(
   subtype = "all",
   cellular = TRUE,
   FiveYear = TRUE,
-  harmonize_until = 2015
+  harmonize_until = 2015,
+  urban_split = FALSE
 )
 }
 \arguments{
@@ -19,6 +20,8 @@ calcGridPop_new(
 \item{FiveYear}{TRUE for 5 year time steps, otherwise yearly from source}
 
 \item{harmonize_until}{2015 default divergence of SSPs}
+
+\item{urban_split}{whether to split a new subdimension with urban and rural populations}
 }
 \value{
 Population in millions.

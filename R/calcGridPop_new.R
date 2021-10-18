@@ -8,6 +8,7 @@
 #' @param cellular only cellular
 #' @param FiveYear TRUE for 5 year time steps, otherwise yearly from source
 #' @param harmonize_until 2015 default divergence of SSPs
+#' @param urban_split whether to split a new subdimension with urban and rural populations
 #' @return Population in millions.
 #' @author David Chen
 #' @importFrom magclass add_columns collapseNames
