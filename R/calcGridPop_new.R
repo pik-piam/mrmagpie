@@ -107,7 +107,7 @@ calcGridPop_new <- function(subtype="all", cellular=TRUE, FiveYear=TRUE, harmoni
 
     #harmonize future SSPs to divergence year by making them SSP2
     harm_y <- getYears(future, as.integer = T)[1:(harmonize_until-min(getYears(future,as.integer=T))+1)]
-    future[,harm_y,] <- future[,harm_y,"pop_SSP2"]
+    future[,harm_y,] <- future[,harm_y,"SSP2"]
     x <- mbind(past,future)
   }
 
