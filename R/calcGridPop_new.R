@@ -15,7 +15,7 @@
 #' @importFrom madrat calcOutput toolGetMapping toolAggregate
 
 
-calcGridPop_new <- function(subtype="all", cellular=TRUE, FiveYear=TRUE, harmonize_until=2015) {
+calcGridPop_new <- function(subtype="all", cellular=TRUE, FiveYear=TRUE, harmonize_until=2015, urban_split = FALSE) {
   if (!cellular)(stop("Run calcPopulation instead"))
   ##past
   if (subtype=="past") {
@@ -43,17 +43,48 @@ calcGridPop_new <- function(subtype="all", cellular=TRUE, FiveYear=TRUE, harmoni
     x <- add_columns(x, dim=3.1,addnm=c(getNames(pop)[1:5]))
     x[,,2:6] <- x[,,1]
     x <- (x[,,-1])/1e6
+
+    # Add SDP, SDP_EI, SDP_RC and SDP_MC scenarios as copy of SSP1 - doesn't really matter for past
+    if("pop_SSP1" %in% getNames(x) && !("pop_SDP" %in% getNames(x))){
+      combined_SDP <- x[,, "pop_SSP1"]
+      for  (i in c("SDP", "SDP_EI", "SDP_RC", "SDP_MC")) {
+        getNames(combined_SDP) <- gsub("SSP1", i, getNames(x[,, "pop_SSP1"]))
+        x <- mbind(x, combined_SDP)
+      }
+    }
+    # Add SSP2EU as copy of SSP2 - doesn't really matter for past
+    if("pop_SSP2" %in% getNames(x) && !("pop_SSP2EU" %in% getNames(x))){
+      combined_EU <- x[,, "pop_SSP2"]
+     getNames(combined_EU) <- gsub("SSP2", "SSP2EU", getNames(x[,, "pop_SSP2"]))
+        x <- mbind(x, combined_EU)
+      }
   }
 
   ##future
   if (subtype=="future"){
 
     gridpop <- readSource("GridPop_new",subtype="future",convert=F)
+
+    # Add SDP, SDP_EI, SDP_RC and SDP_MC scenarios as copy of SSP1 - as in calcPopulation
+    if("pop_SSP1" %in% getNames(gridpop) && !("pop_SDP" %in% getNames(gridpop))){
+      combined_SDP <- gridpop[,, "pop_SSP1"]
+      for  (i in c("SDP", "SDP_EI", "SDP_RC", "SDP_MC")) {
+        getNames(combined_SDP) <- gsub("SSP1", i, getNames(gridpop[,, "pop_SSP1"]))
+        gridpop <- mbind(gridpop, combined_SDP)
+      }
+    }
+    # Add SSP2EU as copy of SSP2 - this will be scaled to SSP2EU - given the lack of grid pop information for SSP2EU
+    if("pop_SSP2" %in% getNames(gridpop) && !("pop_SSP2EU" %in% getNames(gridpop))){
+      combined_EU <- gridpop[,, "pop_SSP2"]
+      getNames(combined_EU) <- gsub("SSP2", "SSP2EU", getNames(gridpop[,, "pop_SSP2"]))
+      gridpop <- mbind(gridpop, combined_EU)
+    }
+
     CountryToCell     <- toolGetMapping("CountryToCellMapping.csv", type = "cell")
     agg   <- toolAggregate(gridpop, rel=CountryToCell, from="celliso", to="iso", partrel=TRUE)
 
     ## scale to match madrat country-level pop
-    pop <- calcOutput("Population",aggregate=F)[,,c(paste0("pop_SSP",1:5))]
+    pop <- calcOutput("Population",aggregate=F)
     pop <- time_interpolate(pop, interpolated_year=getYears(agg))
 
     #scaling factor sc_f applied to every cell
@@ -74,21 +105,39 @@ calcGridPop_new <- function(subtype="all", cellular=TRUE, FiveYear=TRUE, harmoni
     future <- calcOutput("GridPop_new", subtype="future", aggregate=F, FiveYear=F)
 
     #harmonize future SSPs to divergence year by making them SSP2
-    harm_y <- getYears(future, as.integer = T)[1:(harmonize_until-2009)]
-    for (i in 1:5){
-      future[,harm_y,i] <- future[,harm_y,"SSP2"]}
+    harm_y <- getYears(future, as.integer = T)[1:(harmonize_until-min(getYears(future,as.integer=T))+1)]
+    future[,harm_y,] <- future[,harm_y,"pop_SSP2"]
     x <- mbind(past,future)
-    x <- time_interpolate(x, interpolated_year = 1965:2100)
   }
 
   if (FiveYear==TRUE){
     years <- findset("time")
     x <- x[,intersect(years,getYears(x)),]
     x <- toolHoldConstantBeyondEnd(x)
-      }
+  }
 
-  getNames(x) <- gsub("pop_", "", getNames(x))
-  return(list(x=x,
+getNames(x) <- gsub("pop_", "", getNames(x))
+
+  if (urban_split){
+
+    urban <- calcOutput("Urban", aggregate=F)[,getYears(x),]
+    getNames(urban) <- gsub("pop_","",getNames(urban))
+
+    mapping <- toolGetMapping(type="cell", name="CountryToCellMapping.csv")
+
+    urban <- toolAggregate(urban, rel=mapping, from="iso", to="celliso", partrel=T)
+
+    urbanpop <- x * urban
+
+    urbanpop <- add_dimension(urbanpop, dim=3.2, add="urb", nm=c("urban", "rural"))
+
+    urbanpop[,,"rural"] <- gridpop - collapseNames(urbanpop[,,"urban"], collapsedim = 3.2)
+
+    x <- urbanpop
+
+  }
+
+    return(list(x=x,
               weight=NULL,
               unit="million",
               description="Population in millions",

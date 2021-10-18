@@ -179,11 +179,16 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
   calcOutput("ClimateClass", aggregate = "cluster", years = "y2015", file = paste0("koeppen_geiger_", ctype, ".mz"))
 
   # 09 drivers
+<<<<<<< Updated upstream
   calcOutput("GridPop_new", subtype = "all", cellular = TRUE, harmonize_until = 2015, urban_split=FALSE,
              aggregate = "cluster", years = mag_years, round = 6, file = "f09_pop_grid.cs3")
 
   calcOutput("GridPop_new", subtype="all", cellular=TRUE, harmonize_until=2015, urban_split=TRUE,
              aggregate="cluster", years = mag_years, round=6, file="f09_urbanpop_grid.cs3")
+=======
+  calcOutput("GridPop_new", subtype="all", cellular=TRUE, harmonize_until=2015, urban_split=FALSE,
+             aggregate="cluster", years = mag_years, round=6, file="f09_pop_grid.cs3")
+>>>>>>> Stashed changes
 
   # 10 land
   # seven land classes
