@@ -129,14 +129,7 @@ getNames(x) <- gsub("pop_", "", getNames(x))
     urban <- toolAggregate(urban, rel=mapping, from="iso", to="celliso", partrel=T)
 
     urbanpop <- x * urban
-
-    urbanpop <- add_dimension(urbanpop, dim=3.2, add="urb", nm=c("urban", "rural"))
-
-    urbanpop[,,"rural"] <- gridpop - collapseNames(urbanpop[,,"urban"], collapsedim = 3.2)
-
-    x <- urbanpop
-
-  }
+   }
 
     return(list(x=x,
               weight=NULL,
