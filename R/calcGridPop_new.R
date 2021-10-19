@@ -8,7 +8,7 @@
 #' @param cellular only cellular
 #' @param FiveYear TRUE for 5 year time steps, otherwise yearly from source
 #' @param harmonize_until 2015 default divergence of SSPs
-#' @param urban_split whether to split a new subdimension with urban and rural populations
+#' @param urban TRUE to return only urban gridded population based on iso share
 #' @return Population in millions.
 #' @author David Chen
 #' @importFrom magclass add_columns collapseNames
@@ -16,7 +16,7 @@
 #' @importFrom madrat calcOutput toolGetMapping toolAggregate
 
 
-calcGridPop_new <- function(subtype="all", cellular=TRUE, FiveYear=TRUE, harmonize_until=2015, urban_split = FALSE) {
+calcGridPop_new <- function(subtype="all", cellular=TRUE, FiveYear=TRUE, harmonize_until=2015, urban = FALSE) {
   if (!cellular)(stop("Run calcPopulation instead"))
   ##past
   if (subtype=="past") {
@@ -119,7 +119,7 @@ calcGridPop_new <- function(subtype="all", cellular=TRUE, FiveYear=TRUE, harmoni
 
 getNames(x) <- gsub("pop_", "", getNames(x))
 
-  if (urban_split){
+  if (urban){
 
     urban <- calcOutput("Urban", aggregate=F)[,getYears(x),]
     getNames(urban) <- gsub("pop_","",getNames(urban))
@@ -128,7 +128,7 @@ getNames(x) <- gsub("pop_", "", getNames(x))
 
     urban <- toolAggregate(urban, rel=mapping, from="iso", to="celliso", partrel=T)
 
-    urbanpop <- x * urban
+    x <- x * urban
    }
 
     return(list(x=x,

@@ -9,7 +9,7 @@ calcGridPop_new(
   cellular = TRUE,
   FiveYear = TRUE,
   harmonize_until = 2015,
-  urban_split = FALSE
+  urban = FALSE
 )
 }
 \arguments{
@@ -21,7 +21,7 @@ calcGridPop_new(
 
 \item{harmonize_until}{2015 default divergence of SSPs}
 
-\item{urban_split}{whether to split a new subdimension with urban and rural populations}
+\item{urban}{TRUE to return only urban gridded population based on iso share}
 }
 \value{
 Population in millions.
