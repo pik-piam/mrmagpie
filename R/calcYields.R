@@ -2,7 +2,8 @@
 #' @description This function extracts yields from LPJmL to MAgPIE
 #'
 #' @param source Defines LPJmL version for main crop inputs and isimip replacement.
-#' For isimip choose crop model/gcm/rcp/co2 combination formatted like this: "yields:EPIC-IIASA:ukesm1-0-ll:ssp585:default:3b"
+#' For isimip choose crop model/gcm/rcp/co2 combination formatted like this:
+#' "yields:EPIC-IIASA:ukesm1-0-ll:ssp585:default:3b"
 #' @param climatetype Switch between different climate scenarios
 #' @param cells if cellular is TRUE: "magpiecell" for 59199 cells or "lpjcell" for 67420 cells
 #' @param weighting use of different weights (totalCrop (default), totalLUspecific, cropSpecific, crop+irrigSpecific,
@@ -59,6 +60,7 @@ calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimi
     stop("produced NA yields")
   }
 
+  # Use FAO data to scale proxy crops to reasonable levels (global, static factor)
   FAOproduction     <- collapseNames(calcOutput("FAOmassbalance_pre", aggregate = FALSE)[, , "production"][, , "dm"])
   MAGarea           <- calcOutput("Croparea", sectoral = "kcr", physical = TRUE, aggregate = FALSE)
   faoyears          <- intersect(getYears(FAOproduction), getYears(MAGarea))
@@ -69,19 +71,14 @@ calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimi
   FAOproduction <- add_columns(FAOproduction[, , MAGcroptypes], addnm = missing, dim = 3.1)
   FAOproduction[, , missing] <- 0
 
-  FAOYields         <- dimSums(FAOproduction[, faoyears, ], dim = 1) / dimSums(MAGarea[, faoyears, ], dim = 1)
-
-  matchingFAOyears <- intersect(getYears(yields), getYears(FAOYields))
-  FAOYields        <- FAOYields[, matchingFAOyears, ]
-  Calib            <- new.magpie("GLO", matchingFAOyears, c(getNames(FAOYields), "pasture"), fill = 1, sets = c("iso", "year", "data"))
-  Calib[, matchingFAOyears, "oilpalm"]   <- FAOYields[, , "oilpalm"] / FAOYields[, , "groundnut"]      # LPJmL proxy for oil palm is groundnut
-  Calib[, matchingFAOyears, "cottn_pro"] <- FAOYields[, , "cottn_pro"] / FAOYields[, , "groundnut"]    # LPJmL proxy for cotton is groundnut
-  Calib[, matchingFAOyears, "foddr"]     <- FAOYields[, , "foddr"] / FAOYields[, , "maiz"]             # LPJmL proxy for fodder is maize
-  Calib[, matchingFAOyears, "others"]    <- FAOYields[, , "others"] / FAOYields[, , "maiz"]            # LPJmL proxy for others is maize
-  Calib[, matchingFAOyears, "potato"]    <- FAOYields[, , "potato"] / FAOYields[, , "sugr_beet"]       # LPJmL proxy for potato is sugar beet
-
-  # interpolate between FAO years
-  Calib <- toolFillYears(Calib, getYears(yields))
+  FAOYields     <- dimSums(FAOproduction[, faoyears, ], dim = 1) / dimSums(MAGarea[, faoyears, ], dim = 1)
+  FAOYields     <- setYears(toolTimeAverage(FAOYields[, 1993:1997, ], 5))
+  Calib         <- new.magpie("GLO", NULL, c(getNames(FAOYields), "pasture"), fill = 1, sets = c("iso", "year", "data"))
+  Calib[, , "oilpalm"]   <- FAOYields[, , "oilpalm"] / FAOYields[, , "groundnut"]  #LPJmL proxy for oilpalm is groundnut
+  Calib[, , "cottn_pro"] <- FAOYields[, , "cottn_pro"] / FAOYields[, , "groundnut"]#LPJmL proxy for cotton is groundnut
+  Calib[, , "foddr"]     <- FAOYields[, , "foddr"] / FAOYields[, , "maiz"]         #LPJmL proxy for fodder is maize
+  Calib[, , "others"]    <- FAOYields[, , "others"] / FAOYields[, , "maiz"]        #LPJmL proxy for others is maize
+  Calib[, , "potato"]    <- FAOYields[, , "potato"] / FAOYields[, , "sugr_beet"]   #LPJmL proxy for potato is sugarbeet
 
   # recalibrate yields for proxys
   yields <- yields * Calib[, , getNames(yields, dim = 1)]
