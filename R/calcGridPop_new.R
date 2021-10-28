@@ -200,7 +200,7 @@ else if (source == "Gao") {
     ratio[is.na(ratio)] <- 0
     #hold past rural urban share constant in each grid for now, based on year 2000
     past <- setYears(ratio,NULL) * past
-    } else {
+    } else if(!urban) {
     future <- dimSums(future, dim=3.2)
     }
 
