@@ -179,10 +179,10 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
   calcOutput("ClimateClass", aggregate = "cluster", years = "y2015", file = paste0("koeppen_geiger_", ctype, ".mz"))
 
   # 09 drivers
-  calcOutput("GridPop_new", subtype = "all", cellular = TRUE, harmonize_until = 2015, urban = FALSE,
+  calcOutput("GridPop_new", source = "Gao", subtype = "all", cellular = TRUE, harmonize_until = 2015, urban = FALSE,
              aggregate = "cluster", years = mag_years, round = 6, file = "f09_pop_grid.cs3")
 
-  calcOutput("GridPop_new", subtype="all", cellular=TRUE, harmonize_until=2015, urban = TRUE,
+  calcOutput("GridPop_new", subtype="Gao", subtype = "all", cellular = TRUE, harmonize_until=2015, urban = TRUE,
              aggregate="cluster", years = mag_years, round=6, file="f09_urbanpop_grid.cs3")
 
   # 10 land

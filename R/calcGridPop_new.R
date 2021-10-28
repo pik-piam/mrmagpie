@@ -186,6 +186,7 @@ else if (source == "Gao") {
       }
 
       x <- x1/1e6
+    }
 
   if (subtype == "all") {
 
@@ -194,14 +195,16 @@ else if (source == "Gao") {
     past <- past[,seq(1965,2005,5),]
     future <- calcOutput("GridPop_new", source="Gao", subtype="future", aggregate=F, FiveYear=F)
 
+    if(urban){
     ratio <- future[,2000,]/dimSums(future[,2000,], dim=3.2)
     ratio[is.na(ratio)] <- 0
 
     #hold past rural urban share constant in each grid for now
 
     past <- setYears(ratio,NULL) * past
-    past <- past[,seq(1965,1995,5),]
+    }
 
+    past <- past[,seq(1965,1995,5),]
 
     #harmonize future SSPs to divergence year by making them SSP2
     harm_y <- getYears(future, as.integer = T)[1:4]
@@ -213,11 +216,11 @@ else if (source == "Gao") {
 
   }
 
-    }
+
 
 }
 
-  else (stop("No other source available"))
+  else{ (stop("No other source available"))}
 
     return(list(x=x,
               weight=NULL,
