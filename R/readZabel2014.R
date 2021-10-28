@@ -17,26 +17,15 @@
 #' readSource("Zabel2014", subtype = "all_marginal", convert = "onlycorrect")
 #' }
 #'
-#' @importFrom rgdal readGDAL
 
 readZabel2014 <- function(subtype = "all_marginal") {
 
-  # rgdal required to read in *.bil format
-  # make sure that .hdr file is also in folder
-  zabel_raw <- readGDAL("./cropsuitability_rainfed_and_irrigated/1981-2010/overall_cropsuit_i_1981-2010/overall_cropsuit_i_1981-2010.bil")
-  zabel_raw <- raster(zabel_raw)
-  crs(zabel_raw) <- "+proj=longlat +datum=WGS84 +no_defs"
-  # minimum and maximum crop suitability value in the raw data
-  zabel_min <- 0
-  zabel_max <- 100
-
-  # rescale the data to 0 - 1
-  zabel_rescaled <- zabel_si <- (zabel_raw - zabel_min) * ((1 - 0) / (zabel_max - zabel_min))
+  zabel_cropsuit <- raster("./cropsuitability_rainfed_and_irrigated/1981-2010/overall_cropsuit_i_1981-2010/overall_cropsuit_i_1981-2010.tif")
 
   # define suitability threshold for crop suitability in MAgPIE at original resolution of 30 arc seconds
   # In Zabel et al. (2014) marginal land is defined by a suitability index <= 0.33
 
-  zabel_si <- zabel_rescaled
+  zabel_si <- zabel_cropsuit
   if (subtype == "all_marginal") {
     # for consistency with older magpie versions this is the same threshold that was applied to the previous
     # data set by Ramankutty et al. (2002)
@@ -65,7 +54,7 @@ readZabel2014 <- function(subtype = "all_marginal") {
   }
 
   # exclude all NA's and set other cells to 1 to count total available land cells
-  zabel_landcells <- zabel_rescaled
+  zabel_landcells <- zabel_cropsuit
   zabel_landcells[!is.na(zabel_landcells)] <- 1
 
   # aggregate and sum up suitable pixels
