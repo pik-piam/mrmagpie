@@ -11,17 +11,20 @@
 #' }
 #' @return Returns magpie objects with the share of suitable cropland per grid cell
 #' @author Patrick v. Jeetze
+#'
 #' @examples
 #' \dontrun{
 #' readSource("Zabel2014", subtype = "all_marginal", convert = "onlycorrect")
 #' }
 #'
-#'
+#' @importFrom rgdal readGDAL
 
 readZabel2014 <- function(subtype = "all_marginal") {
 
-  # read Zabel data (make sure that .hdr file is also in folder)
-  zabel_raw <- raster("./cropsuitability_rainfed_and_irrigated/1981-2010/overall_cropsuit_i_1981-2010/overall_cropsuit_i_1981-2010.bil")
+  # rgdal required to read in *.bil format
+  # make sure that .hdr file is also in folder
+  zabel_raw <- readGDAL("./cropsuitability_rainfed_and_irrigated/1981-2010/overall_cropsuit_i_1981-2010/overall_cropsuit_i_1981-2010.bil")
+  zabel_raw <- raster(zabel_raw)
   crs(zabel_raw) <- "+proj=longlat +datum=WGS84 +no_defs"
   # minimum and maximum crop suitability value in the raw data
   zabel_min <- 0

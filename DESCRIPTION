@@ -28,6 +28,7 @@ Imports:
     luscale,
     ncdf4,
     raster,
+    rgdal,
     mstools,
     tidyr,
     stats,

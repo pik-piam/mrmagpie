@@ -28,7 +28,6 @@ Reads crop suitability data published in Zabel, F., Putzenlechner, B., & Mauser,
 readSource("Zabel2014", subtype = "all_marginal", convert = "onlycorrect")
 }
 
-
 }
 \author{
 Patrick v. Jeetze
