@@ -5,6 +5,7 @@
 #' NOTE that some scaling factors for the future (for small countries Gambia and Djibouti) are off,
 #' data read in is 50% of WDI data, most likely due to large resolution
 #' @param subtype past (1965-2005), future (2005-2010) or all (divergence starts at year in harmonize_until)
+#' @param source  default source or Gao data (readGridPopGao) which is split into urban and rural.
 #' @param cellular only cellular
 #' @param FiveYear TRUE for 5 year time steps, otherwise yearly from source
 #' @param harmonize_until 2015 default divergence of SSPs
@@ -16,8 +17,10 @@
 #' @importFrom madrat calcOutput toolGetMapping toolAggregate
 
 
-calcGridPop_new <- function(subtype="all", cellular=TRUE, FiveYear=TRUE, harmonize_until=2015, urban = FALSE) {
+calcGridPop_new <- function(source = "ISIMIP", subtype="all", cellular=TRUE, FiveYear=TRUE, harmonize_until=2015, urban = FALSE) {
   if (!cellular)(stop("Run calcPopulation instead"))
+
+  if (source=="ISIMIP") {
   ##past
   if (subtype=="past") {
 
@@ -121,6 +124,9 @@ getNames(x) <- gsub("pop_", "", getNames(x))
 
   if (urban){
 
+    vcat(verbosity=1, "note for this data source urban/rural is diaggregated using uniform country level value. Use
+         Gao source instead for cellular urban/rural population")
+
     urban <- calcOutput("Urban", aggregate=F)[,getYears(x),]
     getNames(urban) <- gsub("pop_","",getNames(urban))
 
@@ -130,6 +136,88 @@ getNames(x) <- gsub("pop_", "", getNames(x))
 
     x <- x * urban
    }
+}
+
+else if (source == "Gao") {
+
+    if (subtype == "past") {stop("Data only available from 2000 onwards, use ISIMIP source instead")}
+
+    if (subtype == "future") {
+
+      x <- readSource("GridPopGao", convert=F)
+
+      int_years <- seq(2005,2095,10)
+
+      x <- time_interpolate(x, interpolated_year = int_years, integrate_interpolated_years = TRUE)
+
+      if (!urban) {x <- collapseNames(dimSums(x, dim=3.2))}
+
+      # Add SDP, SDP_EI, SDP_RC and SDP_MC scenarios as copy of SSP1 - as in calcPopulation
+      if("SSP1" %in% getNames(x, dim=1) && !("SDP" %in% getNames(x, dim=1))){
+        combined_SDP <- x[,, "SSP1"]
+        for  (i in c("SDP", "SDP_EI", "SDP_RC", "SDP_MC")) {
+          getNames(combined_SDP, dim=1) <- gsub("SSP1", i, getNames(x[,, "SSP1"], dim=1))
+          x <- mbind(x, combined_SDP)
+        }
+      }
+      # Add SSP2EU as copy of SSP2 - this will be scaled to SSP2EU - given the lack of grid pop information for SSP2EU
+      if("SSP2" %in% getNames(x, dim=1) && !("SSP2EU" %in% getNames(x, dim=1))){
+        combined_EU <- x[,,"SSP2"]
+        getNames(combined_EU, dim=1) <- gsub("SSP2", "SSP2EU", getNames(x[,, "SSP2"], dim=1))
+        x <- mbind(x, combined_EU)
+      }
+
+      CountryToCell     <- toolGetMapping("CountryToCellMapping.csv", type = "cell")
+      agg   <- toolAggregate(x, rel=CountryToCell, from="celliso", to="iso", partrel=TRUE)
+
+      ## scale to match madrat country-level pop
+      pop <- calcOutput("Population",aggregate=F)
+      getNames(pop) <- gsub("pop_", "", getNames(pop))
+      pop <- pop[,getYears(agg), ]
+
+      #scaling factor sc_f applied to every cell
+      sc_f <- (dimSums(agg,dim=3.2)/1e6)/pop[getRegions(agg),,]
+      x1 <- x/sc_f[getRegions(x),,]
+
+      #ATF, SJM, SGS have 0, but the cells exist, so get filled.
+      #the few cells for each island get even division of total pop
+      for (i in c("SGS","ATF","SJM")){
+        x1[i,,] <- 1e6*pop[i,,]/length(getCells(x[i,,]))
+      }
+
+      x <- x1/1e6
+
+  if (subtype == "all") {
+
+
+    past <- calcOutput("GridPop_new",source = "ISIMIP", subtype="past", aggregate=F, FiveYear=F)
+    past <- past[,seq(1965,2005,5),]
+    future <- calcOutput("GridPop_new", source="Gao", subtype="future", aggregate=F, FiveYear=F)
+
+    ratio <- future[,2000,]/dimSums(future[,2000,], dim=3.2)
+    ratio[is.na(ratio)] <- 0
+
+    #hold past rural urban share constant in each grid for now
+
+    past <- setYears(ratio,NULL) * past
+    past <- past[,seq(1965,1995,5),]
+
+
+    #harmonize future SSPs to divergence year by making them SSP2
+    harm_y <- getYears(future, as.integer = T)[1:4]
+    future[,harm_y,] <- future[,harm_y,"SSP2"]
+    x <- mbind(past,future)
+
+     x <- toolHoldConstantBeyondEnd(x)
+
+
+  }
+
+    }
+
+}
+
+  else (stop("No other source available"))
 
     return(list(x=x,
               weight=NULL,

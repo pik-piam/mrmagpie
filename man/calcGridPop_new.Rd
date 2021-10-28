@@ -5,6 +5,7 @@
 \title{calcGridPop_new}
 \usage{
 calcGridPop_new(
+  source = "ISIMIP",
   subtype = "all",
   cellular = TRUE,
   FiveYear = TRUE,
@@ -13,6 +14,8 @@ calcGridPop_new(
 )
 }
 \arguments{
+\item{source}{default source or Gao data (readGridPopGao) which is split into urban and rural.}
+
 \item{subtype}{past (1965-2005), future (2005-2010) or all (divergence starts at year in harmonize_until)}
 
 \item{cellular}{only cellular}
