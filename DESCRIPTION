@@ -1,7 +1,7 @@
 Package: mrmagpie
 Type: Package
 Title: madrat based MAgPIE Input Data Library
-Version: 1.18.12
+Version: 1.18.13
 Date: 2021-10-28
 Authors@R: c(person("Kristine", "Karstens", email = "karstens@pik-potsdam.de", role = c("aut","cre")),
              person("Jan Philipp", "Dietrich", email = "dietrich@pik-potsdam.de", role = "aut"),
@@ -28,7 +28,6 @@ Imports:
     luscale,
     ncdf4,
     raster,
-    rgdal,
     mstools,
     tidyr,
     stats,
