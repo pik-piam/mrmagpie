@@ -217,10 +217,9 @@ else if (source == "Gao") {
   }
 
 
-
 }
 
-  else{ (stop("No other source available"))}
+  else { (stop("No other source available"))}
 
     return(list(x=x,
               weight=NULL,

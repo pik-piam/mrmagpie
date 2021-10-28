@@ -21,10 +21,9 @@ readGridPopGao <- function(){
      if (urb =="rural"){ur <- "rur"} else if(urb=="urban") {ur <- "urb"}
 
     if (year == 2000) {
-    t <- raster(paste0("C:/PIK/inputdata/sources/GridPopGao/Base_year_data_2000_NetCDF/2000",
+    t <- raster(paste0("Base_year_data_2000_NetCDF/2000",
                        urb, ".nc"))}else {
-    t <- raster(paste0("C:/PIK/inputdata/sources/GridPopGao/",
-                       ssp, "_NetCDF/", urb, "/NetCDF/", tolower(ssp), ur, year, ".nc"))
+    t <- raster(paste0(ssp, "_NetCDF/", urb, "/NetCDF/", tolower(ssp), ur, year, ".nc"))
     }
 
    #aggregate and reproject
