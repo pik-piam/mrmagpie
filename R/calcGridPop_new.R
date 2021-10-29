@@ -193,7 +193,7 @@ else if (source == "Gao") {
 
     past <- calcOutput("GridPop_new",source = "ISIMIP", subtype="past", aggregate=F, FiveYear=F)
     past <- past[,seq(1965,2005,5),]
-    future <- calcOutput("GridPop_new", source="Gao", subtype="future", aggregate=F, FiveYear=F)
+    future <- calcOutput("GridPop_new", source="Gao", urban = TRUE, subtype="future", aggregate=F, FiveYear=F)
 
     if(urban){
     ratio <- future[,2000,]/dimSums(future[,2000,], dim=3.2)
@@ -211,11 +211,9 @@ else if (source == "Gao") {
     future[,harm_y,] <- future[,harm_y,"SSP2"]
     x <- mbind(past,future)
 
-     x <- toolHoldConstantBeyondEnd(x)
-
+   x <- toolHoldConstantBeyondEnd(x)
 
   }
-
 
 }
 
