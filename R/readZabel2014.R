@@ -17,9 +17,10 @@
 #' readSource("Zabel2014", subtype = "all_marginal", convert = "onlycorrect")
 #' }
 #'
+#' @importFrom raster reclassify
+#'
 
 readZabel2014 <- function(subtype = "all_marginal") {
-
   zabel_cropsuit <- raster("./cropsuitability_rainfed_and_irrigated/1981-2010/overall_cropsuit_i_1981-2010/overall_cropsuit_i_1981-2010.tif")
 
   # define suitability threshold for crop suitability in MAgPIE at original resolution of 30 arc seconds
@@ -27,35 +28,65 @@ readZabel2014 <- function(subtype = "all_marginal") {
 
   zabel_si <- zabel_cropsuit
   if (subtype == "all_marginal") {
-    # for consistency with older magpie versions this is the same threshold that was applied to the previous
+    # for consistency with older magpie versions this is the same threshold (suitability index below 0.1) that was applied to the previous
     # data set by Ramankutty et al. (2002)
-    zabel_si[zabel_si <= 0.1] <- 0
-    zabel_si[zabel_si > 0.1] <- 1
+    rclass_matrx <- matrix(c(
+      0, 0.10, 0,
+      0.10, 1, 1
+    ),
+    ncol = 3, byrow = TRUE
+    )
+    zabel_si <- reclassify(zabel_si, rclass_matrx)
   } else if (subtype == "q33_marginal") {
     # The bottom tertile (suitability index below 0.13) of the marginal land area is excluded
-    zabel_si[zabel_si <= 0.13] <- 0
-    zabel_si[zabel_si > 0.13] <- 1
+    rclass_matrx <- matrix(c(
+      0, 0.13, 0,
+      0.13, 1, 1
+    ),
+    ncol = 3, byrow = TRUE
+    )
+    zabel_si <- reclassify(zabel_si, rclass_matrx)
   } else if (subtype == "q50_marginal") {
     # The bottom  half (suitability index below 0.18) of the marginal land area is excluded
-    zabel_si[zabel_si <= 0.18] <- 0
-    zabel_si[zabel_si > 0.18] <- 1
+    rclass_matrx <- matrix(c(
+      0, 0.18, 0,
+      0.18, 1, 1
+    ),
+    ncol = 3, byrow = TRUE
+    )
+    zabel_si <- reclassify(zabel_si, rclass_matrx)
   } else if (subtype == "q66_marginal") {
     # The first and second tertile (suitability index below 0.23) of the marginal land area are excluded
-    zabel_si[zabel_si <= 0.23] <- 0
-    zabel_si[zabel_si > 0.23] <- 1
+    rclass_matrx <- matrix(c(
+      0, 0.23, 0,
+      0.23, 1, 1
+    ),
+    ncol = 3, byrow = TRUE
+    )
+    zabel_si <- reclassify(zabel_si, rclass_matrx)
   } else if (subtype == "q75_marginal") {
     # The first, second and third quartiles (suitability index below 0.25) of the marginal land are are excluded
-    zabel_si[zabel_si <= 0.25] <- 0
-    zabel_si[zabel_si > 0.25] <- 1
+    rclass_matrx <- matrix(c(
+      0, 0.25, 0,
+      0.25, 1, 1
+    ),
+    ncol = 3, byrow = TRUE
+    )
+    zabel_si <- reclassify(zabel_si, rclass_matrx)
   } else if (subtype == "no_marginal") {
     # marginal land (suitability index below 0.33) is fully excluded
-    zabel_si[zabel_si <= 0.33] <- 0
-    zabel_si[zabel_si > 0.33] <- 1
+    rclass_matrx <- matrix(c(
+      0, 0.33, 0,
+      0.33, 1, 1
+    ),
+    ncol = 3, byrow = TRUE
+    )
+    zabel_si <- reclassify(zabel_si, rclass_matrx)
   }
 
-  # exclude all NA's and set other cells to 1 to count total available land cells
+  # ignore all NA's and set all land cells to 1 to count total available land cells
   zabel_landcells <- zabel_cropsuit
-  zabel_landcells[!is.na(zabel_landcells)] <- 1
+  zabel_landcells <- reclassify(zabel_landcells, cbind(0, 1, 1), include.lowest = TRUE)
 
   # aggregate and sum up suitable pixels
   # in effect this means counting the pixels that are suitable (1) per 0.5 degree grid cell
@@ -76,7 +107,7 @@ readZabel2014 <- function(subtype = "all_marginal") {
   # transform raster to magpie object
   out <- as.magpie(extract(zabel_si_share_0.5, map[c("lon", "lat")]), spatial = 1)
   # set dimension names
-  dimnames(out) <- list("x.y.iso"=paste(map$coords, map$iso, sep = "."), "t"=NULL, "data"=paste0("si0_",subtype))
+  dimnames(out) <- list("x.y.iso" = paste(map$coords, map$iso, sep = "."), "t" = NULL, "data" = paste0("si0_", subtype))
 
   return(out)
 }
