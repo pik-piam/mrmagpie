@@ -43,7 +43,9 @@ magpie object in cellular resolution
 This function calculates environmental flow requirements (EFR) for MAgPIE retrieved from LPJmL monthly discharge and water availability
 }
 \examples{
-\dontrun{ calcOutput("EnvmtlFlow", aggregate = FALSE) }
+\dontrun{
+calcOutput("EnvmtlFlow", aggregate = FALSE)
+}
 
 }
 \author{

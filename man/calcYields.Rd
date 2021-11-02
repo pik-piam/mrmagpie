@@ -13,7 +13,8 @@ calcYields(
 }
 \arguments{
 \item{source}{Defines LPJmL version for main crop inputs and isimip replacement.
-For isimip choose crop model/gcm/rcp/co2 combination formatted like this: "yields:EPIC-IIASA:ukesm1-0-ll:ssp585:default:3b"}
+For isimip choose crop model/gcm/rcp/co2 combination formatted like this:
+"yields:EPIC-IIASA:ukesm1-0-ll:ssp585:default:3b"}
 
 \item{climatetype}{Switch between different climate scenarios}
 

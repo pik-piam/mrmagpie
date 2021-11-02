@@ -1,6 +1,8 @@
 #' @title calcPastureSuit
 #' @description Calculate glassland suitable for pasture management based on population and aridity criteria.
 #' @param subtype Select version, climate model and period.
+#' @param smooth_precipitation Smooth precipitation climate data over time
+#' @param smooth_out smooth the Pasture suitability areas variations over time
 #' @return List of magpie object with results on cluster level
 #' @author Marcos Alves
 #' @examples
@@ -10,7 +12,7 @@
 #' }
 #' @importFrom raster area rasterFromXYZ
 
-calcPastureSuit <- function(subtype = "ISIMIP3b:IPSL-CM6A-LR:1850-2100"){
+calcPastureSuit <- function(subtype = "ISIMIP3b:IPSL-CM6A-LR:1850-2100", smooth_precipitation = 10, smooth_out = 10){
   x <- toolSplitSubtype(subtype, list(version = NULL, climatemodel = NULL, period = NULL))
 
   # pasture drivers
@@ -22,7 +24,7 @@ calcPastureSuit <- function(subtype = "ISIMIP3b:IPSL-CM6A-LR:1850-2100"){
     # write a script that reads different SPPs scenarios
     subtype = paste(x$version, x$climatemodel,scenario,x$period, "pr", sep = ":")
     # subtype = "ISIMIP3b:IPSL_CM6A_LR:ssp126:1850-2100:pr"
-    precipitation[[scenario]] <- setNames(calcOutput("GCMClimate_new", subtype = subtype, aggregate = F),paste0("past_suit.",scenario))
+    precipitation[[scenario]] <- setNames(calcOutput("GCMClimate_new", subtype = subtype, smooth = smooth_precipitation, aggregate = F),paste0("past_suit.",scenario))
   }
   precipitation <- mbind(precipitation)
 
@@ -85,7 +87,10 @@ calcPastureSuit <- function(subtype = "ISIMIP3b:IPSL-CM6A-LR:1850-2100"){
   pasture_suit_area[pasture_suit_area < 0] <- 0
   pasture_suit_area[,past_all,] <- hist_pastr[,past_all,]
 
-  pasture_suit_area <- toolTimeAverage(pasture_suit_area, averaging_range = 10 , annual = F)
+  if(smooth_out>1) {
+    pasture_suit_area <- toolTimeAverage(pasture_suit_area, averaging_range = smooth_out , annual = F)
+  }
+
   pasture_suit_area[,intersect(past_all, getYears(pasture_suit_area)),] <- hist_pastr[,intersect(past_all, getYears(pasture_suit_area)),]
   pasture_suit_area <- toolHoldConstant(pasture_suit_area, findset("time"))
   pasture_suit_area <- collapseNames(pasture_suit_area)

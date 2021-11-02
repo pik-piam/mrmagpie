@@ -1,6 +1,7 @@
 #' @title calcGCMClimate_new
 #' @description Disaggregate CO2 global atmospheric concentration to cellular level
 #' @param subtype type of climate data to collect
+#' @param smooth set averaging value for smoothing trajectories
 #' @return magpie object in cellular resolution
 #' @author Marcos Alves, Kristine Karstens
 #'
@@ -14,7 +15,7 @@
 #' @importFrom magpiesets findset
 #'
 
-calcGCMClimate_new <- function(subtype = "ISIMIP3b:IPSL-CM6A-LR:ssp126:1850-2100:tas") {
+calcGCMClimate_new <- function(subtype = "ISIMIP3b:IPSL-CM6A-LR:ssp126:1850-2100:tas", smooth = 0) {
 
   ###### CONFIG ######
   spliting_year <- 2014
@@ -32,7 +33,14 @@ calcGCMClimate_new <- function(subtype = "ISIMIP3b:IPSL-CM6A-LR:ssp126:1850-2100
     readSource("GCMClimate_new", subtype = .subtype_scen, convert = "onlycorrect")
   )
   getNames(y) <- gsub("-", "_", paste(x$variable, x$version, x$climatemodel, x$scenario, sep = "_"))
-  y <- y[, time, ]
+
+  if(smooth>1){
+    y <- toolTimeAverage(y, averaging_range = smooth , annual = T)
+    y <- toolHoldConstant(y, time)
+    y <- y[, time, ]
+  } else {
+    y <- y[, time, ]
+  }
 
   unit <- switch(x$variable,
     "tas"       = "Degree Celcius",

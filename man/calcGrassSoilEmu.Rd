@@ -7,8 +7,7 @@
 calcGrassSoilEmu(
   subtype = "ISIMIP3b:IPSL_CM6A_LR:ssp126:1965_2100",
   model = "5f5fa2",
-  mfile = "weights",
-  random = runif(1)
+  mfile = "weights"
 )
 }
 \arguments{
@@ -18,8 +17,6 @@ calcGrassSoilEmu(
 \item{model}{trained model ID}
 
 \item{mfile}{model file name}
-
-\item{random}{number generator do guratee this function will not use cache files}
 }
 \value{
 Magpie objects with a diverse inforamtion

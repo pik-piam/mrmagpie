@@ -2,7 +2,8 @@
 #' @description This function extracts yields from LPJmL to MAgPIE
 #'
 #' @param source Defines LPJmL version for main crop inputs and isimip replacement.
-#' For isimip choose crop model/gcm/rcp/co2 combination formatted like this: "yields:EPIC-IIASA:ukesm1-0-ll:ssp585:default:3b"
+#' For isimip choose crop model/gcm/rcp/co2 combination formatted like this:
+#' "yields:EPIC-IIASA:ukesm1-0-ll:ssp585:default:3b"
 #' @param climatetype Switch between different climate scenarios
 #' @param cells if cellular is TRUE: "magpiecell" for 59199 cells or "lpjcell" for 67420 cells
 #' @param weighting use of different weights (totalCrop (default), totalLUspecific, cropSpecific, crop+irrigSpecific,
@@ -21,7 +22,7 @@
 #' @importFrom mrcommons toolLPJmLVersion
 
 calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimip = NULL),
-                           climatetype = "GSWP3-W5E5:historical", cells = "magpiecell", weighting = "totalCrop") {
+                       climatetype = "GSWP3-W5E5:historical", cells = "magpiecell", weighting = "totalCrop") {
 
   cfg <- toolLPJmLVersion(version = source["lpjml"], climatetype = climatetype)
 
@@ -29,12 +30,12 @@ calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimi
   options(magclass_sizeLimit = 1e+12)
   on.exit(options(magclass_sizeLimit = sizelimit))
 
-  if (climatetype == "GSWP3-W5E5:historical") {
- stage       <- "smoothed"
-                                              climatetype <- cfg$baseline_hist
+  if (grepl("GSWP3-W5E5", climatetype)) {
+    stage       <- "smoothed"
+    climatetype <- cfg$baseline_hist
   } else {
-                                     stage <- "harmonized2020"
-}
+    stage <- "harmonized2020"
+  }
 
   LPJ2MAG      <- toolGetMapping("MAgPIE_LPJmL.csv", type = "sectoral", where = "mappingfolder")
   lpjml_crops  <- unique(LPJ2MAG$LPJmL)
@@ -59,6 +60,7 @@ calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimi
     stop("produced NA yields")
   }
 
+  # Use FAO data to scale proxy crops to reasonable levels (global, static factor)
   FAOproduction     <- collapseNames(calcOutput("FAOmassbalance_pre", aggregate = FALSE)[, , "production"][, , "dm"])
   MAGarea           <- calcOutput("Croparea", sectoral = "kcr", physical = TRUE, aggregate = FALSE)
   faoyears          <- intersect(getYears(FAOproduction), getYears(MAGarea))
@@ -69,19 +71,14 @@ calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimi
   FAOproduction <- add_columns(FAOproduction[, , MAGcroptypes], addnm = missing, dim = 3.1)
   FAOproduction[, , missing] <- 0
 
-  FAOYields         <- dimSums(FAOproduction[, faoyears, ], dim = 1) / dimSums(MAGarea[, faoyears, ], dim = 1)
-
-  matchingFAOyears <- intersect(getYears(yields), getYears(FAOYields))
-  FAOYields        <- FAOYields[, matchingFAOyears, ]
-  Calib            <- new.magpie("GLO", matchingFAOyears, c(getNames(FAOYields), "pasture"), fill = 1, sets = c("iso", "year", "data"))
-  Calib[, matchingFAOyears, "oilpalm"]   <- FAOYields[, , "oilpalm"] / FAOYields[, , "groundnut"]      # LPJmL proxy for oil palm is groundnut
-  Calib[, matchingFAOyears, "cottn_pro"] <- FAOYields[, , "cottn_pro"] / FAOYields[, , "groundnut"]    # LPJmL proxy for cotton is groundnut
-  Calib[, matchingFAOyears, "foddr"]     <- FAOYields[, , "foddr"] / FAOYields[, , "maiz"]             # LPJmL proxy for fodder is maize
-  Calib[, matchingFAOyears, "others"]    <- FAOYields[, , "others"] / FAOYields[, , "maiz"]            # LPJmL proxy for others is maize
-  Calib[, matchingFAOyears, "potato"]    <- FAOYields[, , "potato"] / FAOYields[, , "sugr_beet"]       # LPJmL proxy for potato is sugar beet
-
-  # interpolate between FAO years
-  Calib <- toolFillYears(Calib, getYears(yields))
+  FAOYields     <- dimSums(FAOproduction[, faoyears, ], dim = 1) / dimSums(MAGarea[, faoyears, ], dim = 1)
+  FAOYields     <- setYears(toolTimeAverage(FAOYields[, 1993:1997, ], 5))
+  Calib         <- new.magpie("GLO", NULL, c(getNames(FAOYields), "pasture"), fill = 1, sets = c("iso", "year", "data"))
+  Calib[, , "oilpalm"]   <- FAOYields[, , "oilpalm"] / FAOYields[, , "groundnut"]  #LPJmL proxy for oilpalm is groundnut
+  Calib[, , "cottn_pro"] <- FAOYields[, , "cottn_pro"] / FAOYields[, , "groundnut"]#LPJmL proxy for cotton is groundnut
+  Calib[, , "foddr"]     <- FAOYields[, , "foddr"] / FAOYields[, , "maiz"]         #LPJmL proxy for fodder is maize
+  Calib[, , "others"]    <- FAOYields[, , "others"] / FAOYields[, , "maiz"]        #LPJmL proxy for others is maize
+  Calib[, , "potato"]    <- FAOYields[, , "potato"] / FAOYields[, , "sugr_beet"]   #LPJmL proxy for potato is sugarbeet
 
   # recalibrate yields for proxys
   yields <- yields * Calib[, , getNames(yields, dim = 1)]
@@ -90,25 +87,26 @@ calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimi
     yields <- toolCoord2Isocell(yields)
   }
 
-   if (!is.na(source["isimip"])) {
+  if (!is.na(source["isimip"])) {
     to_rep <- calcOutput("ISIMIP3bYields", subtype = source[["isimip"]], cells = cells, aggregate = F)
     common_vars <- intersect(getNames(yields), getNames(to_rep))
     common_years <- intersect(getYears(yields), getYears(to_rep))
     # convert to array for memory
     yields <- as.array(yields)
-to_rep <- as.array(to_rep)
+    to_rep <- as.array(to_rep)
     # yields[,common_years,common_vars] <- ifelse(to_rep[,common_years,common_vars] >0, to_rep[,common_years,common_vars], yields[,common_years, common_vars])
     yields[, common_years, common_vars] <- to_rep[, common_years, common_vars]
     yields <- as.magpie(yields)
-to_rep <- as.magpie(to_rep)
+    to_rep <- as.magpie(to_rep)
 
-   }
+  }
 
 
   if (weighting == "totalCrop") {
 
     crop_area_weight <- dimSums(calcOutput("Croparea", sectoral = "kcr", physical = TRUE, irrigation = FALSE,
-                                           cellular = TRUE, cells = cells, aggregate = FALSE, years = "y1995", round = 6), dim = 3)
+                                           cellular = TRUE, cells = cells, aggregate = FALSE,
+                                           years = "y1995", round = 6), dim = 3)
 
   } else if (weighting %in% c("totalLUspecific", "cropSpecific", "crop+irrigSpecific")) {
 
@@ -146,21 +144,23 @@ to_rep <- as.magpie(to_rep)
   } else if (weighting == "avlCropland") {
 
     crop_area_weight <- setNames(calcOutput("AvlCropland", marginal_land = "all_marginal", cells = cells,
-                                   country_level = FALSE, aggregate = FALSE), NULL)
+                                            country_level = FALSE, aggregate = FALSE), NULL)
 
   } else if (weighting == "avlCropland+avlPasture") {
 
     avlCrop <- setNames(calcOutput("AvlCropland", marginal_land = "all_marginal", cells = cells,
-                        country_level = FALSE, aggregate = FALSE), "avlCrop")
+                                   country_level = FALSE, aggregate = FALSE), "avlCrop")
 
     LU1995  <- setYears(calcOutput("LanduseInitialisation", aggregate = FALSE, cellular = TRUE, nclasses = "seven",
-                                   fao_corr = TRUE, input_magpie = TRUE, cells = cells, years = "y1995", round = 6), NULL)
+                                   fao_corr = TRUE, input_magpie = TRUE, cells = cells,
+                                   years = "y1995", round = 6), NULL)
 
     crop_area_weight <- new.magpie(cells_and_regions = getCells(yields), years = NULL,
                                    names = getNames(yields, dim = 1), fill = avlCrop)
 
     crop_area_weight[, , "pasture"]       <- pmax(avlCrop,
-                                             dimSums(LU1995[, , c("primforest", "secdforest", "forestry", "past")], dim = 3))
+                                                  dimSums(LU1995[, , c("primforest", "secdforest",
+                                                                       "forestry", "past")], dim = 3))
 
   } else {
 

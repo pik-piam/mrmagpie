@@ -22,12 +22,12 @@ calcRangeSoilCarbonHist <- function(subtype = "ISIMIP3b:IPSL-CM6A-LR:ssp126:1965
   Value <- NULL
 
   environment_data <- calcOutput("CollectEnvironmentData_new", subtype = subtype, sar = 1, aggregate = F, sel_feat = c("tas", "pr", "lwnet", "rsds", "CO2", "Ks", "Sf", "w_pwp", "w_fc", "w_sat", "hsg", "wet"))
-  weights <- readSource("GrassSoilEmu", subtype = paste(subtype, model, "weights", sep = ":"), convert = F)
+  weights <- toolRefoldWeights(readSource("GrassSoilEmu", subtype = paste(subtype, model, "weights", sep = ":"), convert = F))
   mean_col <- readSource("GrassSoilEmu", subtype = paste(subtype, model, "mean_col", sep = ":"), convert = F)
   stddevs_col <- readSource("GrassSoilEmu", subtype = paste(subtype, model, "stddevs_col", sep = ":"), convert = F)
   mean_lab <- readSource("GrassSoilEmu", subtype = paste(subtype, model, "mean_lab", sep = ":"), convert = F)
   stddevs_lab <- readSource("GrassSoilEmu", subtype = paste(subtype, model, "stddevs_lab", sep = ":"), convert = F)
-  inputs <- as.vector(readSource("GrassSoilEmu", subtype = paste(subtype, model, "inputs", sep = ":"), convert = F))
+  inputs <- getItems(readSource("GrassSoilEmu", subtype = paste(subtype, model, "inputs", sep = ":"), convert = F),dim  = 1)
   hist_lsu_ha <- calcOutput("LsuDensityHist", disagg_type = "grassland", aggregate = F)
   land_ini_LUH2v2 <- calcOutput("LUH2v2", aggregate = F, landuse_types = "LUH2v2", cellular = TRUE)
 
@@ -41,7 +41,7 @@ calcRangeSoilCarbonHist <- function(subtype = "ISIMIP3b:IPSL-CM6A-LR:ssp126:1965
     bins <- cut(bin_hist_lsu_ha$Value, breaks = breaks, labels = labels, include.lowest = TRUE, right = F)
     bin_hist_lsu_ha$Value <- as.numeric(levels(bins)[bins])
 
-    sc <- calcOutput("CollectSoilCarbonLSU", lsu_levels = c(seq(0, 2, 0.2), 2.5), lpjml = lpjml, climatemodel = x$climatemodel, scenario = paste0(x$scenario, "_co2_Nreturn0p5_limN"), sar = 1, aggregate = F, years = seq(1965, 2100, by = 5))
+    sc <- calcOutput("CollectSoilCarbonLSU", lsu_levels = c(seq(0, 2, 0.2), 2.5), lpjml = lpjml, climatemodel = x$climatemodel, scenario = paste0(x$scenario, "/co2/Nreturn0p5/limN"), sar = 1, aggregate = F, years = seq(1965, 2100, by = 5))
     sc_df <- as.data.frame(sc[, past[1], ])
     sc_df$Data1 <- gsub("p", ".", as.character.factor(sc_df$Data1))
     sc_df$Data1 <- as.numeric(sc_df$Data1)
@@ -61,7 +61,7 @@ calcRangeSoilCarbonHist <- function(subtype = "ISIMIP3b:IPSL-CM6A-LR:ssp126:1965
 
     input_past_df[[memory_col]] <- 0
     input_past_df[input_past_df$Year == past_num[1], memory_col] <- as.data.frame(sc_start)$Value
-    input_df_scaled_past <- scale(input_past_df[, inputs], center = mean_col[inputs], scale = stddevs_col[inputs])
+    input_df_scaled_past <- scale(input_past_df[, inputs], center = as.matrix(mean_col[,,inputs]), scale = as.matrix(stddevs_col[,,inputs]))
 
     soilc_range_past <- NULL
     for (i in 1:length(past_num)) {
