@@ -244,9 +244,9 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
   calcOutput("BphMask",   aggregate = "cluster", file = paste0("f32_bph_mask_", ctype, ".mz"))
 
   # 34
-  calcOutput("UrbanLandFuture", aggregate = FALSE, round = 6, years = short_years, file = "f34_UrbanLand_0.5.mz")
+  calcOutput("UrbanLandFuture", aggregate = FALSE, round = 6, years = short_years, file = "f34_urbanland_0.5.mz")
   calcOutput("UrbanLandFuture", aggregate = "cluster", round = 6, years = short_years,
-    file = paste0("f34_UrbanLand_", ctype, ".mz"))
+    file = paste0("f34_urbanland_", ctype, ".mz"))
 
   # 35 natveg
   calcOutput("AgeClassDistribution", aggregate = "cluster", round = 6, file = paste0("forestageclasses_", ctype, ".mz"))
