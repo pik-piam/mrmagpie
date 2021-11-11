@@ -12,9 +12,15 @@
 #' }
 #'
 #' @importFrom magpiesets findset addLocation
+#' @importFrom magclass collapseDim
 #'
 
 calcProtectArea <- function(cells = "magpiecell") {
+
+  # Land area (in Mha):
+  landArea <- calcOutput("LanduseInitialisation", cellular = TRUE, cells = cells,
+                         nclasses = "seven", fao_corr = TRUE, input_magpie = TRUE, years = "y1995", aggregate = FALSE)
+  landArea <- dimSums(landArea, dim = 3)
 
   # Protection Area mz file (conservation priority area in Mha)
   x <- readSource("ProtectArea", convert = "onlycorrect")
@@ -30,6 +36,8 @@ calcProtectArea <- function(cells = "magpiecell") {
 
   } else if (cells == "lpjcell") {
 
+    landArea <- collapseDim(addLocation(landArea), dim = c("N", "region"))
+
     tmp <- collapseDim(addLocation(x), dim = c("region", "cell"))
 
     x   <- new.magpie(cells_and_regions = getCells(collapseDim(protectShr, dim = "iso")),
@@ -38,14 +46,15 @@ calcProtectArea <- function(cells = "magpiecell") {
                       sets = c("x.y.iso", "year", "data"))
     x[getCells(tmp), , ] <- tmp
 
+    map         <- toolGetMappingCoord2Country()
+    if (any(getCells(x) != map$coords)) {
+      stop("Wrong cell ordering in calcProtectArea")
+    }
+    getCells(x) <- paste(map$coords, map$iso, sep = ".")
+
   } else {
     stop("Please select magpiecell or lpjcell in cells argument of calcProtectArea")
   }
-
-  # Land area (in Mha):
-  landArea <- calcOutput("LanduseInitialisation", cellular = TRUE, cells = cells,
-                          nclasses = "seven", fao_corr = TRUE, input_magpie = TRUE, years = "y1995", aggregate = FALSE)
-  landArea <- dimSums(landArea, dim = 3)
 
   # Land area to be protected by 2050 (in Mha)
   protectArea <- protectShr * landArea

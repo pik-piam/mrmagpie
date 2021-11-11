@@ -16,7 +16,9 @@ magpie object in cellular resolution with different protection scenarios
 Function extracts conservation protected area
 }
 \examples{
-\dontrun{ calcOutput("ProtectArea", aggregate = FALSE) }
+\dontrun{
+calcOutput("ProtectArea", aggregate = FALSE)
+}
 
 }
 \author{
