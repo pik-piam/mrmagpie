@@ -15,11 +15,21 @@
 #' @importFrom magclass hasCoords
 
 correctHalfEarth <- function(x) {
+
   x <- toolConditionalReplace(x, conditions = c("is.na()", "<0"), replaceby = 0)
-  if (hasCoords(x)) {
-    x <- toolCoord2Isocell(x, fillMissing = 0)
-  } else {
-    x <- toolCell2isoCell(x)
-  }
-  return(x)
+
+  # cell mapping
+  map         <- toolGetMappingCoord2Country()
+  commonCells <- intersect(map$coords, getCells(x))
+
+  y <- new.magpie(cells_and_regions = map$coords)
+  y[commonCells, , ] <- x[commonCells, , ]
+
+  y <- toolConditionalReplace(y, conditions = c("is.na()", "<0"), replaceby = 0)
+
+  getSets(y)["d1.1"] <- "x"
+  getSets(y)["d1.2"] <- "y"
+  getCells(y)        <- paste(map$coords, map$iso, sep = ".")
+
+  return(y)
 }

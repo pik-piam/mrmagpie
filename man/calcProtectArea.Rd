@@ -4,7 +4,10 @@
 \alias{calcProtectArea}
 \title{calcProtectArea}
 \usage{
-calcProtectArea()
+calcProtectArea(cells = "magpiecell")
+}
+\arguments{
+\item{cells}{number of cells of landmask (select "magpiecell" for 59199 cells or "lpjcell" for 67420 cells)}
 }
 \value{
 magpie object in cellular resolution with different protection scenarios
