@@ -35,6 +35,10 @@ calcWaterUseNonAg <- function(selectyears = seq(1995, 2100, by = 5), cells = "ma
                               lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de", crop = "ggcmi_phase3_nchecks_9ca735cb"),
                               climatetype = "GSWP3-W5E5:historical") {
 
+  sizelimit <- getOption("magclass_sizeLimit")
+  options(magclass_sizeLimit = 1e+12)
+  on.exit(options(magclass_sizeLimit = sizelimit))
+
   # Cell mapping
   map         <- toolGetMappingCoord2Country()
   selectcells <- map$coords
@@ -77,7 +81,8 @@ calcWaterUseNonAg <- function(selectyears = seq(1995, 2100, by = 5), cells = "ma
       watdemISIMIP[, yearsHist, ] <- toolTimeAverage(watdemISIMIP, averaging_range = 8)[, baseyear, ]
     }
 
-    watdemNonAg <- watdemISIMIP
+    # Reduce size (cut historical years)
+    watdemNonAg <- watdemISIMIP[, setdiff(yearsHist, paste0("y", c(1901:1964))), ]
 
   } else if (source == "WATERGAP2020") {
 
@@ -218,6 +223,19 @@ calcWaterUseNonAg <- function(selectyears = seq(1995, 2100, by = 5), cells = "ma
   ############ Function Output  #############
   ###########################################
 
+  # Number of cells to be returned
+  if (cells == "magpiecell") {
+
+    watdemNonAg <- toolCoord2Isocell(watdemNonAg)
+
+  } else if (cells == "lpjcell") {
+
+    # Correct cell naming
+    getCells(watdemNonAg)                    <- paste(map$coords, map$iso, sep = ".")
+    getSets(watdemNonAg, fulldim = FALSE)[1] <- "x.y.iso"
+
+  }
+
   ### Non-agricultural water demands in Growing Period
   if (seasonality == "grper") {
     ### Note: Seasonality "grper" will be deleted when we switch to new mrwater preprocessing
@@ -256,19 +274,6 @@ calcWaterUseNonAg <- function(selectyears = seq(1995, 2100, by = 5), cells = "ma
   # Sum up over all non-agricultural water uses (domestic, industry, manufacturing)
   if (usetype == "total") {
     out <- dimSums(out, dim = "use")
-  }
-
-  # Number of cells to be returned
-  if (cells == "magpiecell") {
-
-    out <- toolCoord2Isocell(out)
-
-  } else if (cells == "lpjcell") {
-
-    # Correct cell naming
-    getCells(out)                    <- paste(map$coords, map$iso, sep = ".")
-    getSets(out, fulldim = FALSE)[1] <- "x.y.iso"
-
   }
 
   # Check for NAs

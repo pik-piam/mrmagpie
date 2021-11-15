@@ -6,32 +6,38 @@
 \usage{
 calcWaterUseNonAg(
   selectyears = seq(1995, 2100, by = 5),
+  cells = "magpiecell",
   source = "WATCH_ISIMIP_WATERGAP",
+  usetype = "total",
   seasonality = "grper",
   harmon_base_time = "average",
   lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de", crop =
     "ggcmi_phase3_nchecks_9ca735cb"),
-  climatetype = "GSWP3-W5E5:historical",
-  usetype = "total",
-  cells = "magpiecell"
+  climatetype = "GSWP3-W5E5:historical"
 )
 }
 \arguments{
-\item{selectyears}{years to be returned}
+\item{selectyears}{Years to be returned}
 
-\item{source}{data source to be used (e.g. WATERGAP2020)}
+\item{cells}{Number of cells to be returned
+(select "magpiecell" for 59199 cells or "lpjcell" for 67420 cells)}
 
-\item{seasonality}{grper (default): non-agricultural water demand in growing period per year; total: non-agricultural water demand throughout the year}
+\item{source}{Data source to be used (e.g. WATERGAP2020)}
 
-\item{harmon_base_time}{type of time smoothing applied before harmonization of WATERGAP data: average (average over 8-year time span around baseline year) or smoothing (time smoothing of baseline and WATERGAP scenario data) or NULL (no smoothing before harmonization)}
+\item{usetype}{"total" returns the sum over different
+water use types (manufacturing, industry, electricity)}
+
+\item{seasonality}{grper (default): non-agricultural water demand in growing period per year;
+total: non-agricultural water demand throughout the year}
+
+\item{harmon_base_time}{Type of time smoothing applied before harmonization of WATERGAP data:
+average (average over 8-year time span around baseline year) or
+smoothing (time smoothing of baseline and WATERGAP scenario data) or
+NULL (no smoothing before harmonization)}
 
 \item{lpjml}{Defines LPJmL version for crop/grass and natveg specific inputs}
 
-\item{climatetype}{switch between different climate scenarios for calcGrowingPeriod}
-
-\item{usetype}{"total" returns the sum over different non-agricultural water use types (manufacturing, industry, electricity)}
-
-\item{cells}{number of cells to be returned (select "magpiecell" for 59199 cells or "lpjcell" for 67420 cells)}
+\item{climatetype}{Switch between different climate scenarios for calcGrowingPeriod}
 }
 \value{
 magpie object in cellular resolution
@@ -40,7 +46,9 @@ magpie object in cellular resolution
 This function extracts non-agricultural water demand
 }
 \examples{
-\dontrun{ calcOutput("WaterUseNonAg", aggregate=FALSE) }
+\dontrun{
+calcOutput("WaterUseNonAg", aggregate = FALSE)
+}
 
 }
 \author{

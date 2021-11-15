@@ -16,7 +16,9 @@ MAgPIE object of non-agricultural water demand at 0.5 cellular level in mio. m^3
 Read in non-agricultural water demand data from WATERGAP model
 }
 \examples{
-\dontrun{ readSource("WATERGAP", convert="onlycorrect") }
+\dontrun{
+readSource("WATERGAP", convert = "onlycorrect")
+}
 
 }
 \author{
