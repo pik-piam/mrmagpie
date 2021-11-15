@@ -5,13 +5,15 @@
 \title{calcWaterUseNonAg}
 \usage{
 calcWaterUseNonAg(
-  selectyears = "all",
+  selectyears = seq(1995, 2100, by = 5),
   source = "WATCH_ISIMIP_WATERGAP",
   seasonality = "grper",
   harmon_base_time = "average",
   lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de", crop =
     "ggcmi_phase3_nchecks_9ca735cb"),
-  climatetype = "GSWP3-W5E5:historical"
+  climatetype = "GSWP3-W5E5:historical",
+  usetype = "total",
+  cells = "magpiecell"
 )
 }
 \arguments{
@@ -26,6 +28,10 @@ calcWaterUseNonAg(
 \item{lpjml}{Defines LPJmL version for crop/grass and natveg specific inputs}
 
 \item{climatetype}{switch between different climate scenarios for calcGrowingPeriod}
+
+\item{usetype}{"total" returns the sum over different non-agricultural water use types (manufacturing, industry, electricity)}
+
+\item{cells}{number of cells to be returned (select "magpiecell" for 59199 cells or "lpjcell" for 67420 cells)}
 }
 \value{
 magpie object in cellular resolution
