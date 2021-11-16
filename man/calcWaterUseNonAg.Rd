@@ -7,8 +7,8 @@
 calcWaterUseNonAg(
   selectyears = seq(1995, 2100, by = 5),
   cells = "magpiecell",
-  source = "WATCH_ISIMIP_WATERGAP",
-  usetype = "total",
+  datasource = "WATCH_ISIMIP_WATERGAP",
+  usetype = "all",
   seasonality = "grper",
   harmon_base_time = "average",
   lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de", crop =
@@ -22,7 +22,7 @@ calcWaterUseNonAg(
 \item{cells}{Number of cells to be returned
 (select "magpiecell" for 59199 cells or "lpjcell" for 67420 cells)}
 
-\item{source}{Data source to be used (e.g. WATERGAP2020)}
+\item{datasource}{Data source to be used (e.g. WATERGAP2020)}
 
 \item{usetype}{"total" returns the sum over different
 water use types (manufacturing, industry, electricity)}

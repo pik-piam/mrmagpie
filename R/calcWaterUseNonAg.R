@@ -2,7 +2,7 @@
 #' @description This function extracts non-agricultural water demand
 #'
 #' @param selectyears        Years to be returned
-#' @param source             Data source to be used (e.g. WATERGAP2020)
+#' @param datasource         Data source to be used (e.g. WATERGAP2020)
 #' @param lpjml              Defines LPJmL version for crop/grass and natveg specific inputs
 #' @param seasonality        grper (default): non-agricultural water demand in growing period per year;
 #'                           total: non-agricultural water demand throughout the year
@@ -30,7 +30,7 @@
 #' @importFrom magpiesets addLocation findset
 
 calcWaterUseNonAg <- function(selectyears = seq(1995, 2100, by = 5), cells = "magpiecell",
-                              source = "WATCH_ISIMIP_WATERGAP", usetype = "total",
+                              datasource = "WATCH_ISIMIP_WATERGAP", usetype = "all",
                               seasonality = "grper", harmon_base_time = "average",
                               lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de", crop = "ggcmi_phase3_nchecks_9ca735cb"),
                               climatetype = "GSWP3-W5E5:historical") {
@@ -44,16 +44,16 @@ calcWaterUseNonAg <- function(selectyears = seq(1995, 2100, by = 5), cells = "ma
   selectcells <- map$coords
 
   ### Old Non-Agricultural Waterdemand data (current default, will be deleted soon): ###
-  if (source == "WATCH_ISIMIP_WATERGAP") {
+  if (datasource == "WATCH_ISIMIP_WATERGAP") {
 
     # Read in nonagricultural water demand:
-    watdemNonAg <- readSource("WATERGAP", convert = "onlycorrect", subtype = source)
+    watdemNonAg <- readSource("WATERGAP", convert = "onlycorrect", subtype = datasource)
     # iso cell names
     watdemNonAg <- toolCell2isoCell(watdemNonAg)
     # Add year 2100
     watdemNonAg <- toolFillYears(watdemNonAg, seq(getYears(watdemNonAg, as.integer = TRUE)[1], 2100, by = 5))
 
-  } else if (source == "ISIMIP") {
+  } else if (datasource == "ISIMIP") {
 
     # ISIMIP non-agricultural water use data (multi-model mean from H08, WaterGAP and PCR-GLOBWB)
     # Since this data is only available until 2050, the values should are kept constant from 2050 onwards.
@@ -84,13 +84,13 @@ calcWaterUseNonAg <- function(selectyears = seq(1995, 2100, by = 5), cells = "ma
     # Reduce size (cut historical years)
     watdemNonAg <- watdemISIMIP[, setdiff(yearsHist, paste0("y", c(1901:1964))), ]
 
-  } else if (source == "WATERGAP2020") {
+  } else if (datasource == "WATERGAP2020") {
 
     # Read in WATERGAP non-agricultural water abstractions:
     watdemWATERGAP <- readSource("WATERGAP", subtype = "WATERGAP2020", convert = "onlycorrect")
     watdemWATERGAP <- watdemWATERGAP[selectcells, , ]
     # Read in ISIMIP non-agricultural water abstractions:
-    watdemISIMIP   <- calcOutput("WaterUseNonAg", source = "ISIMIP",
+    watdemISIMIP   <- calcOutput("WaterUseNonAg", datasource = "ISIMIP",
                                   selectyears = "all", seasonality = "total", usetype = "all",
                                   harmon_base_time = harmon_base_time, lpjml = lpjml, climatetype = climatetype,
                                   aggregate = FALSE)
@@ -223,17 +223,19 @@ calcWaterUseNonAg <- function(selectyears = seq(1995, 2100, by = 5), cells = "ma
   ############ Function Output  #############
   ###########################################
 
-  # Number of cells to be returned
-  if (cells == "magpiecell") {
+  if (datasource != "WATCH_ISIMIP_WATERGAP") {
+    # Number of cells to be returned
+    if (cells == "magpiecell") {
 
-    watdemNonAg <- toolCoord2Isocell(watdemNonAg)
+      watdemNonAg <- toolCoord2Isocell(watdemNonAg)
 
-  } else if (cells == "lpjcell") {
+    } else if (cells == "lpjcell") {
 
-    # Correct cell naming
-    getCells(watdemNonAg)                    <- paste(map$coords, map$iso, sep = ".")
-    getSets(watdemNonAg, fulldim = FALSE)[1] <- "x.y.iso"
+      # Correct cell naming
+      getCells(watdemNonAg)                    <- paste(map$coords, map$iso, sep = ".")
+      getSets(watdemNonAg, fulldim = FALSE)[1] <- "x.y.iso"
 
+    }
   }
 
   ### Non-agricultural water demands in Growing Period

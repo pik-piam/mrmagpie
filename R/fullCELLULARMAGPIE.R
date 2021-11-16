@@ -132,43 +132,43 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
 
     #--- Post-processing: LPJmL emulator files ---#
     calcOutput("GrassSoilEmu", subtype = paste(version_isimip, climatemodel, scenario, "1965_2100", sep = ":"),
-               model = emu_id, mfile = "weights", aggregate = F, file = "f31_weights.mz")
+               model = emu_id, mfile = "weights", aggregate = FALSE, file = "f31_weights.mz")
     calcOutput("GrassSoilEmu", subtype = paste(version_isimip, climatemodel, scenario, "1965_2100", sep = ":"),
-               model = emu_id, mfile = "mean_col", aggregate = F, file = "f31_mean_col.mz")
+               model = emu_id, mfile = "mean_col", aggregate = FALSE, file = "f31_mean_col.mz")
     calcOutput("GrassSoilEmu", subtype = paste(version_isimip, climatemodel, scenario, "1965_2100", sep = ":"),
-               model = emu_id, mfile = "stddevs_col", aggregate = F,  file = "f31_stddevs_col.mz")
+               model = emu_id, mfile = "stddevs_col", aggregate = FALSE,  file = "f31_stddevs_col.mz")
     calcOutput("GrassSoilEmu", subtype = paste(version_isimip, climatemodel, scenario, "1965_2100", sep = ":"),
-               model = emu_id, mfile = "mean_lab", aggregate = F,  file = "f31_mean_lab.mz")
+               model = emu_id, mfile = "mean_lab", aggregate = FALSE,  file = "f31_mean_lab.mz")
     calcOutput("GrassSoilEmu", subtype = paste(version_isimip, climatemodel, scenario, "1965_2100", sep = ":"),
-               model = emu_id, mfile = "stddevs_lab", aggregate = F, file = "f31_stddevs_lab.mz")
+               model = emu_id, mfile = "stddevs_lab", aggregate = FALSE, file = "f31_stddevs_lab.mz")
     calcOutput("GrassSoilEmu", subtype = paste(version_isimip, climatemodel, scenario, "1965_2100", sep = ":"),
-               model = emu_id, mfile = "inputs", aggregate = F,  file = "f31_inputs.mz")
+               model = emu_id, mfile = "inputs", aggregate = FALSE,  file = "f31_inputs.mz")
 
     #--- Post-processing: LPJmL emulator inputs ---#
     calcOutput("CollectEnvironmentData_new",
-               subtype = paste(version_isimip, climatemodel, scenario, "1965_2100", sep = ":"), sar = 1, aggregate = F,
+               subtype = paste(version_isimip, climatemodel, scenario, "1965_2100", sep = ":"), sar = 1, aggregate = FALSE,
                sel_feat = c("tas", "pr", "lwnet", "rsds", "CO2", "Ks", "Sf", "w_pwp", "w_fc", "w_sat", "hsg", "wet"),
                file = paste0("environment_gramnt.mz"), years = seq(1965, 2100, by = 5))
 
     #--- Post-processing: files for disaggregation of outputs---#
     calcOutput("RangeSoilCarbonHist",
                subtype = paste(version_isimip, climatemodel, scenario, "1965_2100", sep = ":"),
-               model = emu_id, lpjml = lpjml[["grass"]], file = "f31_range_soilc_hist.mz", aggregate = F)
+               model = emu_id, lpjml = lpjml[["grass"]], file = "f31_range_soilc_hist.mz", aggregate = FALSE)
     calcOutput("GrasslandsYields",
                subtype = paste(lpjml[["grass"]], paste0(paste(climatemodel, scenario, sep = ":"),
                                                         "/co2/Nreturn0p5/limN"), sep = ":"),
                lsu_levels = c(seq(0, 2.2, 0.2), 2.5), past_mngmt = "me2", file = paste0("f14_grassl_yld.mz"),
-               years = mag_years, aggregate = F)
-    calcOutput("LsuDensityHist", disagg_type = "grassland", aggregate = F,  file = "f31_lsu_ha_grassl.mz")
-    calcOutput("LsuDensityHist", disagg_type = "livestock", aggregate = F,  file = "f31_lsu_ha_livestock.mz")
-    calcOutput("LUH2v2", aggregate = F, landuse_types = "LUH2v2", cellular = TRUE, file = paste0("fm_LUH2v2.mz"))
+               years = mag_years, aggregate = FALSE)
+    calcOutput("LsuDensityHist", disagg_type = "grassland", aggregate = FALSE,  file = "f31_lsu_ha_grassl.mz")
+    calcOutput("LsuDensityHist", disagg_type = "livestock", aggregate = FALSE,  file = "f31_lsu_ha_livestock.mz")
+    calcOutput("LUH2v2", aggregate = FALSE, landuse_types = "LUH2v2", cellular = TRUE, file = paste0("fm_LUH2v2.mz"))
 
     #--- Post-processing: Soil carbon ---#
     calcOutput("CollectSoilCarbonLSU", lsu_levels = c(seq(0, 2, 0.2), 2.5), lpjml = lpjml[["grass"]],
                climatemodel = climatemodel, scenario = paste0(scenario, "/co2/Nreturn0p5/limN"), sar = 1,
-               aggregate = F, file = paste0("soilc_stocks_gramnt.mz"), years = seq(1965, 2100, by = 5))
+               aggregate = FALSE, file = paste0("soilc_stocks_gramnt.mz"), years = seq(1965, 2100, by = 5))
     calcOutput("CollectSoilCarbonPastr", past_mngmt = "me2", lpjml = lpjml[["grass"]], climatemodel = climatemodel,
-               aggregate = F, scenario = paste0(scenario, "/co2/Nreturn0p5/limN"), sar = 1,
+               aggregate = FALSE, scenario = paste0(scenario, "/co2/Nreturn0p5/limN"), sar = 1,
                file = paste0("soilc_stocks_pastr.mz"), years = seq(1965, 2100, by = 5))
 
     #--- Experimental functions ----#
@@ -182,8 +182,8 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
   calcOutput("GridPop_new", source = "Gao", subtype = "all", cellular = TRUE, harmonize_until = 2015, urban = FALSE,
              aggregate = "cluster", years = mag_years, round = 6, file = "f09_pop_grid.cs3")
 
-  calcOutput("GridPop_new", source="Gao", subtype = "all", cellular = TRUE, harmonize_until=2015, urban = TRUE,
-             aggregate="cluster", years = mag_years, round=6, file="f09_urbanpop_grid.cs3")
+  calcOutput("GridPop_new", source = "Gao", subtype = "all", cellular = TRUE, harmonize_until = 2015, urban = TRUE,
+             aggregate = "cluster", years = mag_years, round = 6, file = "f09_urbanpop_grid.cs3")
 
   # 10 land
   # seven land classes
@@ -285,7 +285,7 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
 
   calcOutput("EnvmtlFlow", lpjml = lpjml, years = lpj_years, climatetype = climatetype, aggregate = "cluster",
     round = 6, seasonality = "grper", file = paste0("lpj_envflow_grper_", ctype, ".mz"))
-  calcOutput("WaterUseNonAg", source = "WATCH_ISIMIP_WATERGAP", years = lpj_years, seasonality = "grper", lpjml = lpjml,
+  calcOutput("WaterUseNonAg", datasource = "WATCH_ISIMIP_WATERGAP", years = lpj_years, seasonality = "grper", lpjml = lpjml,
     climatetype = climatetype, aggregate = "cluster", file = paste0("watdem_nonagr_grper_", ctype, ".mz"))
 
   # 44 biodiversity
