@@ -16,7 +16,7 @@ Description: Provides functions for MAgPIE country and cellular input data gener
 Depends:
     R(>= 2.10.0),
     magclass(>= 3.17),
-    madrat(>= 1.72),
+    madrat(>= 2.5.0),
     lpjclass(>= 1.17),
     mrcommons(>= 0.59.0),
     mrland

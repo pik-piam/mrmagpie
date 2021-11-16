@@ -24,7 +24,6 @@ MAgPIE objects with pasture correction factor on a cellular level.
 Loads the ANN trained grass emulator with historical data and calculates the pasture correction factor
 }
 \examples{
-
 \dontrun{
 calcOutput("EmuPastCorrectFactor2", model = "f41f19be67", GCMModel = "HadGEM2", rcp = "rcp85")
 }
