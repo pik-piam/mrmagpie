@@ -133,9 +133,9 @@ calcWaterUseNonAg <- function(selectyears = seq(1995, 2100, by = 5), cells = "ma
     watdemNonAg <- add_dimension(watdemNonAg, dim = 3.1, add = "scenario", nm = "ISIMIP")
 
     # scenario ISIMIP data (split up by water use)
-    watdemNonAg[, yearsWATERGAP, ][, , "domestic"]    <- watdemISIMIP[, yearsWATERGAP, ][, , "domestic"]
-    watdemNonAg[, yearsWATERGAP, ][, , "industry"]    <- collapseNames(watdemISIMIP[, yearsWATERGAP, ][, , "industry"]) * collapseNames(shrManufacturing[, , "ssp2"])
-    watdemNonAg[, yearsWATERGAP, ][, , "electricity"] <- collapseNames(watdemISIMIP[, yearsWATERGAP, ][, , "industry"]) * collapseNames(shrElectricity[, , "ssp2"])
+    watdemNonAg[, yearsWATERGAP, "domestic"]    <- watdemISIMIP[, yearsWATERGAP, "domestic"]
+    watdemNonAg[, yearsWATERGAP, "industry"]    <- collapseNames(watdemISIMIP[, yearsWATERGAP, "industry"]) * collapseNames(shrManufacturing[, yearsWATERGAP, "ssp2"])
+    watdemNonAg[, yearsWATERGAP, "electricity"] <- collapseNames(watdemISIMIP[, yearsWATERGAP, "industry"]) * collapseNames(shrElectricity[, yearsWATERGAP, "ssp2"])
 
 
     tmpWATERGAP <- new.magpie(cells_and_regions = getCells(watdemWATERGAP),
@@ -162,8 +162,8 @@ calcWaterUseNonAg <- function(selectyears = seq(1995, 2100, by = 5), cells = "ma
       tmp <- vector(mode = "list", length = 3)
 
       tmp[[1]] <- harmonizedWATERGAP[, yearsWATERGAP, "domestic"]
-      tmp[[2]] <- shrManufacturing[, , scenario] * collapseNames(harmonizedWATERGAP[, yearsWATERGAP, "industry"])
-      tmp[[3]] <- shrElectricity[, , scenario] * collapseNames(harmonizedWATERGAP[, yearsWATERGAP, "industry"])
+      tmp[[2]] <- shrManufacturing[, yearsWATERGAP, scenario] * collapseNames(harmonizedWATERGAP[, yearsWATERGAP, "industry"])
+      tmp[[3]] <- shrElectricity[, yearsWATERGAP, scenario] * collapseNames(harmonizedWATERGAP[, yearsWATERGAP, "industry"])
 
       # Store MAgPIE objects in list
       i <- i + 1
