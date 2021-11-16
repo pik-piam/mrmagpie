@@ -57,7 +57,7 @@ calcWaterUseNonAg <- function(selectyears = seq(1995, 2100, by = 5), cells = "ma
 
     # ISIMIP non-agricultural water use data (multi-model mean from H08, WaterGAP and PCR-GLOBWB)
     # Since this data is only available until 2050, the values should are kept constant from 2050 onwards.
-    # Industry: electricity & domestic
+    # Industry in ISIMIP includes both electricity & domestic
     watdemISIMIPhist   <- readSource("ISIMIPinputs", subtype = "ISIMIP3b:water:histsoc.waterabstraction", convert = "onlycorrect")
     watdemISIMIPfuture <- readSource("ISIMIPinputs", subtype = "ISIMIP3b:water:2015soc.waterabstraction", convert = "onlycorrect")
 
@@ -90,7 +90,7 @@ calcWaterUseNonAg <- function(selectyears = seq(1995, 2100, by = 5), cells = "ma
     watdemWATERGAP <- readSource("WATERGAP", subtype = "WATERGAP2020", convert = "onlycorrect")
     watdemWATERGAP <- watdemWATERGAP[selectcells, , ]
     # Read in ISIMIP non-agricultural water abstractions:
-    watdemISIMIP   <- calcOutput("WaterUseNonAg", datasource = "ISIMIP",
+    watdemISIMIP   <- calcOutput("WaterUseNonAg", datasource = "ISIMIP", cells = "lpjcell",
                                   selectyears = "all", seasonality = "total", usetype = "all",
                                   harmon_base_time = harmon_base_time, lpjml = lpjml, climatetype = climatetype,
                                   aggregate = FALSE)
@@ -122,11 +122,11 @@ calcWaterUseNonAg <- function(selectyears = seq(1995, 2100, by = 5), cells = "ma
     shrElectricity   <- dimOrder(shrElectricity, perm = c(1, 3, 2), dim = 3)
 
     # historical data provided by ISIMIP (same for all scenarios)
-    tmp <- vector(mode = "list", length = 3)
+    tmp      <- vector(mode = "list", length = 3)
     tmp[[1]] <- watdemISIMIP[, , "domestic"]
     tmp[[2]] <- collapseNames(watdemISIMIP[, , "industry"]) * collapseNames(setYears(shrManufacturing[, baseyear, "ssp2"], NULL))
     getNames(tmp[[2]]) <- paste("industry", getNames(tmp[[2]]), sep = ".")
-    tmp[[3]] <- collapseNames(watdemISIMIP[, , "industry"]) * collapseNames(setYears(shrElectricity[, baseyear, "ssp2"], NULL))
+    tmp[[3]]           <- collapseNames(watdemISIMIP[, , "industry"]) * collapseNames(setYears(shrElectricity[, baseyear, "ssp2"], NULL))
     getNames(tmp[[3]]) <- paste("electricity", getNames(tmp[[3]]), sep = ".")
 
     watdemNonAg <- mbind(tmp)
