@@ -82,7 +82,7 @@ calcWaterUseNonAg <- function(selectyears = seq(1995, 2100, by = 5), cells = "ma
     }
 
     # Reduce size (cut historical years)
-    watdemNonAg <- watdemISIMIP[, setdiff(yearsHist, paste0("y", c(1901:1964))), ]
+    watdemNonAg <- watdemISIMIP[, setdiff(getYears(watdemISIMIP), paste0("y", c(1901:1964))), ]
 
   } else if (datasource == "WATERGAP2020") {
 
