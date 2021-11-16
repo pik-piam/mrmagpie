@@ -90,10 +90,10 @@ calcWaterUseNonAg <- function(selectyears = seq(1995, 2100, by = 5), cells = "ma
     watdemWATERGAP <- readSource("WATERGAP", subtype = "WATERGAP2020", convert = "onlycorrect")
     watdemWATERGAP <- watdemWATERGAP[selectcells, , ]
     # Read in ISIMIP non-agricultural water abstractions:
-    watdemISIMIP   <- calcOutput("WaterUseNonAg", datasource = "ISIMIP", cells = "lpjcell",
+    watdemISIMIP   <- collapseDim(calcOutput("WaterUseNonAg", datasource = "ISIMIP", cells = "lpjcell",
                                   selectyears = "all", seasonality = "total", usetype = "all",
                                   harmon_base_time = harmon_base_time, lpjml = lpjml, climatetype = climatetype,
-                                  aggregate = FALSE)
+                                  aggregate = FALSE), dim = 1.3)
 
     ### Harmonize WATERGAP and ISIMIP data (WATERGAP trends scaled to ISIMIP historical data)
     # Ref_year: 2010 because both ISIMIP historical (available until 2014) and WATERGAP (available from 2005)
