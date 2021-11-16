@@ -3,7 +3,6 @@
 #' @return MAgPIE objects with livestock numbers on a cellular level.
 #' @author Marcos Alves
 #' @examples
-#'
 #' \dontrun{
 #' calcOutput("LivestockDistribution")
 #' }
@@ -16,18 +15,7 @@
 #' @export
 #'
 
-#development
-# library(mrcommons)
-# library(stringi)
-# library(tidyr)
-# library(magpiesets)
-# library(mrmagpie)
-# setConfig(forcecache=T)
-# setConfig(globalenv = T)
-# setwd("C:/magpie_inputdata/sources")
-
-calcLivestockDistribution <-
-  function() {
+calcLivestockDistribution <- function() {
 
     past <- findset("past")
     past <- past[7:length(past)]
@@ -37,7 +25,7 @@ calcLivestockDistribution <-
     #############################
 
     mapping <- toolGetMapping(name = "CountryToCellMapping.csv", type = "cell")
-    GLW3    <- readSource("GLW3", subtype = "Da", convert="onlycorrect")
+    GLW3    <- readSource("GLW3", subtype = "Da", convert = "onlycorrect")
 
     #############################
     ### FAO livestock Numbers ###
@@ -67,9 +55,9 @@ calcLivestockDistribution <-
     getYears(livestock_FAO_scaled) <- past
     livestock_FAO_scaled           <- livestock_FAO_scaled[unique(mapping$iso)]
     livestock_cell                 <- toolAggregate(livestock_FAO_scaled, rel = mapping, from = "iso", to = "celliso", weight = GLW3)
-    livestock_cell                 <- livestock_cell/1e6
+    livestock_cell                 <- livestock_cell / 1e6
 
-    #Analysis
+    # Analysis
     # sum(pred_pasture_production) / sum(FAO_pasture_demand_cell)
     # summary(correction_factor[, 1, ])
     # q <- quantile(correction_factor, probs = 0.95);q

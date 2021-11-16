@@ -6,7 +6,6 @@
 #' @param rcp RCP
 #' @author Marcos Alves
 #' @examples
-#'
 #' \dontrun{
 #' calcOutput("EmuPastCorrectFactor", model = "f41f19be67", GCMModel = "HadGEM2", rcp = "rcp85")
 #' }
@@ -17,56 +16,43 @@
 #' @import magclass
 #' @import dplyr
 #' @export
-#'
 
-# # #development
-# library(mrcommons)
-# library(stringi)
-# library(tidyr)
-# library(magpiesets)
-# library(mrmagpie)
-# setConfig(forcecache=F)
-# setConfig(globalenv = T)
-# setwd("C:/magpie_inputdata/sources")
-
-calcEmuPastCorrectFactor <-
-  function(model = "f41f19be67", GCMModel = "HadGEM2", rcp = "rcp85") {
+calcEmuPastCorrectFactor <- function(model = "f41f19be67", GCMModel = "HadGEM2", rcp = "rcp85") {
 
     past <- findset("past")
     past <- past[7:length(past)]
-
 
     #############################
     ###    FAO pasture area   ###
     #############################
 
-    MAGPasturearea <- calcOutput("LanduseInitialisation", cellular = T, aggregate = FALSE)[, past, "past"]
+    MAGPasturearea <- calcOutput("LanduseInitialisation", cellular = TRUE, aggregate = FALSE)[, past, "past"]
 
     #################################
     ### Loading emulator data      ##
     #################################
 
-    inputs_vec             <- as.vector(readSource("GrassYldEmu", subtype = paste(model,"inputs", sep = "."), convert="onlycorrect"))
-    max_grass              <- toolCell2isoCell(readSource("GrassYldEmu", subtype = paste(model,"max_harvest", sep = "."), convert="onlycorrect"))
+    inputs_vec             <- as.vector(readSource("GrassYldEmu", subtype = paste(model, "inputs", sep = "."), convert = "onlycorrect"))
+    max_grass              <- toolCell2isoCell(readSource("GrassYldEmu", subtype = paste(model, "max_harvest", sep = "."), convert = "onlycorrect"))
     getYears(max_grass)    <- past
-    max_grass[max_grass<0] <- 0
-    magpie_center          <- readSource("GrassYldEmu", subtype =paste(model,"mean", sep = "."), convert="onlycorrect")
+    max_grass[max_grass < 0] <- 0
+    magpie_center          <- readSource("GrassYldEmu", subtype = paste(model, "mean", sep = "."), convert = "onlycorrect")
     center                 <- as.numeric(magpie_center)
     names(center)          <- getCells(magpie_center)
-    magpie_scale           <- readSource("GrassYldEmu", subtype = paste(model,"stddevs", sep = "."), convert="onlycorrect")
+    magpie_scale           <- readSource("GrassYldEmu", subtype = paste(model, "stddevs", sep = "."), convert = "onlycorrect")
     scale                  <- as.numeric(magpie_scale)
     names(scale)           <- getCells(magpie_scale)
-    weights                <- readSource("GrassYldEmu", subtype = paste(model,"weights", sep = "."), convert="onlycorrect")
+    weights                <- readSource("GrassYldEmu", subtype = paste(model, "weights", sep = "."), convert = "onlycorrect")
 
     #################################
     ### Loading environmental data ##
     #################################
 
-    environmental_data_1 <- calcOutput("CellEnvironmentData", model = model, GCMModel = GCMModel, rcp = rcp, years = past, aggregate = F)
+    environmental_data_1 <- calcOutput("CellEnvironmentData", model = model, GCMModel = GCMModel, rcp = rcp, years = past, aggregate = FALSE)
     environmental_data_2 <- as.data.frame(environmental_data_1, rev = 2)
     environmental_data_3 <- pivot_wider(environmental_data_2, values_from = ".value", names_from = "data")
     drops                <- grep("region+|year+", colnames(environmental_data_3))
-    environmental_data   <- as.matrix(environmental_data_3[,-drops])
+    environmental_data   <- as.matrix(environmental_data_3[, -drops])
 
     #############################
     ### Disaggregation weights###
@@ -74,8 +60,8 @@ calcEmuPastCorrectFactor <-
 
     potential_grass_cell         <- MAGPasturearea * max_grass
     mapping                      <- toolGetMapping(name = "CountryToCellMapping.csv", type = "cell")
-    potential_grass_country      <- toolAggregate(potential_grass_cell, rel = mapping, from = "celliso", to = "iso", partrel = F)
-    potential_grass_country_cell <- toolAggregate(potential_grass_country, rel = mapping, from = "iso", to = "celliso", partrel = F)
+    potential_grass_country      <- toolAggregate(potential_grass_cell, rel = mapping, from = "celliso", to = "iso", partrel = FALSE)
+    potential_grass_country_cell <- toolAggregate(potential_grass_country, rel = mapping, from = "iso", to = "celliso", partrel = FALSE)
     grass_distribution           <- potential_grass_cell / potential_grass_country_cell
     grass_distribution[is.na(grass_distribution)] <- 0
 
@@ -106,7 +92,7 @@ calcEmuPastCorrectFactor <-
     livestock_FAO_scaled           <- dimSums(livestock_FAO_scaled[, , c(1, 4)])
     getYears(livestock_FAO_scaled) <- past
     livestock_FAO_scaled           <- livestock_FAO_scaled[unique(mapping$iso)]
-    livestock_cell                 <- toolAggregate(livestock_FAO_scaled, rel = mapping, from = "iso", to = "celliso", partrel = F, weight = grass_distribution)
+    livestock_cell                 <- toolAggregate(livestock_FAO_scaled, rel = mapping, from = "iso", to = "celliso", partrel = FALSE, weight = grass_distribution)
 
     livestock_cell[MAGPasturearea == 0] <- 0
     lsu_ha                              <- livestock_cell / (MAGPasturearea * 1e6)
@@ -118,7 +104,7 @@ calcEmuPastCorrectFactor <-
     ### Predicted grass yield     ###
     #################################
 
-    prediction                            <- toolNeuralNet(cbind(environmental_data, lsu_ha_scaled),weights)
+    prediction                            <- toolNeuralNet(cbind(environmental_data, lsu_ha_scaled), weights)
     prediction[prediction < 0]            <- 0
     prediction                            <- round(prediction, 2)
     gCm2_To_tDM                           <- (10000 * 2.21 / 1e6)
@@ -127,7 +113,7 @@ calcEmuPastCorrectFactor <-
     pred_pasture_productivity_mag         <- pred_pasture_productivity
     pred_pasture_productivity_mag$celliso <- paste(pred_pasture_productivity_mag$region, pred_pasture_productivity_mag$region1, sep = ".")
     pred_pasture_productivity_mag$year    <- paste0("y", pred_pasture_productivity_mag$year)
-    pred_pasture_productivity_mag         <- pred_pasture_productivity_mag[,-c(1,2)]
+    pred_pasture_productivity_mag         <- pred_pasture_productivity_mag[, -c(1, 2)]
     pred_pasture_productivity_mag         <- as.magpie(pred_pasture_productivity_mag[, c(3, 1, 2)])
     pred_pasture_production               <- pred_pasture_productivity_mag * (MAGPasturearea * 1e6)
     pred_pasture_production               <- round(pred_pasture_production, 2)
@@ -136,9 +122,9 @@ calcEmuPastCorrectFactor <-
     ### FAO past. demand cellular ###
     #################################
 
-    FAO_pasture_demand                           <- calcOutput("FAOmassbalance", aggregate = F)[, , "dm"][, , "feed"][, past, "pasture"]
+    FAO_pasture_demand                           <- calcOutput("FAOmassbalance", aggregate = FALSE)[, , "dm"][, , "feed"][, past, "pasture"]
     FAO_pasture_demand                           <- FAO_pasture_demand[unique(mapping$iso)] * 1e6
-    FAO_pasture_demand_cell                      <- toolAggregate(FAO_pasture_demand, rel = mapping, from = "iso", to = "celliso", partrel = F, weight = grass_distribution)
+    FAO_pasture_demand_cell                      <- toolAggregate(FAO_pasture_demand, rel = mapping, from = "iso", to = "celliso", partrel = FALSE, weight = grass_distribution)
     FAO_pasture_demand_cell[MAGPasturearea == 0] <- 0 # Setting to zero pasture demand in countries with no pasture area
 
     #################################
@@ -151,7 +137,7 @@ calcEmuPastCorrectFactor <-
     # correction_factor[correction_factor>10] <- 10
 
 
-    #Analysis
+    # Analysis
     # sum(pred_pasture_production) / sum(FAO_pasture_demand_cell)
     # summary(correction_factor[, 1, ])
     # q <- quantile(correction_factor, probs = 0.95);q
