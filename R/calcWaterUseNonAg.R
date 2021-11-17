@@ -191,11 +191,12 @@ calcWaterUseNonAg <- function(selectyears = seq(1995, 2100, by = 5), cells = "ma
 
       if (length(yearsWATERGAP) != 0) {
         watdemWATERGAP <- watdemWATERGAP[, yearsWATERGAP, ]
-        watdemNonAg    <- watdemNonAg[, yearsWATERGAP, ]
 
         if (length(yearsHist) != 0) {
         watdemNonAg    <- watdemNonAg[, c(yearsHist, yearsWATERGAP), ]
         }
+
+        watdemNonAg    <- watdemNonAg[, yearsWATERGAP, ]
       }
     }
 
