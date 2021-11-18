@@ -36,6 +36,10 @@ calcProtectArea <- function(cells = "magpiecell") {
 
   } else if (cells == "lpjcell") {
 
+    # Add BH_FF scenario (combination of intact forestry landscape and biodiversity hotspots)
+    bhff <- setNames(pmax(x[, , "BH"], x[, , "FF"]), nm = "BH_FF")
+    x    <- mbind(x, bhff)
+
     landArea <- collapseDim(addLocation(landArea), dim = c("N", "region"))
 
     tmp <- collapseDim(addLocation(x), dim = c("region", "cell"))
