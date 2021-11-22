@@ -112,8 +112,13 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
   }
 
   if (grepl("MPPA", dev)) {
-    #--- Root folder name: currently expresses the ismip version ---#
+    #--- CONFIG: Root folder name currently expresses the ismip version / Super region---#
     version_isimip <- "ISIMIP3b"
+    map_reg <- toolGetMapping(getConfig("regionmapping"), type = "regional")
+    superregion <- ifelse("superregion" %in% colnames(map_reg), "superregion", "region")
+
+    #--- Module 13_tc: managed pasture historical tau ---#
+    calcOutput("PastrTauHist", round = 2, file = "f13_pastr_tau_hist.csv", aggregate = superregion)
 
     #--- Module 14_yields: Grasslands / LHU2 for yield calibration  ---#
     calcOutput("GrasslandsYields",
@@ -129,6 +134,8 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
     #--- Module 31_past: suitable managed pasture areas ---#
     calcOutput("PastureSuit",  subtype = paste(version_isimip, climatemodel, "1850_2100", sep = ":"),
                file = paste0("f31_pastr_suitability_", ctype, ".mz"), years = mag_years, aggregate = "cluster")
+    calcOutput("PastureSuit",  subtype = paste(version_isimip, climatemodel, "1850_2100", sep = ":"),
+               file = paste0("f31_pastr_suitability.mz"), years = mag_years, aggregate = F)
 
     #--- Post-processing: LPJmL emulator files ---#
     calcOutput("GrassSoilEmu", subtype = paste(version_isimip, climatemodel, scenario, "1965_2100", sep = ":"),

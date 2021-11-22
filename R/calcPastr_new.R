@@ -16,13 +16,16 @@
 
 calcPastr_new <- function(past_mngmt = "me2", lpjml = "lpjml5p2_pasture", climatetype = "IPSL_CM6A_LR", scenario = "ssp126_co2_limN") {
 
-  years <- seq(1965,2100, 5)
+  years_hist <- seq(1965,2010, 5)
+  years_scen <- seq(2015,2100, 5)
   .subtype <- paste(lpjml, climatetype,paste0(scenario,"/", past_mngmt),sep = ":")
   hist <- toolCoord2Isocell(readSource("LPJmL_new", subtype = paste(.subtype, "grass_pft_hist", sep = ":"), convert = F))
   scen <- toolCoord2Isocell(readSource("LPJmL_new", subtype = paste(.subtype, "grass_pft_scen", sep = ":"), convert = F))
+  hist <- hist[,years_hist,"mgrass"]
+  scen <- scen[,years_scen,"mgrass"]
   x <- mbind(hist,scen)
-  x <- x[, years, "mgrass"]
-  getNames(x) <- gsub("mgrass", "pastr", getNames(x))
+  # x <- x[,years,]
+  magclass::getNames(x) <- gsub("mgrass", "pastr",  magclass::getNames(x))
 
   return(list(
     x = x,
