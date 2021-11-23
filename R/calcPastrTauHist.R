@@ -25,6 +25,10 @@ calcPastrTauHist <- function() {
   area <- calcOutput("LUH2v2", landuse_types = "LUH2v2", cellular = F, aggregate = F)[, past, "pastr"]
   area <- toolCountryFill(area, fill = 0)
 
+  # Adding 'otherland' as an extra source of grass biomass comparable to managed pastures in India.
+  otherland <- calcOutput("LUH2v2", landuse_types = "LUH2v2", cellular = F, aggregate = F)[, past, c("secdn", "primn")]
+  area["IND",,"pastr"] <- area["IND",,"pastr"] + setNames(dimSums(otherland["IND",,], dim = 3), 'pastr')
+
   # Actual yields
   yact <- prod[, past, ] / area[, past, ]
   yact[is.nan(yact) | is.infinite(yact)] <- 0
