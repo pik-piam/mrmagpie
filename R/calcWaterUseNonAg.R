@@ -7,10 +7,10 @@
 #' @param seasonality        grper (default): non-agricultural water demand in growing period per year;
 #'                           total: non-agricultural water demand throughout the year
 #' @param climatetype        Switch between different climate scenarios for calcGrowingPeriod
-#' @param harmonType         Type of time smoothing applied before harmonization of WATERGAP data:
+#' @param harmonType         Type of time smoothing:
 #'                           average (average over 8-year time span around baseline year) or
-#'                           smoothing (time smoothing of baseline and WATERGAP scenario data) or
-#'                           NULL (no smoothing before harmonization)
+#'                           spline (time smoothing using spline method with 4 degrees of freedom) or
+#'                           NULL (no smoothing)
 #' @param usetype            "total" returns the sum over different
 #'                           water use types (manufacturing, industry, electricity)
 #' @param cells              Number of cells to be returned
@@ -73,13 +73,11 @@ calcWaterUseNonAg <- function(selectyears = seq(1995, 2100, by = 5), cells = "ma
     baseyear  <- "y2010"
     yearsHist <- getYears(watdemISIMIPhist)
 
-    if (!is.null(harmonType) && harmonType == "smoothing") {
-      # Time-Smoothing of historical baseline and projected WATERGAP data
-      watdemISIMIP   <- toolSmooth(watdemISIMIP)
-    }
-    if (!is.null(harmonType) && harmonType == "average") {
-      # average around baseyear of ISIMIP baseline
-      watdemISIMIP[, yearsHist, ] <- toolTimeAverage(watdemISIMIP, averaging_range = 8)[, baseyear, ]
+    # Time smoothing
+    if (harmonType == "average" | harmonType == "spline") {
+      watdemISIMIP   <- toolSmooth(watdemISIMIP, method = harmonType)
+    } else if (is.null(harmonType) | harmonType == "raw") {
+      watdemISIMIP   <- watdemISIMIP
     }
 
     # Reduce size (cut historical years)
@@ -92,19 +90,28 @@ calcWaterUseNonAg <- function(selectyears = seq(1995, 2100, by = 5), cells = "ma
     # Default cell order
     watdemNonAg    <- watdemWATERGAP[selectcells, , ]
 
+    if (harmonType == "average" | harmonType == "spline") {
+      watdemNonAg   <- toolSmooth(watdemNonAg, method = harmonType)
+    }
+
   } else if (datasource == "WATERGAP_ISIMIP") {
 
-    # Read in ISIMIP non-agricultural water abstractions:
-    watdemISIMIP   <- calcOutput("WaterUseNonAg", datasource = "ISIMIP", cells = "lpjcell",
-                                  selectyears = "all", seasonality = "total", usetype = "all",
-                                  harmonType = harmonType, lpjml = lpjml, climatetype = climatetype,
-                                  aggregate = FALSE)
+    if (harmonType == "average" | harmonType == "spline") {
+      # Read in ISIMIP non-agricultural water abstractions:
+      watdemISIMIP   <- calcOutput("WaterUseNonAg", datasource = "ISIMIP", cells = "lpjcell",
+                                   selectyears = "all", seasonality = "total", usetype = "all",
+                                   harmonType = harmonType, lpjml = lpjml, climatetype = climatetype,
+                                   aggregate = FALSE)
 
-    # Read in ISIMIP non-agricultural water abstractions:
-    watdemWATERGAP <- calcOutput("WaterUseNonAg", datasource = "WATERGAP2020", cells = "lpjcell",
-                                 selectyears = "all", seasonality = "total", usetype = "all",
-                                 harmonType = harmonType, lpjml = lpjml, climatetype = climatetype,
-                                 aggregate = FALSE)
+      # Read in ISIMIP non-agricultural water abstractions:
+      watdemWATERGAP <- calcOutput("WaterUseNonAg", datasource = "WATERGAP2020", cells = "lpjcell",
+                                   selectyears = "all", seasonality = "total", usetype = "all",
+                                   harmonType = harmonType, lpjml = lpjml, climatetype = climatetype,
+                                   aggregate = FALSE)
+    } else {
+      stop("Please select time smoothing method (spline or average)
+           for case of harmonization")
+    }
 
     ### Harmonize WATERGAP and ISIMIP data (WATERGAP trends scaled to ISIMIP historical data)
     # Ref_year: 2010 because both ISIMIP historical (available until 2014) and WATERGAP (available from 2005)
@@ -113,11 +120,6 @@ calcWaterUseNonAg <- function(selectyears = seq(1995, 2100, by = 5), cells = "ma
     yearsWATERGAP   <- getYears(watdemWATERGAP)
     yearsHist       <- setdiff(getYears(watdemISIMIP),
                                getYears(watdemISIMIP)[as.numeric(gsub("y", "", getYears(watdemISIMIP))) > as.numeric(gsub("y", "", baseyear))])
-
-    if (!is.null(harmonType) && harmonType == "smoothing") {
-      # Time-Smoothing of projected WATERGAP data
-      watdemWATERGAP <- toolSmooth(watdemWATERGAP)
-    }
 
     # Note: ISIMIP industry data = manufacturing + electricity
     # Store WATERGAP share of manufacturing and electricity of industry
