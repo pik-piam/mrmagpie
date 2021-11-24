@@ -91,13 +91,20 @@ calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimi
     to_rep <- calcOutput("ISIMIP3bYields", subtype = source[["isimip"]], cells = cells, aggregate = F)
     common_vars <- intersect(getNames(yields), getNames(to_rep))
     common_years <- intersect(getYears(yields), getYears(to_rep))
-    # convert to array for memory
+
+    #  harmonize to LPJml
+    cfg <- toolLPJmLVersion(version = source["lpjml"], climatetype = climatetype)
+    harm_rep <- toolHarmonize2Baseline(x=to_rep[,common_years,common_vars],
+                                       base=yields[,common_years,common_vars],
+                                       ref_year = cfg$ref_year_gcm )
+    gc()
+     # convert to array for memory
     yields <- as.array(yields)
-    to_rep <- as.array(to_rep)
+    harm_rep <- as.array(harm_rep)
     # yields[,common_years,common_vars] <- ifelse(to_rep[,common_years,common_vars] >0, to_rep[,common_years,common_vars], yields[,common_years, common_vars])
-    yields[, common_years, common_vars] <- to_rep[, common_years, common_vars]
+    yields[, common_years, common_vars] <- harm_rep[, common_years, common_vars]
     yields <- as.magpie(yields)
-    to_rep <- as.magpie(to_rep)
+    harm_rep <- as.magpie(harm_rep)
 
   }
 

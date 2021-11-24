@@ -4,3 +4,4 @@
 ^\.buildlibrary$
 ^.*\.Rproj$
 ^\.Rproj\.user$
+^\.pre-commit-config\.yaml$

@@ -13,7 +13,6 @@ MAgPIE objects with livestock numbers on a cellular level.
 Disaggregate Livestock estimates based on the GLW3 dataset.
 }
 \examples{
-
 \dontrun{
 calcOutput("LivestockDistribution")
 }

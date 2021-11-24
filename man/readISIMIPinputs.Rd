@@ -18,8 +18,8 @@ Read in non-agricultural water demand data from ISIMIP inputs
 \examples{
 \dontrun{
 readSource("ISIMIPinputs",
-subtype="ISIMIP3b:water:histsoc.waterabstraction",
-convert="onlycorrect")
+subtype = "ISIMIP3b:water:histsoc.waterabstraction",
+convert = "onlycorrect")
 }
 
 }
