@@ -33,6 +33,8 @@
 #' @importFrom magpiesets findset
 #' @importFrom digest digest
 #' @importFrom stringr str_split
+#' @importFrom luplot plotregionscluster
+#' @importFrom ggplot2 ggsave
 
 fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
                                ctype = "c200",
@@ -94,6 +96,10 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
     error.existing = FALSE)
   setConfig(extramappings = clustermapname)
 
+  #plot map with regions and clusters
+  clustermap <- readRDS(clustermapname)
+  p <- plotregionscluster(clustermap$cluster)
+  ggsave(paste0(getConfig("outputfolder"), "/",sub(".rds",".pdf",sub("clustermap","spamplot",clustermapname))),p,height = 6,width = 10,scale=1)
 
   # 14 yields
 
