@@ -16,6 +16,7 @@
 #'
 #' @importFrom magpiesets findset
 #' @importFrom magclass add_dimension
+#' @importFrom mrcommons toolHarmonize2Baseline
 
 calcCarbonSink <- function(version     = "LPJmL4_for_MAgPIE_44ac93de",
                            climatetype = "GSWP3-W5E5:historical",

@@ -15,7 +15,7 @@
 #'
 #' @export
 
-toolPatternScaling <- function(scen, scen_mean, ref_mean, ref_year="y2010", variation="yieldCalibMAG") {
+toolPatternScaling <- function(scen, scen_mean, ref_mean, ref_year = "y2010", variation = "yieldCalibMAG") {
 
   if (!is.magpie(scen) | !is.magpie(scen_mean) | !is.magpie(ref_mean)) {
     stop("Input is not a MAgPIE object, x has to be a MAgPIE object!")
@@ -49,22 +49,22 @@ toolPatternScaling <- function(scen, scen_mean, ref_mean, ref_year="y2010", vari
   ### data from reference year +1 on      ###
   ###########################################
 
-  lambda <- sqrt( scen_mean / ref_mean )
+  lambda <- sqrt(scen_mean / ref_mean)
   lambda[scen_mean >= ref_mean] <- 1
   lambda[is.nan(lambda)]        <- 1
 
   out <- (1 + (ref_mean - scen_mean) / scen * toolConditionalReplace(scen / scen_mean,
-                                                                     c("is.na()", "is.infinite()"), 1) ** lambda)
+                                                                     c("is.na()", "is.infinite()"), 1)**lambda)
 
   if (any((is.infinite(out) | is.na(out)) & scen != 0)) stop("Data containing inconsistencies.")
   out[is.na(out)]        <- 0
   out[is.infinite(out)]  <- 0
   out <- scen * out
 
-  #check for nans and more
+  # check for nans and more
   if (any(is.infinite(out) | is.nan(out) | is.na(out))) warning("Data containing inconsistencies.")
   if (!negative & any(out < 0)) {
-    vcat(2, paste0("toolHarmonize2Baseline created unwanted negativities in the range of ",
+    vcat(2, paste0("toolPatternScaling created unwanted negativities in the range of ",
                    range(out[which(out < 0)]), ". They will be set to zero."))
     out[out < 0] <- 0
   }

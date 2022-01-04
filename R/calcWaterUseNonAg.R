@@ -26,7 +26,7 @@
 #'
 #' @importFrom madrat calcOutput readSource toolTimeAverage toolTimeSpline toolFillYears
 #' @importFrom magclass new.magpie getYears getCells getSets setYears dimOrder
-#' @importFrom mrcommons toolCell2isoCell toolCoord2Isocell toolGetMappingCoord2Country
+#' @importFrom mrcommons toolCell2isoCell toolCoord2Isocell toolGetMappingCoord2Country toolHarmonize2Baseline
 #' @importFrom magpiesets addLocation findset
 
 calcWaterUseNonAg <- function(selectyears = seq(1995, 2100, by = 5), cells = "magpiecell",
@@ -78,6 +78,9 @@ calcWaterUseNonAg <- function(selectyears = seq(1995, 2100, by = 5), cells = "ma
       watdemISIMIP   <- toolSmooth(watdemISIMIP, method = harmonType)
     } else if (is.null(harmonType) | harmonType == "raw") {
       watdemISIMIP   <- watdemISIMIP
+    } else {
+      stop("Please select time smoothing method (spline or average)
+           for case of harmonization")
     }
 
     # Reduce size (cut historical years)
@@ -92,6 +95,11 @@ calcWaterUseNonAg <- function(selectyears = seq(1995, 2100, by = 5), cells = "ma
 
     if (harmonType == "average" | harmonType == "spline") {
       watdemNonAg   <- toolSmooth(watdemNonAg, method = harmonType)
+    } else if (is.null(harmonType) | harmonType == "raw") {
+      watdemNonAg   <- watdemNonAg
+    } else {
+      stop("Please select time smoothing method (spline or average)
+           for case of harmonization")
     }
 
   } else if (datasource == "WATERGAP_ISIMIP") {
@@ -151,7 +159,7 @@ calcWaterUseNonAg <- function(selectyears = seq(1995, 2100, by = 5), cells = "ma
 
       # Harmonize WATERGAP data to ISIMIP baseline for baseyear
       harmonizedWATERGAP <- toolHarmonize2Baseline(x = tmpWATERGAP, base = watdemISIMIP,
-                                                   ref_year = baseyear, limited = TRUE, hard_cut = FALSE)
+                                                   ref_year = baseyear, method = "additive", hard_cut = FALSE)
       harmonizedWATERGAP <- setNames(harmonizedWATERGAP, nm = paste(scenario, getNames(harmonizedWATERGAP), sep = "."))
       getSets(harmonizedWATERGAP) <- c("x", "y", "iso", "year", "scenario", "use", "type")
 
@@ -180,7 +188,7 @@ calcWaterUseNonAg <- function(selectyears = seq(1995, 2100, by = 5), cells = "ma
 
       i <- i + 1
       tmp[[i]] <- toolHarmonize2Baseline(x = collapseNames(watdemWATERGAP[, yearsFUTURE, scenario]), base = collapseNames(watdemWATERGAP[, yearsFUTURE, "ssp2"]),
-                                         ref_year = yearsHarmonized[length(yearsHarmonized)], limited = TRUE, hard_cut = FALSE)
+                                         ref_year = yearsHarmonized[length(yearsHarmonized)], method = "additive", hard_cut = FALSE)
       getNames(tmp[[i]]) <- paste(scenario, getNames(tmp[[i]]), sep = ".")
       getSets(tmp[[i]])  <- c("x", "y", "iso", "year", "scenario", "use", "type")
 

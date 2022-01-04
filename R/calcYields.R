@@ -19,7 +19,7 @@
 #' @importFrom magpiesets findset
 #' @importFrom magclass getYears add_columns dimSums time_interpolate
 #' @importFrom madrat toolFillYears
-#' @importFrom mrcommons toolLPJmLVersion
+#' @importFrom mrcommons toolLPJmLVersion toolHarmonize2Baseline
 
 calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimip = NULL),
                        climatetype = "GSWP3-W5E5:historical", cells = "magpiecell", weighting = "totalCrop") {
@@ -74,11 +74,11 @@ calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimi
   FAOYields     <- dimSums(FAOproduction[, faoyears, ], dim = 1) / dimSums(MAGarea[, faoyears, ], dim = 1)
   FAOYields     <- setYears(toolTimeAverage(FAOYields[, 1993:1997, ], 5))
   Calib         <- new.magpie("GLO", NULL, c(getNames(FAOYields), "pasture"), fill = 1, sets = c("iso", "year", "data"))
-  Calib[, , "oilpalm"]   <- FAOYields[, , "oilpalm"] / FAOYields[, , "groundnut"]  #LPJmL proxy for oilpalm is groundnut
-  Calib[, , "cottn_pro"] <- FAOYields[, , "cottn_pro"] / FAOYields[, , "groundnut"]#LPJmL proxy for cotton is groundnut
-  Calib[, , "foddr"]     <- FAOYields[, , "foddr"] / FAOYields[, , "maiz"]         #LPJmL proxy for fodder is maize
-  Calib[, , "others"]    <- FAOYields[, , "others"] / FAOYields[, , "maiz"]        #LPJmL proxy for others is maize
-  Calib[, , "potato"]    <- FAOYields[, , "potato"] / FAOYields[, , "sugr_beet"]   #LPJmL proxy for potato is sugarbeet
+  Calib[, , "oilpalm"]   <- FAOYields[, , "oilpalm"] / FAOYields[, , "groundnut"]  # LPJmL proxy for oilpalm is groundnut
+  Calib[, , "cottn_pro"] <- FAOYields[, , "cottn_pro"] / FAOYields[, , "groundnut"] # LPJmL proxy for cotton is groundnut
+  Calib[, , "foddr"]     <- FAOYields[, , "foddr"] / FAOYields[, , "maiz"]         # LPJmL proxy for fodder is maize
+  Calib[, , "others"]    <- FAOYields[, , "others"] / FAOYields[, , "maiz"]        # LPJmL proxy for others is maize
+  Calib[, , "potato"]    <- FAOYields[, , "potato"] / FAOYields[, , "sugr_beet"]   # LPJmL proxy for potato is sugarbeet
 
   # recalibrate yields for proxys
   yields <- yields * Calib[, , getNames(yields, dim = 1)]
@@ -88,15 +88,15 @@ calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimi
   }
 
   if (!is.na(source["isimip"])) {
-    to_rep <- calcOutput("ISIMIP3bYields", subtype = source[["isimip"]], cells = cells, aggregate = F)
+    to_rep <- calcOutput("ISIMIP3bYields", subtype = source[["isimip"]], cells = cells, aggregate = FALSE)
     common_vars <- intersect(getNames(yields), getNames(to_rep))
     common_years <- intersect(getYears(yields), getYears(to_rep))
 
     #  harmonize to LPJml
     cfg <- toolLPJmLVersion(version = source["lpjml"], climatetype = climatetype)
-    harm_rep <- toolHarmonize2Baseline(x=to_rep[,common_years,common_vars],
-                                       base=yields[,common_years,common_vars],
-                                       ref_year = cfg$ref_year_gcm )
+    harm_rep <- toolHarmonize2Baseline(x = to_rep[, common_years, common_vars],
+                                       base = yields[, common_years, common_vars],
+                                       ref_year = cfg$ref_year_gcm)
     gc()
      # convert to array for memory
     yields <- as.array(yields)
