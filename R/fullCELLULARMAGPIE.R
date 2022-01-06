@@ -96,10 +96,10 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
     error.existing = FALSE)
   setConfig(extramappings = clustermapname)
 
-  #plot map with regions and clusters
+  # plot map with regions and clusters
   clustermap <- readRDS(clustermapname)
   p <- plotregionscluster(clustermap$cluster)
-  ggsave(paste0(getConfig("outputfolder"), "/",sub(".rds",".pdf",sub("clustermap","spamplot",clustermapname))),p,height = 6,width = 10,scale=1)
+  ggsave(paste0(getConfig("outputfolder"), "/", sub(".rds", ".pdf", sub("clustermap", "spamplot", clustermapname))), p, height = 6, width = 10, scale = 1)
 
   # 14 yields
 
@@ -141,7 +141,7 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
     calcOutput("PastureSuit",  subtype = paste(version_isimip, climatemodel, "1850_2100", sep = ":"),
                file = paste0("f31_pastr_suitability_", ctype, ".mz"), years = mag_years, aggregate = "cluster")
     calcOutput("PastureSuit",  subtype = paste(version_isimip, climatemodel, "1850_2100", sep = ":"),
-               file = paste0("f31_pastr_suitability.mz"), years = mag_years, aggregate = F)
+               file = paste0("f31_pastr_suitability.mz"), years = mag_years, aggregate = FALSE)
 
     #--- Post-processing: LPJmL emulator files ---#
     calcOutput("GrassSoilEmu", subtype = paste(version_isimip, climatemodel, scenario, "1965_2100", sep = ":"),
@@ -298,8 +298,15 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
 
   calcOutput("EnvmtlFlow", lpjml = lpjml, years = lpj_years, climatetype = climatetype, aggregate = "cluster",
     round = 6, seasonality = "grper", file = paste0("lpj_envflow_grper_", ctype, ".mz"))
-  calcOutput("WaterUseNonAg", datasource = "WATCH_ISIMIP_WATERGAP", years = lpj_years, seasonality = "grper", lpjml = lpjml,
-    climatetype = climatetype, aggregate = "cluster", file = paste0("watdem_nonagr_grper_", ctype, ".mz"))
+
+  if (rev < 4.66) {
+    calcOutput("WaterUseNonAg", datasource = "WATCH_ISIMIP_WATERGAP", years = lpj_years, seasonality = "grper", lpjml = lpjml,
+               climatetype = climatetype, aggregate = "cluster", file = paste0("watdem_nonagr_grper_", ctype, ".mz"))
+  } else {
+    calcOutput("WaterUseNonAg", datasource = "WATERGAP_ISIMIP", usetype = "all:withdrawal",
+               selectyears = lpj_years, seasonality = "grper", lpjml = lpjml, climatetype = climatetype,
+               aggregate = "cluster", file = paste0("watdem_nonagr_grper_", ctype, ".mz"))
+  }
 
   # 44 biodiversity
   calcOutput("Luh2SideLayers", aggregate = "cluster", round = 6, file = paste0("luh2_side_layers_", ctype, ".mz"))
