@@ -24,8 +24,15 @@ calcWaterUseNonAg(
 
 \item{datasource}{Data source to be used (e.g. WATERGAP2020)}
 
-\item{usetype}{"total" returns the sum over different
-water use types (manufacturing, industry, electricity)}
+\item{usetype}{water use types (domestic, industry, electricity)
+and option to return withdrawals or consumption
+separated by ":" (e.g. "all:withdrawal")
+options for first argument:
+"total" (returns the sum over different
+water use types) or
+"all" ( returns all water use types
+(domestic, industry, electricity))
+options for second argument: "all", "withdrawal", "consumption"}
 
 \item{seasonality}{grper (default): non-agricultural water demand in growing period per year;
 total: non-agricultural water demand throughout the year}

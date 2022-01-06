@@ -11,8 +11,16 @@
 #'                           average (average over 8-year time span around baseline year) or
 #'                           spline (time smoothing using spline method with 4 degrees of freedom) or
 #'                           NULL (no smoothing)
-#' @param usetype            "total" returns the sum over different
-#'                           water use types (manufacturing, industry, electricity)
+#' @param usetype            water use types (domestic, industry, electricity)
+#'                           and option to return withdrawals or consumption
+#'                           separated by ":" (e.g. "all:withdrawal")
+#'                           options for first argument:
+#'                           "total" (returns the sum over different
+#'                           water use types) or
+#'                           "all" ( returns all water use types
+#'                           (domestic, industry, electricity))
+#'                           options for second argument: "all", "withdrawal", "consumption"
+#'
 #' @param cells              Number of cells to be returned
 #'                           (select "magpiecell" for 59199 cells or "lpjcell" for 67420 cells)
 #'
@@ -38,6 +46,10 @@ calcWaterUseNonAg <- function(selectyears = seq(1995, 2100, by = 5), cells = "ma
   sizelimit <- getOption("magclass_sizeLimit")
   options(magclass_sizeLimit = 1e+12)
   on.exit(options(magclass_sizeLimit = sizelimit))
+
+  # Extract arguments
+  waterusetype    <- strsplit(usetype, split = ":")[[1]][1]
+  abstractiontype <- strsplit(usetype, split = ":")[[1]][2]
 
   # Cell mapping
   map         <- toolGetMappingCoord2Country()
@@ -107,13 +119,13 @@ calcWaterUseNonAg <- function(selectyears = seq(1995, 2100, by = 5), cells = "ma
     if (harmonType == "average" | harmonType == "spline") {
       # Read in ISIMIP non-agricultural water abstractions:
       watdemISIMIP   <- calcOutput("WaterUseNonAg", datasource = "ISIMIP", cells = "lpjcell",
-                                   selectyears = "all", seasonality = "total", usetype = "all",
+                                   selectyears = "all", seasonality = "total", usetype = "all:all",
                                    harmonType = harmonType, lpjml = lpjml, climatetype = climatetype,
                                    aggregate = FALSE)
 
       # Read in ISIMIP non-agricultural water abstractions:
       watdemWATERGAP <- calcOutput("WaterUseNonAg", datasource = "WATERGAP2020", cells = "lpjcell",
-                                   selectyears = "all", seasonality = "total", usetype = "all",
+                                   selectyears = "all", seasonality = "total", usetype = "all:all",
                                    harmonType = harmonType, lpjml = lpjml, climatetype = climatetype,
                                    aggregate = FALSE)
     } else {
@@ -303,21 +315,26 @@ calcWaterUseNonAg <- function(selectyears = seq(1995, 2100, by = 5), cells = "ma
 
     # Calculate non-agricultural water demand in growing period
     out         <- watdemNonAg[, years, ] * growDays[, years, ] / 365
-    description <- "Non-agricultural water demand (industry, electiricty, domestic) in growing period"
+    description <- "Non-agricultural water demand (manufacturing, electricity, domestic) in growing period"
 
   } else if (seasonality == "total") {
 
     ### Total non-agricultural water demands per year
     out         <- watdemNonAg
-    description <- "Total non-agricultural water demand (industry, electiricty, domestic)"
+    description <- "Total non-agricultural water demand (manufacturing, electricity, domestic)"
 
   } else {
     stop("Specify seasonality! grper or total")
   }
 
-  # Sum up over all non-agricultural water uses (domestic, industry, manufacturing)
-  if (usetype == "total") {
+  # Sum up over all non-agricultural water uses (domestic, manufacturing, electricity)
+  if (waterusetype == "total") {
     out <- dimSums(out, dim = "use")
+  }
+
+  # Report withdrawal or consumption only
+  if (!is.na(abstractiontype) && (grepl(abstractiontype, "consumption") | grepl(abstractiontype, "withdrawal"))) {
+    out <- collapseNames(out[, , abstractiontype])
   }
 
   # Check for NAs
