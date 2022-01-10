@@ -26,9 +26,10 @@ calcProtectArea <- function(cells = "magpiecell") {
   # Protection Area mz file (conservation priority area in Mha)
   x <- readSource("ProtectArea", convert = "onlycorrect")
 
-  # Add BH_FF scenario (combination of intact forestry landscape and biodiversity hotspots)
-  bhff <- setNames(pmax(x[, , "BH"], x[, , "FF"]), nm = "BH_FF")
-  x    <- mbind(x, bhff)
+  # Add BH_IFL scenario (combination of biodiversity hotspots and intact forestry landscapes)
+  # (Note: should only be applied to forests (for other land, use BH))
+  bhifl <- setNames(pmax(x[, , "BH"], x[, , "IFL"]), nm = "BH_IFL")
+  x     <- mbind(x, bhifl)
 
   # Half Earth Protection Share
   protectShr           <- readSource("HalfEarth", convert = "onlycorrect")
