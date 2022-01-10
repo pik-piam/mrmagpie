@@ -19,11 +19,16 @@ calcProtectArea <- function(cells = "magpiecell") {
 
   # Land area (in Mha):
   landArea <- calcOutput("LanduseInitialisation", cellular = TRUE, cells = cells,
-                         nclasses = "seven", fao_corr = TRUE, input_magpie = TRUE, years = "y1995", aggregate = FALSE)
+                         nclasses = "seven", fao_corr = TRUE, input_magpie = TRUE,
+                         years = "y1995", aggregate = FALSE)
   landArea <- dimSums(landArea, dim = 3)
 
   # Protection Area mz file (conservation priority area in Mha)
   x <- readSource("ProtectArea", convert = "onlycorrect")
+
+  # Add BH_FF scenario (combination of intact forestry landscape and biodiversity hotspots)
+  bhff <- setNames(pmax(x[, , "BH"], x[, , "FF"]), nm = "BH_FF")
+  x    <- mbind(x, bhff)
 
   # Half Earth Protection Share
   protectShr           <- readSource("HalfEarth", convert = "onlycorrect")
@@ -35,10 +40,6 @@ calcProtectArea <- function(cells = "magpiecell") {
     protectShr <- toolCoord2Isocell(protectShr, cells = cells)
 
   } else if (cells == "lpjcell") {
-
-    # Add BH_FF scenario (combination of intact forestry landscape and biodiversity hotspots)
-    bhff <- setNames(pmax(x[, , "BH"], x[, , "FF"]), nm = "BH_FF")
-    x    <- mbind(x, bhff)
 
     landArea <- collapseDim(addLocation(landArea), dim = c("N", "region"))
 
