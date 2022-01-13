@@ -9,9 +9,11 @@ correctProtectArea(x)
 \arguments{
 \item{x}{magpie object provided by the read function}
 }
+\value{
+magpie object on cellular level
+}
 \description{
 Read calibrated protection area file
-#' @return magpie object on cellular level
 }
 \examples{
 

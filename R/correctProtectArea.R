@@ -19,8 +19,5 @@ correctProtectArea <- function(x) {
   x <- toolConditionalReplace(x, conditions = c("is.na()", "<0"), replaceby = 0)
   x <- toolCell2isoCell(x)
 
-  # In this data set, FF stands for intact forest landscapes (IFL)
-  getNames(x) <- gsub("FF", "IFL", getNames(x))
-
   return(x)
 }

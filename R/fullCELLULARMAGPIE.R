@@ -263,7 +263,7 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
 
   # 35 natveg
   calcOutput("AgeClassDistribution", aggregate = "cluster", round = 6, file = paste0("forestageclasses_", ctype, ".mz"))
-  calcOutput("ProtectArea",          aggregate = "cluster", round = 6, file = paste0("protect_area_", ctype, ".mz"))
+  calcOutput("ProtectArea", bhifl = ifelse(rev > 4.65, TRUE, FALSE), aggregate = "cluster", round = 6, file = paste0("protect_area_", ctype, ".mz"))
 
   # 37 labour prod
   calcOutput("LabourProdImpactEmu", aggregate = "cluster", round = 6, subtype = "impact",

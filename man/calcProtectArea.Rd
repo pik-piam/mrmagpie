@@ -4,10 +4,13 @@
 \alias{calcProtectArea}
 \title{calcProtectArea}
 \usage{
-calcProtectArea(cells = "magpiecell")
+calcProtectArea(cells = "magpiecell", bhifl = TRUE)
 }
 \arguments{
 \item{cells}{number of cells of landmask (select "magpiecell" for 59199 cells or "lpjcell" for 67420 cells)}
+
+\item{bhifl}{should be TRUE (including BH_IFL scenario)
+for cellular preprocessing revisions > 4.65}
 }
 \value{
 magpie object in cellular resolution with different protection scenarios

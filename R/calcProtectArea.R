@@ -2,6 +2,8 @@
 #' @description Function extracts conservation protected area
 #'
 #' @param cells number of cells of landmask (select "magpiecell" for 59199 cells or "lpjcell" for 67420 cells)
+#' @param bhifl should be TRUE (including BH_IFL scenario)
+#'              for cellular preprocessing revisions > 4.65
 #'
 #' @return magpie object in cellular resolution with different protection scenarios
 #' @author Felicitas Beier, David Chen
@@ -15,7 +17,7 @@
 #' @importFrom magclass collapseDim
 #'
 
-calcProtectArea <- function(cells = "magpiecell") {
+calcProtectArea <- function(cells = "magpiecell", bhifl = TRUE) {
 
   # Land area (in Mha):
   landArea <- calcOutput("LanduseInitialisation", cellular = TRUE, cells = cells,
@@ -26,10 +28,15 @@ calcProtectArea <- function(cells = "magpiecell") {
   # Protection Area mz file (conservation priority area in Mha)
   x <- readSource("ProtectArea", convert = "onlycorrect")
 
-  # Add BH_IFL scenario (combination of biodiversity hotspots and intact forestry landscapes)
-  # (Note: should only be applied to forests (for other land, use BH))
-  bhifl <- setNames(pmax(x[, , "BH"], x[, , "IFL"]), nm = "BH_IFL")
-  x     <- mbind(x, bhifl)
+  if (bhifl) {
+    # In this data set, FF stands for intact forest landscapes (IFL)
+    getNames(x) <- gsub("FF", "IFL", getNames(x))
+
+    # Add BH_IFL scenario (combination of biodiversity hotspots and intact forestry landscapes)
+    # (Note: should only be applied to forests (for other land, use BH))
+    bhifl <- setNames(pmax(x[, , "BH"], x[, , "IFL"]), nm = "BH_IFL")
+    x     <- mbind(x, bhifl)
+  }
 
   # Half Earth Protection Share
   protectShr           <- readSource("HalfEarth", convert = "onlycorrect")
