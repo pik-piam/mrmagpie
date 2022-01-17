@@ -51,7 +51,7 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
   on.exit(options(magclass_sizeLimit = sizelimit))
 
   ### Version settings ###
-  if (rev < 4.63) stop("mrmagpie(>= 1.14.0) does not support revision below 4.63 anymore.
+  if (rev < 4.66) stop("mrmagpie(>= 1.19.0) does not support revision below 4.66 anymore.
                        Please use a older snapshot/version of the library, if you need older revisions.")
 
 
@@ -263,7 +263,7 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
 
   # 35 natveg
   calcOutput("AgeClassDistribution", aggregate = "cluster", round = 6, file = paste0("forestageclasses_", ctype, ".mz"))
-  calcOutput("ProtectArea", bhifl = ifelse(rev > 4.65, TRUE, FALSE), aggregate = "cluster", round = 6, file = paste0("protect_area_", ctype, ".mz"))
+  calcOutput("ProtectArea", bhifl = ifelse(rev > 4.66, TRUE, FALSE), aggregate = "cluster", round = 6, file = paste0("protect_area_", ctype, ".mz"))
 
   # 37 labour prod
   calcOutput("LabourProdImpactEmu", aggregate = "cluster", round = 6, subtype = "impact",
@@ -299,7 +299,7 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
   calcOutput("EnvmtlFlow", lpjml = lpjml, years = lpj_years, climatetype = climatetype, aggregate = "cluster",
     round = 6, seasonality = "grper", file = paste0("lpj_envflow_grper_", ctype, ".mz"))
 
-  if (rev < 4.66) {
+  if (rev < 4.67) {
     calcOutput("WaterUseNonAg", datasource = "WATCH_ISIMIP_WATERGAP", years = lpj_years, seasonality = "grper", lpjml = lpjml,
                climatetype = climatetype, aggregate = "cluster", file = paste0("watdem_nonagr_grper_", ctype, ".mz"))
   } else {
