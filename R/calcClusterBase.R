@@ -40,5 +40,6 @@ calcClusterBase <- function(clusterdata="yield_airrig", lpjml=c(natveg="LPJmL4_f
     weight = NULL,
     unit = "1",
     description = "Similarity matrix as basis for clustering",
-    isocountries = FALSE))
+    isocountries = FALSE,
+    bundle = TRUE))
 }
