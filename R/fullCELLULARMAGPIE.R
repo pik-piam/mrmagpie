@@ -381,6 +381,8 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
   writeInfo(file = paste0(getConfig("outputfolder"), "/info.txt"), lpjml_data = climatetype,
     res_high = "0.5", res_out = ctype, rev = rev)
 
-  return(list(tag = version_tag))
+  return(list(tag = version_tag,
+              bundleCustomArgs = "ctype",
+              bundleTag = sub("^[^_]*_", "", version_tag)))
 
 }
