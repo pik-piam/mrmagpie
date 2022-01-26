@@ -127,10 +127,7 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
     calcOutput("PastrTauHist", round = 2, file = "f13_pastr_tau_hist.csv", aggregate = superregion)
 
     #--- Module 14_yields: Grasslands / LHU2 for yield calibration  ---#
-    calcOutput("GrasslandsYields",
-               subtype = paste(lpjml[["grass"]],
-                               paste0(paste(climatemodel, scenario, sep = ":"),
-                                      "/co2/Nreturn0p5/limN"), sep = ":"),
+    calcOutput("GrasslandsYields", lpjml = lpjml[["grass"]], climatetype = climatetype, subtype = "/co2/Nreturn0p5/limN" ,
                lsu_levels = c(seq(0, 2.2, 0.2), 2.5), past_mngmt = "me2",
                file = paste0("f14_grassl_yld_", ctype, ".mz"), years = mag_years, aggregate = "cluster")
 
@@ -167,11 +164,16 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
     calcOutput("RangeSoilCarbonHist",
                subtype = paste(version_isimip, climatemodel, scenario, "1965_2100", sep = ":"),
                model = emu_id, lpjml = lpjml[["grass"]], file = "f31_range_soilc_hist.mz", aggregate = FALSE)
-    calcOutput("GrasslandsYields",
-               subtype = paste(lpjml[["grass"]], paste0(paste(climatemodel, scenario, sep = ":"),
-                                                        "/co2/Nreturn0p5/limN"), sep = ":"),
-               lsu_levels = c(seq(0, 2.2, 0.2), 2.5), past_mngmt = "me2", file = paste0("f14_grassl_yld.mz"),
-               years = mag_years, aggregate = FALSE)
+    # calcOutput("GrasslandsYields",
+    #            subtype = paste(lpjml[["grass"]], paste0(paste(climatemodel, scenario, sep = ":"),
+    #                                                     "/co2/Nreturn0p5/limN"), sep = ":"),
+    #            lsu_levels = c(seq(0, 2.2, 0.2), 2.5), past_mngmt = "me2", file = paste0("f14_grassl_yld.mz"),
+    #            years = mag_years, aggregate = FALSE)
+
+    calcOutput("GrasslandsYields", lpjml = lpjml[["grass"]], climatetype = climatetype, subtype = "/co2/Nreturn0p5/limN" ,
+               lsu_levels = c(seq(0, 2.2, 0.2), 2.5), past_mngmt = "me2",
+               file = paste0("f14_grassl_yld_", ctype, ".mz"), years = mag_years, aggregate = F)
+
     calcOutput("LsuDensityHist", disagg_type = "grassland", aggregate = FALSE,  file = "f31_lsu_ha_grassl.mz")
     calcOutput("LsuDensityHist", disagg_type = "livestock", aggregate = FALSE,  file = "f31_lsu_ha_livestock.mz")
     calcOutput("LUH2v2", aggregate = FALSE, landuse_types = "LUH2v2", cellular = TRUE, file = paste0("fm_LUH2v2.mz"))

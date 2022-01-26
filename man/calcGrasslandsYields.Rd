@@ -5,17 +5,23 @@
 \title{calcGrasslandsYields}
 \usage{
 calcGrasslandsYields(
+  lpjml = lpjml[["grass"]],
+  climatetype = climatetype,
+  subtype = "/co2/Nreturn0p5/limN",
   lsu_levels = c(seq(0, 2, 0.2), 2.5),
-  past_mngmt = "me2",
-  subtype = "lpjml5p2_pasture:IPSL_CM6A_LR:ssp126_co2_limN"
+  past_mngmt = "me2"
 )
 }
 \arguments{
+\item{lpjml}{Defines LPJmL version for crop/grass and natveg specific inputs}
+
+\item{climatetype}{Global Circulation Model to be used}
+
+\item{subtype}{Switch between different climate scenarios}
+
 \item{lsu_levels}{Livestock unit levels in the source folder}
 
 \item{past_mngmt}{pasture areas management option}
-
-\item{subtype}{Switch between different climate scenarios}
 }
 \value{
 magpie object in cellular resolution

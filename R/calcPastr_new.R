@@ -18,7 +18,7 @@ calcPastr_new <- function(past_mngmt = "me2", lpjml = "lpjml5p2_pasture", climat
 
   years_hist <- seq(1965,2010, 5)
   years_scen <- seq(2015,2100, 5)
-  .subtype <- paste(lpjml, climatetype,paste0(scenario,"/", past_mngmt),sep = ":")
+  .subtype <- paste0(lpjml,":",climatetype,paste0(scenario,"/", past_mngmt))
   hist <- toolCoord2Isocell(readSource("LPJmL_new", subtype = paste(.subtype, "grass_pft_hist", sep = ":"), convert = F))
   scen <- toolCoord2Isocell(readSource("LPJmL_new", subtype = paste(.subtype, "grass_pft_scen", sep = ":"), convert = F))
   hist <- hist[,years_hist,"mgrass"]
