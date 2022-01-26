@@ -310,6 +310,7 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
 
   # 44 biodiversity
   calcOutput("Luh2SideLayers", aggregate = "cluster", round = 6, file = paste0("luh2_side_layers_", ctype, ".mz"))
+  calcOutput("Luh2SideLayers", aggregate = FALSE, round = 6, file = "luh2_side_layers_0.5.mz")
   calcOutput("RRLayer",        aggregate = "cluster", round = 6, file = paste0("rr_layer_", ctype, ".mz"))
 
   # 50 nitrogen
