@@ -34,13 +34,10 @@ calcPastrTauHist <- function() {
   yact[is.nan(yact) | is.infinite(yact)] <- 0
 
   # reference yields
-  yref <- calcOutput("GrasslandsYields",
-                      subtype = paste("lpjml5p2_pasture", paste0(
-                                paste("MRI-ESM2-0", "ssp370", sep = ":"),
-                                "/co2/Nreturn0p5/limN"), sep = ":"),
-                      lsu_levels = c(seq(0, 2.2, 0.2), 2.5),
-                      past_mngmt = "me2",
-                      aggregate = F)[, past, "pastr.rainfed"]
+  yref <- calcOutput("GrasslandsYields", lpjml = "lpjml5p2_pasture", climatetype = "MRI-ESM2-0:ssp370", subtype = "/co2/Nreturn0p5/limN" ,
+             lsu_levels = c(seq(0, 2.2, 0.2), 2.5), past_mngmt = "me2",
+             aggregate = F)[, past, "pastr.rainfed"]
+
   yref_weights <- calcOutput("LUH2v2", landuse_types = "LUH2v2", cellular = T, aggregate = F)[, past, "pastr"]
   yref <- toolAggregate(yref, rel = cell2reg, from = "cell", to = "country", weight = yref_weights)
   yref <- toolCountryFill(yref, fill = 0)
