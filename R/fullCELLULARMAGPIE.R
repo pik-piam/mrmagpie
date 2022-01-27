@@ -141,28 +141,28 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
                file = paste0("f31_pastr_suitability.mz"), years = mag_years, aggregate = FALSE)
 
     #--- Post-processing: LPJmL emulator files ---#
-    calcOutput("GrassSoilEmu", subtype = paste(version_isimip, climatemodel, scenario, "1965_2100", sep = ":"),
+    calcOutput("GrassSoilEmu", subtype = paste(version_isimip, climatetype, "1965_2100", sep = ":"),
                model = emu_id, mfile = "weights", aggregate = FALSE, file = "f31_weights.mz")
-    calcOutput("GrassSoilEmu", subtype = paste(version_isimip, climatemodel, scenario, "1965_2100", sep = ":"),
+    calcOutput("GrassSoilEmu", subtype = paste(version_isimip, climatetype, "1965_2100", sep = ":"),
                model = emu_id, mfile = "mean_col", aggregate = FALSE, file = "f31_mean_col.mz")
-    calcOutput("GrassSoilEmu", subtype = paste(version_isimip, climatemodel, scenario, "1965_2100", sep = ":"),
+    calcOutput("GrassSoilEmu", subtype = paste(version_isimip, climatetype, "1965_2100", sep = ":"),
                model = emu_id, mfile = "stddevs_col", aggregate = FALSE,  file = "f31_stddevs_col.mz")
-    calcOutput("GrassSoilEmu", subtype = paste(version_isimip, climatemodel, scenario, "1965_2100", sep = ":"),
+    calcOutput("GrassSoilEmu", subtype = paste(version_isimip, climatetype, "1965_2100", sep = ":"),
                model = emu_id, mfile = "mean_lab", aggregate = FALSE,  file = "f31_mean_lab.mz")
-    calcOutput("GrassSoilEmu", subtype = paste(version_isimip, climatemodel, scenario, "1965_2100", sep = ":"),
+    calcOutput("GrassSoilEmu", subtype = paste(version_isimip,climatetype, "1965_2100", sep = ":"),
                model = emu_id, mfile = "stddevs_lab", aggregate = FALSE, file = "f31_stddevs_lab.mz")
-    calcOutput("GrassSoilEmu", subtype = paste(version_isimip, climatemodel, scenario, "1965_2100", sep = ":"),
+    calcOutput("GrassSoilEmu", subtype = paste(version_isimip, climatetype, "1965_2100", sep = ":"),
                model = emu_id, mfile = "inputs", aggregate = FALSE,  file = "f31_inputs.mz")
 
     #--- Post-processing: LPJmL emulator inputs ---#
     calcOutput("CollectEnvironmentData_new",
-               subtype = paste(version_isimip, climatemodel, scenario, "1965_2100", sep = ":"), sar = 1, aggregate = FALSE,
+               subtype = paste(version_isimip, climatetype, "1965_2100", sep = ":"), sar = 1, aggregate = FALSE,
                sel_feat = c("tas", "pr", "lwnet", "rsds", "CO2", "Ks", "Sf", "w_pwp", "w_fc", "w_sat", "hsg", "wet"),
                file = paste0("environment_gramnt.mz"), years = seq(1965, 2100, by = 5))
 
     #--- Post-processing: files for disaggregation of outputs---#
     calcOutput("RangeSoilCarbonHist",
-               subtype = paste(version_isimip, climatemodel, scenario, "1965_2100", sep = ":"),
+               subtype = paste(version_isimip, climatetype, "1965_2100", sep = ":"),
                model = emu_id, lpjml = lpjml[["grass"]], file = "f31_range_soilc_hist.mz", aggregate = FALSE)
     # calcOutput("GrasslandsYields",
     #            subtype = paste(lpjml[["grass"]], paste0(paste(climatemodel, scenario, sep = ":"),
