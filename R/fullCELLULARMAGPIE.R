@@ -44,7 +44,9 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
                                          grass = "lpjml5p2_pasture"),
                                isimip = NULL,
                                clusterweight = NULL,
-                               emu_id = NULL) {
+                               emu_id = NULL) { # nolint
+
+  "!# @bundleArguments ctype clusterweight"
 
   sizelimit <- getOption("magclass_sizeLimit")
   options(magclass_sizeLimit = 1e+12)
@@ -149,7 +151,7 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
                model = emu_id, mfile = "stddevs_col", aggregate = FALSE,  file = "f31_stddevs_col.mz")
     calcOutput("GrassSoilEmu", subtype = paste(version_isimip, climatetype, "1965_2100", sep = ":"),
                model = emu_id, mfile = "mean_lab", aggregate = FALSE,  file = "f31_mean_lab.mz")
-    calcOutput("GrassSoilEmu", subtype = paste(version_isimip,climatetype, "1965_2100", sep = ":"),
+    calcOutput("GrassSoilEmu", subtype = paste(version_isimip, climatetype, "1965_2100", sep = ":"),
                model = emu_id, mfile = "stddevs_lab", aggregate = FALSE, file = "f31_stddevs_lab.mz")
     calcOutput("GrassSoilEmu", subtype = paste(version_isimip, climatetype, "1965_2100", sep = ":"),
                model = emu_id, mfile = "inputs", aggregate = FALSE,  file = "f31_inputs.mz")
@@ -165,9 +167,9 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
                subtype = paste(version_isimip, climatetype, "1965_2100", sep = ":"),
                model = emu_id, lpjml = lpjml[["grass"]], file = "f31_range_soilc_hist.mz", aggregate = FALSE)
 
-    calcOutput("GrasslandsYields", lpjml = lpjml[["grass"]], climatetype = climatetype, subtype = "/co2/Nreturn0p5/limN" ,
+    calcOutput("GrasslandsYields", lpjml = lpjml[["grass"]], climatetype = climatetype, subtype = "/co2/Nreturn0p5/limN",
                lsu_levels = c(seq(0, 2.2, 0.2), 2.5), past_mngmt = "me2",
-               file = "f14_grassl_yld.mz", years = mag_years, aggregate = F)
+               file = "f14_grassl_yld.mz", years = mag_years, aggregate = FALSE)
 
     calcOutput("LsuDensityHist", disagg_type = "grassland", aggregate = FALSE,  file = "f31_lsu_ha_grassl.mz")
     calcOutput("LsuDensityHist", disagg_type = "livestock", aggregate = FALSE,  file = "f31_lsu_ha_livestock.mz")
@@ -377,7 +379,6 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
     res_high = "0.5", res_out = ctype, rev = rev)
 
   return(list(tag = version_tag,
-              bundleCustomArgs = "ctype",
               bundleTag = sub("^[^_]*_", "", version_tag)))
 
 }
