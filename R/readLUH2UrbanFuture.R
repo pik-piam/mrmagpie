@@ -47,7 +47,8 @@ readLUH2UrbanFuture <- function() {
      for (j in 1:59199) {
        mag[j,t,i] <- x[which(magpie_coord[j, 1]==lon), which(magpie_coord[j,2]==lat)]
      }
-  }}
+  }
+    }
 
     x <- as.magpie(mag,spatial=1,temporal=2)
     x <- collapseNames(x)

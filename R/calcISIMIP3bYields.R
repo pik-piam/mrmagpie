@@ -2,6 +2,7 @@
 #' @description reads and cleans up ISIMIP3b crop yield data
 #' @param subtype subtype of yield based on readISIMIPoutputs, for crop yields
 #' @param cells magpie or lpjcell
+#' @param smooth smooth cells via spline
 #'  @return magpie object in cellular resolution
 #' @author David Meng-Chuen Chen
 #' @import mrcommons
@@ -11,7 +12,7 @@
 #' @importFrom mstools toolHoldConstant
 
 
-calcISIMIP3bYields <-function(subtype = "yields:EPIC-IIASA:ukesm1-0-ll:ssp585:default:3b", cells="magpiecell"){
+calcISIMIP3bYields <-function(subtype = "yields:EPIC-IIASA:ukesm1-0-ll:ssp585:default:3b", smooth = TRUE, cells="magpiecell"){
 
 if (grepl("historical", subtype)){
   stop ("Can only read full future scenarios for now, with historical already added")
@@ -65,11 +66,12 @@ if (grepl("historical", subtype)){
   x <- x[,,c("ricea", "riceb"), inv=T]
   x <- mbind(x,rice)
 
+  if (smooth == TRUE){
   #smooth with spline
-  x <- toolSmooth(x)
+  x <- toolSmooth(x)}
   #set very small yields from smoothing to 0
 
-  ### here interpolate 2014 and hold 2100 constant after smoothing
+  ### here interpolate 2014 and hold 2100 constant (after smoothing)
   x <- time_interpolate(x, interpolated_year = 2014, integrate_interpolated_years = TRUE)
   x <- toolHoldConstant(x, 2100)
 

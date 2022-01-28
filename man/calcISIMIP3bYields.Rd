@@ -6,14 +6,17 @@
 \usage{
 calcISIMIP3bYields(
   subtype = "yields:EPIC-IIASA:ukesm1-0-ll:ssp585:default:3b",
+  smooth = TRUE,
   cells = "magpiecell"
 )
 }
 \arguments{
 \item{subtype}{subtype of yield based on readISIMIPoutputs, for crop yields}
 
-\item{cells}{magpie or lpjcell
+\item{smooth}{smooth cells via spline
 @return magpie object in cellular resolution}
+
+\item{cells}{magpie or lpjcell}
 }
 \description{
 reads and cleans up ISIMIP3b crop yield data
