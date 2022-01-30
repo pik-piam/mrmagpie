@@ -220,8 +220,17 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
              input_magpie = TRUE, selectyears = mag_years_past_long, round = 6, country_level = TRUE,
              file = paste0("avl_land_full_t_iso.cs3"))
 
+  # Raw LUHv2 land classes
+  calcOutput("LUH2v2", aggregate = "cluster", landuse_types = "LUH2v2", cellular = TRUE,
+             file = paste0("fm_LUH2v2_", ctype, ".mz"))
+
   calcOutput("AvlLandSi", aggregate = FALSE, round = 6, file = "avl_land_si_0.5.mz")
   calcOutput("AvlLandSi", aggregate = "cluster", round = 6, file = paste0("avl_land_si_", ctype, ".mz"))
+
+  # 13 TC
+  map_reg <- toolGetMapping(getConfig("regionmapping"), type = "regional")
+  superregion <- ifelse("superregion" %in% colnames(map_reg), "superregion", "region")
+  calcOutput("PastrTauHist", round = 2, file = "f13_pastr_tau_hist.csv", aggregate = superregion)
 
   # 30 crop
   # calcOutput("Croparea", sectoral="kcr", physical=TRUE, cellular=TRUE, irrigation=FALSE,

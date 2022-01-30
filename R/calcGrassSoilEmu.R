@@ -28,10 +28,9 @@ calcGrassSoilEmu <-
       list(
         x = x,
         weight = NULL,
-        unit = NULL,
-        description = "ml emulator file",
+        unit = "none",
+        description = "soil C ML emulator file",
         isocountries = FALSE
       )
     )
   }
-# }
