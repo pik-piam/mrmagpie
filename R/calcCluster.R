@@ -17,7 +17,7 @@
 #' @param lpjml defines LPJmL version for crop/grass and natveg specific inputs
 #' @param clusterdata similarity data to be used to determine clusters: yield_airrig (current default)
 #' or yield_increment
-#' @return magpie object in cellular resolution
+#' @return map from cells to clusters as data.frame
 #' @author Jan Philipp Dietrich
 #'
 #' @examples
@@ -62,10 +62,18 @@ calcCluster <- function(ctype, regionscode = madrat::regionscode(), seed = 42, w
     stop("Unkown clustering mode ", mode, "!")
   }
 
+  pattern <- "^(.*)\\.(.*)\\.(.*)\\.(.*)$"
+  mapping <- data.frame(cell    = sub(pattern, "\\1.\\3", getCells(mapping)),
+                        cluster = sub(pattern, "\\2.\\4", getCells(mapping)),
+                        region  = sub(pattern, "\\2", getCells(mapping)),
+                        country = sub(pattern, "\\1", getCells(mapping)),
+                        global  = "GLO")
+
   return(list(
     x = mapping,
     weight = NULL,
     unit = "1",
+    class = "data.frame",
     description = "Mapping between cells and cluster",
     isocountries = FALSE,
     bundle = FALSE))

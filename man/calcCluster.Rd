@@ -38,7 +38,7 @@ weights will be assumed to be 1 (examples: c(LAM=1.5,SSA=1.5,OAS=1.5), c(LAM=2,S
 or yield_increment}
 }
 \value{
-magpie object in cellular resolution
+map from cells to clusters as data.frame
 }
 \description{
 This function calculates the aggregation mapping for a given cluster methodology

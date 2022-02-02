@@ -94,14 +94,12 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
   weightID <- ifelse(is.null(clusterweight), "", paste0("_", names(clusterweight), clusterweight, collapse = ""))
   clustermapname <- sub("\\.[^.]*$", ".rds", paste0("clustermap_rev", rev, dev, "_", ctype,
     weightID, "_", getConfig("regionmapping")))
-  toolStoreMapping(map, clustermapname, type = "regional", where = c("mappingfolder", "outputfolder"),
-    error.existing = FALSE)
-  setConfig(extramappings = clustermapname)
+  addMapping(clustermapname, map)
 
   # plot map with regions and clusters
   clustermap <- readRDS(clustermapname)
   p <- plotregionscluster(clustermap$cluster)
-  ggsave(paste0(getConfig("outputfolder"), "/", sub(".rds", ".pdf", sub("clustermap", "spamplot", clustermapname))), p, height = 6, width = 10, scale = 1)
+  ggsave(sub(".rds", ".pdf", sub("clustermap", "spamplot", clustermapname)), p, height = 6, width = 10, scale = 1)
 
   # 14 yields
 
@@ -369,7 +367,7 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
 
   # create info file
   writeInfo <- function(file, lpjml_data, res_high, res_out, rev) {
-    functioncall <- paste(deparse(sys.call(-2)), collapse = "")
+    functioncall <- paste(deparse(sys.call(-3)), collapse = "")
 
     map <- toolGetMapping(type = "regional", name = getConfig("regionmapping"))
     regionscode <- regionscode(map)
@@ -384,7 +382,7 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
       paste("* Call:", functioncall))
     base::cat(info, file = file, sep = "\n")
   }
-  writeInfo(file = paste0(getConfig("outputfolder"), "/info.txt"), lpjml_data = climatetype,
+  writeInfo(file = "info.txt", lpjml_data = climatetype,
     res_high = "0.5", res_out = ctype, rev = rev)
 
   return(list(tag = version_tag,
