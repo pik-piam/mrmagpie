@@ -118,72 +118,90 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
   }
 
   if (grepl("MPPA", dev)) {
-    #--- CONFIG: Root folder name currently expresses the ismip version / Super region---#
-    version_isimip <- "ISIMIP3b"
+    # #--- CONFIG: Root folder name currently expresses the ismip version / Super region---#
+     version_isimip <- "ISIMIP3b"
+     map_reg <- toolGetMapping(getConfig("regionmapping"), type = "regional")
+     superregion <- ifelse("superregion" %in% colnames(map_reg), "superregion", "region")
+    #
+    # #--- Module 13_tc: managed pasture historical tau ---#
+    # calcOutput("PastrTauHist", round = 2, file = "f13_pastr_tau_hist.csv", aggregate = superregion)
+    #
+    # #--- Module 14_yields: Grasslands / LHU2 for yield calibration  ---#
+    # calcOutput("GrasslandsYields", lpjml = lpjml[["grass"]], climatetype = climatetype, subtype = "/co2/Nreturn0p5/limN",
+    #            lsu_levels = c(seq(0, 2.2, 0.2), 2.5), past_mngmt = "me2",
+    #            file = paste0("f31_grassl_yld_", ctype, ".mz"), years = mag_years, aggregate = "cluster")
+    #
+    # calcOutput("LUH2v2", aggregate = "cluster", landuse_types = "LUH2v2", cellular = TRUE,
+    #            file = paste0("fm_LUH2v2_", ctype, ".mz"))
+    #
+    # #--- Module 31_past: suitable managed pasture areas ---#
+    # calcOutput("PastureSuit",  subtype = paste(version_isimip, climatemodel, "1850_2100", sep = ":"),
+    #            file = paste0("f31_pastr_suitability_", ctype, ".mz"), years = mag_years, aggregate = "cluster")
+    # calcOutput("PastureSuit",  subtype = paste(version_isimip, climatemodel, "1850_2100", sep = ":"),
+    #            file = paste0("f31_pastr_suitability.mz"), years = mag_years, aggregate = FALSE)
+    #
+    # #--- Post-processing: LPJmL emulator files ---#
+    # calcOutput("GrassSoilEmu", subtype = paste(version_isimip, climatetype, "1965_2100", sep = ":"),
+    #            model = emu_id, mfile = "weights", aggregate = FALSE, file = "f31_weights.mz")
+    # calcOutput("GrassSoilEmu", subtype = paste(version_isimip, climatetype, "1965_2100", sep = ":"),
+    #            model = emu_id, mfile = "mean_col", aggregate = FALSE, file = "f31_mean_col.mz")
+    # calcOutput("GrassSoilEmu", subtype = paste(version_isimip, climatetype, "1965_2100", sep = ":"),
+    #            model = emu_id, mfile = "stddevs_col", aggregate = FALSE,  file = "f31_stddevs_col.mz")
+    # calcOutput("GrassSoilEmu", subtype = paste(version_isimip, climatetype, "1965_2100", sep = ":"),
+    #            model = emu_id, mfile = "mean_lab", aggregate = FALSE,  file = "f31_mean_lab.mz")
+    # calcOutput("GrassSoilEmu", subtype = paste(version_isimip, climatetype, "1965_2100", sep = ":"),
+    #            model = emu_id, mfile = "stddevs_lab", aggregate = FALSE, file = "f31_stddevs_lab.mz")
+    # calcOutput("GrassSoilEmu", subtype = paste(version_isimip, climatetype, "1965_2100", sep = ":"),
+    #            model = emu_id, mfile = "inputs", aggregate = FALSE,  file = "f31_inputs.mz")
+    #
+    # #--- Post-processing: LPJmL emulator inputs ---#
+    # calcOutput("CollectEnvironmentData_new",
+    #            subtype = paste(version_isimip, climatetype, "1965_2100", sep = ":"), sar = 1, aggregate = FALSE,
+    #            sel_feat = c("tas", "pr", "lwnet", "rsds", "CO2", "Ks", "Sf", "w_pwp", "w_fc", "w_sat", "hsg", "wet"),
+    #            file = paste0("environment_gramnt.mz"), years = seq(1965, 2100, by = 5))
+    #
+    # #--- Post-processing: files for disaggregation of outputs---#
+    # calcOutput("RangeSoilCarbonHist",
+    #            subtype = paste(version_isimip, climatetype, "1965_2100", sep = ":"),
+    #            model = emu_id, lpjml = lpjml[["grass"]], file = "f31_range_soilc_hist.mz", aggregate = FALSE)
+    #
+    # calcOutput("GrasslandsYields", lpjml = lpjml[["grass"]], climatetype = climatetype, subtype = "/co2/Nreturn0p5/limN",
+    #            lsu_levels = c(seq(0, 2.2, 0.2), 2.5), past_mngmt = "me2",
+    #            file = "f31_grassl_yld.mz", years = mag_years, aggregate = FALSE)
+    #
+    # calcOutput("LsuDensityHist", disagg_type = "grassland", aggregate = FALSE,  file = "f31_lsu_ha_grassl.mz")
+    # calcOutput("LsuDensityHist", disagg_type = "livestock", aggregate = FALSE,  file = "f31_lsu_ha_livestock.mz")
+    # calcOutput("LUH2v2", aggregate = FALSE, landuse_types = "LUH2v2", cellular = TRUE, file = paste0("fm_LUH2v2.mz"))
+    #
+    # #--- Post-processing: Soil carbon ---#
+    # calcOutput("CollectSoilCarbonLSU", lsu_levels = c(seq(0, 2, 0.2), 2.5), lpjml = lpjml[["grass"]],
+    #            climatemodel = climatemodel, scenario = paste0(scenario, "/co2/Nreturn0p5/limN"), sar = 1,
+    #            aggregate = FALSE, file = paste0("soilc_stocks_gramnt.mz"), years = seq(1965, 2100, by = 5))
+    # calcOutput("CollectSoilCarbonPastr", past_mngmt = "me2", lpjml = lpjml[["grass"]], climatemodel = climatemodel,
+    #            aggregate = FALSE, scenario = paste0(scenario, "/co2/Nreturn0p5/limN"), sar = 1,
+    #            file = paste0("soilc_stocks_pastr.mz"), years = seq(1965, 2100, by = 5))
+    #
+    # #--- Experimental functions ----#
+    # # calcOutput("GrassPastureShare", aggregate = "cluster", file = paste0("f31_pastr_share_", ctype, ".mz"))
+    # # calcOutput("GrassLndYldHist", aggregate = "cluster", file = paste0("f14_grassl_yld_hist_cell", ctype, ".mz"))
+
+    # 13 TC
     map_reg <- toolGetMapping(getConfig("regionmapping"), type = "regional")
     superregion <- ifelse("superregion" %in% colnames(map_reg), "superregion", "region")
-
-    #--- Module 13_tc: managed pasture historical tau ---#
     calcOutput("PastrTauHist", round = 2, file = "f13_pastr_tau_hist.csv", aggregate = superregion)
 
-    #--- Module 14_yields: Grasslands / LHU2 for yield calibration  ---#
-    calcOutput("GrasslandsYields", lpjml = lpjml[["grass"]], climatetype = climatetype, subtype = "/co2/Nreturn0p5/limN",
-               lsu_levels = c(seq(0, 2.2, 0.2), 2.5), past_mngmt = "me2",
-               file = paste0("f14_grassl_yld_", ctype, ".mz"), years = mag_years, aggregate = "cluster")
-
+    # 31 past
     calcOutput("LUH2v2", aggregate = "cluster", landuse_types = "LUH2v2", cellular = TRUE,
-               file = paste0("fm_LUH2v2_", ctype, ".mz"))
-
-    #--- Module 31_past: suitable managed pasture areas ---#
-    calcOutput("PastureSuit",  subtype = paste(version_isimip, climatemodel, "1850_2100", sep = ":"),
-               file = paste0("f31_pastr_suitability_", ctype, ".mz"), years = mag_years, aggregate = "cluster")
-    calcOutput("PastureSuit",  subtype = paste(version_isimip, climatemodel, "1850_2100", sep = ":"),
-               file = paste0("f31_pastr_suitability.mz"), years = mag_years, aggregate = FALSE)
-
-    #--- Post-processing: LPJmL emulator files ---#
-    calcOutput("GrassSoilEmu", subtype = paste(version_isimip, climatetype, "1965_2100", sep = ":"),
-               model = emu_id, mfile = "weights", aggregate = FALSE, file = "f31_weights.mz")
-    calcOutput("GrassSoilEmu", subtype = paste(version_isimip, climatetype, "1965_2100", sep = ":"),
-               model = emu_id, mfile = "mean_col", aggregate = FALSE, file = "f31_mean_col.mz")
-    calcOutput("GrassSoilEmu", subtype = paste(version_isimip, climatetype, "1965_2100", sep = ":"),
-               model = emu_id, mfile = "stddevs_col", aggregate = FALSE,  file = "f31_stddevs_col.mz")
-    calcOutput("GrassSoilEmu", subtype = paste(version_isimip, climatetype, "1965_2100", sep = ":"),
-               model = emu_id, mfile = "mean_lab", aggregate = FALSE,  file = "f31_mean_lab.mz")
-    calcOutput("GrassSoilEmu", subtype = paste(version_isimip, climatetype, "1965_2100", sep = ":"),
-               model = emu_id, mfile = "stddevs_lab", aggregate = FALSE, file = "f31_stddevs_lab.mz")
-    calcOutput("GrassSoilEmu", subtype = paste(version_isimip, climatetype, "1965_2100", sep = ":"),
-               model = emu_id, mfile = "inputs", aggregate = FALSE,  file = "f31_inputs.mz")
-
-    #--- Post-processing: LPJmL emulator inputs ---#
-    calcOutput("CollectEnvironmentData_new",
-               subtype = paste(version_isimip, climatetype, "1965_2100", sep = ":"), sar = 1, aggregate = FALSE,
-               sel_feat = c("tas", "pr", "lwnet", "rsds", "CO2", "Ks", "Sf", "w_pwp", "w_fc", "w_sat", "hsg", "wet"),
-               file = paste0("environment_gramnt.mz"), years = seq(1965, 2100, by = 5))
-
-    #--- Post-processing: files for disaggregation of outputs---#
-    calcOutput("RangeSoilCarbonHist",
-               subtype = paste(version_isimip, climatetype, "1965_2100", sep = ":"),
-               model = emu_id, lpjml = lpjml[["grass"]], file = "f31_range_soilc_hist.mz", aggregate = FALSE)
-
+               file = paste0("f31_LUH2v2_", ctype, ".mz"))
     calcOutput("GrasslandsYields", lpjml = lpjml[["grass"]], climatetype = climatetype, subtype = "/co2/Nreturn0p5/limN",
                lsu_levels = c(seq(0, 2.2, 0.2), 2.5), past_mngmt = "me2",
-               file = "f14_grassl_yld.mz", years = mag_years, aggregate = FALSE)
-
-    calcOutput("LsuDensityHist", disagg_type = "grassland", aggregate = FALSE,  file = "f31_lsu_ha_grassl.mz")
-    calcOutput("LsuDensityHist", disagg_type = "livestock", aggregate = FALSE,  file = "f31_lsu_ha_livestock.mz")
-    calcOutput("LUH2v2", aggregate = FALSE, landuse_types = "LUH2v2", cellular = TRUE, file = paste0("fm_LUH2v2.mz"))
-
-    #--- Post-processing: Soil carbon ---#
-    calcOutput("CollectSoilCarbonLSU", lsu_levels = c(seq(0, 2, 0.2), 2.5), lpjml = lpjml[["grass"]],
-               climatemodel = climatemodel, scenario = paste0(scenario, "/co2/Nreturn0p5/limN"), sar = 1,
-               aggregate = FALSE, file = paste0("soilc_stocks_gramnt.mz"), years = seq(1965, 2100, by = 5))
-    calcOutput("CollectSoilCarbonPastr", past_mngmt = "me2", lpjml = lpjml[["grass"]], climatemodel = climatemodel,
-               aggregate = FALSE, scenario = paste0(scenario, "/co2/Nreturn0p5/limN"), sar = 1,
-               file = paste0("soilc_stocks_pastr.mz"), years = seq(1965, 2100, by = 5))
-
-    #--- Experimental functions ----#
-    # calcOutput("GrassPastureShare", aggregate = "cluster", file = paste0("f31_pastr_share_", ctype, ".mz"))
-    # calcOutput("GrassLndYldHist", aggregate = "cluster", file = paste0("f14_grassl_yld_hist_cell", ctype, ".mz"))
+               file = paste0("f31_grassl_yld_", ctype, ".mz"), years = mag_years, aggregate = "cluster")
+    calcOutput("PastureSuit",  subtype = paste("ISIMIP3b", climatemodel, "1850_2100", sep = ":"),
+               file = paste0("f31_pastr_suitability_", ctype, ".mz"), years = mag_years, aggregate = "cluster")
+    calcOutput("PastureSuit",  subtype = paste("ISIMIP3b", climatemodel, "1850_2100", sep = ":"),
+               file = paste0("f31_pastr_suitability.mz"), years = mag_years, aggregate = FALSE)
+    calcOutput("LUH2v2", aggregate = "cluster", landuse_types = "LUH2v2", cellular = TRUE,
+               file = paste0("f31_LUH2v2_", ctype, ".mz"))
   }
 
   calcOutput("ClimateClass", aggregate = "cluster", years = "y2015", file = paste0("koeppen_geiger_", ctype, ".mz"))
@@ -218,17 +236,10 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
              input_magpie = TRUE, selectyears = mag_years_past_long, round = 6, country_level = TRUE,
              file = paste0("avl_land_full_t_iso.cs3"))
 
-  # Raw LUHv2 land classes
-  calcOutput("LUH2v2", aggregate = "cluster", landuse_types = "LUH2v2", cellular = TRUE,
-             file = paste0("fm_LUH2v2_", ctype, ".mz"))
+
 
   calcOutput("AvlLandSi", aggregate = FALSE, round = 6, file = "avl_land_si_0.5.mz")
   calcOutput("AvlLandSi", aggregate = "cluster", round = 6, file = paste0("avl_land_si_", ctype, ".mz"))
-
-  # 13 TC
-  map_reg <- toolGetMapping(getConfig("regionmapping"), type = "regional")
-  superregion <- ifelse("superregion" %in% colnames(map_reg), "superregion", "region")
-  calcOutput("PastrTauHist", round = 2, file = "f13_pastr_tau_hist.csv", aggregate = superregion)
 
   # 30 crop
   # calcOutput("Croparea", sectoral="kcr", physical=TRUE, cellular=TRUE, irrigation=FALSE,
