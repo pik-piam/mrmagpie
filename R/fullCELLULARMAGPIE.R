@@ -35,6 +35,7 @@
 #' @importFrom stringr str_split
 #' @importFrom luplot plotregionscluster
 #' @importFrom ggplot2 ggsave
+#' @importFrom withr local_options
 
 fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
                                ctype = "c200",
@@ -46,20 +47,15 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
                                clusterweight = NULL,
                                emu_id = NULL) { # nolint
 
-  "!# @bundleArguments ctype clusterweight"
+  "!# @pucArguments ctype clusterweight"
 
-  sizelimit <- getOption("magclass_sizeLimit")
-  options(magclass_sizeLimit = 1e+12)
-  on.exit(options(magclass_sizeLimit = sizelimit))
+  withr::local_options(magclass_sizeLimit = 1e+12)
 
   ### Version settings ###
   if (rev < 4.66) stop("mrmagpie(>= 1.19.0) does not support revision below 4.66 anymore.
                        Please use a older snapshot/version of the library, if you need older revisions.")
 
-
-
   climatemodel <- str_split(climatetype, ":")[[1]][1]
-  scenario <- str_split(climatetype, ":")[[1]][2]
 
   cat(paste0("Start preprocessing for \n climatescenario: ", climatetype,
     "\n LPJmL-Versions: ", paste(names(lpjml), lpjml, sep = "->", collapse = ", "),
@@ -67,27 +63,24 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
     "\n isimip yield subtype: ", paste(names(isimip), isimip, sep = ":", collapse = ", ")))
 
   # Create version tag (will be returned at the very end of this function)
-  version_tag <- paste(ctype,
+  versionTag <- paste(ctype,
                        gsub(":", "-", climatetype),
                        paste0("lpjml-", digest::digest(lpjml, algo = getConfig("hash"))),
                        sep = "_")
-  version_tag <- ifelse(is.null(isimip),
-                        version_tag,
-                        paste0(version_tag, "_isimip-",
+  versionTag <- ifelse(is.null(isimip), versionTag,
+                        paste0(versionTag, "_isimip-",
                                digest::digest(isimip, algo = getConfig("hash"))))
-  version_tag <- ifelse(is.null(clusterweight),
-                        version_tag,
-                        paste0(version_tag, "_clusterweight-",
+  versionTag <- ifelse(is.null(clusterweight), versionTag,
+                        paste0(versionTag, "_clusterweight-",
                                digest::digest(clusterweight, algo = getConfig("hash"))))
-  version_tag <- ifelse(is.null(emu_id),
-                        version_tag,
-                        paste0(version_tag, "_gsoilc-", emu_id))
+  versionTag <- ifelse(is.null(emu_id), versionTag,
+                        paste0(versionTag, "_gsoilc-", emu_id))
 
 
-  mag_years_past_long  <- c("y1995", "y2000", "y2005", "y2010", "y2015")
-  mag_years <- findset("time")
-  short_years <- findset("t_all")
-  lpj_years <- seq(1995, 2100, by = 5)
+  magYearsPastLong  <- c("y1995", "y2000", "y2005", "y2010", "y2015")
+  magYears <- findset("time")
+  shortYears <- findset("t_all")
+  lpjYears <- seq(1995, 2100, by = 5)
 
   map      <- calcOutput("Cluster", ctype = ctype, weight = clusterweight, lpjml = lpjml,
     clusterdata = "yield_airrig", aggregate = FALSE)
@@ -102,7 +95,6 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
   ggsave(sub(".rds", ".pdf", sub("clustermap", "spamplot", clustermapname)), p, height = 6, width = 10, scale = 1)
 
   # 14 yields
-
 
 
   if (dev == "+calibYield") {
@@ -134,123 +126,66 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
   }
 
   if (grepl("MPPA", dev)) {
-    #--- CONFIG: Root folder name currently expresses the ismip version / Super region---#
-    version_isimip <- "ISIMIP3b"
-    map_reg <- toolGetMapping(getConfig("regionmapping"), type = "regional")
-    superregion <- ifelse("superregion" %in% colnames(map_reg), "superregion", "region")
+     # distinguish between region and superregion if mapping provides this distinction
+     mapReg <- toolGetMapping(getConfig("regionmapping"), type = "regional")
+     superregion <- ifelse("superregion" %in% colnames(mapReg), "superregion", "region")
 
-    #--- Module 13_tc: managed pasture historical tau ---#
+    # 13 TC
     calcOutput("PastrTauHist", round = 2, file = "f13_pastr_tau_hist.csv", aggregate = superregion)
 
-    #--- Module 14_yields: Grasslands / LHU2 for yield calibration  ---#
-    calcOutput("GrasslandsYields", lpjml = lpjml[["grass"]], climatetype = climatetype, subtype = "/co2/Nreturn0p5/limN",
-               lsu_levels = c(seq(0, 2.2, 0.2), 2.5), past_mngmt = "me2",
-               file = paste0("f14_grassl_yld_", ctype, ".mz"), years = mag_years, aggregate = "cluster")
-
+    # 31 past
     calcOutput("LUH2v2", aggregate = "cluster", landuse_types = "LUH2v2", cellular = TRUE,
-               file = paste0("fm_LUH2v2_", ctype, ".mz"))
-
-    #--- Module 31_past: suitable managed pasture areas ---#
-    calcOutput("PastureSuit",  subtype = paste(version_isimip, climatemodel, "1850_2100", sep = ":"),
-               file = paste0("f31_pastr_suitability_", ctype, ".mz"), years = mag_years, aggregate = "cluster")
-    calcOutput("PastureSuit",  subtype = paste(version_isimip, climatemodel, "1850_2100", sep = ":"),
-               file = paste0("f31_pastr_suitability.mz"), years = mag_years, aggregate = FALSE)
-
-    #--- Post-processing: LPJmL emulator files ---#
-    calcOutput("GrassSoilEmu", subtype = paste(version_isimip, climatetype, "1965_2100", sep = ":"),
-               model = emu_id, mfile = "weights", aggregate = FALSE, file = "f31_weights.mz")
-    calcOutput("GrassSoilEmu", subtype = paste(version_isimip, climatetype, "1965_2100", sep = ":"),
-               model = emu_id, mfile = "mean_col", aggregate = FALSE, file = "f31_mean_col.mz")
-    calcOutput("GrassSoilEmu", subtype = paste(version_isimip, climatetype, "1965_2100", sep = ":"),
-               model = emu_id, mfile = "stddevs_col", aggregate = FALSE,  file = "f31_stddevs_col.mz")
-    calcOutput("GrassSoilEmu", subtype = paste(version_isimip, climatetype, "1965_2100", sep = ":"),
-               model = emu_id, mfile = "mean_lab", aggregate = FALSE,  file = "f31_mean_lab.mz")
-    calcOutput("GrassSoilEmu", subtype = paste(version_isimip, climatetype, "1965_2100", sep = ":"),
-               model = emu_id, mfile = "stddevs_lab", aggregate = FALSE, file = "f31_stddevs_lab.mz")
-    calcOutput("GrassSoilEmu", subtype = paste(version_isimip, climatetype, "1965_2100", sep = ":"),
-               model = emu_id, mfile = "inputs", aggregate = FALSE,  file = "f31_inputs.mz")
-
-    #--- Post-processing: LPJmL emulator inputs ---#
-    calcOutput("CollectEnvironmentData_new",
-               subtype = paste(version_isimip, climatetype, "1965_2100", sep = ":"), sar = 1, aggregate = FALSE,
-               sel_feat = c("tas", "pr", "lwnet", "rsds", "CO2", "Ks", "Sf", "w_pwp", "w_fc", "w_sat", "hsg", "wet"),
-               file = paste0("environment_gramnt.mz"), years = seq(1965, 2100, by = 5))
-
-    #--- Post-processing: files for disaggregation of outputs---#
-    calcOutput("RangeSoilCarbonHist",
-               subtype = paste(version_isimip, climatetype, "1965_2100", sep = ":"),
-               model = emu_id, lpjml = lpjml[["grass"]], file = "f31_range_soilc_hist.mz", aggregate = FALSE)
-
-    calcOutput("GrasslandsYields", lpjml = lpjml[["grass"]], climatetype = climatetype, subtype = "/co2/Nreturn0p5/limN",
+               file = paste0("f31_LUH2v2_", ctype, ".mz"))
+    calcOutput("GrasslandsYields", lpjml = lpjml[["grass"]], climatetype = climatetype,
+               subtype = "/co2/Nreturn0p5/limN", # nolint
                lsu_levels = c(seq(0, 2.2, 0.2), 2.5), past_mngmt = "me2",
-               file = "f14_grassl_yld.mz", years = mag_years, aggregate = FALSE)
-
-    calcOutput("LsuDensityHist", disagg_type = "grassland", aggregate = FALSE,  file = "f31_lsu_ha_grassl.mz")
-    calcOutput("LsuDensityHist", disagg_type = "livestock", aggregate = FALSE,  file = "f31_lsu_ha_livestock.mz")
-    calcOutput("LUH2v2", aggregate = FALSE, landuse_types = "LUH2v2", cellular = TRUE, file = paste0("fm_LUH2v2.mz"))
-
-    #--- Post-processing: Soil carbon ---#
-    calcOutput("CollectSoilCarbonLSU", lsu_levels = c(seq(0, 2, 0.2), 2.5), lpjml = lpjml[["grass"]],
-               climatemodel = climatemodel, scenario = paste0(scenario, "/co2/Nreturn0p5/limN"), sar = 1,
-               aggregate = FALSE, file = paste0("soilc_stocks_gramnt.mz"), years = seq(1965, 2100, by = 5))
-    calcOutput("CollectSoilCarbonPastr", past_mngmt = "me2", lpjml = lpjml[["grass"]], climatemodel = climatemodel,
-               aggregate = FALSE, scenario = paste0(scenario, "/co2/Nreturn0p5/limN"), sar = 1,
-               file = paste0("soilc_stocks_pastr.mz"), years = seq(1965, 2100, by = 5))
-
-    #--- Experimental functions ----#
-    # calcOutput("GrassPastureShare", aggregate = "cluster", file = paste0("f31_pastr_share_", ctype, ".mz"))
-    # calcOutput("GrassLndYldHist", aggregate = "cluster", file = paste0("f14_grassl_yld_hist_cell", ctype, ".mz"))
+               file = paste0("f31_grassl_yld_", ctype, ".mz"), years = magYears, aggregate = "cluster")
+    calcOutput("PastureSuit",  subtype = paste("ISIMIP3b", climatemodel, "1850_2100", sep = ":"),
+               file = paste0("f31_pastr_suitability_", ctype, ".mz"), years = magYears, aggregate = "cluster")
+    calcOutput("PastureSuit",  subtype = paste("ISIMIP3b", climatemodel, "1850_2100", sep = ":"),
+               file = paste0("f31_pastr_suitability.mz"), years = magYears, aggregate = FALSE)
+    calcOutput("LUH2v2", aggregate = "cluster", landuse_types = "LUH2v2", cellular = TRUE,
+               file = paste0("f31_LUH2v2_", ctype, ".mz"))
   }
 
   calcOutput("ClimateClass", aggregate = "cluster", years = "y2015", file = paste0("koeppen_geiger_", ctype, ".mz"))
 
   # 09 drivers
   calcOutput("GridPop_new", source = "Gao", subtype = "all", cellular = TRUE, harmonize_until = 2015, urban = FALSE,
-             aggregate = "cluster", years = mag_years, round = 6, file = "f09_pop_grid.cs3")
+             aggregate = "cluster", years = magYears, round = 6, file = "f09_pop_grid.cs3")
 
   calcOutput("GridPop_new", source = "Gao", subtype = "all", cellular = TRUE, harmonize_until = 2015, urban = TRUE,
-             aggregate = "cluster", years = mag_years, round = 6, file = "f09_urbanpop_grid.cs3")
+             aggregate = "cluster", years = magYears, round = 6, file = "f09_urbanpop_grid.cs3")
 
   # 10 land
   # seven land classes
   calcOutput("LanduseInitialisation", aggregate = FALSE, cellular = TRUE, cells = "magpiecell", nclasses = "seven",
-    fao_corr = TRUE, input_magpie = TRUE, selectyears = mag_years_past_long, round = 6,
+    fao_corr = TRUE, input_magpie = TRUE, selectyears = magYearsPastLong, round = 6,
     file = "avl_land_t_0.5.mz")
   calcOutput("LanduseInitialisation", aggregate = "cluster", cellular = TRUE, nclasses = "seven", fao_corr = TRUE,
-    input_magpie = TRUE, selectyears = mag_years_past_long, round = 6,
+    input_magpie = TRUE, selectyears = magYearsPastLong, round = 6,
     file = paste0("avl_land_t_", ctype, ".mz"))
   calcOutput("LanduseInitialisation", aggregate = FALSE, cellular = TRUE, nclasses = "seven", fao_corr = TRUE,
-             input_magpie = TRUE, selectyears = mag_years_past_long, round = 6, country_level = TRUE,
+             input_magpie = TRUE, selectyears = magYearsPastLong, round = 6, country_level = TRUE,
              file = paste0("avl_land_t_iso.cs3"))
 
   # nine land classes
   calcOutput("LanduseInitialisation", aggregate = FALSE, cellular = TRUE, cells = "magpiecell", nclasses = "nine",
-             fao_corr = TRUE, input_magpie = TRUE, selectyears = mag_years_past_long, round = 6,
+             fao_corr = TRUE, input_magpie = TRUE, selectyears = magYearsPastLong, round = 6,
              file = "avl_land_full_t_0.5.mz")
   calcOutput("LanduseInitialisation", aggregate = "cluster", cellular = TRUE, nclasses = "nine", fao_corr = TRUE,
-             input_magpie = TRUE, selectyears = mag_years_past_long, round = 6,
+             input_magpie = TRUE, selectyears = magYearsPastLong, round = 6,
              file = paste0("avl_land_full_t_", ctype, ".mz"))
   calcOutput("LanduseInitialisation", aggregate = FALSE, cellular = TRUE, nclasses = "nine", fao_corr = TRUE,
-             input_magpie = TRUE, selectyears = mag_years_past_long, round = 6, country_level = TRUE,
+             input_magpie = TRUE, selectyears = magYearsPastLong, round = 6, country_level = TRUE,
              file = paste0("avl_land_full_t_iso.cs3"))
 
-  # Raw LUHv2 land classes
-  calcOutput("LUH2v2", aggregate = "cluster", landuse_types = "LUH2v2", cellular = TRUE,
-             file = paste0("fm_LUH2v2_", ctype, ".mz"))
+
 
   calcOutput("AvlLandSi", aggregate = FALSE, round = 6, file = "avl_land_si_0.5.mz")
   calcOutput("AvlLandSi", aggregate = "cluster", round = 6, file = paste0("avl_land_si_", ctype, ".mz"))
 
-  # 13 TC
-  map_reg <- toolGetMapping(getConfig("regionmapping"), type = "regional")
-  superregion <- ifelse("superregion" %in% colnames(map_reg), "superregion", "region")
-  calcOutput("PastrTauHist", round = 2, file = "f13_pastr_tau_hist.csv", aggregate = superregion)
-
   # 30 crop
-  # calcOutput("Croparea", sectoral="kcr", physical=TRUE, cellular=TRUE, irrigation=FALSE,
-  #            aggregate = FALSE,file="f30_croparea_initialisation_0.5.mz")
-  # calcOutput("Croparea", sectoral="kcr", physical=TRUE, cellular=TRUE, irrigation=TRUE,
-  #            aggregate = FALSE,file="f30_croparea_w_initialisation_0.5.mz")
   calcOutput("Croparea", sectoral = "kcr", physical = TRUE, cellular = TRUE, irrigation = FALSE,
     aggregate = "cluster", file = paste0("f30_croparea_initialisation_", ctype, ".mz"))
   calcOutput("Croparea", sectoral = "kcr", physical = TRUE, cellular = TRUE, irrigation = TRUE,
@@ -279,13 +214,14 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
   calcOutput("BphMask",   aggregate = "cluster", file = paste0("f32_bph_mask_", ctype, ".mz"))
 
   # 34
-  calcOutput("UrbanLandFuture", aggregate = FALSE, round = 6, years = short_years, file = "f34_urbanland_0.5.mz")
-  calcOutput("UrbanLandFuture", aggregate = "cluster", round = 6, years = short_years,
+  calcOutput("UrbanLandFuture", aggregate = FALSE, round = 6, years = shortYears, file = "f34_urbanland_0.5.mz")
+  calcOutput("UrbanLandFuture", aggregate = "cluster", round = 6, years = shortYears,
     file = paste0("f34_urbanland_", ctype, ".mz"))
 
   # 35 natveg
   calcOutput("AgeClassDistribution", aggregate = "cluster", round = 6, file = paste0("forestageclasses_", ctype, ".mz"))
-  calcOutput("ProtectArea", bhifl = ifelse(rev > 4.66, TRUE, FALSE), aggregate = "cluster", round = 6, file = paste0("protect_area_", ctype, ".mz"))
+  calcOutput("ProtectArea", bhifl = ifelse(rev > 4.66, TRUE, FALSE), aggregate = "cluster", round = 6,
+             file = paste0("protect_area_", ctype, ".mz"))
 
   # 37 labour prod
   calcOutput("LabourProdImpactEmu", aggregate = "cluster", round = 6, subtype = "impact",
@@ -300,33 +236,34 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
   calcOutput("AreaEquippedForIrrigation", aggregate = "cluster", cellular = TRUE, source = "Siebert",
     round = 6, file = paste0("avl_irrig_", ctype, ".mz"))
   calcOutput("AreaEquippedForIrrigation", aggregate = "cluster", cellular = TRUE, source = "LUH2v2",
-    selectyears = mag_years_past_long, round = 6, file = paste0("avl_irrig_luh_t_", ctype, ".mz"))
+    selectyears = magYearsPastLong, round = 6, file = paste0("avl_irrig_luh_t_", ctype, ".mz"))
 
 
   # 42 water demand
-  calcOutput("Irrigation", lpjml = lpjml, years = lpj_years, climatetype = climatetype, aggregate = "cluster",
+  calcOutput("Irrigation", lpjml = lpjml, years = lpjYears, climatetype = climatetype, aggregate = "cluster",
     round = 6, file = paste0("lpj_airrig_", ctype, ".mz"))
 
   # dummy Growing Period calc
-  calcOutput("GrowingPeriod", lpjml = lpjml, years = lpj_years, climatetype = climatetype, yield_ratio = 0.1,
+  calcOutput("GrowingPeriod", lpjml = lpjml, years = lpjYears, climatetype = climatetype, yield_ratio = 0.1,
     aggregate = FALSE, round = 2, file = "lpj_grper_0.5.mz")
 
   # 43 water availability
-  calcOutput("AvlWater", lpjml = lpjml, years = lpj_years, climatetype = climatetype, seasonality = "grper",
+  calcOutput("AvlWater", lpjml = lpjml, years = lpjYears, climatetype = climatetype, seasonality = "grper",
     aggregate = "cluster", round = 6, file = paste0("lpj_watavail_grper_", ctype, ".mz"))
-  calcOutput("AvlWater", lpjml = lpjml, years = lpj_years, climatetype = climatetype, seasonality = "total",
+  calcOutput("AvlWater", lpjml = lpjml, years = lpjYears, climatetype = climatetype, seasonality = "total",
     aggregate = "cluster", round = 6, file = paste0("lpj_watavail_total_", ctype, ".mz"))
 
 
-  calcOutput("EnvmtlFlow", lpjml = lpjml, years = lpj_years, climatetype = climatetype, aggregate = "cluster",
+  calcOutput("EnvmtlFlow", lpjml = lpjml, years = lpjYears, climatetype = climatetype, aggregate = "cluster",
     round = 6, seasonality = "grper", file = paste0("lpj_envflow_grper_", ctype, ".mz"))
 
   if (rev < 4.67) {
-    calcOutput("WaterUseNonAg", datasource = "WATCH_ISIMIP_WATERGAP", years = lpj_years, seasonality = "grper", lpjml = lpjml,
-               climatetype = climatetype, aggregate = "cluster", file = paste0("watdem_nonagr_grper_", ctype, ".mz"))
+    calcOutput("WaterUseNonAg", datasource = "WATCH_ISIMIP_WATERGAP", years = lpjYears, seasonality = "grper",
+               lpjml = lpjml, climatetype = climatetype, aggregate = "cluster",
+               file = paste0("watdem_nonagr_grper_", ctype, ".mz"))
   } else {
     calcOutput("WaterUseNonAg", datasource = "WATERGAP_ISIMIP", usetype = "all:withdrawal",
-               selectyears = lpj_years, seasonality = "grper", lpjml = lpjml, climatetype = climatetype,
+               selectyears = lpjYears, seasonality = "grper", lpjml = lpjml, climatetype = climatetype,
                aggregate = "cluster", file = paste0("watdem_nonagr_grper_", ctype, ".mz"))
   }
 
@@ -352,16 +289,16 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
     round = 6, years = "y1995", file = "lpj_carbon_topsoil_0.5.mz")
 
   calcOutput("Carbon", aggregate = "cluster", lpjml = lpjml, climatetype = climatetype,
-    round = 6, years = lpj_years, file = paste0("lpj_carbon_stocks_", ctype, ".mz"))
+    round = 6, years = lpjYears, file = paste0("lpj_carbon_stocks_", ctype, ".mz"))
   calcOutput("TopsoilCarbon", aggregate = "cluster", lpjml = lpjml, climatetype = climatetype,
-    round = 6, years = lpj_years, file = paste0("lpj_carbon_topsoil_", ctype, ".mz"))
+    round = 6, years = lpjYears, file = paste0("lpj_carbon_topsoil_", ctype, ".mz"))
 
   if (dev == "+cFromSink") {
 
     calcOutput("Carbon_new", aggregate = "cluster", lpjml = lpjml, climatetype = climatetype, fromFlow = TRUE,
-      round = 6, years = lpj_years, file = paste0("lpj_carbon_stocks_new_", ctype, ".mz"))
+      round = 6, years = lpjYears, file = paste0("lpj_carbon_stocks_new_", ctype, ".mz"))
     calcOutput("TopsoilCarbon_new", aggregate = "cluster", lpjml = lpjml, climatetype = climatetype, fromFlow = TRUE,
-      round = 6, years = lpj_years, file = paste0("lpj_carbon_topsoil_new_", ctype, ".mz"))
+      round = 6, years = lpjYears, file = paste0("lpj_carbon_topsoil_new_", ctype, ".mz"))
   }
 
   # 58 peatland
@@ -382,26 +319,26 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
   ##### AGGREGATION ######
 
   # create info file
-  writeInfo <- function(file, lpjml_data, res_high, res_out, rev) {
+  writeInfo <- function(file, lpjmlData, resHigh, resOut, rev) {
     functioncall <- paste(deparse(sys.call(-3)), collapse = "")
 
     map <- toolGetMapping(type = "regional", name = getConfig("regionmapping"))
     regionscode <- regionscode(map)
 
     info <- c("lpj2magpie settings:",
-      paste("* LPJmL data:", lpjml_data),
+      paste("* LPJmL data:", lpjmlData),
       paste("* Revision:", rev),
       "", "aggregation settings:",
-      paste("* Input resolution:", res_high),
-      paste("* Output resolution:", res_out),
+      paste("* Input resolution:", resHigh),
+      paste("* Output resolution:", resOut),
       paste("* Regionscode:", regionscode),
       paste("* Call:", functioncall))
     base::cat(info, file = file, sep = "\n")
   }
-  writeInfo(file = "info.txt", lpjml_data = climatetype,
-    res_high = "0.5", res_out = ctype, rev = rev)
+  writeInfo(file = "info.txt", lpjmlData = climatetype,
+    resHigh = "0.5", resOut = ctype, rev = rev)
 
-  return(list(tag = version_tag,
-              bundleTag = sub("^[^_]*_", "", version_tag)))
+  return(list(tag = versionTag,
+              pucTag = sub("^[^_]*_", "", versionTag)))
 
 }

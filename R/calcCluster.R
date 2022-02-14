@@ -76,5 +76,5 @@ calcCluster <- function(ctype, regionscode = madrat::regionscode(), seed = 42, w
     class = "data.frame",
     description = "Mapping between cells and cluster",
     isocountries = FALSE,
-    bundle = FALSE))
+    putInPUC = FALSE))
 }

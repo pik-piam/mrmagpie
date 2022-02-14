@@ -1,8 +1,8 @@
 Package: mrmagpie
 Type: Package
 Title: madrat based MAgPIE Input Data Library
-Version: 1.20.8
-Date: 2022-02-02
+Version: 1.20.10
+Date: 2022-02-08
 Authors@R: c(person("Kristine", "Karstens", email = "karstens@pik-potsdam.de", role = c("aut","cre")),
              person("Jan Philipp", "Dietrich", email = "dietrich@pik-potsdam.de", role = "aut"),
              person("David", "Chen", role = "aut"),
@@ -36,7 +36,8 @@ Imports:
     stats,
     readxl,
     pbapply,
-    stringr
+    stringr,
+    withr
 License: LGPL-3 | file LICENSE
 URL: https://github.com/pik-piam/mrmagpie, https://doi.org/10.5281/zenodo.4319612
 BugReports: https://github.com/pik-piam/mrmagpie/issues
