@@ -8,6 +8,7 @@
 #' @param cells if cellular is TRUE: "magpiecell" for 59199 cells or "lpjcell" for 67420 cells
 #' @param weighting use of different weights (totalCrop (default), totalLUspecific, cropSpecific, crop+irrigSpecific,
 #'                                            avlCropland, avlCropland+avlPasture)
+#' @param indiaYields if TRUE returns scaled yields for rainfed crops in India
 #' @return magpie object in cellular resolution
 #' @author Kristine Karstens, Felicitas Beier
 #'
@@ -22,7 +23,7 @@
 #' @importFrom mrcommons toolLPJmLVersion toolHarmonize2Baseline
 
 calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimip = NULL),
-                       climatetype = "GSWP3-W5E5:historical", cells = "magpiecell", weighting = "totalCrop") {
+                       climatetype = "GSWP3-W5E5:historical", cells = "magpiecell", weighting = "totalCrop", indiaYields = FALSE) {
 
   cfg <- toolLPJmLVersion(version = source["lpjml"], climatetype = climatetype)
 
@@ -98,7 +99,7 @@ calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimi
                                        base = yields[, common_years, common_vars],
                                        ref_year = cfg$ref_year_gcm)
     gc()
-     # convert to array for memory
+    # convert to array for memory
     yields <- as.array(yields)
     harm_rep <- as.array(harm_rep)
     # yields[,common_years,common_vars] <- ifelse(to_rep[,common_years,common_vars] >0, to_rep[,common_years,common_vars], yields[,common_years, common_vars])
@@ -126,7 +127,7 @@ calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimi
     if (weighting == "crop+irrigSpecific") {
 
       crop_area_weight <- new.magpie(cells_and_regions = getCells(yields), years = NULL,
-                                     names = getNames(yields), fill = NA)
+                                     names = getNames(yields, dim=1), fill = NA)
       crop_area_weight[, , findset("kcr")] <- crop + 10^-10
       crop_area_weight[, , "pasture"]      <- mbind(setNames(past + 10^-10, "irrigated"),
                                                     setNames(past + 10^-10, "rainfed"))
@@ -180,6 +181,10 @@ calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimi
     crop_area_weight <- addLocation(crop_area_weight)
   }
 
+  if (indiaYields){
+  #Scale down rainfed yields for India by making them half of irrigated yields for all crops
+  yields["IND",,"rainfed"] <- yields["IND",,"irrigated"] * 0.5
+  }
 
   return(list(
     x = yields,
@@ -188,3 +193,4 @@ calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimi
     description = "Yields in tons per hectar for different crop types.",
     isocountries = FALSE))
 }
+

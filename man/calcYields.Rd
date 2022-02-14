@@ -8,7 +8,8 @@ calcYields(
   source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimip = NULL),
   climatetype = "GSWP3-W5E5:historical",
   cells = "magpiecell",
-  weighting = "totalCrop"
+  weighting = "totalCrop",
+  indiaYields = FALSE
 )
 }
 \arguments{
@@ -22,6 +23,8 @@ For isimip choose crop model/gcm/rcp/co2 combination formatted like this:
 
 \item{weighting}{use of different weights (totalCrop (default), totalLUspecific, cropSpecific, crop+irrigSpecific,
 avlCropland, avlCropland+avlPasture)}
+
+\item{indiaYields}{if TRUE returns scaled yields for rainfed crops in India}
 }
 \value{
 magpie object in cellular resolution
