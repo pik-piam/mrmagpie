@@ -8,6 +8,7 @@
 #' @param cells if cellular is TRUE: "magpiecell" for 59199 cells or "lpjcell" for 67420 cells
 #' @param weighting use of different weights (totalCrop (default), totalLUspecific, cropSpecific, crop+irrigSpecific,
 #'                                            avlCropland, avlCropland+avlPasture)
+#' @param indiaYields if TRUE returns scaled yields for rainfed crops in India
 #' @return magpie object in cellular resolution
 #' @author Kristine Karstens, Felicitas Beier
 #'
@@ -22,7 +23,7 @@
 #' @importFrom mrcommons toolLPJmLVersion toolHarmonize2Baseline
 
 calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimip = NULL),
-                       climatetype = "GSWP3-W5E5:historical", cells = "magpiecell", weighting = "totalCrop") {
+                       climatetype = "GSWP3-W5E5:historical", cells = "magpiecell", weighting = "totalCrop", indiaYields = FALSE) {
 
   cfg <- toolLPJmLVersion(version = source["lpjml"], climatetype = climatetype)
 
@@ -180,8 +181,10 @@ calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimi
     crop_area_weight <- addLocation(crop_area_weight)
   }
 
+  if (indiaYields){
   #Scale down rainfed yields for India by making them half of irrigated yields for all crops
   yields["IND",,"rainfed"] <- yields["IND",,"irrigated"] * 0.5
+  }
 
   return(list(
     x = yields,
