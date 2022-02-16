@@ -127,7 +127,7 @@ calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimi
     if (weighting == "crop+irrigSpecific") {
 
       crop_area_weight <- new.magpie(cells_and_regions = getCells(yields), years = NULL,
-                                     names = getNames(yields, dim=1), fill = NA)
+                                     names = getNames(yields), fill = NA)
       crop_area_weight[, , findset("kcr")] <- crop + 10^-10
       crop_area_weight[, , "pasture"]      <- mbind(setNames(past + 10^-10, "irrigated"),
                                                     setNames(past + 10^-10, "rainfed"))
