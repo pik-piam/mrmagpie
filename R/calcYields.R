@@ -182,9 +182,16 @@ calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimi
   }
 
   if (indiaYields){
-  #Scale down rainfed yields for India by making them half of irrigated yields for all crops
-  yields["IND",,"rainfed"] <- yields["IND",,"irrigated"] * 0.5
+    ratio <- new.magpie(cells_and_regions = getCells(yields), years = NULL,
+                                   names = getNames(yields), fill = NA)
+    ratio <- yields[,,"rainfed"]/yields[,,"irrigated"]
+
+    #Scale down rainfed yields for India: if in any cell, rainfed yields is higher than half of irrigated, it is reduced to half of irrigated, no change otherwise
+    if (any(ratio["IND",,"rainfed.irrigated"] > 0.5)){
+     yields["IND",,"rainfed"] <- yields["IND",,"irrigated"] * 0.5
+    }
   }
+
 
   return(list(
     x = yields,
