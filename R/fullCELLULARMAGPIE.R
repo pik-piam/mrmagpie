@@ -143,8 +143,6 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
                file = paste0("f31_pastr_suitability_", ctype, ".mz"), years = magYears, aggregate = "cluster")
     calcOutput("PastureSuit",  subtype = paste("ISIMIP3b", climatemodel, "1850_2100", sep = ":"),
                file = paste0("f31_pastr_suitability.mz"), years = magYears, aggregate = FALSE)
-    calcOutput("LUH2v2", aggregate = "cluster", landuse_types = "LUH2v2", cellular = TRUE,
-               file = paste0("f31_LUH2v2_", ctype, ".mz"))
   }
 
   calcOutput("ClimateClass", aggregate = "cluster", years = "y2015", file = paste0("koeppen_geiger_", ctype, ".mz"))
