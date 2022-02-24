@@ -23,7 +23,7 @@
 #' @importFrom mrcommons toolLPJmLVersion toolHarmonize2Baseline
 
 calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimip = NULL),
-                       climatetype = "GSWP3-W5E5:historical", cells = "magpiecell", weighting = "totalCrop", indiaYields = FALSE) {
+                       climatetype = "GSWP3-W5E5:historical", cells = "magpiecell", weighting = "totalCrop", indiaYields = FALSE, scaleFactor = 0.3) {
 
   cfg <- toolLPJmLVersion(version = source["lpjml"], climatetype = climatetype)
 
@@ -182,7 +182,7 @@ calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimi
   }
 
   if (indiaYields){
-       yields["IND",,"rainfed"] <- yields["IND",,"rainfed"] * 0.56
+       yields["IND",,"rainfed"] <- yields["IND",,"rainfed"] * scaleFactor
       }
 
 
