@@ -101,16 +101,27 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
     calcOutput("YieldsCalibrated", aggregate = "cluster", source = c(lpjml = lpjml[["crop"]], isimip = isimip),
                climatetype = climatetype, round = 2, years = lpjYears, file = paste0("lpj_yields_", ctype, ".mz"))
 
-  } else if (grepl("indiaYields", dev)) {
+  } else if (grepl("indiaYields03", dev)) {
 
     calcOutput("Yields", aggregate = FALSE, source = c(lpjml = lpjml[["crop"]], isimip = isimip),
                climatetype = climatetype, round = 2, years = lpjYears, file = paste0("lpj_yields_0.5.mz"),
-               weighting = "crop+irrigSpecific", indiaYields = TRUE)
+               weighting = "crop+irrigSpecific", indiaYields = TRUE, scaleFactor = 0.3)
 
 
     calcOutput("Yields", aggregate = "cluster", source = c(lpjml = lpjml[["crop"]], isimip = isimip),
                climatetype = climatetype, round = 2, years = lpjYears, file = paste0("lpj_yields_", ctype, ".mz"),
-               weighting = "crop+irrigSpecific", indiaYields = TRUE)
+               weighting = "crop+irrigSpecific", indiaYields = TRUE, scaleFactor = 0.3)
+
+  } else if (grepl("indiaYields02", dev)) {
+
+    calcOutput("Yields", aggregate = FALSE, source = c(lpjml = lpjml[["crop"]], isimip = isimip),
+               climatetype = climatetype, round = 2, years = lpjYears, file = paste0("lpj_yields_0.5.mz"),
+               weighting = "crop+irrigSpecific", indiaYields = TRUE, scaleFactor = 0.2)
+
+
+    calcOutput("Yields", aggregate = "cluster", source = c(lpjml = lpjml[["crop"]], isimip = isimip),
+               climatetype = climatetype, round = 2, years = lpjYears, file = paste0("lpj_yields_", ctype, ".mz"),
+               weighting = "crop+irrigSpecific", indiaYields = TRUE, scaleFactor = 0.2)
 
   } else {
 
