@@ -65,7 +65,7 @@ calcRangeSoilCarbonHist <- function(subtype = "ISIMIP3b:IPSL-CM6A-LR:ssp126:1965
 
     soilc_range_past <- NULL
     for (i in 1:length(past_num)) {
-      print(paste("Current timestep:", past_num[i]))
+      message(paste("Current timestep:", past_num[i]))
       current_tmp <- input_past_df$Year == past_num[i]
       soilc_range_past_tmp <- toolNeuralNet(input_df_scaled_past[current_tmp, ], weights, "softplus")
       soilc_range_past <- append(soilc_range_past, soilc_range_past_tmp)
