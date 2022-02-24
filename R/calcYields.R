@@ -9,6 +9,7 @@
 #' @param weighting use of different weights (totalCrop (default), totalLUspecific, cropSpecific, crop+irrigSpecific,
 #'                                            avlCropland, avlCropland+avlPasture)
 #' @param indiaYields if TRUE returns scaled yields for rainfed crops in India
+#' @param scaleFactor integer value by which indiaYields will be scaled
 #' @return magpie object in cellular resolution
 #' @author Kristine Karstens, Felicitas Beier
 #'
