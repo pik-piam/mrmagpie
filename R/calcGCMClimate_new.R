@@ -51,11 +51,11 @@ calcGCMClimate_new <- function(subtype = "ISIMIP3b:IPSL-CM6A-LR:ssp126:1850-2100
   )
 
   description <- switch(x$variable,
-    "temperature"          = "Average annual air temperature",
-    "precipitation"        = "Average precipitation",
-    "longwave_radiation"   = "?",
-    "shortwave_radiation"  = "?",
-    "wet days"             = "number of rainy days"
+    "tas"       = "Average annual air temperature",
+    "pr"        = "Average precipitation",
+    "lwnet"     = "?",
+    "rsds"      = "?",
+    "wet"       = "number of rainy days"
   )
 
   return(list(
