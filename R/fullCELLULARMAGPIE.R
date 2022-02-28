@@ -135,26 +135,25 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
 
   }
 
-  if (grepl("MPPA", dev)) {
-     # distinguish between region and superregion if mapping provides this distinction
-     mapReg <- toolGetMapping(getConfig("regionmapping"), type = "regional")
-     superregion <- ifelse("superregion" %in% colnames(mapReg), "superregion", "region")
 
-    # 13 TC
-    calcOutput("PastrTauHist", round = 2, file = "f13_pastr_tau_hist.csv", aggregate = superregion)
+  # distinguish between region and superregion if mapping provides this distinction
+  mapReg <- toolGetMapping(getConfig("regionmapping"), type = "regional")
+  superregion <- ifelse("superregion" %in% colnames(mapReg), "superregion", "region")
 
-    # 31 past
-    calcOutput("LUH2v2", aggregate = "cluster", landuse_types = "LUH2v2", cellular = TRUE,
+  # 13 TC
+  calcOutput("PastrTauHist", round = 2, file = "f13_pastr_tau_hist.csv", aggregate = superregion)
+
+  # 31 past
+  calcOutput("LUH2v2", aggregate = "cluster", landuse_types = "LUH2v2", cellular = TRUE,
                file = paste0("f31_LUH2v2_", ctype, ".mz"))
-    calcOutput("GrasslandsYields", lpjml = lpjml[["grass"]], climatetype = climatetype,
+  calcOutput("GrasslandsYields", lpjml = lpjml[["grass"]], climatetype = climatetype,
                subtype = "/co2/Nreturn0p5/limN", # nolint
                lsu_levels = c(seq(0, 2.2, 0.2), 2.5), past_mngmt = "me2",
                file = paste0("f31_grassl_yld_", ctype, ".mz"), years = magYears, aggregate = "cluster")
-    calcOutput("PastureSuit",  subtype = paste("ISIMIP3b", climatemodel, "1850_2100", sep = ":"),
+  calcOutput("PastureSuit",  subtype = paste("ISIMIP3b", climatemodel, "1850_2100", sep = ":"),
                file = paste0("f31_pastr_suitability_", ctype, ".mz"), years = magYears, aggregate = "cluster")
-    calcOutput("PastureSuit",  subtype = paste("ISIMIP3b", climatemodel, "1850_2100", sep = ":"),
+  calcOutput("PastureSuit",  subtype = paste("ISIMIP3b", climatemodel, "1850_2100", sep = ":"),
                file = paste0("f31_pastr_suitability.mz"), years = magYears, aggregate = FALSE)
-  }
 
   calcOutput("ClimateClass", aggregate = "cluster", years = "y2015", file = paste0("koeppen_geiger_", ctype, ".mz"))
 
