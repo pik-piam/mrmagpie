@@ -7,7 +7,8 @@
 readGridPopGao()
 }
 \description{
-Read gridded population, by urban and rural, from Gao O'Neill and JOnes dataset, see https://www.cgd.ucar.edu/iam/modeling/spatial-population-scenarios.html https://doi.org/10.7927/m30p-j498
+Read gridded population, by urban and rural, from Gao O'Neill and JOnes dataset,
+see https://www.cgd.ucar.edu/iam/modeling/spatial-population-scenarios.html https://doi.org/10.7927/m30p-j498
 }
 \author{
 David Chen
