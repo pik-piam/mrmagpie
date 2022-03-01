@@ -37,11 +37,10 @@ calcClusterBase <- function(clusterdata = "yield_airrig", lpjml = c(natveg = "LP
   iso <- toolGetMapping(type = "cell", name = "CountryToCellMapping.csv")$iso
   dimnames(cdata)[[1]] <- paste(iso, seq_along(iso), sep = ".")
 
-  return(list(
-    x = as.magpie(cdata),
-    weight = NULL,
-    unit = "1",
-    description = "Similarity matrix as basis for clustering",
-    isocountries = FALSE,
-    putInPUC = TRUE))
+  return(list(x            = as.magpie(cdata),
+              weight       = NULL,
+              unit         = "1",
+              description  = "Similarity matrix as basis for clustering",
+              isocountries = FALSE,
+              putInPUC     = TRUE))
 }
