@@ -13,9 +13,8 @@ magpie object in cellular resolution
 Read GLobal Forest Age Dataset derived from MODIS and COPENICUS satellite data
 }
 \examples{
-
 \dontrun{
-  readSource("GFAD", convert="onlycorrect")
+readSource("GFAD", convert = "onlycorrect")
 }
 }
 \author{
