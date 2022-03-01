@@ -9,7 +9,7 @@ calcUrbanLandFuture(timestep = "5year", subtype = "LUH2v2", cellular = TRUE)
 \arguments{
 \item{timestep}{5year or yearly}
 
-\item{subtype}{where the data source comes from}
+\item{subtype}{where the data source comes from, LUH2v2 or Gao & O'Neill}
 
 \item{cellular}{TRUE for results on 0.5 degree grid.}
 }

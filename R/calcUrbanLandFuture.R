@@ -2,7 +2,7 @@
 #' @description Urban land in Mha on 0.5deg grid
 #' @param cellular TRUE for results on 0.5 degree grid.
 #' @param timestep 5year or yearly
-#' @param subtype where the data source comes from
+#' @param subtype where the data source comes from, LUH2v2 or Gao & O'Neill
 #' @return List of magpie objects with results on 0.5deg grid level, weights NULL, unit and description.
 #' @author David Chen
 #' @importFrom magpiesets findset
@@ -36,7 +36,24 @@ else if(timestep=="yearly"){
 
 }
 
-if(subtype!="LUH2v2") {
+  if (subtype=="Gao"){
+   out <- readSource("UrbanLandGao", convert=F)
+
+   if(timestep == "5year"){
+     years <- seq(1995,2100,5)
+   out <- time_interpolate(out, interpolated_year = years, integrate_interpolated_years = TRUE)
+   out <- time_interpolate(out, extrapolation_type = "constant",
+                           interpolated_year = seq(2105,2150, 5), integrate_interpolated_years = TRUE)
+
+   #set any interpolated values to 0
+   out[out < 0] <- 0
+
+     }
+
+
+  }
+
+else {
   stop("Not a Valid Subtype")}
 
 return(list(

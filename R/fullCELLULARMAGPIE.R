@@ -220,10 +220,18 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
   calcOutput("BphTCRE",   aggregate = "cluster", file = paste0("f32_localTCRE_", ctype, ".mz"))
   calcOutput("BphMask",   aggregate = "cluster", file = paste0("f32_bph_mask_", ctype, ".mz"))
 
-  # 34
-  calcOutput("UrbanLandFuture", aggregate = FALSE, round = 6, years = shortYears, file = "f34_urbanland_0.5.mz")
-  calcOutput("UrbanLandFuture", aggregate = "cluster", round = 6, years = shortYears,
+  # 34 urban land
+  if (dev == "+GaoUrbanLand") {
+
+    calcOutput("UrbanLandFuture", subtype = "Gao", aggregate = FALSE, round = 6, years = shortYears, file = "f34_urbanland_0.5.mz")
+    calcOutput("UrbanLandFuture", subtype = "Gao", aggregate = "cluster", round = 6, years = shortYears,
+               file = paste0("f34_urbanland_", ctype, ".mz"))
+  }else{
+
+  calcOutput("UrbanLandFuture", subtype = "LUH2v2", aggregate = FALSE, round = 6, years = shortYears, file = "f34_urbanland_0.5.mz")
+  calcOutput("UrbanLandFuture", subtype = "LUH2v2", aggregate = "cluster", round = 6, years = shortYears,
     file = paste0("f34_urbanland_", ctype, ".mz"))
+  }
 
   # 35 natveg
   calcOutput("AgeClassDistribution", aggregate = "cluster", round = 6, file = paste0("forestageclasses_", ctype, ".mz"))
