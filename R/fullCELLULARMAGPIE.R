@@ -112,18 +112,7 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
                climatetype = climatetype, round = 2, years = lpjYears, file = paste0("lpj_yields_", ctype, ".mz"),
                weighting = "crop+irrigSpecific", indiaYields = TRUE, scaleFactor = 0.9)
 
-  } else if (grepl("indiaYields02", dev)) {
-
-    calcOutput("Yields", aggregate = FALSE, source = c(lpjml = lpjml[["crop"]], isimip = isimip),
-               climatetype = climatetype, round = 2, years = lpjYears, file = paste0("lpj_yields_0.5.mz"),
-               weighting = "crop+irrigSpecific", indiaYields = TRUE, scaleFactor = 0.8)
-
-
-    calcOutput("Yields", aggregate = "cluster", source = c(lpjml = lpjml[["crop"]], isimip = isimip),
-               climatetype = climatetype, round = 2, years = lpjYears, file = paste0("lpj_yields_", ctype, ".mz"),
-               weighting = "crop+irrigSpecific", indiaYields = TRUE, scaleFactor = 0.8)
-
-  } else {
+  }  else {
 
     calcOutput("Yields", aggregate = FALSE, source = c(lpjml = lpjml[["crop"]], isimip = isimip),
                climatetype = climatetype, round = 2, years = lpjYears, file = paste0("lpj_yields_0.5.mz"),
