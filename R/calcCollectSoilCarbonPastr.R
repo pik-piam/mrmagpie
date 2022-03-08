@@ -51,7 +51,7 @@ calcCollectSoilCarbonPastr <-
       list(
         x = y,
         weight = weight,
-        unit = NULL,
+        unit = "tC/ha",
         description = "Soil carbon stocks for managed pastures areas",
         isocountries = FALSE
       )
