@@ -19,7 +19,7 @@ calcPastureSuit <- function(subtype = "ISIMIP3b:IPSL-CM6A-LR:1850-2100", smooth_
   population <- calcOutput("GridPop_new", subtype="all", cellular=TRUE,FiveYear=TRUE, harmonize_until=2015, aggregate=F)
 
   precipitation <- list()
-  scenarios <- c("ssp126","ssp370","ssp585") # Current ISIMIP3b scenarios
+  scenarios <- c("ssp126","ssp245","ssp370","ssp460","ssp585") # Current ISIMIP3bv2 scenarios
   for (scenario in scenarios) {
     # write a script that reads different SPPs scenarios
     subtype = paste(x$version, x$climatemodel,scenario,x$period, "pr", sep = ":")
@@ -29,10 +29,9 @@ calcPastureSuit <- function(subtype = "ISIMIP3b:IPSL-CM6A-LR:1850-2100", smooth_
   precipitation <- mbind(precipitation)
 
   #matching available ssps scenarios
-  regex <- paste0("+",strtrim(scenarios, 4), "+", collapse = "|")
+  regex <- paste0("[",paste0("+",strtrim(scenarios, 4), collapse = "|"),"]", "{4}$")
   avl_ssps <- grep(regex, getNames(population), ignore.case = T)
   population <- population[,,avl_ssps]
-
 
   # Cell area calculation
   landcoords <- as.data.frame(toolGetMapping("magpie_coord.rda", type = "cell"))
@@ -48,7 +47,7 @@ calcPastureSuit <- function(subtype = "ISIMIP3b:IPSL-CM6A-LR:1850-2100", smooth_
   pop_density <- population*1e6/cell_size
   pop_density[is.infinite(pop_density)] <- 0
   pop_density[is.nan(pop_density)] <- 0
-       # 5 hab km2 population threshold for managed pastures. Same from HYDE 3.2.
+  # 5 hab km2 population threshold for managed pastures. Same from HYDE 3.2.
   # pop_density[pop_density<5] <- 0
   # pop_density[pop_density>=5] <- 1
 

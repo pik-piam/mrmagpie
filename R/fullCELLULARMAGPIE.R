@@ -132,20 +132,6 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
   # 13 TC
   calcOutput("PastrTauHist", round = 2, file = "f13_pastr_tau_hist.csv", aggregate = superregion)
 
-  # 31 past
-  calcOutput("LUH2v2", aggregate = "cluster", landuse_types = "LUH2v2", cellular = TRUE,
-               file = paste0("f31_LUH2v2_", ctype, ".mz"))
-  calcOutput("GrasslandsYields", lpjml = lpjml[["grass"]], climatetype = climatetype,
-               subtype = "/co2/Nreturn0p5/limN", # nolint
-               lsu_levels = c(seq(0, 2.2, 0.2), 2.5), past_mngmt = "me2",
-               file = paste0("f31_grassl_yld_", ctype, ".mz"), years = magYears, aggregate = "cluster")
-  calcOutput("PastureSuit",  subtype = paste("ISIMIP3b", climatemodel, "1850_2100", sep = ":"),
-               file = paste0("f31_pastr_suitability_", ctype, ".mz"), years = magYears, aggregate = "cluster")
-  calcOutput("PastureSuit",  subtype = paste("ISIMIP3b", climatemodel, "1850_2100", sep = ":"),
-               file = paste0("f31_pastr_suitability.mz"), years = magYears, aggregate = FALSE)
-
-  calcOutput("ClimateClass", aggregate = "cluster", years = "y2015", file = paste0("koeppen_geiger_", ctype, ".mz"))
-
   # 09 drivers
   calcOutput("GridPop_new", source = "Gao", subtype = "all", cellular = TRUE, harmonize_until = 2015, urban = FALSE,
              aggregate = "cluster", years = magYears, round = 6, file = "f09_pop_grid.cs3")
@@ -176,8 +162,6 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
              input_magpie = TRUE, selectyears = magYearsPastLong, round = 6, country_level = TRUE,
              file = paste0("avl_land_full_t_iso.cs3"))
 
-
-
   calcOutput("AvlLandSi", aggregate = FALSE, round = 6, file = "avl_land_si_0.5.mz")
   calcOutput("AvlLandSi", aggregate = "cluster", round = 6, file = paste0("avl_land_si_", ctype, ".mz"))
 
@@ -193,6 +177,24 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
     file = paste0("avl_cropland_", ctype, ".mz"))
   calcOutput("AvlCropland", marginal_land = "magpie", cell_upper_bound = 0.9, aggregate = FALSE,
     country_level = TRUE, round = 6, file = paste0("avl_cropland_iso.cs3"))
+
+  # 31 past
+  calcOutput("LUH2v2", aggregate = "cluster", landuse_types = "LUH2v2", cellular = TRUE,
+             file = paste0("f31_LUH2v2_", ctype, ".mz"))
+  calcOutput("GrasslandsYields", lpjml = lpjml[["grass"]], climatetype = climatetype,
+             subtype = "/co2/Nreturn0p5/limN", # nolint
+             lsu_levels = c(seq(0, 2.2, 0.2), 2.5), past_mngmt = "me2",
+             file = paste0("f31_grassl_yld_", ctype, ".mz"), years = magYears, aggregate = "cluster")
+  calcOutput("PastureSuit",  subtype = paste("ISIMIP3bv2", climatemodel, "1850_2100", sep = ":"),
+             file = paste0("f31_pastr_suitability_", ctype, ".mz"), years = magYears, aggregate = "cluster")
+  calcOutput("PastureSuit",  subtype = paste("ISIMIP3bv2", climatemodel, "1850_2100", sep = ":"),
+             file = paste0("f31_pastr_suitability.mz"), years = magYears, aggregate = FALSE)
+
+  calcOutput("ClimateClass", aggregate = "cluster", years = "y2015", file = paste0("koeppen_geiger_", ctype, ".mz"))
+
+  if (dev == "MPPA") {
+    calcOutput("Evapotranspiration", subtype="H08:mri-esm2-0", aggregate = "cluster", file = "evapo.mz")
+  }
 
   # 32 forestry
   calcOutput("AfforestationMask", subtype = "noboreal",     aggregate = "cluster", round = 6,

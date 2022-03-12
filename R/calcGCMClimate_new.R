@@ -44,7 +44,7 @@ calcGCMClimate_new <- function(subtype = "ISIMIP3b:IPSL-CM6A-LR:ssp126:1850-2100
 
   unit <- switch(x$variable,
     "tas"       = "Degree Celcius",
-    "pr"        = "mm3 per year",
+    "pr"        = "mm/month",
     "lwnet"     = "watt per m2",
     "rsds"      = "watt per m2",
     "wet"       = "number of rainy days"
