@@ -24,7 +24,6 @@ List of magpie object with results on cluster level
 Calculate glassland suitable for pasture management based on population and aridity criteria.
 }
 \examples{
-
 \dontrun{
 calcOutput("PastureSuit")
 }

@@ -7,13 +7,13 @@
 readEvapotranspiration(subtype = "H08:mri-esm2-0:historical")
 }
 \arguments{
-\item{subtype}{Switch between different inputs eg. "ISIMIP3b:IPSL-CM6A-LR:historical:1850-2014:tas"}
+\item{subtype}{Switch between different inputs}
 }
 \value{
 MAgPIE objects with results on cellular level.
 }
 \description{
-Read Climate data used as LPJmL inputs into MAgPIE objects
+Read evapotranspiration data
 }
 \examples{
 \dontrun{
@@ -25,5 +25,5 @@ readSource("Evapotranspiration", subtype, convert = "onlycorrect")
 \code{\link{readEvapotranspiration}}
 }
 \author{
-Marcos Alves, Kristine Karstens
+Marcos Alves
 }

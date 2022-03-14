@@ -7,20 +7,20 @@
 calcEvapotranspiration(subtype = "H08:mri-esm2-0")
 }
 \arguments{
-\item{subtype}{type of climate data to collect}
+\item{subtype}{Switch between different inputs}
 }
 \value{
 magpie object in cellular resolution
 }
 \description{
-Disaggregate CO2 global atmospheric concentration to cellular level
+Calc evapotranspiration data for SSP cenarios in mm/month
 }
 \examples{
 \dontrun{
-calcOutput("GCMClimate_new", subtype = "ISIMIP3b:IPSL-CM6A-LR:ssp126:1850-2100:tas")
+calcOutput("Evapotranspiration", subtype = "H08:mri-esm2-0")
 }
 
 }
 \author{
-Marcos Alves, Kristine Karstens
+Marcos Alves
 }

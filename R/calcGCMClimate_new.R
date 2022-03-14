@@ -34,8 +34,8 @@ calcGCMClimate_new <- function(subtype = "ISIMIP3b:IPSL-CM6A-LR:ssp126:1850-2100
   )
   getNames(y) <- gsub("-", "_", paste(x$variable, x$version, x$climatemodel, x$scenario, sep = "_"))
 
-  if(smooth>1){
-    y <- toolTimeAverage(y, averaging_range = smooth , annual = T)
+  if (smooth > 1) {
+    y <- toolTimeAverage(y, averaging_range = smooth)
     y <- toolHoldConstant(y, time)
     y <- y[, time, ]
   } else {
