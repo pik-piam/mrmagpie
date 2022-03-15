@@ -28,16 +28,16 @@ readEvapotranspiration <-
     for (year in years) {
       end_month <- year * 12
       avg_month <- seq(end_month-11,end_month,1)
-      y[[year]] <- sum(r[[avg_month]])/12
+      y[[year]] <- sum(r[[avg_month]])/12 #unit: kg m-2 s-1 (mothly average)
     }
     y <- raster::brick(y)
     y <- as.magpie(y, temporal = 1)
     y <- toolCoord2Isocell(y)
 
     if (x$scenario == "historical") {
-      getItems(y, dim = 2) <- seq(1850,2014,1)
+      getItems(y, dim = 2) <- paste0("y",seq(1850,2014,1))
     } else {
-      getItems(y, dim = 2) <- seq(2015,2100,1)
+      getItems(y, dim = 2) <- paste0("y",seq(2015,2100,1))
     }
 
     y <- setNames(y, x$scenario)
