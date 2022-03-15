@@ -92,7 +92,6 @@ calcPastureSuit <- function(subtype = "ISIMIP3b:IPSL-CM6A-LR:1850-2100", smooth_
   pasture_suit_area[, past_all, ] <- hist_pastr[, past_all, ]
 
   if (smooth_out > 1) {
-    pasture_suit_area <- toolTimeAverage(pasture_suit_area, averaging_range = smooth_out, annual = F)
     pasture_suit_area <- toolTimeAverage(pasture_suit_area, averaging_range = smooth_out)
   }
 

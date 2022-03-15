@@ -192,10 +192,6 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
 
   calcOutput("ClimateClass", aggregate = "cluster", years = "y2015", file = paste0("koeppen_geiger_", ctype, ".mz"))
 
-  if (dev == "MPPA") {
-    calcOutput("Evapotranspiration", subtype="H08:mri-esm2-0", aggregate = "cluster", file = "evapo.mz")
-  }
-
   # 32 forestry
   calcOutput("AfforestationMask", subtype = "noboreal",     aggregate = "cluster", round = 6,
     file = paste0("aff_noboreal_", ctype, ".mz"))
