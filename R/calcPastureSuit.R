@@ -25,8 +25,14 @@ calcPastureSuit <- function(subtype = "ISIMIP3b:IPSL-CM6A-LR:1850-2100", smooth_
   }
   precipitation <- collapseNames(mbind(precipitation))
 
-
   evapotranspiration <- calcOutput("Evapotranspiration", subtype = "H08:mri-esm2-0", aggregate = F)
+
+  # temporary mapping of evapotranspiration RCP scenarios unavailable in ISIMIP3bv2
+  evapotranspiration <- add_columns(evapotranspiration,addnm = "ssp245", dim = 3.1, fill = NA)
+  evapotranspiration[,,"ssp245"] <- evapotranspiration[,,"ssp370"]
+  evapotranspiration <- add_columns(evapotranspiration,addnm = "ssp460", dim = 3.1, fill = NA)
+  evapotranspiration[,,"ssp460"] <- evapotranspiration[,,"ssp370"]
+
   evapotranspiration <- evapotranspiration[, , getItems(precipitation, dim = 3)]
 
   # matching available ssps scenarios
