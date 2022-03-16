@@ -21,8 +21,8 @@ readEvapotranspiration <-
     # I ran cdo yearmonmean to reduce computational costs at the preprocessing. the commented lines are obsolete for now.
 
     x <- toolSplitSubtype(subtype, list(water_model=NULL, climate_model=NULL, scenario = NULL))
-
     files <- Sys.glob("*.nc")
+
     file_name <- grep(x$scenario,files,value = T)
     r <-  brick(file_name)
 
