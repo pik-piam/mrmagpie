@@ -32,7 +32,7 @@ calcEvapotranspiration <- function(subtype="H08:mri-esm2-0") {
   return(list(
     x = x,
     weight = NULL,
-    unit = "day/month",
+    unit = "mm/day",
     description = "Total evapotranspiration",
     isocountries = FALSE
   ))
