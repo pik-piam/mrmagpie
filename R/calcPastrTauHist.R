@@ -17,7 +17,7 @@ calcPastrTauHist <- function() {
 
   # areas
   pastr_weight <- calcOutput("PastureSuit",
-    subtype = paste("ISIMIP3b", "MRI-ESM2-0", "1850_2100", sep = ":"), aggregate = F)[, past, 1]
+    subtype = paste("ISIMIP3bv2", "MRI-ESM2-0", "1850_2100", sep = ":"), aggregate = F)[, past, 1]
   # regional mapping
   cell2reg <- toolGetMapping("clustermapping.csv", type = "regional")
 
@@ -47,10 +47,30 @@ calcPastrTauHist <- function() {
   t[is.nan(t) | is.infinite(t)] <- 0
   t <- collapseNames(t)
 
+  # replacing unrealistic high tau values by regional averages
+  reg_map <- toolGetMapping("regionmappingH12.csv",type = "cell")
+  t_reg <- toolAggregate(t,rel = reg_map, weight = area, from ="CountryCode", to = "RegionCode")
+  regions <- reg_map$RegionCode
+  names(regions) <- reg_map[,"CountryCode"]
+
+  over_t_coutries <- where(t >= 10)$true$individual # tau threshold
+  colnames(over_t_coutries)[1] <- "country"
+  over_t_coutries <- as.data.frame(over_t_coutries)
+  over_t_coutries$regions <- regions[as.vector(over_t_coutries[,"country"])]
+
+  for (i in as.vector(over_t_coutries[,"country"])) {
+    for (j in as.vector(over_t_coutries[over_t_coutries$country == i,"year"])) {
+      t[i,j,] <- t_reg[regions[i],j,]
+    }
+  }
+
   return(list(
     x = t,
     weight = yref * area, # Xref
     unit = "1",
+    min = 0,
+    max = 10,
     description = "Historical trends in managed pastures land use intensity (Tau) based on FAO yield trends"
   ))
 }
+
