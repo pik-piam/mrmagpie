@@ -27,7 +27,7 @@ calcEvapotranspiration <- function(subtype="H08:mri-esm2-0") {
     x[[scenario]] <-  mbind(setNames(y,scenario),readSource("Evapotranspiration", subtype= paste0(subtype,":",scenario), convert = F)[,time_future,])
   }
   x <- collapseNames(mbind(x))
-  x <- x * 86400/30 # from kg m-2 s-1 (https://protocol.isimip.org/#output-data -> evap) to mm/day (https://gitlab.pik-potsdam.de/lpjml/LPJmL_internal/-/wikis/Input#climate) (https://www.researchgate.net/post/How-do-I-convert-ERA-Interim-precipitation-estimates-from-kg-m2-s-to-mm-day)
+  x <- x * 86400 # from kg m-2 s-1 (https://protocol.isimip.org/#output-data -> evap) to mm/day (https://gitlab.pik-potsdam.de/lpjml/LPJmL_internal/-/wikis/Input#climate) (https://www.researchgate.net/post/How-do-I-convert-ERA-Interim-precipitation-estimates-from-kg-m2-s-to-mm-day)
 
   return(list(
     x = x,

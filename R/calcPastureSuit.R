@@ -44,14 +44,14 @@ calcPastureSuit <- function(subtype = "ISIMIP3b:IPSL-CM6A-LR:1850-2100", smooth_
   landcoords <- as.data.frame(toolGetMapping("magpie_coord.rda", type = "cell"))
   landcoords <- cbind(landcoords, rep(1, nrow(landcoords)))
   landcoords <- raster::rasterFromXYZ(landcoords)
-  crs(landcoords) <- "+proj=longlat"
+  crs(landcoords) <- "+proj=longlat" # outputs cell are in km2
   cell_size <- raster::area(landcoords)
   cell_size <- cell_size * landcoords
   cell_size <- as.magpie(cell_size)
   cell_size <- toolOrderCells(collapseDim(addLocation(cell_size), dim = c("x", "y")))
 
   # population density
-  pop_density <- population * 1e6 / cell_size
+  pop_density <- (population * 1e6) / cell_size # population density in number of people per km2
   pop_density[is.infinite(pop_density)] <- 0
   pop_density[is.nan(pop_density)] <- 0
 
@@ -60,7 +60,7 @@ calcPastureSuit <- function(subtype = "ISIMIP3b:IPSL-CM6A-LR:1850-2100", smooth_
 
   # Aridity (the real aridity is measured as the ratio between evapotranspiration and precipitarion (I have complete this calculation))
   aridity <- precipitation[, years_com, ] / (evapotranspiration[, years_com, ])
-
+  aridity[is.infinite(aridity) | is.nan(aridity)] <- 0
   # 0.5 aridity threshold for managed pastures. Same from HYDE 3.2.
   aridity[aridity < 0.5] <- 0
   aridity[aridity >= 0.5] <- 1
@@ -68,10 +68,9 @@ calcPastureSuit <- function(subtype = "ISIMIP3b:IPSL-CM6A-LR:1850-2100", smooth_
   # pasture suitability check
   pasture_suit <- aridity
   pop_density <- pop_density[, getYears(pasture_suit), ]
+  pasture_suit[pop_density < 5] <- 0 # 5 hab km2 population threshold for managed pastures. Same from HYDE 3.2.
 
-  # 5 hab km2 population threshold for managed pastures. Same from HYDE 3.2.
-  pasture_suit[pop_density < 5] <- 0
-  pasture_suit_area <- (pasture_suit * cell_size) / 1e5 #(to mha )
+  pasture_suit_area <- (pasture_suit * cell_size * 100) / 1e6 #(from km2 (x100) to mha (/1e6))
   pasture_suit_area <- collapseDim(pasture_suit_area)
   pasture_suit_area <- toolHoldConstantBeyondEnd(pasture_suit_area)
 
