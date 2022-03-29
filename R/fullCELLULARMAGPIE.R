@@ -233,6 +233,7 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
 
   # 40
   calcOutput("TransportDistance", aggregate = "cluster", round = 6, file = paste0("transport_distance_", ctype, ".mz"))
+  calcOutput("TransportDistance", aggregate = F, round = 6, file = "transport_distance.mz")
 
   # 41 area equipped for irrigation
   calcOutput("AreaEquippedForIrrigation", aggregate = "cluster", cellular = TRUE, source = "Siebert",
