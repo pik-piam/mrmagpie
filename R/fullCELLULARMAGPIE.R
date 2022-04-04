@@ -101,7 +101,7 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
     calcOutput("YieldsCalibrated", aggregate = "cluster", source = c(lpjml = lpjml[["crop"]], isimip = isimip),
                climatetype = climatetype, round = 2, years = lpjYears, file = paste0("lpj_yields_", ctype, ".mz"))
 
-  } else if (grepl("indiaYields01", dev)) {
+  } else if (grepl("indiaYields", dev)) {
 
     calcOutput("Yields", aggregate = FALSE, source = c(lpjml = lpjml[["crop"]], isimip = isimip),
                climatetype = climatetype, round = 2, years = lpjYears, file = paste0("lpj_yields_0.5.mz"),
