@@ -16,10 +16,10 @@ List of magpie objects with results on iso level, weight, unit and description.
 convert GPD
 }
 \examples{
-
 \dontrun{
-  readSource("GPD", convert=TRUE)
+readSource("GPD", convert = TRUE)
 }
+
 }
 \author{
 Florian Humpenoeder

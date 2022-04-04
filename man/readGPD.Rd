@@ -12,7 +12,8 @@ List of magpie objects with results on cellular level, weight, unit and descript
 \description{
 read GPD
 Data from the Global Peatland Database provided by Alexandra Barthelmes.
-The original xls file has been clean-up manually (country names). Turkey had two identical entries in the original xls file.
+The original xls file has been clean-up manually (country names). Turkey had
+two identical entries in the original xls file.
 Sources:
 "Inventory Reports and National Communications UNFCC 2014",
 "soil and peatland science",
@@ -20,9 +21,8 @@ Sources:
 "own estimates (incl. GIS data)",
 }
 \examples{
-
 \dontrun{
-  readSource("GPD", convert="onlycorrect")
+readSource("GPD", convert = "onlycorrect")
 }
 }
 \author{

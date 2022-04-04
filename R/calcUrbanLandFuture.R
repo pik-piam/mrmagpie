@@ -2,64 +2,53 @@
 #' @description Urban land in Mha on 0.5deg grid
 #' @param cellular TRUE for results on 0.5 degree grid.
 #' @param timestep 5year or yearly
-#' @param subtype where the data source comes from, LUH2v2 or Gao & O'Neill
+#' @param subtype where the data source comes from ("LUH2v2" or "Gao")
 #' @return List of magpie objects with results on 0.5deg grid level, weights NULL, unit and description.
 #' @author David Chen
 #' @importFrom magpiesets findset
 #' @importFrom mstools toolHoldConstant
 #' @importFrom magclass nregions
 
-calcUrbanLandFuture <-function(timestep = "5year", subtype="LUH2v2", cellular = TRUE){
+calcUrbanLandFuture <- function(timestep = "5year", subtype = "LUH2v2", cellular = TRUE) {
 
-  if (subtype=="LUH2v2"){
+  if (subtype == "LUH2v2") {
+    past <- calcOutput("LanduseInitialisation", cellular = TRUE, nclasses = "seven", fao_corr = TRUE,
+                       selectyears = "past", input_magpie = FALSE, aggregate = FALSE)
+    past <- past[, c("y1995", "y2000", "y2005", "y2010"), "urban"]
+    past <- add_columns(past, addnm = c("SSP2", "SSP3", "SSP4", "SSP5"), dim = 3.1)
+    past[, , 2:5] <- past[, , 1]
+    getNames(past)[1] <- "SSP1"
 
-past <- calcOutput("LanduseInitialisation", cellular=TRUE, nclasses="seven", fao_corr=TRUE, selectyears="past", input_magpie=FALSE, aggregate=F)
-past <- past[,c("y1995","y2000","y2005","y2010"),"urban"]
-past <- add_columns(past, addnm=c("SSP2","SSP3","SSP4", "SSP5"), dim=3.1)
-past[,,2:5] <- past[,,1]
-getNames(past)[1] <- "SSP1"
+    out <- readSource("LUH2UrbanFuture", convert = FALSE)
 
-out <- readSource("LUH2UrbanFuture",convert=FALSE)
-
-if(timestep == "5year"){
-  out <- out[,seq(2015,2100,5),]
-  out <- toolHoldConstant(out, seq(2105,2150, 5))
-  out<- mbind(past, out)
+    if (timestep == "5year") {
+      out <- out[, seq(2015, 2100, 5), ]
+      out <- toolHoldConstant(out, seq(2105, 2150, 5))
+      out <- mbind(past, out)
+    } else if (timestep == "yearly") {
+      out <- toolHoldConstant(out, c(2101:2150))
+      past <- time_interpolate(past, interpolated_year = 1995:2010)
+      out <- mbind(past, out)
+      names(dimnames(out)) <- c("iso.cell", "t", "data")
     }
+  } else if (subtype == "Gao") {
+    out <- readSource("UrbanLandGao", convert = FALSE)
 
-else if(timestep=="yearly"){
-  out <- toolHoldConstant(out, c(2101:2150))
-  past <- time_interpolate(past,interpolated_year=1995:2010)
-  out <- mbind(past,out)
-  names(dimnames(out)) <- c("iso.cell", "t", "data")
+    if (timestep == "5year") {
+      years <- seq(1995, 2100, 5)
+      out <- time_interpolate(out, interpolated_year = years, integrate_interpolated_years = TRUE)
+      out <- time_interpolate(out, extrapolation_type = "constant",
+                              interpolated_year = seq(2105, 2150, 5), integrate_interpolated_years = TRUE)
+      # set any interpolated values to 0
+      out[out < 0] <- 0
     }
-
-}
-
-  if (subtype=="Gao"){
-   out <- readSource("UrbanLandGao", convert=F)
-
-   if(timestep == "5year"){
-     years <- seq(1995,2100,5)
-   out <- time_interpolate(out, interpolated_year = years, integrate_interpolated_years = TRUE)
-   out <- time_interpolate(out, extrapolation_type = "constant",
-                           interpolated_year = seq(2105,2150, 5), integrate_interpolated_years = TRUE)
-
-   #set any interpolated values to 0
-   out[out < 0] <- 0
-
-     }
-
-
+  } else {
+    stop("Not a Valid Subtype")
   }
 
-else {
-  stop("Not a Valid Subtype")}
-
-return(list(
-  x=out,
-  weight=NULL,
-  unit="Mha",
-  isocountries=(!cellular & (nregions(out)!=1)),
-  description="Amount of Urban land expansion for various SSPs"))
+  return(list(x = out,
+              weight = NULL,
+              unit = "Mha",
+              isocountries = (!cellular & (nregions(out) != 1)),
+              description = "Amount of Urban land expansion for various SSPs"))
 }
