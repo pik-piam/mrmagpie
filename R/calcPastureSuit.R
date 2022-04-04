@@ -85,6 +85,7 @@ calcPastureSuit <- function(subtype = "ISIMIP3b:IPSL-CM6A-LR:1850-2100", smooth_
 
   # map <- toolGetMapping("clustermapping.csv", type = "regional")
   map <- getConfig("regionmapping")
+  map <- toolGetMapping(map, type = "regional")
   pasture_suit_area_reg <- toolAggregate(pasture_suit_area, rel = map, from = "cell", to = "region")
   hist_pastr_reg <- toolAggregate(hist_pastr, rel = map, from = "cell", to = "region")
   corr_reg <- hist_pastr_reg[, past_ly, ] / pasture_suit_area_reg[, past_ly, ]
