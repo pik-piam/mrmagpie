@@ -19,7 +19,7 @@ calcPastrTauHist <- function() {
     subtype = paste("ISIMIP3bv2", "MRI-ESM2-0", "1850_2100", sep = ":"), aggregate = F
   )[, past, 1]
   # regional mapping
-  cell2reg <- toolGetMapping("clustermapping.csv", type = "regional")
+  cell2reg <- toolGetMapping("CountryToCellMapping.csv", type = "cell")
 
   # pasture areas
   area <- calcOutput("LUH2v2", landuse_types = "LUH2v2", cellular = F, aggregate = F)[, past, "pastr"]
@@ -43,7 +43,7 @@ calcPastrTauHist <- function() {
   )[, past, "pastr.rainfed"]
 
   yref_weights <- calcOutput("LUH2v2", landuse_types = "LUH2v2", cellular = T, aggregate = F)[, past, "pastr"]
-  yref <- toolAggregate(yref, rel = cell2reg, from = "cell", to = "country", weight = yref_weights)
+  yref <- toolAggregate(yref, rel = cell2reg, from = "celliso", to = "iso", weight = yref_weights)
   yref <- toolCountryFill(yref, fill = 0)
 
   # tau calculation
