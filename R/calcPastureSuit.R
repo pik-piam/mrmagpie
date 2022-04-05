@@ -84,14 +84,16 @@ calcPastureSuit <- function(subtype = "ISIMIP3b:IPSL-CM6A-LR:1850-2100", smooth_
   future <- setdiff(getYears(pasture_suit_area), past_all)
 
   # map <- toolGetMapping("clustermapping.csv", type = "regional")
-  map <- getConfig("regionmapping")
-  map <- toolGetMapping(map, type = "regional")
-  pasture_suit_area_reg <- toolAggregate(pasture_suit_area, rel = map, from = "cell", to = "region")
-  hist_pastr_reg <- toolAggregate(hist_pastr, rel = map, from = "cell", to = "region")
+  map <- toolGetMapping("CountryToCellMapping.csv", type = "cell")
+  # map <- getConfig("regionmapping")
+  # map <- toolGetMapping(map, type = "regional")
+  pasture_suit_area_reg <- toolAggregate(pasture_suit_area, rel = map, from = "celliso", to = "iso")
+  hist_pastr_reg <- toolAggregate(hist_pastr, rel = map, from = "celliso", to = "iso")
   corr_reg <- hist_pastr_reg[, past_ly, ] / pasture_suit_area_reg[, past_ly, ]
-  pasture_suit_area[, future, ] <- toolAggregate(corr_reg, rel = map, from = "region", to = "cell") * pasture_suit_area[, future, ]
+  pasture_suit_area[, future, ] <- toolAggregate(corr_reg, rel = map, from = "iso", to = "celliso") * pasture_suit_area[, future, ]
 
   pasture_suit_area[is.infinite(pasture_suit_area) | is.nan(pasture_suit_area)] <- 0
+  
   pasture_suit_area[pasture_suit_area < 0] <- 0
   pasture_suit_area[, past_all, ] <- hist_pastr[, past_all, ]
 
