@@ -4,12 +4,12 @@
 \alias{readMAPSPAM}
 \title{readMAPSPAM}
 \usage{
-readMAPSPAM(type = "harvested", year = 2000)
+readMAPSPAM(type = "harvested", y = 2000)
 }
 \arguments{
 \item{type}{It can be either "harvested" or "physical" area}
 
-\item{year}{year of data (2000, 2005, 2010)}
+\item{y}{year of data (2000, 2005, 2010). Each data set has different available crops and characteristics.}
 }
 \value{
 magpie object with croparea data in ha

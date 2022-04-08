@@ -3,7 +3,7 @@
 #' @return magpie object with croparea data in ha
 #' @author Edna J. Molina Bacca
 #' @param type It can be either "harvested" or "physical" area
-#' @param year year of data (2000, 2005, 2010)
+#' @param y year of data (2000, 2005, 2010). Each data set has different available crops and characteristics.
 #' @importFrom terra rast values crds aggregate
 #' @importFrom luscale speed_aggregate
 #' @importFrom madrat toolGetMapping
@@ -14,7 +14,9 @@
 #' a <- readSource("MAPSPAM")
 #' }
 #'
-readMAPSPAM <- function(type = "harvested", year = 2000) {
+readMAPSPAM <- function(type = "harvested", y = 2000) {
+
+  year<-y
 
   if (!(year %in% c(2000, 2005, 2010)) | length(year) > 1) stop("The selected year is not available or you have selected more than one year")
   Spam2Magpie <- if (year == 2000) toolGetMapping("SPAMtoMAGPIE2000.csv",
