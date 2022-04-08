@@ -2,29 +2,35 @@
 #' @description Reads the MAP-SPAM crop data per year (mapping each year different)
 #' @return magpie object with croparea data in ha
 #' @author Edna J. Molina Bacca
-#' @param type It can be either "harvested" or "physical" area
-#' @param y year of data (2000, 2005, 2010). Each data set has different available crops and characteristics.
+#' @param subtype It can be either "harvested" or "physical" area
 #' @importFrom terra rast values crds aggregate
 #' @importFrom luscale speed_aggregate
 #' @importFrom madrat toolGetMapping
 #' @importFrom luscale speed_aggregate
+#' @importFrom magpiesets findset
+#' @importFrom magclass new.magpie
 #' @seealso [readSource()]
 #' @examples
 #' \dontrun{
 #' a <- readSource("MAPSPAM")
 #' }
 #'
-readMAPSPAM <- function(type = "harvested", y = 2000) {
+readMAPSPAM <- function(subtype = "harvested") {
 
-  year<-y
+  type <- subtype
+  mapping <- toolGetMapping("CountryToCellMapping.rds", where = "mrcommons")
+  kcr <- findset("kcr")
+  kcr <- c(kcr, "remaining")
+  out <- new.magpie(cells_and_regions = mapping[, "celliso"], years = c(2000, 2005, 2010),
+                    names = c(paste0(kcr, ".rainfed"), paste0(kcr, ".irrigated")), fill = NA)
 
-  if (!(year %in% c(2000, 2005, 2010)) | length(year) > 1) stop("The selected year is not available or you have selected more than one year")
+  for (year in c(2000, 2005, 2010)) {
   Spam2Magpie <- if (year == 2000) toolGetMapping("SPAMtoMAGPIE2000.csv",
-                                                  type = "sectoral", where = "mrcommons") else toolGetMapping("SPAMtoMAGPIE2005.csv", type = "sectoral", where = "mrcommons")
+                                                  type = "sectoral", where = "mrcommons") else
+                                                    toolGetMapping("SPAMtoMAGPIE2005.csv",
+                                                                   type = "sectoral", where = "mrcommons")
   colnames(Spam2Magpie) <- c("crop", "name", "SPAM", "Magpie")
   cropsSpam <- Spam2Magpie[, "SPAM"]
-  mapping <- toolGetMapping("CountryToCellMapping.rds", where = "mrcommons")
-  out <- new.magpie(cells_and_regions = mapping[, "celliso"], years = year, names = c(paste0(Spam2Magpie[, "SPAM"], ".rainfed"), paste0(Spam2Magpie[, "SPAM"], ".irrigated")), fill = 0)
 
   ty <- if (type == "harvested") "HA" else if (type == "physical") "PA" else stop("Not a valid type")
   factor <- 6
@@ -44,13 +50,17 @@ readMAPSPAM <- function(type = "harvested", y = 2000) {
         tyArea <- if (ty == "HA") "H" else if (ty == "PA") "A"
         tyArea1 <- if (ty == "HA") "harv_area" else if (ty == "PA") "phys_area"
 
-        rasterAscT <- paste0("spam2005v3r2_global_", ty, "_geotiff/geotiff_global_", tyArea1, "/SPAM2005V3r2_global_", tyArea, "_TA_", cropsSpam[i], "_A.tif")
-        rasterAscI <- paste0("spam2005v3r2_global_", ty, "_geotiff/geotiff_global_", tyArea1, "/SPAM2005V3r2_global_", tyArea, "_TI_", cropsSpam[i], "_I.tif")
+        rasterAscT <- paste0("spam2005v3r2_global_", ty, "_geotiff/geotiff_global_", tyArea1, "/SPAM2005V3r2_global_",
+                             tyArea, "_TA_", cropsSpam[i], "_A.tif")
+        rasterAscI <- paste0("spam2005v3r2_global_", ty, "_geotiff/geotiff_global_", tyArea1, "/SPAM2005V3r2_global_",
+                             tyArea, "_TI_", cropsSpam[i], "_I.tif")
       } else if (year == 2010) {
         tyArea <- if (ty == "HA") "H" else if (ty == "PA") "A"
 
-        rasterAscT <- paste0("spam2010v2r0_global_", ty, "_geotiff/spam2010V2r0_global_", tyArea, "_", cropsSpam[i], "_A.tif")
-        rasterAscI <- paste0("spam2010v2r0_global_", ty, "_geotiff/spam2010V2r0_global_", tyArea, "_", cropsSpam[i], "_I.tif")
+        rasterAscT <- paste0("spam2010v2r0_global_", ty, "_geotiff/spam2010V2r0_global_", tyArea, "_",
+                             cropsSpam[i], "_A.tif")
+        rasterAscI <- paste0("spam2010v2r0_global_", ty, "_geotiff/spam2010V2r0_global_", tyArea, "_",
+                             cropsSpam[i], "_I.tif")
       }
 
       .ValuesExtract <- function(rasterAscT) {
@@ -96,8 +106,11 @@ readMAPSPAM <- function(type = "harvested", y = 2000) {
     MagObjSPAMI <- .convertMag(hisI)
     MagObjSPAMR <- MagObjSPAMT - MagObjSPAMI
 
-    out <- mbind(setNames(MagObjSPAMI, paste0(getNames(MagObjSPAMI), ".irrigated")),
+    MagObjSPAM <- mbind(setNames(MagObjSPAMI, paste0(getNames(MagObjSPAMI), ".irrigated")),
                setNames(MagObjSPAMR, paste0(getNames(MagObjSPAMR), ".rainfed")))
+
+    out[, intersect(getYears(out), getYears(MagObjSPAM)), intersect(getNames(out), getNames(MagObjSPAM))] <- MagObjSPAM
+  }
 
    return(out)
 }
