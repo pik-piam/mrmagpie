@@ -24,15 +24,15 @@ calcGrasslandsYields <-
   function(
     lpjml = lpjml[["grass"]],
     climatetype = climatetype,
-    subtype = "/co2/Nreturn0p5/limN",
+    subtype = "/co2/Nreturn0p5",
     lsu_levels = c(seq(0, 2, 0.2), 2.5),
     past_mngmt = "me2") {
 
     # subtype <- toolSplitSubtype(subtype, list(lpjml = NULL, climatetype = NULL, scenario = NULL))
 
     gCm2yTotDMy <- (10000 * 2.21 / 1e6)
-    x <- calcOutput("RangelandsMax_new", lsu_levels = lsu_levels, lpjml =lpjml, climatetype = climatetype, scenario = subtype, report = "harvest", aggregate = F)
-    y <- calcOutput("Pastr_new", past_mngmt = past_mngmt, lpjml =lpjml, climatetype = climatetype, scenario = subtype, aggregate = F)
+    x <- calcOutput("RangelandsMax_new", lsu_levels = lsu_levels, lpjml =lpjml, climatetype = climatetype, scenario = paste0(subtype, "/limN"), report = "harvest", aggregate = F)
+    y <- calcOutput("Pastr_new", past_mngmt = past_mngmt, lpjml =lpjml, climatetype = climatetype, scenario = paste0(subtype, "/unlimN"), aggregate = F)
     pasture <- mbind(x, y)
     pasture <- toolHoldConstantBeyondEnd(pasture)
     pasture <- pasture * gCm2yTotDMy
@@ -59,3 +59,4 @@ calcGrasslandsYields <-
       )
     )
   }
+  

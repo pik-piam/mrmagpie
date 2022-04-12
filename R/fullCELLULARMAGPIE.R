@@ -56,6 +56,7 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
                        Please use a older snapshot/version of the library, if you need older revisions.")
 
   climatemodel <- str_split(climatetype, ":")[[1]][1]
+  climatescen <- str_split(climatetype, ":")[[1]][2]
 
   cat(paste0("Start preprocessing for \n climatescenario: ", climatetype,
     "\n LPJmL-Versions: ", paste(names(lpjml), lpjml, sep = "->", collapse = ", "),
@@ -181,14 +182,20 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
   # 31 past
   calcOutput("LUH2v2", aggregate = "cluster", landuse_types = "LUH2v2", cellular = TRUE,
              file = paste0("f31_LUH2v2_", ctype, ".mz"))
-  calcOutput("GrasslandsYields", lpjml = lpjml[["grass"]], climatetype = climatetype,
-             subtype = "/co2/Nreturn0p5/limN", # nolint
-             lsu_levels = c(seq(0, 2.2, 0.2), 2.5), past_mngmt = "me2",
+  calcOutput("GrasslandsYields", lpjml = lpjml[["grass"]], climatetype = paste0("MRI-ESM2-0",":",climatescen),
+             subtype = "/co2/Nreturn0p5", # nolint
+             lsu_levels = c(seq(0, 2.2, 0.2), 2.5), past_mngmt = "mdef",
              file = paste0("f31_grassl_yld_", ctype, ".mz"), years = magYears, aggregate = "cluster")
+  calcOutput("GrasslandsYields", lpjml = lpjml[["grass"]], climatetype = paste0("MRI-ESM2-0",":",climatescen),
+             subtype = "/co2/Nreturn0p5", # nolint
+             lsu_levels = c(seq(0, 2.2, 0.2), 2.5), past_mngmt = "mdef",
+             file = paste0("f31_grassl_yld.mz"), years = magYears, aggregate = F)
   calcOutput("PastureSuit",  subtype = paste("ISIMIP3bv2", climatemodel, "1850_2100", sep = ":"),
              file = paste0("f31_pastr_suitability_", ctype, ".mz"), years = magYears, aggregate = "cluster")
   calcOutput("PastureSuit",  subtype = paste("ISIMIP3bv2", climatemodel, "1850_2100", sep = ":"),
-             file = paste0("f31_pastr_suitability.mz"), years = magYears, aggregate = FALSE)
+             file = "f31_pastr_suitability.mz", years = magYears, aggregate = FALSE)
+  calcOutput("PastrMngtLevels", climatetype = paste0("MRI-ESM2-0",":",climatescen), options = c("brazil_1","brazil_2","brazil_4"),
+             cost_level = c(1,2,3), file = "f31_PastrMngtLevels.mz", aggregate = FALSE)
 
   calcOutput("ClimateClass", aggregate = "cluster", years = "y2015", file = paste0("koeppen_geiger_", ctype, ".mz"))
 
