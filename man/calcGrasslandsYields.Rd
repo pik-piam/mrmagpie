@@ -7,7 +7,7 @@
 calcGrasslandsYields(
   lpjml = lpjml[["grass"]],
   climatetype = climatetype,
-  subtype = "/co2/Nreturn0p5/limN",
+  subtype = "/co2/Nreturn0p5",
   lsu_levels = c(seq(0, 2, 0.2), 2.5),
   past_mngmt = "me2"
 )
