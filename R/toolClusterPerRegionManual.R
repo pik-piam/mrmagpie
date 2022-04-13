@@ -29,4 +29,3 @@ toolClusterPerRegionManual <- function(cells,ncluster,ncluster2reg){
 
   return(cpr)
 }
-

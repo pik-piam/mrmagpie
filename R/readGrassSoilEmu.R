@@ -53,5 +53,3 @@ readGrassSoilEmu <-
       return(x)
     }
   }
-
-

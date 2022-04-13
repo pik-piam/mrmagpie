@@ -64,4 +64,3 @@ readGrassYldEmu <-
     return(x)
 
   }
-

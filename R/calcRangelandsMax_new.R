@@ -88,4 +88,3 @@ calcRangelandsMax_new <-
       )
     }
   }
-

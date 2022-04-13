@@ -42,4 +42,3 @@ calcGrassPastureShare <- function(){
     isocountries = FALSE
   ))
 }
-
