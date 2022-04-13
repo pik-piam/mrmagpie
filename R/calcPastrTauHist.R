@@ -37,7 +37,7 @@ calcPastrTauHist <- function() {
 
   # reference yields
   yref <- calcOutput("GrasslandsYields",
-    lpjml = "lpjml5p2_pasture", climatetype = "MRI-ESM2-0:ssp370", subtype = "/co2/Nreturn0p5/limN",
+    lpjml = "lpjml5p2_pasture", climatetype = "MRI-ESM2-0:ssp370", subtype = "/co2/Nreturn0p5",
     lsu_levels = c(seq(0, 2.2, 0.2), 2.5), past_mngmt = "me2",
     aggregate = F
   )[, past, "pastr.rainfed"]
