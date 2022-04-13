@@ -36,4 +36,3 @@ toolClusterPerRegion <- function(cells,ncluster,weight=NULL){
   }
   return(cpr)
 }
-

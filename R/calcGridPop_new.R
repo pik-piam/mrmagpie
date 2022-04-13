@@ -225,4 +225,3 @@ else if (source == "Gao") {
               description="Population in millions",
               isocountries=FALSE))
 }
-

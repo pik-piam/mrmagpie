@@ -64,4 +64,3 @@ readGridPop_new <- function(subtype) {
   }
   return(x)
 }
-

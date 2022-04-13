@@ -69,4 +69,3 @@ readUrbanLandGao <- function(){
   x <- x/10000
   return(x)
 }
-

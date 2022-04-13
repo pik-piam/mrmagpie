@@ -65,4 +65,3 @@ calcLsuDensityHist <- function(disagg_type = "grassland"){
     isocountries = FALSE
   ))
 }
-

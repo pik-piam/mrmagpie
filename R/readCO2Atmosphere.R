@@ -43,5 +43,3 @@ readCO2Atmosphere <-
     return(x)
 
   }
-
-
