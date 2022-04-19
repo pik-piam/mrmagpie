@@ -1,14 +1,14 @@
 #' @title calcPastrTauHist
 #' @description Calculates managed pastures Tau based on FAO yield trends for 1995.
-#'
+#' @param past_mngmt Pasture management reference yield
 #' @return List of magpie objects with results on country level, weight on country level, unit and description.
 #' @author Marcos Alves
 #' @examples
 #' \dontrun{
-#' calcOutput("PastrTauHist")
+#' calcOutput("PastrTauHist", past_mngmt)
 #' }
 #'
-calcPastrTauHist <- function() {
+calcPastrTauHist <- function(past_mngmt = "2me") {
   past <- findset("past")
   # Production
   prod <- calcOutput("GrasslandBiomass", aggregate = F)[, past, "pastr"]
@@ -38,7 +38,7 @@ calcPastrTauHist <- function() {
   # reference yields
   yref <- calcOutput("GrasslandsYields",
     lpjml = "lpjml5p2_pasture", climatetype = "MRI-ESM2-0:ssp370", subtype = "/co2/Nreturn0p5",
-    lsu_levels = c(seq(0, 2.2, 0.2), 2.5), past_mngmt = "me2",
+    lsu_levels = c(seq(0, 2.2, 0.2), 2.5), past_mngmt = past_mngmt,
     aggregate = F
   )[, past, "pastr.rainfed"]
 

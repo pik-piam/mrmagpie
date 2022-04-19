@@ -4,7 +4,10 @@
 \alias{calcPastrTauHist}
 \title{calcPastrTauHist}
 \usage{
-calcPastrTauHist()
+calcPastrTauHist(past_mngmt = "2me")
+}
+\arguments{
+\item{past_mngmt}{Pasture management reference yield}
 }
 \value{
 List of magpie objects with results on country level, weight on country level, unit and description.
@@ -14,7 +17,7 @@ Calculates managed pastures Tau based on FAO yield trends for 1995.
 }
 \examples{
 \dontrun{
-calcOutput("PastrTauHist")
+calcOutput("PastrTauHist", past_mngmt)
 }
 
 }
