@@ -49,5 +49,6 @@ RoxygenNote: 7.1.2
 Suggests:
     knitr,
     rmarkdown,
-    covr
+    covr,
+    zip
 VignetteBuilder: knitr
