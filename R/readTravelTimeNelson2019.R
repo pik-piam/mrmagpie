@@ -61,7 +61,7 @@ out[is.na(out)] <- t4
 #fill rest with avg for that slice
 avgs <- dimSums(out, dim = 1, na.rm = TRUE)/59199
 
-for (i in c(seq_len(getItems(out, dim=3)))) {
+for (i in c(seq(getItems(out, dim=3)))) {
   out[,,i][which(is.na(out[,,i]))] <- as.numeric(avgs[,,i])
 }
 
