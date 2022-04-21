@@ -21,13 +21,15 @@ readTravelTimeNelson2019 <- function(subtype = "cities") {
   x <- terra::project(x, r)
 
 # fill NAs with focal function (neighbour mean)
-  x <- terra::focal(x, w = 3, mean, na.only = TRUE, na.rm = TRUE)
+  x <- terra::focal(x, w = 3, mean, na.policy = "only", na.rm = TRUE)
 
   x <- raster::brick(x)
 
   out <- as.magpie(x)
 
- # convert to magpie cells and add missing cells as NA
+  getItems(out, dim = 2) <- "y2015"
+
+  # convert to magpie cells and add missing cells as NA
   out <- toolCoord2Isocell(out, fillMissing = NA)
 
   #fill with value(s) of cells i away, first try using the average of the 2 sides, if one doesn't exist, use the other
@@ -41,7 +43,8 @@ readTravelTimeNelson2019 <- function(subtype = "cities") {
 
   fills <- ifelse(is.na(fill), ifelse(is.na(neighbour), NA, neighbour), fill)
 
-  print(length(which(is.na(fills))))
+  #print(length(which(is.na(fills))))
+
   return(fills)
   }
 
@@ -59,7 +62,7 @@ t4 <- .fillNeighbours(fill = t3, tofill = out, i = 5)
 out[is.na(out)] <- t4
 
 #fill rest with avg for that slice
-avgs <- dimSums(out, dim = 1, na.rm = TRUE)/59199
+avgs <- dimSums(out, dim = 1, na.rm = TRUE) / 59199
 
 for (i in c(seq(getItems(out, dim=3)))) {
   out[,,i][which(is.na(out[,,i]))] <- as.numeric(avgs[,,i])
