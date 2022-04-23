@@ -1,5 +1,7 @@
 #' calcGridPop_new
 #'
+#' @export
+#'
 #' @description Past and future (SSP1-5) population based on HYDE3.2 and Jones & O'Neill (2016)
 #' Data is scaled to match WDI data from calcPopulation
 #' NOTE that some scaling factors for the future (for small countries Gambia and Djibouti) are off,
