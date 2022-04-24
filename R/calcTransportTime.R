@@ -12,7 +12,7 @@
 #'
 #'
 
-calcTransportTime <- function(object = "cities", minDist = 5) {
+calcTransportTime <- function(object = "cities", minDist = 50) {
 
   x <- readSource("TravelTimeNelson2019", subtype = object, convert = FALSE)
 
