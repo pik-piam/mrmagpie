@@ -4,7 +4,7 @@
 \alias{calcTransportTime}
 \title{calcTransportTime}
 \usage{
-calcTransportTime(object = "cities", minDist = 5)
+calcTransportTime(object = "cities", minDist = 50)
 }
 \arguments{
 \item{object}{cities or ports}
