@@ -6,11 +6,11 @@
 \usage{
 calcTransportCosts_new()
 }
-\value{
-List of magpie objects with results on country level, weight on country level, unit and description.
-}
 \description{
-calculates country-level transport costs from GTAP total transport costs, cellular production, and cellular travel time
+calculates country-level transport costs from GTAP total
+transport costs, cellular production, and cellular travel time
+
+#' @return List of magpie objects with results on country level, weight on country level, unit and description.
 }
 \examples{
 \dontrun{
@@ -22,5 +22,5 @@ calcOutput("TransportCosts_new")
 [calcGTAPTotalTransportCosts()]
 }
 \author{
-Benjamin Leon Bodirsky
+David M Chen
 }
