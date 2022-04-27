@@ -42,8 +42,8 @@ calcTransportCosts_new <- function() {
   cftRel[["osd"]] <- c("soybean", "oilpalm", "rapeseed", "sunflower", "groundnut")
   cftRel[["c_b"]] <- c("sugr_beet", "sugr_cane")
   cftRel[["ocr"]] <- c("foddr")
-  cft.rel[["ctl"]] <- c("livst_rum","livst_milk")
-  cft.rel[["oap"]] <- c("livst_chick","livst_egg", "livst_pig")
+  cftRel[["ctl"]] <- c("livst_rum","livst_milk")
+  cftRel[["oap"]] <- c("livst_chick","livst_egg", "livst_pig")
 
 
 
