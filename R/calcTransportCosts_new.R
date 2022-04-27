@@ -23,8 +23,9 @@ calcTransportCosts_new <- function() {
 
 
   transportGtap <- calcOutput("GTAPTotalTransportCosts", aggregate = FALSE)[, 2004, ] * 10^6
+
   #transform 10^6 USD -> USD
-  # this is  in 2004 and 2007 MER, don't have same year for travel time....
+  # this is  in 2004 and 2007 current USD, don't have same year for travel time, and pretend GTAP is 2005
 
 
   #map gtap cfts to MAgPIE cfts
@@ -81,10 +82,11 @@ calcTransportCosts_new <- function() {
                                               names = magpieComms)
 
   for (i in getNames(transportMagpie)) {
-    transportMagpie[,, i] <- transportPerTonPerDistance[,, names(cftRel)[grep(i, cftRel)]]
+    transportMagpie[,, i] <- toolFillWithRegionAvg(transportPerTonPerDistance[,, names(cftRel)[grep(i, cftRel)]],
+                                                   valueToReplace = Inf, warningThreshold = 0.99)
+                                                  #warning threshold is so high as there is a lack of foddr in SSA
     transportPowerMagpie[,, i] <- transportPower[,, names(cftRel)[grep(i, cftRel)]]
   }
-
 
 
   return(list(x = transportMagpie,
