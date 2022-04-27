@@ -31,7 +31,7 @@ calcTransportCosts_new <- function() {
   cftRel <- list()
   cftRel[["pdr"]] <- c("rice_pro")
   cftRel[["wht"]] <- c("tece")
-  cftRel[["gro"]] <- c("maiz", "trce", "begr"," betr")
+  cftRel[["gro"]] <- c("maiz", "trce", "begr", "betr")
   cftRel[["v_f"]] <- c("others", "potato", "cassav_sp", "puls_pro")
   cftRel[["osd"]] <- c("soybean", "oilpalm", "rapeseed", "sunflower", "groundnut")
   cftRel[["c_b"]] <- c("sugr_beet", "sugr_cane")
