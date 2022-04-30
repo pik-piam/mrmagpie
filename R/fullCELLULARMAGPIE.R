@@ -166,6 +166,14 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
   calcOutput("AvlLandSi", aggregate = FALSE, round = 6, file = "avl_land_si_0.5.mz")
   calcOutput("AvlLandSi", aggregate = "cluster", round = 6, file = paste0("avl_land_si_", ctype, ".mz"))
 
+  # 22 land conservation
+  calcOutput("ProtectedAreaBaseline", nclasses = "seven", cells = "magpiecell", magpie_input = TRUE,
+    aggregate = FALSE, round = 6, file = "wdpa_baseline_0.5.mz")
+  calcOutput("ProtectedAreaBaseline", nclasses = "seven", cells = "magpiecell", magpie_input = TRUE,
+    aggregate = "cluster", round = 6, file = paste0("wdpa_baseline_", ctype, ".mz"))
+  calcOutput("ProtectArea", bhifl = ifelse(rev > 4.66, TRUE, FALSE), aggregate = "cluster", round = 6,
+             file = paste0("protect_area_", ctype, ".mz"))
+
   # 30 crop
   calcOutput("Croparea", sectoral = "kcr", physical = TRUE, cellular = TRUE, irrigation = FALSE,
     aggregate = "cluster", file = paste0("f30_croparea_initialisation_", ctype, ".mz"))
@@ -229,8 +237,6 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
 
   # 35 natveg
   calcOutput("AgeClassDistribution", aggregate = "cluster", round = 6, file = paste0("forestageclasses_", ctype, ".mz"))
-  calcOutput("ProtectArea", bhifl = ifelse(rev > 4.66, TRUE, FALSE), aggregate = "cluster", round = 6,
-             file = paste0("protect_area_", ctype, ".mz"))
 
   # 37 labour prod
   calcOutput("LabourProdImpactEmu", aggregate = "cluster", round = 6, subtype = "impact",
