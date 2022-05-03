@@ -40,5 +40,6 @@ amtTransported <- transpRurToUrb + transpExp
 return(list(x = amtTransported,
             weight = NULL,
             unit = "Mt dm",
-            description = "Food produced greater than local consumption"))
+            description = "Food produced greater than local consumption"),
+            isocountries = FALSE)
 }

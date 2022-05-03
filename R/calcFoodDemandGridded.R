@@ -32,6 +32,7 @@ foodDisaggUrb <- foodDisagg * share
 
 return(list(x = foodDisaggUrb,
             weight = NULL,
-            unit = "million current US$MER/yr",
-            description = "Transport costs of GTAP commodities (half of input to market and market to value"))
+            unit = paste0(attribute, "1e6") ,
+            description = paste0("Food demand in", attribute)),
+            isocountries = FALSE)
 }
