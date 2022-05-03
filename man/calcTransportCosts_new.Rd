@@ -4,13 +4,18 @@
 \alias{calcTransportCosts_new}
 \title{calcTransportCosts_new}
 \usage{
-calcTransportCosts_new()
+calcTransportCosts_new(transport = "all")
+}
+\arguments{
+\item{transport}{"all" or "nonlocal". "all" means all production incurs transport costs,
+while "nonlocal" sees only production greater than local rural consumption with transport costs}
+}
+\value{
+List of magpie objects with results on country level, weight on country level, unit and description.
 }
 \description{
 calculates country-level transport costs from GTAP total
 transport costs, cellular production, and cellular travel time
-
-#' @return List of magpie objects with results on country level, weight on country level, unit and description.
 }
 \examples{
 \dontrun{

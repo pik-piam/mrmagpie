@@ -1,8 +1,9 @@
 #' @title calcTransportCosts_new
 #' @description calculates country-level transport costs from GTAP total
 #' transport costs, cellular production, and cellular travel time
-#'
-#'#' @return List of magpie objects with results on country level, weight on country level, unit and description.
+#' @param transport "all" or "nonlocal". "all" means all production incurs transport costs,
+#' while "nonlocal" sees only production greater than local rural consumption with transport costs
+#' @return List of magpie objects with results on country level, weight on country level, unit and description.
 #' @author David M Chen
 #' @seealso
 #' [calcTransportTime()],
@@ -12,26 +13,29 @@
 #' calcOutput("TransportCosts_new")
 #' }
 
-calcTransportCosts_new <- function() {
+calcTransportCosts_new <- function(transport = "all") {
 
   #load distance (travel time), production, and gtap transport costs
   distance <- calcOutput("TransportTime", minDist = 50, aggregate = FALSE)
-
+ if (transport == "all") {
   # read from magpie or from input data? # convert to tDM ? #production also only goes up to 2010..
   production <- calcOutput("Production", cellular = TRUE,
                            irrigation = FALSE, aggregate = FALSE)[, 2005, "dm"] * 10^6
+  productionLi <- calcOutput("Production", cellular = TRUE,
+                              irrigation = FALSE, aggregate = FALSE,
+                              products = "kli")[, 2005, "dm"] * 10^6
+  production <- mbind(production, productionLi)
+ } else if (transport == "nonlocal") {
 
-  production_li <- calcOutput("Production", cellular = TRUE,
-                              irrigation = FALSE, aggregate = FALSE, products = "kli")[, 2005, "dm"] * 10^6
+production <- calcOutput("NonLocalTransport", aggregate = FALSE)
+ } else {
+   stop("only all or nonlocal production available for subtype")
+   }
 
-  production <- mbind(production, production_li)
-
-
-  transportGtap <- calcOutput("GTAPTotalTransportCosts", aggregate = FALSE)[, 2004, ] * 10^6
+  transportGtap <- calcOutput("GTAPTotalTransportCosts", aggregate = FALSE)[, 2004,] * 10^6
 
   #transform 10^6 USD -> USD
   # this is  in 2004 and 2007 current USD, don't have same year for travel time, and pretend GTAP is 2005
-
 
   #map gtap cfts to MAgPIE cfts
   cftRel <- list()
@@ -85,7 +89,8 @@ calcTransportCosts_new <- function() {
   #Rename GTAP to MAgPIE commodities
   magpieComms <- unlist(cftRel)
 
-  transportMagpie <- transportPowerMagpie <-  new.magpie(0, cells_and_regions = getItems(transportPerTonPerDistance, dim = 1),
+  transportMagpie <- transportPowerMagpie <-  new.magpie(0,
+                                              cells_and_regions = getItems(transportPerTonPerDistance, dim = 1),
                                               years = "y2005",
                                               names = magpieComms)
 
