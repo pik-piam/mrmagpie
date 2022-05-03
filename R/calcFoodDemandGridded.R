@@ -32,7 +32,7 @@ foodDisaggUrb <- foodDisagg * share
 
 return(list(x = foodDisaggUrb,
             weight = NULL,
-            unit = paste0(attribute, "1e6") ,
-            description = paste0("Food demand in", attribute)),
-            isocountries = FALSE)
+            unit = "Mt" ,
+            description = "Food demand in by grid cell",
+            isocountries = FALSE))
 }
