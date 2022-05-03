@@ -26,9 +26,7 @@ calcTransportCosts_new <- function(transport = "all") {
                               products = "kli")[, 2005, "dm"] * 10^6
   production <- mbind(production, productionLi)
  } else if (transport == "nonlocal") {
-
-production <- calcOutput("NonLocalTransport", aggregate = FALSE)
- } else {
+   production <- calcOutput("NonLocalTransport", aggregate = FALSE)[,2005, ] * 10^6 } else {
    stop("only all or nonlocal production available for subtype")
    }
 
