@@ -11,7 +11,8 @@
 calcFoodDemandGridded <- function(attribute = "dm"){
 
 foodDemand <- calcOutput("FAOmassbalance", aggregate = FALSE)
-foodDemand <- foodDemand[,, "food"][,, attribute] #food or domestic supply?
+foodDemand <- dimSums(foodDemand[,,c("food", "feed","flour1")],
+                      dim = 3.2)[,,attribute]
 hist <- getYears(foodDemand)
 
 
