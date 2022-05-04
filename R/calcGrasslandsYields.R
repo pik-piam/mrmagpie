@@ -10,7 +10,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' calcOutput("GrasslandsYields", lsu_levels, past_mngmt = "2me", subtype)
+#' calcOutput("GrasslandsYields", lsu_levels, past_mngmt = "me2", subtype)
 #' }
 #'
 #' @import madrat

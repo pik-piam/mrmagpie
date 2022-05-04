@@ -9,7 +9,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' calcOutput("Pastr_new", past_mngmt = "2me", lpjml = "LPJml_pastr", climatetype)
+#' calcOutput("Pastr_new", past_mngmt = "me2", lpjml = "LPJml_pastr", climatetype)
 #' }
 #'
 

@@ -8,10 +8,10 @@
 #'
 #' @examples
 #' \dontrun{
-#' calcOutput("Pastr", past_mngmt = "2me", lpjml = "LPJmL_pastr", climatetype)
+#' calcOutput("Pastr", past_mngmt = "me2", lpjml = "LPJmL_pastr", climatetype)
 #' }
 #'
-calcPastr <- function(past_mngmt = "2me", lpjml = "LPJmL_pastr", climatetype = "HadGEM2_ES:rcp8p5:co2") {
+calcPastr <- function(past_mngmt = "me2", lpjml = "LPJmL_pastr", climatetype = "HadGEM2_ES:rcp8p5:co2") {
   .subtype <- paste(paste(lpjml, climatetype, past_mngmt, sep = ":"), "harvest", sep = ".")
   x <- readSource("LPJmL", subtype = .subtype, convert = "onlycorrect")
   x <- x[, , "mgrass"]

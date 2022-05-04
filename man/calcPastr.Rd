@@ -5,7 +5,7 @@
 \title{calcPastr}
 \usage{
 calcPastr(
-  past_mngmt = "2me",
+  past_mngmt = "me2",
   lpjml = "LPJmL_pastr",
   climatetype = "HadGEM2_ES:rcp8p5:co2"
 )
@@ -25,7 +25,7 @@ Calculates managed pastures yields
 }
 \examples{
 \dontrun{
-calcOutput("Pastr", past_mngmt = "2me", lpjml = "LPJmL_pastr", climatetype)
+calcOutput("Pastr", past_mngmt = "me2", lpjml = "LPJmL_pastr", climatetype)
 }
 
 }
