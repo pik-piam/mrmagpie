@@ -9,7 +9,8 @@ calcNonLocalTransport()
 \description{
 Calculates grid-level amount of food that would be transported,
 assuming that food produced in the grid cell is first consumed by local population
-i.e. amount of food greater than local rural demand
+i.e. amount of food greater than local rural demand, split into that which feeds the local
+urban population, and that which exceeds total local demand and is available to export
 }
 \examples{
 \dontrun{
