@@ -37,11 +37,14 @@ calcGCMClimate_new <- function(subtype = "ISIMIP3b:IPSL-CM6A-LR:ssp126:1850-2100
   .subtype_hist <- paste(x$version, x$climatemodel, hist_name, paste(period[1], splitting_year, sep = "-"), x$variable, sep = ":")
   .subtype_scen <- paste(x$version, x$climatemodel, x$scenario, paste((splitting_year + 1), period[2], sep = "-"), x$variable, sep = ":")
 
-  y <- mbind(readSource("GCMClimate_new", subtype = .subtype_hist,
-                        subset = x$timeres, convert = "onlycorrect"),
-             readSource("GCMClimate_new", subtype = .subtype_scen,
-                        subset = x$timeres, convert = "onlycorrect")
-    )
+  y <- toolCoord2Isocell(
+         mbind(readSource("GCMClimate_new", subtype = .subtype_hist,
+                          subset = x$timeres, convert = "onlycorrect"),
+               readSource("GCMClimate_new", subtype = .subtype_scen,
+                          subset = x$timeres, convert = "onlycorrect")
+               )
+         )
+
   getNames(y) <- gsub("-", "_", paste(x$timeres, x$variable, x$version, x$climatemodel, x$scenario, sep = "_"))
 
   if (smooth > 1) {

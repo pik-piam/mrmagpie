@@ -24,12 +24,12 @@
 readGCMClimate_new <- function(subtype = "ISIMIP3b:IPSL-CM6A-LR:historical:1850-2014:tas",
                                subset  = "annual_mean") {
 
-  x         <- toolSplitSubtype(subtype,
-                                list(version      = NULL,
-                                     climatemodel = NULL,
-                                     scenario     = NULL,
-                                     period       = NULL,
-                                     variable     = NULL))
+  subtype         <- toolSplitSubtype(subtype,
+                                      list(version      = NULL,
+                                           climatemodel = NULL,
+                                           scenario     = NULL,
+                                           period       = NULL,
+                                           variable     = NULL))
 
   .prepareLPJ_input <- function(subset            = NULL) {
 
@@ -157,9 +157,10 @@ readGCMClimate_new <- function(subtype = "ISIMIP3b:IPSL-CM6A-LR:historical:1850-
   }
 
   x        <- .prepareLPJ_input(subset) # maybe add conditionals on
-                                        # which subtype subset combinations
-                                        # should be allowed
-  x        <- collapseDim(addLocation(x), dim = "N")
+  # which subtype subset combinations
+  # should be allowed
+  getNames(x) <- paste(subtype$variable, subset, sep = "_")
+  x        <- collapseDim(addLocation(x), dim = c("N", "region"))
   x        <- clean_magpie(x)
 
   return(x)
