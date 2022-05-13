@@ -31,8 +31,7 @@ readGCMClimate_new <- function(subtype = "ISIMIP3b:IPSL-CM6A-LR:historical:1850-
                                      period       = NULL,
                                      variable     = NULL))
 
-  .prepareLPJ_input <- function(namesum           = TRUE,
-                                subset            = NULL) {
+  .prepareLPJ_input <- function(subset            = NULL) {
 
     file_name   <- Sys.glob(c("*.bin", "*.clm"))
     file_type   <- tail(unlist(strsplit(file_name, "\\.")), 1)
@@ -106,21 +105,21 @@ readGCMClimate_new <- function(subtype = "ISIMIP3b:IPSL-CM6A-LR:historical:1850-
                             month = daysMonth)
 
       #create output object
-      out <- NULL
+      x <- NULL
 
       #loop over bunches
       for (b in 1:length(yearsets)) {
 
         #read in a bunch of years
-        x <- lpjclass::read.LPJ_input(file_name = file_name,
-                                      out_years = paste0("y", yearsets[[b]]),
-                                      namesum   = FALSE,
-                                      ncells    = 67420)
-        class(x) <- "array"
-        x        <- as.magpie(x)
+        tmp <- lpjclass::read.LPJ_input(file_name = file_name,
+                                        out_years = paste0("y", yearsets[[b]]),
+                                        namesum   = FALSE,
+                                        ncells    = 67420)
+        class(tmp) <- "array"
+        tmp        <- as.magpie(tmp)
 
         #aggregate days to month
-        tmp      <- toolAggregate(x,
+        tmp      <- toolAggregate(tmp,
                                   rel  = month2day,
                                   from = "day",
                                   to   = "month",
@@ -128,14 +127,14 @@ readGCMClimate_new <- function(subtype = "ISIMIP3b:IPSL-CM6A-LR:historical:1850-
 
         if(subset == "monthly_mean") tmp / as.magpie(monthLength)
 
-        out      <- mbind(out, tmp)
+        x      <- mbind(x, tmp)
       }
 
     } else if (grepl("\\d{4}:\\d{4}", subset)) {
 
       subYears <- eval(parse(text = subset))
       years    <- intersect(years, subYears)
-     if(any(!(subYears %in% years))) {
+      if(any(!(subYears %in% years))) {
         warning(paste0("Some subsetted years (subset = ", subset,
                        ") are not availabl\n in the original data.
                        Years set to:", years))
@@ -153,8 +152,13 @@ readGCMClimate_new <- function(subtype = "ISIMIP3b:IPSL-CM6A-LR:historical:1850-
     } else {
       stop("Subset argument unknown. Please check function help.")
     }
+
+    return(x)
   }
 
+  x        <- .prepareLPJ_input(subset) # maybe add conditionals on
+                                        # which subtype subset combinations
+                                        # should be allowed
   x        <- collapseDim(addLocation(x), dim = "N")
   x        <- clean_magpie(x)
 

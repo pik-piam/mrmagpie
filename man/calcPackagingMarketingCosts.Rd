@@ -11,7 +11,7 @@ List of magpie objects with results on country level, weight on country level, u
 }
 \description{
 calculates per-ton marketing and packaging costs for food that leaves a cell
-Currnetly assume expert guess 50 USD / ton of packaging/marketing costs 
+Currnetly assume expert guess 50 USD / ton of packaging/marketing costs
 (100 USD/t in model, of which half is already in GTAP)
 }
 \author{

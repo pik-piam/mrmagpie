@@ -6,7 +6,7 @@
 \usage{
 readGCMClimate_new(
   subtype = "ISIMIP3b:IPSL-CM6A-LR:historical:1850-2014:tas",
-  subset = "annualmean"
+  subset = "annual_mean"
 )
 }
 \arguments{

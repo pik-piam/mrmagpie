@@ -20,7 +20,7 @@ calcPastureSuit <- function(subtype = "ISIMIP3b:IPSL-CM6A-LR:1850-2100", smooth_
   precipitation <- list()
   scenarios <- c("ssp126", "ssp245", "ssp370", "ssp460", "ssp585") # Current ISIMIP3bv2 scenarios
   for (scenario in scenarios) {
-    subtype <- paste(x$version, x$climatemodel, scenario, x$period, "pr", sep = ":")
+    subtype <- paste(x$version, x$climatemodel, scenario, x$period, "pr", "annual_mean", sep = ":")
     precipitation[[scenario]] <- setNames(calcOutput("GCMClimate_new", subtype = subtype, smooth = smooth_precipitation, aggregate = F), scenario)
   }
   precipitation <- collapseNames(mbind(precipitation))
