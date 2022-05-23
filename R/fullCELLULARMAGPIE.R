@@ -131,7 +131,7 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
   superregion <- ifelse("superregion" %in% colnames(mapReg), "superregion", "region")
 
   # 13 TC
-  calcOutput("PastrTauHist", round = 2, past_mngmt = "me2", file = "f13_pastr_tau_hist.csv", aggregate = superregion)
+  calcOutput("PastrTauHist", round = 2, past_mngmt = "mdef", file = "f13_pastr_tau_hist.csv", aggregate = superregion)
 
   # 09 drivers
   calcOutput("GridPop_new", source = "Gao", subtype = "all", cellular = TRUE, harmonize_until = 2015, urban = FALSE,
@@ -192,18 +192,18 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
              file = paste0("f31_LUH2v2_", ctype, ".mz"))
   calcOutput("GrasslandsYields", lpjml = lpjml[["grass"]], climatetype = paste0("MRI-ESM2-0",":",climatescen),
              subtype = "/co2/Nreturn0p5", # nolint
-             lsu_levels = c(seq(0, 2.2, 0.2), 2.5), past_mngmt = "me2",
+             lsu_levels = c(seq(0, 2.2, 0.2), 2.5), past_mngmt = "mdef",
              file = paste0("f31_grassl_yld_", ctype, ".mz"), years = magYears, aggregate = "cluster")
   calcOutput("GrasslandsYields", lpjml = lpjml[["grass"]], climatetype = paste0("MRI-ESM2-0",":",climatescen),
              subtype = "/co2/Nreturn0p5", # nolint
-             lsu_levels = c(seq(0, 2.2, 0.2), 2.5), past_mngmt = "me2",
+             lsu_levels = c(seq(0, 2.2, 0.2), 2.5), past_mngmt = "mdef",
              file = paste0("f31_grassl_yld.mz"), years = magYears, aggregate = F)
   calcOutput("PastureSuit",  subtype = paste("ISIMIP3bv2", climatemodel, "1850_2100", sep = ":"),
              file = paste0("f31_pastr_suitability_", ctype, ".mz"), years = magYears, aggregate = "cluster")
   calcOutput("PastureSuit",  subtype = paste("ISIMIP3bv2", climatemodel, "1850_2100", sep = ":"),
              file = "f31_pastr_suitability.mz", years = magYears, aggregate = FALSE)
   calcOutput("PastrMngtLevels", climatetype = paste0("MRI-ESM2-0",":",climatescen), options = c("brazil_1","brazil_2","brazil_4"),
-             cost_level = c(1,2,3), file = "f31_PastrMngtLevels.mz", aggregate = FALSE)
+             cost_level = c(1,2,3), file = "PastrMngtLevels.mz", aggregate = FALSE)
 
   calcOutput("ClimateClass", aggregate = "cluster", years = "y2015", file = paste0("koeppen_geiger_", ctype, ".mz"))
 

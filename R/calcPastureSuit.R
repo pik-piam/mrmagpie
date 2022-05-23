@@ -76,7 +76,8 @@ calcPastureSuit <- function(subtype = "ISIMIP3b:IPSL-CM6A-LR:1850-2100", smooth_
 
   # calibration to historical values
 
-  hist_pastr <- calcOutput("LUH2v2", aggregate = F, landuse_types = "LUH2v2", cellular = TRUE)[, , "pastr"]
+  #hist_pastr <- calcOutput("LUH2v2", aggregate = F, landuse_types = "LUH2v2", cellular = TRUE)[, , "pastr"]
+  hist_pastr <- setNames(calcOutput("LanduseInitialisation", cellular = TRUE, nclasses = "nine", aggregate = FALSE)[,, c("past")],"pastr")
   past_all <- intersect(getYears(hist_pastr), getYears(pasture_suit_area))
 
   past_ly <- findset("past")
