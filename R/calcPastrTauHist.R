@@ -42,6 +42,8 @@ calcPastrTauHist <- function(past_mngmt = "2me") {
     aggregate = F
   )[, past, "pastr.rainfed"]
 
+  yref <- collapseNames(yref)
+
   yref_weights <- calcOutput("LUH2v2", landuse_types = "LUH2v2", cellular = T, aggregate = F)[, past, "pastr"]
   yref <- toolAggregate(yref, rel = cell2reg, from = "celliso", to = "iso", weight = yref_weights)
   yref <- toolCountryFill(yref, fill = 0)

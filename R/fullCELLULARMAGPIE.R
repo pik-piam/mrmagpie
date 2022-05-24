@@ -188,6 +188,7 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
     country_level = TRUE, round = 6, file = paste0("avl_cropland_iso.cs3"))
 
   # 31 past
+  calcOutput("GrasslandBiomass",  round = 3, file = "f31_grass_bio_hist.cs3", aggregate = "region")
   calcOutput("LUH2v2", aggregate = "cluster", landuse_types = "LUH2v2", cellular = TRUE,
              file = paste0("f31_LUH2v2_", ctype, ".mz"))
   calcOutput("GrasslandsYields", lpjml = lpjml[["grass"]], climatetype = paste0("MRI-ESM2-0",":",climatescen),
