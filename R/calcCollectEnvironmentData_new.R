@@ -49,7 +49,7 @@ calcCollectEnvironmentData_new <- function(subtype="ISIMIP3b:IPSL-CM6A-LR:ssp126
   # read in the individual climate variables, then smooth the dataset with toolAverage and extend the standardize the number of years)
   GCMVariables <- list()
   for (climate_variable in climate_variables) {
-    GCMVariables[[climate_variable]] <- calcOutput("GCMClimate_new", aggregate = F, subtype = paste(x$version,x$climatemodel,x$scenario,full_simulation_period,climate_variable, sep = ":"))
+    GCMVariables[[climate_variable]] <- calcOutput("GCMClimate_new", aggregate = F, subtype = paste(x$version,x$climatemodel,x$scenario,full_simulation_period,climate_variable, "annual_mean", sep = ":"))
     GCMVariables[[climate_variable]] <- toolHoldConstant(GCMVariables[[climate_variable]], seq((max(getYears(GCMVariables[[climate_variable]], as.integer = TRUE))+1),2150, 5))
   }
   variables <- mbind(GCMVariables)
