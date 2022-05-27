@@ -171,6 +171,11 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
     aggregate = FALSE, round = 6, file = "wdpa_baseline_0.5.mz")
   calcOutput("ProtectedAreaBaseline", nclasses = "seven", cells = "magpiecell", magpie_input = TRUE,
     aggregate = "cluster", round = 6, file = paste0("wdpa_baseline_", ctype, ".mz"))
+  calcOutput("ConservationPriority", nclasses = "seven", cells = "magpiecell",
+             aggregate = FALSE, round = 6, file = "consv_prio_areas_0.5.mz")
+  calcOutput("ConservationPriority", nclasses = "seven", cells = "magpiecell",
+             aggregate = "cluster", round = 6, file = paste0("consv_prio_areas_", ctype, ".mz"))
+
   calcOutput("ProtectArea", bhifl = ifelse(rev > 4.66, TRUE, FALSE), aggregate = "cluster", round = 6,
              file = paste0("protect_area_", ctype, ".mz"))
 
