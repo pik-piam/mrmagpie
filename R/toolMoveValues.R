@@ -42,9 +42,8 @@ toolMoveValues <- function(x, y, z, w = NULL){
         stop("All inputs must have the same coordinates")
     }
 
-    isoOut <- x
-    isoOut[,,] <- 0
-    missInfo <- NULL
+    isoOut  <- missInfo <- x
+    isoOut[,,]  <- missInfo[,,] <- 0
 
     for(i in getRegions(x)) {
 
@@ -73,7 +72,8 @@ toolMoveValues <- function(x, y, z, w = NULL){
         tmp <- addLocation(tmp)
         isoOut[getCells(tmp),,]  <- tmp
         } else {
-            missInfo <- append(missInfo, i)
+            #missInfo <- append(missInfo, i)
+            missInfo[getItems(iso[as.logical(isoWrong),,], dim =1),,] <- iso[as.logical(isoWrong),,]
         }
 
     }
@@ -87,5 +87,5 @@ toolMoveValues <- function(x, y, z, w = NULL){
             out  <-  isoOut + out
         }
 
-    return(out)
+    return(list("redistributed" = out, "errased" = missInfo))
 }
