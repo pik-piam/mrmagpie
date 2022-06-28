@@ -204,9 +204,9 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
              subtype = "/co2/Nreturn0p5", # nolint
              lsu_levels = c(seq(0, 2.2, 0.2), 2.5), past_mngmt = "mdef",
              file = paste0("f31_grassl_yld.mz"), years = magYears, aggregate = F)
-  calcOutput("PastureSuit",  subtype = paste("ISIMIP3bv2", climatemodel, "1850_2100", sep = ":"),
+  calcOutput("PastureSuit",  subtype = paste("ISIMIP3bv2", "MRI-ESM2-0", "1850_2100", sep = ":"), #hard coded climate type to run edns preprocessing
              file = paste0("f31_pastr_suitability_", ctype, ".mz"), years = magYears, aggregate = "cluster")
-  calcOutput("PastureSuit",  subtype = paste("ISIMIP3bv2", climatemodel, "1850_2100", sep = ":"),
+  calcOutput("PastureSuit",  subtype = paste("ISIMIP3bv2", "MRI-ESM2-0", "1850_2100", sep = ":"), #hard coded climate type to run edns preprocessing
              file = "f31_pastr_suitability.mz", years = magYears, aggregate = FALSE)
   calcOutput("PastrMngtLevels", climatetype = paste0("MRI-ESM2-0",":",climatescen), options = c("brazil_1","brazil_2","brazil_4"),
              cost_level = c(1,2,3), file = "PastrMngtLevels.mz", aggregate = FALSE)
