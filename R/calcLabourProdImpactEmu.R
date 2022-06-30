@@ -35,29 +35,29 @@ calcLabourProdImpactEmu <- function(timestep = "5year", cellular = TRUE, subtype
   getNames(std) <- gsub("ensstd", "ensvalue", getNames(std))
 
 
-  upper <- middle + (1-std)
-  lower <- middle - (1-std)
+  upper <- middle + (1 - std)
+  lower <- middle - (1 - std)
 
-  upper[upper>1] <- 1
-  lower[lower<0] <- 0
+  upper[upper > 1] <- 1
+  lower[lower < 0] <- 0
 
-  getNames(upper) <- gsub("ensvalue", "ensupper", getNames(upper))
-  getNames(lower) <- gsub("ensvalue", "enslower", getNames(lower))
+  getNames(upper)  <- gsub("ensvalue", "ensupper", getNames(upper))
+  getNames(lower)  <- gsub("ensvalue", "enslower", getNames(lower))
   getNames(middle) <- gsub("ensvalue", "ensmean", getNames(middle))
 
   out <- mbind(lower, middle, upper)
 
-  avlCropAreaWeight <- calcOutput("AvlCropland", marginal_land = "all_marginal", cells = "magpiecell",
+  avlCropAreaWeight <- calcOutput("AvlCropland", cells = "magpiecell",
+                                  marginal_land = "all_marginal:rainfed_and_irrigated",
                                   country_level = FALSE, aggregate = FALSE)
   avlCropAreaWeight[avlCropAreaWeight == 0] <- 10^-10
 
 
-  return(list(
-    x = out,
-    weight = avlCropAreaWeight,
-    unit = "Percentage of total labour productivity (1)",
-    description = "Remaining labour productivity as percentage of full labour productivity after accounting for
-                    climate change impacts on labour productivity",
-    isocountries = FALSE))
+  return(list(x            = out,
+              weight       = avlCropAreaWeight,
+              unit         = "Percentage of total labour productivity (1)",
+              description  = "Remaining labour productivity as percentage of full labour productivity after accounting for
+                             climate change impacts on labour productivity",
+              isocountries = FALSE))
 
 }
