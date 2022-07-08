@@ -72,11 +72,16 @@ toolMoveValues <- function(x, y, z, w = NULL){
         tmp <- addLocation(tmp)
         isoOut[getCells(tmp),,]  <- tmp
         } else {
-            #missInfo <- append(missInfo, i)
-            missInfo[getItems(iso[as.logical(isoWrong),,], dim =1),,] <- iso[as.logical(isoWrong),,]
+#            if(all(any(as.logical(isoWrong)),all(!as.logical(isoAllo)))){
+#            print(i)
+#            iso      <- x[i,,]
+#            isoWrong <- y[i,,]
+#            missInfo[getCells(iso[as.logical(isoWrong),,]),,] <- iso[as.logical(isoWrong),,]
+#            print(sum(missInfo[i,,]))
+            missInfo <- append(missInfo, i)
+            }
         }
-
-    }
+    
         if(is.null(w)) {
             out <- x
             out[!z,,]  <- 0 #setting all non - available areas to 0
