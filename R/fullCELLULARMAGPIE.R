@@ -356,6 +356,7 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
       paste("* Input resolution:", resHigh),
       paste("* Output resolution:", resOut),
       paste("* Regionscode:", regionscode),
+      paste("* Cluster distribution:" paste(attributes(p$data)$legend_text)),
       paste("* Call:", functioncall))
     base::cat(info, file = file, sep = "\n")
   }
