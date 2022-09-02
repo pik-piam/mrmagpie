@@ -343,7 +343,7 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
   ##### AGGREGATION ######
 
   # create info file
-  writeInfo <- function(file, lpjmlData, resHigh, resOut, rev) {
+  writeInfo <- function(file, lpjmlData, resHigh, resOut, rev, cluster) {
     functioncall <- paste(deparse(sys.call(-3)), collapse = "")
 
     map <- toolGetMapping(type = "regional", name = getConfig("regionmapping"))
@@ -356,12 +356,17 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
       paste("* Input resolution:", resHigh),
       paste("* Output resolution:", resOut),
       paste("* Regionscode:", regionscode),
-      paste("* Cluster distribution:", paste(attributes(p$data)$legend_text)),
-      paste("* Call:", functioncall))
+      "* Number of clusters per region:",
+      paste(format(names(cluster),width=5,justify="right"),collapse=""),
+      paste(format(cluster,width=5,justify="right"),collapse=""),
+      paste("* Call:", functioncall)
+      )
     base::cat(info, file = file, sep = "\n")
   }
+  nr_cluster_per_region <- substr(attributes(p$data)$legend_text,6,
+                                  nchar(attributes(p$data)$legend_text)-1)
   writeInfo(file = "info.txt", lpjmlData = climatetype,
-    resHigh = "0.5", resOut = ctype, rev = rev)
+    resHigh = "0.5", resOut = ctype, rev = rev, cluster=nr_cluster_per_region)
 
   return(list(tag = versionTag,
               pucTag = sub("^[^_]*_", "", versionTag)))
