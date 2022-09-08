@@ -19,6 +19,7 @@ Calculates grid-level food demand
 \dontrun{
 calcOutput("FoodDemandGridded")
 }
+
 }
 \author{
 David M Chen

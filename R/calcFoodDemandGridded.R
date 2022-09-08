@@ -7,25 +7,25 @@
 #' \dontrun{
 #' calcOutput("FoodDemandGridded")
 #' }
-
-calcFoodDemandGridded <- function(attribute = "dm"){
+#'
+calcFoodDemandGridded <- function(attribute = "dm") {
 
 foodDemand <- calcOutput("FAOmassbalance", aggregate = FALSE)
-foodDemand <- dimSums(foodDemand[,,c("food", "feed","flour1")],
-                      dim = 3.2)[,,attribute]
+foodDemand <- dimSums(foodDemand[, , c("food", "feed", "flour1")],
+                      dim = 3.2)[, , attribute]
 hist <- getYears(foodDemand)
 
 
-gridPop <- collapseNames(calcOutput("GridPop_new", aggregate = FALSE,
+gridPop <- collapseNames(calcOutput("GridPopNew", aggregate = FALSE,
                                     source = "Gao", urban = TRUE)[, hist, "SSP2"])
 
 mapping <- toolGetMapping("CountryToCellMapping.csv", type = "cell")
-popAgg <- toolAggregate(gridPop, rel = mapping, from = "celliso", to = "iso") #not all countries
+popAgg <- toolAggregate(gridPop, rel = mapping, from = "celliso", to = "iso") # not all countries
 
 share <- (gridPop / dimSums(popAgg, dim = 3))
-countries <- getRegions(share)
+countries <- getItems(share, dim = 1.1)
 
-foodDisagg <- toolAggregate(foodDemand[countries,,], rel = mapping,
+foodDisagg <- toolAggregate(foodDemand[countries, , ], rel = mapping,
                             from = "iso", to = "celliso")
 
 foodDisaggUrb <- foodDisagg * share
@@ -33,7 +33,7 @@ foodDisaggUrb <- foodDisagg * share
 
 return(list(x = foodDisaggUrb,
             weight = NULL,
-            unit = "Mt" ,
+            unit = "Mt",
             description = "Food demand in by grid cell",
             isocountries = FALSE))
 }

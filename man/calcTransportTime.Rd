@@ -19,8 +19,9 @@ magpie object in cellular resolution
 Function extracts travel time to major cities in minutes
 }
 \examples{
-\dontrun{ calcOutput("TransportTime", aggregate = FALSE) }
-
+\dontrun{
+calcOutput("TransportTime", aggregate = FALSE)
+}
 
 }
 \author{

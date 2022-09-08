@@ -16,22 +16,19 @@
 #' @export
 
 readEvapotranspiration <-
-  function(subtype="H08:mri-esm2-0:historical") {
-
-    # I ran cdo yearmonmean to reduce computational costs at the preprocessing. the commented lines are obsolete for now.
-
-    x <- toolSplitSubtype(subtype, list(water_model=NULL, climate_model=NULL, scenario = NULL))
+  function(subtype = "H08:mri-esm2-0:historical") {
+    x <- toolSplitSubtype(subtype, list(water_model = NULL, climate_model = NULL, scenario = NULL))
     files <- Sys.glob("*.nc")
-    file_name <- grep(x$scenario,files,value = T)
-    r <-  suppressWarnings(brick(file_name))
+    fileName <- grep(x$scenario, files, value = TRUE)
+    r <-  suppressWarnings(brick(fileName))
 
     y <- as.magpie(r, temporal = 1)
     y <- toolCoord2Isocell(y)
 
     if (x$scenario == "historical") {
-      getItems(y, dim = 2) <- paste0("y",seq(1850,2014,1))
+      getItems(y, dim = 2) <- paste0("y", seq(1850, 2014, 1))
     } else {
-      getItems(y, dim = 2) <- paste0("y",seq(2015,2100,1))
+      getItems(y, dim = 2) <- paste0("y", seq(2015, 2100, 1))
     }
     y <- setNames(y, x$scenario)
 

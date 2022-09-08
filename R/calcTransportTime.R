@@ -8,39 +8,36 @@
 #' @author David Chen
 #'
 #' @examples
-#' \dontrun{ calcOutput("TransportTime", aggregate = FALSE) }
+#' \dontrun{
+#' calcOutput("TransportTime", aggregate = FALSE)
+#' }
 #'
-#'
-
 calcTransportTime <- function(object = "cities", minDist = 50) {
 
   x <- readSource("TravelTimeNelson2019", subtype = object, convert = FALSE)
 
   if (object == "cities") {
     if (minDist == 50) {
-      out <- x[,,"travel_time_to_cities_11"]
+      out <- x[, , "travel_time_to_cities_11"]
     } else if (minDist == 20) {
-      out <- x[,,"travel_time_to_cities_10"]
+      out <- x[, , "travel_time_to_cities_10"]
     } else if (minDist == 5) {
-      out <- x[,,"travel_time_to_cities_12"]
-    }
-
-  else {stop("only minDist for cities are 5, 20 and 50 thousand people")
+      out <- x[, , "travel_time_to_cities_12"]
+    } else {
+stop("only minDist for cities are 5, 20 and 50 thousand people")
       }
-  }
-
-  else if (object == "ports") {
+  } else if (object == "ports") {
     portSizes <- setNames(seq(1, 5), c("Large", "Medium", "Small", "Very Small", "Any"))
 
     if (minDist %in% names(portSizes)) {
       layerName <- paste0("travel_time_to_ports_", portSizes[minDist])
-      out <- x[,,layerName]
+      out <- x[, , layerName]
     } else {
       stop("only Large, Medium Small, Very Small, or Any allowed for port minDist")
       }
   }
 
-  weight <- calcOutput("GridPop_new", aggregate=FALSE)[,2015,"SSP2"]
+  weight <- calcOutput("GridPopNew", aggregate = FALSE)[, 2015, "SSP2"]
 
   return(list(
     x = out,
