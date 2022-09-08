@@ -30,7 +30,7 @@ readGFAD <- function() {
 
   for (forestType in seq_along(forestPoulter)) {
     for (i in ageClass) {
-      b <- brick(poulterData, level = forestType)
+      b <- suppressWarnings(brick(poulterData, level = forestType))
       b <- subset(b, i)
 
       cellNames <- mapping$celliso

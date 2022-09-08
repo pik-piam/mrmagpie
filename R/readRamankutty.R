@@ -18,8 +18,6 @@
 #' @author Felicitas Beier
 #'
 readRamankutty <- function(){
-
-  x <- as.magpie(brick("raw_data_land_suit_land_suit_0.50x0.50.nc"))
-
-  return(x)
+  x <- suppressWarnings(brick("raw_data_land_suit_land_suit_0.50x0.50.nc"))
+  return(as.magpie(x))
 }

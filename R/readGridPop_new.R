@@ -18,7 +18,7 @@ readGridPop_new <- function(subtype) {
     past_file <- "population_histsoc_0p5min_annual_1861-2005.nc"
     years     <- as.numeric(unlist(regmatches(past_file, gregexpr("\\d{4}", past_file))))
     y_years   <- paste0("y", seq(years[1], years[2], 1))
-    x         <- brick(past_file)
+    x         <- suppressWarnings(brick(past_file))
     names(x)  <- y_years
     x <- subset(x,paste0("y",seq(ini_past,years[2],1)))
     extent(x) <- c(-180,180,-90,90)
@@ -42,7 +42,7 @@ readGridPop_new <- function(subtype) {
     read <- function(file){
       years     <- as.numeric(unlist(regmatches(file, gregexpr("\\d{4}", file))))
       y_years   <- paste0("y", seq(years[1], years[2], 1))
-      x         <- brick(file)
+      x         <- suppressWarnings(brick(file))
       names(x)  <- y_years
       x         <- rasterToPoints(x)
       colnames(x)[c(1, 2)] <- c("lon", "lat")
