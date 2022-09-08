@@ -15,6 +15,9 @@
 #' @importFrom magclass add_columns collapseNames
 #' @importFrom magpiesets findset
 #' @importFrom madrat calcOutput toolGetMapping toolAggregate
+#'
+#' @export
+#'
 
 
 calcGridPop_new <- function(source = "ISIMIP", subtype="all", cellular=TRUE, FiveYear=TRUE, harmonize_until=2015, urban = FALSE) {
@@ -225,4 +228,3 @@ else if (source == "Gao") {
               description="Population in millions",
               isocountries=FALSE))
 }
-

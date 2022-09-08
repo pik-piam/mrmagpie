@@ -23,5 +23,3 @@ readBendingTheCurve <- function(subtype){
     stop("Not a Valid Subtype")
   }
 }
-
-

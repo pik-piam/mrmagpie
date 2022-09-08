@@ -56,6 +56,7 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
                        Please use a older snapshot/version of the library, if you need older revisions.")
 
   climatemodel <- str_split(climatetype, ":")[[1]][1]
+  climatescen <- str_split(climatetype, ":")[[1]][2]
 
   cat(paste0("Start preprocessing for \n climatescenario: ", climatetype,
     "\n LPJmL-Versions: ", paste(names(lpjml), lpjml, sep = "->", collapse = ", "),
@@ -101,16 +102,16 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
     calcOutput("YieldsCalibrated", aggregate = "cluster", source = c(lpjml = lpjml[["crop"]], isimip = isimip),
                climatetype = climatetype, round = 2, years = lpjYears, file = paste0("lpj_yields_", ctype, ".mz"))
 
-  } else if (grepl("indiaYields01", dev)) {
+  } else if (grepl("india", dev)) {
 
     calcOutput("Yields", aggregate = FALSE, source = c(lpjml = lpjml[["crop"]], isimip = isimip),
                climatetype = climatetype, round = 2, years = lpjYears, file = paste0("lpj_yields_0.5.mz"),
-               weighting = "crop+irrigSpecific", indiaYields = TRUE, scaleFactor = 0.9)
+               weighting = "crop+irrigSpecific", indiaYields = TRUE, scaleFactor = 0.5)
 
 
     calcOutput("Yields", aggregate = "cluster", source = c(lpjml = lpjml[["crop"]], isimip = isimip),
                climatetype = climatetype, round = 2, years = lpjYears, file = paste0("lpj_yields_", ctype, ".mz"),
-               weighting = "crop+irrigSpecific", indiaYields = TRUE, scaleFactor = 0.9)
+               weighting = "crop+irrigSpecific", indiaYields = TRUE, scaleFactor = 0.5)
 
   }  else {
 
@@ -130,7 +131,7 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
   superregion <- ifelse("superregion" %in% colnames(mapReg), "superregion", "region")
 
   # 13 TC
-  calcOutput("PastrTauHist", round = 2, file = "f13_pastr_tau_hist.csv", aggregate = superregion)
+  calcOutput("PastrTauHist", round = 2, past_mngmt = "mdef", file = "f13_pastr_tau_hist.csv", aggregate = superregion)
 
   # 09 drivers
   calcOutput("GridPop_new", source = "Gao", subtype = "all", cellular = TRUE, harmonize_until = 2015, urban = FALSE,
@@ -165,6 +166,19 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
   calcOutput("AvlLandSi", aggregate = FALSE, round = 6, file = "avl_land_si_0.5.mz")
   calcOutput("AvlLandSi", aggregate = "cluster", round = 6, file = paste0("avl_land_si_", ctype, ".mz"))
 
+  # 22 land conservation
+  calcOutput("ProtectedAreaBaseline", nclasses = "seven", cells = "magpiecell", magpie_input = TRUE,
+    aggregate = FALSE, round = 6, file = "wdpa_baseline_0.5.mz")
+  calcOutput("ProtectedAreaBaseline", nclasses = "seven", cells = "magpiecell", magpie_input = TRUE,
+    aggregate = "cluster", round = 6, file = paste0("wdpa_baseline_", ctype, ".mz"))
+  calcOutput("ConservationPriority", nclasses = "seven", cells = "magpiecell",
+             aggregate = FALSE, round = 6, file = "consv_prio_areas_0.5.mz")
+  calcOutput("ConservationPriority", nclasses = "seven", cells = "magpiecell",
+             aggregate = "cluster", round = 6, file = paste0("consv_prio_areas_", ctype, ".mz"))
+
+  calcOutput("ProtectArea", bhifl = ifelse(rev > 4.66, TRUE, FALSE), aggregate = "cluster", round = 6,
+             file = paste0("protect_area_", ctype, ".mz"))
+
   # 30 crop
   calcOutput("Croparea", sectoral = "kcr", physical = TRUE, cellular = TRUE, irrigation = FALSE,
     aggregate = "cluster", file = paste0("f30_croparea_initialisation_", ctype, ".mz"))
@@ -179,18 +193,26 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
     country_level = TRUE, round = 6, file = paste0("avl_cropland_iso.cs3"))
 
   # 31 past
+  calcOutput("GrasslandBiomass",  round = 3, file = "f31_grass_bio_hist.cs3", aggregate = "region")
   calcOutput("LUH2v2", aggregate = "cluster", landuse_types = "LUH2v2", cellular = TRUE,
              file = paste0("f31_LUH2v2_", ctype, ".mz"))
-  calcOutput("GrasslandsYields", lpjml = lpjml[["grass"]], climatetype = climatetype,
-             subtype = "/co2/Nreturn0p5/limN", # nolint
-             lsu_levels = c(seq(0, 2.2, 0.2), 2.5), past_mngmt = "me2",
+  calcOutput("GrasslandsYields", lpjml = lpjml[["grass"]], climatetype = paste0("MRI-ESM2-0",":",climatescen),
+             subtype = "/co2/Nreturn0p5", # nolint
+             lsu_levels = c(seq(0, 2.2, 0.2), 2.5), past_mngmt = "mdef",
              file = paste0("f31_grassl_yld_", ctype, ".mz"), years = magYears, aggregate = "cluster")
-  calcOutput("PastureSuit",  subtype = paste("ISIMIP3bv2", climatemodel, "1850_2100", sep = ":"),
+  calcOutput("GrasslandsYields", lpjml = lpjml[["grass"]], climatetype = paste0("MRI-ESM2-0",":",climatescen),
+             subtype = "/co2/Nreturn0p5", # nolint
+             lsu_levels = c(seq(0, 2.2, 0.2), 2.5), past_mngmt = "mdef",
+             file = paste0("f31_grassl_yld.mz"), years = magYears, aggregate = F)
+  calcOutput("PastureSuit",  subtype = paste("ISIMIP3bv2", "MRI-ESM2-0", "1850_2100", sep = ":"), #hard coded climate type to run edns preprocessing
              file = paste0("f31_pastr_suitability_", ctype, ".mz"), years = magYears, aggregate = "cluster")
-  calcOutput("PastureSuit",  subtype = paste("ISIMIP3bv2", climatemodel, "1850_2100", sep = ":"),
-             file = paste0("f31_pastr_suitability.mz"), years = magYears, aggregate = FALSE)
+  calcOutput("PastureSuit",  subtype = paste("ISIMIP3bv2", "MRI-ESM2-0", "1850_2100", sep = ":"), #hard coded climate type to run edns preprocessing
+             file = "f31_pastr_suitability.mz", years = magYears, aggregate = FALSE)
+  calcOutput("PastrMngtLevels", climatetype = paste0("MRI-ESM2-0",":",climatescen), options = c("brazil_1","brazil_2","brazil_4"),
+             cost_level = c(1,2,3), file = "PastrMngtLevels.mz", aggregate = FALSE)
 
   calcOutput("ClimateClass", aggregate = "cluster", years = "y2015", file = paste0("koeppen_geiger_", ctype, ".mz"))
+  calcOutput("CellCountryFraction", aggregate = "cluster", file = paste0("cell_country_fraction_", ctype, ".mz"))
 
   # 32 forestry
   calcOutput("AfforestationMask", subtype = "noboreal",     aggregate = "cluster", round = 6,
@@ -222,8 +244,6 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
 
   # 35 natveg
   calcOutput("AgeClassDistribution", aggregate = "cluster", round = 6, file = paste0("forestageclasses_", ctype, ".mz"))
-  calcOutput("ProtectArea", bhifl = ifelse(rev > 4.66, TRUE, FALSE), aggregate = "cluster", round = 6,
-             file = paste0("protect_area_", ctype, ".mz"))
 
   # 37 labour prod
   calcOutput("LabourProdImpactEmu", aggregate = "cluster", round = 6, subtype = "impact",
@@ -233,6 +253,7 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
 
   # 40
   calcOutput("TransportDistance", aggregate = "cluster", round = 6, file = paste0("transport_distance_", ctype, ".mz"))
+  calcOutput("TransportDistance", aggregate = F, round = 6, file = "transport_distance.mz")
 
   # 41 area equipped for irrigation
   calcOutput("AreaEquippedForIrrigation", aggregate = "cluster", cellular = TRUE, source = "Siebert",
@@ -270,9 +291,10 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
   }
 
   # 44 biodiversity
+  calcOutput("BiomeType", aggregate = "cluster", cells = "magpiecell", round = 6, file = paste0("biorealm_biome_", ctype, ".mz"))
   calcOutput("Luh2SideLayers", aggregate = "cluster", round = 6, file = paste0("luh2_side_layers_", ctype, ".mz"))
   calcOutput("Luh2SideLayers", aggregate = FALSE, round = 6, file = "luh2_side_layers_0.5.mz")
-  calcOutput("RRLayer",        aggregate = "cluster", round = 6, file = paste0("rr_layer_", ctype, ".mz"))
+  calcOutput("RRLayer", aggregate = "cluster", round = 6, file = paste0("rr_layer_", ctype, ".mz"))
 
   # 50 nitrogen
   calcOutput("AtmosphericDepositionRates", cellular = TRUE, aggregate = FALSE, round = 6,
@@ -321,7 +343,7 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
   ##### AGGREGATION ######
 
   # create info file
-  writeInfo <- function(file, lpjmlData, resHigh, resOut, rev) {
+  writeInfo <- function(file, lpjmlData, resHigh, resOut, rev, cluster) {
     functioncall <- paste(deparse(sys.call(-3)), collapse = "")
 
     map <- toolGetMapping(type = "regional", name = getConfig("regionmapping"))
@@ -334,11 +356,17 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
       paste("* Input resolution:", resHigh),
       paste("* Output resolution:", resOut),
       paste("* Regionscode:", regionscode),
-      paste("* Call:", functioncall))
+      "* Number of clusters per region:",
+      paste(format(names(cluster),width=5,justify="right"),collapse=""),
+      paste(format(cluster,width=5,justify="right"),collapse=""),
+      paste("* Call:", functioncall)
+      )
     base::cat(info, file = file, sep = "\n")
   }
+  nr_cluster_per_region <- substr(attributes(p$data)$legend_text,6,
+                                  nchar(attributes(p$data)$legend_text)-1)
   writeInfo(file = "info.txt", lpjmlData = climatetype,
-    resHigh = "0.5", resOut = ctype, rev = rev)
+    resHigh = "0.5", resOut = ctype, rev = rev, cluster=nr_cluster_per_region)
 
   return(list(tag = versionTag,
               pucTag = sub("^[^_]*_", "", versionTag)))

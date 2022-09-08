@@ -1,14 +1,14 @@
 #' @title calcPastrTauHist
 #' @description Calculates managed pastures Tau based on FAO yield trends for 1995.
-#'
+#' @param past_mngmt Pasture management reference yield
 #' @return List of magpie objects with results on country level, weight on country level, unit and description.
 #' @author Marcos Alves
 #' @examples
 #' \dontrun{
-#' calcOutput("PastrTauHist")
+#' calcOutput("PastrTauHist", past_mngmt)
 #' }
 #'
-calcPastrTauHist <- function() {
+calcPastrTauHist <- function(past_mngmt = "2me") {
   past <- findset("past")
   # Production
   prod <- calcOutput("GrasslandBiomass", aggregate = F)[, past, "pastr"]
@@ -19,7 +19,7 @@ calcPastrTauHist <- function() {
     subtype = paste("ISIMIP3bv2", "MRI-ESM2-0", "1850_2100", sep = ":"), aggregate = F
   )[, past, 1]
   # regional mapping
-  cell2reg <- toolGetMapping("clustermapping.csv", type = "regional")
+  cell2reg <- toolGetMapping("CountryToCellMapping.csv", type = "cell")
 
   # pasture areas
   area <- calcOutput("LUH2v2", landuse_types = "LUH2v2", cellular = F, aggregate = F)[, past, "pastr"]
@@ -37,13 +37,15 @@ calcPastrTauHist <- function() {
 
   # reference yields
   yref <- calcOutput("GrasslandsYields",
-    lpjml = "lpjml5p2_pasture", climatetype = "MRI-ESM2-0:ssp370", subtype = "/co2/Nreturn0p5/limN",
-    lsu_levels = c(seq(0, 2.2, 0.2), 2.5), past_mngmt = "me2",
+    lpjml = "lpjml5p2_pasture", climatetype = "MRI-ESM2-0:ssp245", subtype = "/co2/Nreturn0p5",
+    lsu_levels = c(seq(0, 2.2, 0.2), 2.5), past_mngmt = past_mngmt,
     aggregate = F
   )[, past, "pastr.rainfed"]
 
+  yref <- collapseNames(yref)
+
   yref_weights <- calcOutput("LUH2v2", landuse_types = "LUH2v2", cellular = T, aggregate = F)[, past, "pastr"]
-  yref <- toolAggregate(yref, rel = cell2reg, from = "cell", to = "country", weight = yref_weights)
+  yref <- toolAggregate(yref, rel = cell2reg, from = "celliso", to = "iso", weight = yref_weights)
   yref <- toolCountryFill(yref, fill = 0)
 
   # tau calculation

@@ -91,4 +91,3 @@ calcSoilCharacteristics <- function() {
  cond_100_ice: thermal conductivity (W/m^2/K) at saturation (all ice) Lawrence and Slater (2008)",
     isocountries=FALSE))
 }
-

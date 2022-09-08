@@ -4,10 +4,19 @@
 \alias{readGCMClimate_new}
 \title{readGCMClimate_new}
 \usage{
-readGCMClimate_new(subtype = "ISIMIP3b:IPSL-CM6A-LR:historical:1850-2014:tas")
+readGCMClimate_new(
+  subtype = "ISIMIP3b:IPSL-CM6A-LR:historical:1850-2014:tas",
+  subset = "annual_mean"
+)
 }
 \arguments{
-\item{subtype}{Switch between different inputs eg. "ISIMIP3b:IPSL-CM6A-LR:historical:1850-2014:tas"}
+\item{subtype}{Switch between different inputs,
+e.g. "ISIMIP3b:IPSL-CM6A-LR:historical:1850-2014:tas"
+Available variables are: * tas -
+                         * wet -
+                         * per -}
+
+\item{subset}{Switch between different subsets of the same subtype}
 }
 \value{
 MAgPIE objects with results on cellular level.
@@ -25,5 +34,5 @@ readSource("GCMClimate_new", subtype, convert = "onlycorrect")
 \code{\link{readGCMClimate_new}}
 }
 \author{
-Marcos Alves, Kristine Karstens
+Marcos Alves, Kristine Karstens, Felicitas Beier
 }

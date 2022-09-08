@@ -1,8 +1,8 @@
 Package: mrmagpie
 Type: Package
 Title: madrat based MAgPIE Input Data Library
-Version: 1.22.4
-Date: 2022-03-26
+Version: 1.28.7
+Date: 2022-09-02
 Authors@R: c(person("Kristine", "Karstens", email = "karstens@pik-potsdam.de", role = c("aut","cre")),
              person("Jan Philipp", "Dietrich", email = "dietrich@pik-potsdam.de", role = "aut"),
              person("David", "Chen", role = "aut"),
@@ -21,7 +21,6 @@ Depends:
     mrland(>= 0.21.4),
     mrwater(> 1.1.18)
 Imports:
-    abind,
     digest,
     dplyr,
     magpiesets,
@@ -30,24 +29,25 @@ Imports:
     lpjclass(>= 1.17),
     ggplot2,
     ncdf4,
-    raster,
-    rgdal,
     mstools,
     tidyr,
     stats,
     readxl,
     pbapply,
     stringr,
+    raster,
     terra,
-    withr
+    withr,
+    class
 License: LGPL-3 | file LICENSE
 URL: https://github.com/pik-piam/mrmagpie, https://doi.org/10.5281/zenodo.4319612
 BugReports: https://github.com/pik-piam/mrmagpie/issues
 LazyData: no
 Encoding: UTF-8
-RoxygenNote: 7.1.2
-Suggests: 
+RoxygenNote: 7.2.1
+Suggests:
     knitr,
     rmarkdown,
-    covr
+    covr,
+    zip
 VignetteBuilder: knitr

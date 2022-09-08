@@ -5,12 +5,14 @@
 \title{calcGCMClimate_new}
 \usage{
 calcGCMClimate_new(
-  subtype = "ISIMIP3b:IPSL-CM6A-LR:ssp126:1850-2100:tas",
+  subtype = "ISIMIP3b:IPSL-CM6A-LR:ssp126:1850-2100:tas:annual_mean",
   smooth = 0
 )
 }
 \arguments{
-\item{subtype}{type of climate data to collect}
+\item{subtype}{type of climate data to collect,
+consisting of data source, GDM, RCP, time period, variable and time resolution
+separated by ":"}
 
 \item{smooth}{set averaging value for smoothing trajectories}
 }
@@ -22,10 +24,10 @@ Disaggregate CO2 global atmospheric concentration to cellular level
 }
 \examples{
 \dontrun{
-calcOutput("GCMClimate_new", subtype = "ISIMIP3b:IPSL-CM6A-LR:ssp126:1850-2100:tas")
+calcOutput("GCMClimate_new", subtype = "ISIMIP3b:IPSL-CM6A-LR:ssp126:1850-2100:tas:annual_mean")
 }
 
 }
 \author{
-Marcos Alves, Kristine Karstens
+Marcos Alves, Kristine Karstens, Felicitas Beier
 }

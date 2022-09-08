@@ -6,6 +6,7 @@
 #' @importFrom raster brick rasterToPoints
 #' @import magclass
 #' @importFrom dplyr left_join
+#' @importFrom raster extent rasterToPoints brick
 #' @import magpiesets
 
 
@@ -21,7 +22,7 @@ readGridPop_new <- function(subtype) {
     x         <- suppressWarnings(brick(past_file))
     names(x)  <- y_years
     x <- subset(x,paste0("y",seq(ini_past,years[2],1)))
-    extent(x) <- c(-180,180,-90,90)
+    raster::extent(x) <- c(-180,180,-90,90)
     x         <- rasterToPoints(x)
     colnames(x)[c(1, 2)] <- c("lon", "lat")
     x         <- left_join(mapping, x, by = c("lat", "lon"), copy = TRUE)
@@ -64,4 +65,3 @@ readGridPop_new <- function(subtype) {
   }
   return(x)
 }
-

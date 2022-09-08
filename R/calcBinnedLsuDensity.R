@@ -38,4 +38,3 @@ calcBinnedLsuDensity <- function( breaks = c(seq(0, 2, 0.1), 2.25, 2.5),
     isocountries = FALSE
   ))
 }
-

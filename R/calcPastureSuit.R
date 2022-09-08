@@ -20,7 +20,7 @@ calcPastureSuit <- function(subtype = "ISIMIP3b:IPSL-CM6A-LR:1850-2100", smooth_
   precipitation <- list()
   scenarios <- c("ssp126", "ssp245", "ssp370", "ssp460", "ssp585") # Current ISIMIP3bv2 scenarios
   for (scenario in scenarios) {
-    subtype <- paste(x$version, x$climatemodel, scenario, x$period, "pr", sep = ":")
+    subtype <- paste(x$version, x$climatemodel, scenario, x$period, "pr", "annual_mean", sep = ":")
     precipitation[[scenario]] <- setNames(calcOutput("GCMClimate_new", subtype = subtype, smooth = smooth_precipitation, aggregate = F), scenario)
   }
   precipitation <- collapseNames(mbind(precipitation))
@@ -28,10 +28,10 @@ calcPastureSuit <- function(subtype = "ISIMIP3b:IPSL-CM6A-LR:1850-2100", smooth_
   evapotranspiration <- calcOutput("Evapotranspiration", subtype = "H08:mri-esm2-0", aggregate = F)
 
   # temporary mapping of evapotranspiration RCP scenarios unavailable in ISIMIP3bv2
-  evapotranspiration <- add_columns(evapotranspiration,addnm = "ssp245", dim = 3.1, fill = NA)
-  evapotranspiration[,,"ssp245"] <- evapotranspiration[,,"ssp370"]
-  evapotranspiration <- add_columns(evapotranspiration,addnm = "ssp460", dim = 3.1, fill = NA)
-  evapotranspiration[,,"ssp460"] <- evapotranspiration[,,"ssp370"]
+  evapotranspiration <- add_columns(evapotranspiration, addnm = "ssp245", dim = 3.1, fill = NA)
+  evapotranspiration[, , "ssp245"] <- evapotranspiration[, , "ssp370"]
+  evapotranspiration <- add_columns(evapotranspiration, addnm = "ssp460", dim = 3.1, fill = NA)
+  evapotranspiration[, , "ssp460"] <- evapotranspiration[, , "ssp370"]
 
   evapotranspiration <- evapotranspiration[, , getItems(precipitation, dim = 3)]
 
@@ -70,29 +70,27 @@ calcPastureSuit <- function(subtype = "ISIMIP3b:IPSL-CM6A-LR:1850-2100", smooth_
   pop_density <- pop_density[, getYears(pasture_suit), ]
   pasture_suit[pop_density < 5] <- 0 # 5 hab km2 population threshold for managed pastures. Same from HYDE 3.2.
 
-  pasture_suit_area <- (pasture_suit * cell_size * 100) / 1e6 #(from km2 (x100) to mha (/1e6))
+  pasture_suit_area <- (pasture_suit * cell_size * 100) / 1e6 # (from km2 (x100) to mha (/1e6))
   pasture_suit_area <- collapseDim(pasture_suit_area)
   pasture_suit_area <- toolHoldConstantBeyondEnd(pasture_suit_area)
 
   # calibration to historical values
 
-  hist_pastr <- calcOutput("LUH2v2", aggregate = F, landuse_types = "LUH2v2", cellular = TRUE)[, , "pastr"]
+  #hist_pastr <- calcOutput("LUH2v2", aggregate = F, landuse_types = "LUH2v2", cellular = TRUE)[, , "pastr"]
+  hist_pastr <- setNames(calcOutput("LanduseInitialisation", cellular = TRUE, nclasses = "nine", aggregate = FALSE)[,, c("past")],"pastr")
   past_all <- intersect(getYears(hist_pastr), getYears(pasture_suit_area))
 
   past_ly <- findset("past")
   past_ly <- past_ly[length(past_ly)] # past last year
   future <- setdiff(getYears(pasture_suit_area), past_all)
-  # pasture_suit_area[,future,] <- hist_pastr[,past_ly,] - pasture_suit_area[,past_ly,] + pasture_suit_area[,future,]
-  # pasture_suit_area[,future,] <- (hist_pastr[,past_ly,] / pasture_suit_area[,past_ly,]+ 1e-6) * (pasture_suit_area[,future,] + 1e-6)
-  # pasture_suit_area[,future,] <- (dimSums(hist_pastr[,past_ly,], dim =1) / dimSums(pasture_suit_area[,past_ly,], dim = 1)) *  pasture_suit_area[,future,]
 
-  map <- toolGetMapping("clustermapping.csv", type = "regional")
-  pasture_suit_area_reg <- toolAggregate(pasture_suit_area, rel = map, from = "cell", to = "region")
-  hist_pastr_reg <- toolAggregate(hist_pastr, rel = map, from = "cell", to = "region")
+  map <- toolGetMapping("CountryToCellMapping.csv", type = "cell")
+  pasture_suit_area_reg <- toolAggregate(pasture_suit_area, rel = map, from = "celliso", to = "iso")
+  hist_pastr_reg <- toolAggregate(hist_pastr, rel = map, from = "celliso", to = "iso")
   corr_reg <- hist_pastr_reg[, past_ly, ] / pasture_suit_area_reg[, past_ly, ]
-  pasture_suit_area[, future, ] <- toolAggregate(corr_reg, rel = map, from = "region", to = "cell") * pasture_suit_area[, future, ]
+  pasture_suit_area[, future, ] <- toolAggregate(corr_reg, rel = map, from = "iso", to = "celliso") * pasture_suit_area[, future, ]
 
-  pasture_suit_area[is.infinite(pasture_suit_area) | is.nan(pasture_suit_area)] <- 0
+  pasture_suit_area[is.infinite(pasture_suit_area) | is.nan(pasture_suit_area) | is.na(pasture_suit_area)] <- 0
   pasture_suit_area[pasture_suit_area < 0] <- 0
   pasture_suit_area[, past_all, ] <- hist_pastr[, past_all, ]
 
@@ -113,4 +111,3 @@ calcPastureSuit <- function(subtype = "ISIMIP3b:IPSL-CM6A-LR:1850-2100", smooth_
     isocountries = FALSE
   ))
 }
-

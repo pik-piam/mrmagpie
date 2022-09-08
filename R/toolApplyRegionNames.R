@@ -30,4 +30,3 @@ toolApplyRegionNames <- function(cdata,regionscode){
   getSets(cdata,fulldim=FALSE)[1] <- "country.region.cell"
   return(cdata)
 }
-

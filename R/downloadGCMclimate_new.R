@@ -10,21 +10,27 @@
 
 downloadGCMClimate_new <- function(subtype="ISIMIP3b:IPSL-CM6A-LR:ssp126:2015-2100:tas") {
 
-  x           <- toolSplitSubtype(subtype, list(version=NULL, climatemodel=NULL, scenario=NULL, period = NULL, variable=NULL))
-  storage     <- "/p/projects/lpjml/input/scenarios"
-  path        <- file.path(storage, x$version, gsub("_", "/", x$scenario), x$climatemodel)
+  x           <- toolSplitSubtype(subtype, list(version=NULL,  climatemodel=NULL,
+                                                scenario=NULL, period = NULL,
+                                                variable=NULL))
+
+  if(x$climatemodel == "GSWP3-W5E5") {
+         storage     <- "/p/projects/lpjml/input/historical/"
+  } else storage     <- "/p/projects/lpjml/input/scenarios"
+
+  path        <- file.path(storage,                     #historical or scenarios
+                           x$version,                   #ISIMIP3[a|b](v2)
+                           gsub("_", "/", x$scenario),  #obsclim e.g. ssp119
+                           x$climatemodel)              #GCMs or GSWP3-W5E5
 
   if(!dir.exists(path)) {
-    path      <- file.path(storage, x$version, gsub("_", "/", x$scenario), gsub("_","-", x$climatemodel))
+    path      <- file.path(storage, x$version, gsub("_", "/", x$scenario),
+                           gsub("_","-", x$climatemodel))
   }
 
   list_files  <- list.files(path)
-
-  if (x$variable == "wet") {x$variable = "pr"} # Wet days are calculated from the precipitation
   file        <- grep(paste0(x$variable,"_"), list_files, value=TRUE)
-
-  file        <- grep(x$period,file, value = TRUE)
-
+  file        <- grep(x$period, file, value = TRUE)
   file_path   <- file.path(path, file)
 
   if (file.exists(file_path)) {

@@ -10,7 +10,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' calcOutput("GrasslandsYields", lsu_levels, past_mngmt = "2me", subtype)
+#' calcOutput("GrasslandsYields", lsu_levels, past_mngmt = "me2", subtype)
 #' }
 #'
 #' @import madrat
@@ -24,16 +24,26 @@ calcGrasslandsYields <-
   function(
     lpjml = lpjml[["grass"]],
     climatetype = climatetype,
-    subtype = "/co2/Nreturn0p5/limN",
+    subtype = "/co2/Nreturn0p5",
     lsu_levels = c(seq(0, 2, 0.2), 2.5),
     past_mngmt = "me2") {
 
     # subtype <- toolSplitSubtype(subtype, list(lpjml = NULL, climatetype = NULL, scenario = NULL))
 
     gCm2yTotDMy <- (10000 * 2.21 / 1e6)
-    x <- calcOutput("RangelandsMax_new", lsu_levels = lsu_levels, lpjml =lpjml, climatetype = climatetype, scenario = subtype, report = "harvest", aggregate = F)
-    y <- calcOutput("Pastr_new", past_mngmt = past_mngmt, lpjml =lpjml, climatetype = climatetype, scenario = subtype, aggregate = F)
+    x <- calcOutput("RangelandsMax_new", lsu_levels = lsu_levels, lpjml =lpjml, climatetype = climatetype, scenario = paste0(subtype, "/limN"), report = "harvest", aggregate = F)
+    if(past_mngmt == "mdef") {
+      N <- "/unlimN"
+    } else if (past_mngmt == "me2") {
+      N <- "/limN"
+    } else {
+      stop("past_mngmt not available yet")
+    }
+    y <- calcOutput("Pastr_new", past_mngmt = past_mngmt, lpjml =lpjml, climatetype = climatetype, scenario = paste0(subtype, N), aggregate = F)
+    invalid <- (y - x) < 0
+    y[invalid]  <- x[invalid] #substituting pastr yields that are smalled than rangelands by the value of rangeland yields
     pasture <- mbind(x, y)
+    invalid <- (pasture[,,"pastr"] - pasture[,,"range"]) < 0
     pasture <- toolHoldConstantBeyondEnd(pasture)
     pasture <- pasture * gCm2yTotDMy
 
@@ -59,3 +69,4 @@ calcGrasslandsYields <-
       )
     )
   }
+  
