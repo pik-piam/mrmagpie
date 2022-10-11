@@ -5,20 +5,22 @@
 #' @author Michael Windisch
 #'
 #' @examples
-#' \dontrun{ calcOutput("Luh2SideLayers", aggregate = FALSE) }
+#' \dontrun{
+#' calcOutput("Luh2SideLayers", aggregate = FALSE)
+#' }
 #'
 #' @importFrom magpiesets findset
 #'
 
-calcLuh2SideLayers <-function(){
+calcLuh2SideLayers <- function() {
 
-  x      <- readSource("BendingTheCurve", subtype = "luh2_side_layers", convert="onlycorrect")
-  weight <- calcOutput("CellArea", aggregate=FALSE)
+  x      <- readSource("BendingTheCurve", subtype = "luh2_side_layers", convert = "onlycorrect")
+  weight <- calcOutput("CellArea", aggregate = FALSE)
 
 return(list(
-  x=x,
-  weight=weight,
-  unit="boolean",
-  description="Data from LUH2 provided by David Leclere from IIASA, Bending the curve on biodiversity loss",
-  isocountries=FALSE))
+  x = x,
+  weight = weight,
+  unit = "boolean",
+  description = "Data from LUH2 provided by David Leclere from IIASA, Bending the curve on biodiversity loss",
+  isocountries = FALSE))
 }

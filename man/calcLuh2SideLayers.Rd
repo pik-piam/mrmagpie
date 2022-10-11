@@ -13,7 +13,9 @@ magpie object in cellular resolution
 Function extracts biodiversity data for LUH2 land cover types
 }
 \examples{
-\dontrun{ calcOutput("Luh2SideLayers", aggregate = FALSE) }
+\dontrun{
+calcOutput("Luh2SideLayers", aggregate = FALSE)
+}
 
 }
 \author{

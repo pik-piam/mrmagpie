@@ -8,33 +8,38 @@
 #' @author Kristine Karstens
 #'
 #' @examples
-#' \dontrun{ calcOutput("TopsoilCarbon", aggregate = FALSE) }
+#' \dontrun{
+#' calcOutput("TopsoilCarbon", aggregate = FALSE)
+#' }
 #'
 #' @importFrom magpiesets findset
 #' @importFrom mrcommons toolCoord2Isocell
 
-calcTopsoilCarbon <- function(lpjml=c(natveg="LPJmL4_for_MAgPIE_44ac93de", crop="ggcmi_phase3_nchecks_9ca735cb"),
-                                  climatetype="GSWP3-W5E5:historical"){
+calcTopsoilCarbon <- function(lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de", crop = "ggcmi_phase3_nchecks_9ca735cb"),
+                                  climatetype = "GSWP3-W5E5:historical") {
 
-  if(climatetype=="GSWP3-W5E5:historical"){ stage <- "smoothed"
-  } else{                                   stage <- "harmonized2020"}
+  if (climatetype == "GSWP3-W5E5:historical") {
+ stage <- "smoothed"
+  } else {
+                                   stage <- "harmonized2020"
+}
 
-  soilc_layer_natveg <- toolCoord2Isocell(calcOutput("LPJmL_new", version=lpjml["natveg"], climatetype=climatetype,
-                                                     subtype="soilc_layer", stage=stage, aggregate=FALSE))
-  topsoilc           <- soilc_layer_natveg[,,1] + 1/3 * soilc_layer_natveg[,,2]
+  soilcLayerNatveg <- toolCoord2Isocell(calcOutput("LPJmL_new", version = lpjml["natveg"], climatetype = climatetype,
+                                                     subtype = "soilc_layer", stage = stage, aggregate = FALSE))
+  topsoilc           <- soilcLayerNatveg[, , 1] + 1 / 3 * soilcLayerNatveg[, , 2]
   getNames(topsoilc) <- "topsoilc"
 
   # Check for NAs
-  if(any(is.na(topsoilc))){
+  if (any(is.na(topsoilc))) {
     stop("produced NA Carbon")
   }
 
-  weight <- calcOutput("CellArea", aggregate=FALSE)
+  weight <- calcOutput("CellArea", aggregate = FALSE)
 
   return(list(
-    x=topsoilc,
-    weight=weight,
-    unit="t per ha",
-    description="Topsoil carbon in tons per hectar for natural vegetation.",
-    isocountries=FALSE))
+    x = topsoilc,
+    weight = weight,
+    unit = "t per ha",
+    description = "Topsoil carbon in tons per hectar for natural vegetation.",
+    isocountries = FALSE))
 }

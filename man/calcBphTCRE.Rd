@@ -10,11 +10,14 @@ calcBphTCRE()
 magpie object in cellular resolution
 }
 \description{
-Transient Climate Response to accumulated doubling of CO2. File based on CMIP5 +1perc CO2 per year experiment. To be used in the translation to carbon equivalents of BphEffect
+Transient Climate Response to accumulated doubling of CO2. File based on CMIP5 +1perc CO2
+per year experiment. To be used in the translation to carbon equivalents of BphEffect
 # @param
 }
 \examples{
-\dontrun{ calcOutput("BphTCRE", aggregate = FALSE) }
+\dontrun{
+calcOutput("BphTCRE", aggregate = FALSE)
+}
 
 }
 \author{

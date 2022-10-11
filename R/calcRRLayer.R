@@ -5,20 +5,22 @@
 #' @author Michael Windisch, Patrick v. Jeetze
 #'
 #' @examples
-#' \dontrun{ calcOutput("RRLayer", aggregate = FALSE) }
+#' \dontrun{
+#' calcOutput("RRLayer", aggregate = FALSE)
+#' }
 #'
 #' @importFrom magpiesets findset
 #'
 
-calcRRLayer <-function(){
+calcRRLayer <- function() {
 
-  x      <- readSource("BendingTheCurve", subtype = "rr_layer", convert="onlycorrect")
-  weight <- calcOutput("CellArea", aggregate=FALSE)
+  x      <- readSource("BendingTheCurve", subtype = "rr_layer", convert = "onlycorrect")
+  weight <- calcOutput("CellArea", aggregate = FALSE)
 
 return(list(
-  x=x,
-  weight=weight,
-  unit="Range-Rarity (-)",
-  description="range-rarity layer provided by David Leclere from IIASA, Bending the curve on biodiversity loss",
-  isocountries=FALSE))
+  x = x,
+  weight = weight,
+  unit = "Range-Rarity (-)",
+  description = "range-rarity layer provided by David Leclere from IIASA, Bending the curve on biodiversity loss",
+  isocountries = FALSE))
 }

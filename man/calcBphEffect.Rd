@@ -10,10 +10,13 @@ calcBphEffect()
 magpie object in cellular resolution
 }
 \description{
-Biogeophysical temperature change of afforestation (degree C). File is based on observation datasets of Bright et al. 2017 and Duveiller et al. 2018
+Biogeophysical temperature change of afforestation (degree C). File is based on observation datasets
+of Bright et al. 2017 and Duveiller et al. 2018
 }
 \examples{
-\dontrun{ calcOutput("BphEffect", aggregate = FALSE) }
+\dontrun{
+calcOutput("BphEffect", aggregate = FALSE)
+}
 
 }
 \author{

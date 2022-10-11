@@ -5,20 +5,22 @@
 #' @author David Chen
 #'
 #' @examples
-#' \dontrun{ calcOutput("AfforestationMask", subtype="noboreal", aggregate = FALSE) }
+#' \dontrun{
+#' calcOutput("AfforestationMask", subtype = "noboreal", aggregate = FALSE)
+#' }
 #'
 #' @importFrom magpiesets findset
 #' @importFrom madrat readSource
 
-calcAfforestationMask <-function(subtype){
+calcAfforestationMask <- function(subtype) {
 
-  x      <- readSource("AfforestationMask",subtype=subtype, convert="onlycorrect")
-  weight <- calcOutput("CellArea", aggregate=FALSE)
+  x      <- readSource("AfforestationMask", subtype = subtype, convert = "onlycorrect")
+  weight <- calcOutput("CellArea", aggregate = FALSE)
 
   return(list(
-    x=x,
-    weight=weight,
-    unit="binary",
-    description="",
-    isocountries=FALSE))
+    x = x,
+    weight = weight,
+    unit = "binary",
+    description = "",
+    isocountries = FALSE))
 }

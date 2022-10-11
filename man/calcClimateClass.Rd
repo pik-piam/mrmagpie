@@ -13,10 +13,13 @@ calcClimateClass(source = "Koeppen")
 Clustered MAgPIE object on requested resolution
 }
 \description{
-fraction of a cell belonging to a given climate classification based on Koeppen Geiger Classification. http://koeppen-geiger.vu-wien.ac.at/.
+fraction of a cell belonging to a given climate classification based on Koeppen Geiger Classification.
+http://koeppen-geiger.vu-wien.ac.at/.
 }
 \examples{
-\dontrun{ calcOutput("ClimateClass", aggregate = FALSE) }
+\dontrun{
+calcOutput("ClimateClass", aggregate = FALSE)
+}
 
 }
 \author{

@@ -13,7 +13,9 @@ magpie object in cellular resolution
 Function extracts range-rarity as used for biodiversity loss
 }
 \examples{
-\dontrun{ calcOutput("RRLayer", aggregate = FALSE) }
+\dontrun{
+calcOutput("RRLayer", aggregate = FALSE)
+}
 
 }
 \author{

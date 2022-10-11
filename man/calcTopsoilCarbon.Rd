@@ -22,7 +22,9 @@ magpie object in cellular resolution
 This function extracts topsoil carbon densities from LPJ to MAgPIE
 }
 \examples{
-\dontrun{ calcOutput("TopsoilCarbon", aggregate = FALSE) }
+\dontrun{
+calcOutput("TopsoilCarbon", aggregate = FALSE)
+}
 
 }
 \author{

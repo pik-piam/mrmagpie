@@ -16,14 +16,14 @@
 #' @importFrom magpiesets findset
 #' @importFrom mrcommons toolCoord2Isocell
 
-calcTopsoilCarbon_new <- function(lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de",
+calcTopsoilCarbon_new <- function(lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de", # nolint
                                             crop = "ggcmi_phase3_nchecks_9ca735cb"),
                                   climatetype = "GSWP3-W5E5:historical", fromFlows = FALSE) {
 
   if (grepl("GSWP3-W5E5", climatetype)) stage <- "smoothed"
   else                                        stage <- "harmonized2020"
 
-  soilc_layer_natveg <- toolCoord2Isocell(calcOutput("LPJmL_new", version = lpjml["natveg"], climatetype = climatetype,
+  soilcLayerNatveg <- toolCoord2Isocell(calcOutput("LPJmL_new", version = lpjml["natveg"], climatetype = climatetype,
                                                      subtype = "soilc_layer", stage = stage, aggregate = FALSE))
 
   if (fromFlows) {
@@ -39,10 +39,10 @@ calcTopsoilCarbon_new <- function(lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de
 
     flow <- calcOutput("CarbonSink", version = lpjml["natveg"], climatetype = climatetype,
                        stage = "harmonized2020", pool = "soilc_layer", aggregate = FALSE)
-    soilc_layer_natveg <- .getCPoolsFromFlows(soilc_layer_natveg, flow, 1995)
+    soilcLayerNatveg <- .getCPoolsFromFlows(soilcLayerNatveg, flow, 1995)
   }
 
-  topsoilc           <- soilc_layer_natveg[, , 1] + 1 / 3 * soilc_layer_natveg[, , 2]
+  topsoilc           <- soilcLayerNatveg[, , 1] + 1 / 3 * soilcLayerNatveg[, , 2]
   getNames(topsoilc) <- "topsoilc"
 
   # Check for NAs
@@ -50,7 +50,7 @@ calcTopsoilCarbon_new <- function(lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de
     stop("produced NA Carbon")
   }
 
-  weight <- calcOutput("CellArea", aggregate=FALSE)
+  weight <- calcOutput("CellArea", aggregate = FALSE)
 
   return(list(
     x            = topsoilc,

@@ -23,7 +23,9 @@ This function calculates carbon sink per year and uses them for smoothing and ha
              and calculates carbon from it for MAgPIE again (to avoid jumps in carbon sink estimates)
 }
 \examples{
-\dontrun{ calcOutput("calcCarbonFromFlowHarm", aggregate = FALSE) }
+\dontrun{
+calcOutput("calcCarbonFromFlowHarm", aggregate = FALSE)
+}
 
 }
 \author{

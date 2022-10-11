@@ -9,12 +9,14 @@
 #' @author Kristine Karstens
 #'
 #' @examples
-#' \dontrun{ calcOutput("Carbon", aggregate = FALSE) }
+#' \dontrun{
+#' calcOutput("Carbon", aggregate = FALSE)
+#' }
 #'
 #' @importFrom magpiesets findset
 #' @importFrom magclass add_dimension
 
-calcCarbon_new <- function(lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de", crop = "ggcmi_phase3_nchecks_9ca735cb"),
+calcCarbon_new <- function(lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de", crop = "ggcmi_phase3_nchecks_9ca735cb"), # nolint
                            climatetype = "GSWP3-W5E5:historical", fromFlows = FALSE) {
 
   .getLPJmLCPools <- function(pool, cfg) {
@@ -66,7 +68,7 @@ calcCarbon_new <- function(lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de", crop
   cshare         <- calcOutput("SOCLossShare", aggregate = FALSE, years = "y1995")
 
   ####################################################
-  #Create the output object
+  # Create the output object
   ####################################################
 
   carbonStocks <- new.magpie(cells_and_regions = getCells(natveg),
@@ -77,10 +79,10 @@ calcCarbon_new <- function(lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de", crop
                                 nm = c("crop", "past", "forestry", "primforest", "secdforest", "urban", "other"))
 
   ####################################################
-  #Calculate the appropriate values for all land types and carbon types.
+  # Calculate the appropriate values for all land types and carbon types.
   ####################################################
 
-  #Factor 0.012 is based on the script subversion/svn/tools/carbon_cropland, executed at 30.07.2013
+  # Factor 0.012 is based on the script subversion/svn/tools/carbon_cropland, executed at 30.07.2013
   carbonStocks[, , "crop.vegc"]       <- 0.012 * natveg[, , "vegc"]
   carbonStocks[, , "crop.litc"]       <- 0 # does not make sense
   carbonStocks[, , "crop.soilc"]      <- cshare * topsoilc + (natveg[, , "soilc"] - topsoilc)
@@ -92,14 +94,14 @@ calcCarbon_new <- function(lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de", crop
   carbonStocks[, , "primforest"]      <- natveg
   carbonStocks[, , "secdforest"]      <- natveg
   carbonStocks[, , "urban"]           <- 0
-  carbonStocks[, , "other"]           <- natveg #or grass?
+  carbonStocks[, , "other"]           <- natveg # or grass?
 
   # Check for NAs
   if (any(is.na(carbonStocks))) {
     stop("produced NA Carbon")
   }
 
-  weight <- calcOutput("CellArea", aggregate=FALSE)
+  weight <- calcOutput("CellArea", aggregate = FALSE)
 
   return(list(
     x            = carbonStocks,

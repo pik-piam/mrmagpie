@@ -5,23 +5,25 @@
 #' @author Florian Humpenoeder
 #'
 #' @examples
-#' \dontrun{ calcOutput("calcCellCountryFraction", aggregate = FALSE) }
+#' \dontrun{
+#' calcOutput("calcCellCountryFraction", aggregate = FALSE)
+#' }
 #'
 #' @export
 
-calcCellCountryFraction <-function(){
+calcCellCountryFraction <- function() {
 
-  weight <- calcOutput("CellArea", aggregate=FALSE)
+  weight <- calcOutput("CellArea", aggregate = FALSE)
 
-  x <- new.magpie(getCells(weight),NULL,getRegions(weight),fill = 0)
-  for(r in getRegions(x)) {
-    x[r,,r] <- 1
+  x <- new.magpie(getCells(weight), NULL, getItems(weight, dim = 1.1), fill = 0)
+  for (r in getItems(x, dim = 1.1)) {
+    x[r, , r] <- 1
   }
 
   return(list(
-    x=x,
-    weight=weight,
-    unit="share",
-    description="cell fraction belonging to a country",
-    isocountries=FALSE))
+    x = x,
+    weight = weight,
+    unit = "share",
+    description = "cell fraction belonging to a country",
+    isocountries = FALSE))
 }

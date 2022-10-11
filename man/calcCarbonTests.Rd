@@ -25,7 +25,9 @@ magpie object in cellular resolution
 This function extracts carbon densities from LPJ to MAgPIE
 }
 \examples{
-\dontrun{ calcOutput("CarbonTests", aggregate = FALSE) }
+\dontrun{
+calcOutput("CarbonTests", aggregate = FALSE)
+}
 
 }
 \author{

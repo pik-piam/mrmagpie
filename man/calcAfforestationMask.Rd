@@ -16,7 +16,9 @@ magpie object in cellular resolution
 Afforestation mask for where afforestation possible
 }
 \examples{
-\dontrun{ calcOutput("AfforestationMask", subtype="noboreal", aggregate = FALSE) }
+\dontrun{
+calcOutput("AfforestationMask", subtype = "noboreal", aggregate = FALSE)
+}
 
 }
 \author{

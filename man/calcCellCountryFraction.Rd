@@ -13,7 +13,9 @@ Clustered MAgPIE object on requested resolution
 cell fraction belonging to a country based on LanduseInitialisation
 }
 \examples{
-\dontrun{ calcOutput("calcCellCountryFraction", aggregate = FALSE) }
+\dontrun{
+calcOutput("calcCellCountryFraction", aggregate = FALSE)
+}
 
 }
 \author{

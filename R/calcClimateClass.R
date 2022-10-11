@@ -1,39 +1,44 @@
 #' @title calcClimateClass
-#' @description fraction of a cell belonging to a given climate classification based on Koeppen Geiger Classification. http://koeppen-geiger.vu-wien.ac.at/.
+#' @description fraction of a cell belonging to a given climate classification based on Koeppen Geiger Classification.
+#' http://koeppen-geiger.vu-wien.ac.at/.
 #' @param source select source from: Koeppen, IPCC, IPCC_reduced
 #'
 #' @return Clustered MAgPIE object on requested resolution
 #' @author Abhijeet Mishra
 #'
 #' @examples
-#' \dontrun{ calcOutput("ClimateClass", aggregate = FALSE) }
+#' \dontrun{
+#' calcOutput("ClimateClass", aggregate = FALSE)
+#' }
 #'
 #' @export
 
-calcClimateClass <-function(source="Koeppen"){
+calcClimateClass <- function(source = "Koeppen") {
 
-  if(source=="Koeppen"){
+  if (source == "Koeppen") { # nolint
 
-    x      <- readSource("Koeppen", subtype="cellular",convert = "onlycorrect")
+    x      <- readSource("Koeppen", subtype = "cellular", convert = "onlycorrect")
 
-  } else if(grepl("IPCC",source)){
+  } else if (grepl("IPCC", source)) { # nolint
 
-    x <- readSource("IPCCClimate", convert="onlycorrect")
-    getNames(x) <- gsub(" ","_", tolower(getNames(x)))
+    x <- readSource("IPCCClimate", convert = "onlycorrect")
+    getNames(x) <- gsub(" ", "_", tolower(getNames(x)))
 
-    if(source=="IPCC_reduced"){
+    if (source == "IPCC_reduced") { # nolint
       reduceIPCC  <- toolGetMapping("IPCC2IPCCreduced.csv", type = "sectoral")
-      x           <- toolAggregate(x,reduceIPCC,from="ipcc",to="ipcc_reduced", dim=3, partrel=TRUE)
+      x           <- toolAggregate(x, reduceIPCC, from = "ipcc", to = "ipcc_reduced", dim = 3, partrel = TRUE)
     }
 
-  } else { stop("Source unkown.")}
+  } else {
+ stop("Source unkown.")
+}
 
-  weight <- calcOutput("CellArea", aggregate=FALSE)
+  weight <- calcOutput("CellArea", aggregate = FALSE)
 
   return(list(
-    x=x,
-    weight=weight,
-    unit="share",
-    description="share of koeppen geiger area",
-    isocountries=FALSE))
+    x = x,
+    weight = weight,
+    unit = "share",
+    description = "share of koeppen geiger area",
+    isocountries = FALSE))
 }
