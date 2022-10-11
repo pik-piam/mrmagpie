@@ -29,7 +29,7 @@ calcTopsoilCarbon <- function(lpjml=c(natveg="LPJmL4_for_MAgPIE_44ac93de", crop=
     stop("produced NA Carbon")
   }
 
-  weight <- dimSums(calcOutput("LanduseInitialisation", aggregate=FALSE, cellular=TRUE, nclasses="seven", fao_corr=TRUE, input_magpie=TRUE, years="y1995", round=6), dim=3)
+  weight <- calcOutput("CellArea", aggregate=FALSE)
 
   return(list(
     x=topsoilc,

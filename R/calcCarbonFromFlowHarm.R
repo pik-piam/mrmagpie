@@ -61,9 +61,6 @@ calcCarbonFromFlowHarm <- function(lpjml=c(natveg="LPJmL4_for_MAgPIE_44ac93de", 
   out  <- add_dimension(out, dim = 3.1, add = "landtype",
                         nm = c("crop","past","forestry","primforest","secdforest", "urban", "other"))
 
-  landuse <- calcOutput("LanduseInitialisation", aggregate=FALSE, cellular=TRUE, nclasses="seven",
-                        fao_corr=TRUE, input_magpie=TRUE, years="y1995", round=6)
-
   ####################################################
   #Calculate the appropriate values for all land types and carbon types.
   ####################################################
@@ -84,11 +81,11 @@ calcCarbonFromFlowHarm <- function(lpjml=c(natveg="LPJmL4_for_MAgPIE_44ac93de", 
     stop("produced NA Carbon")
   }
 
-  landuse <- dimSums(landuse, dim=3)
+  weight <- calcOutput("CellArea", aggregate=FALSE)
 
   return(list(
     x=out,
-    weight=landuse,
+    weight=weight,
     unit="t per ha",
     description="Carbon in tons per hectar for natural vegetation based on carbon sink harmonization.",
     isocountries=FALSE))

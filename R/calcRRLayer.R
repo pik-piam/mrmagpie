@@ -13,7 +13,7 @@
 calcRRLayer <-function(){
 
   x      <- readSource("BendingTheCurve", subtype = "rr_layer", convert="onlycorrect")
-  weight <- dimSums(calcOutput("LanduseInitialisation", aggregate=FALSE, cellular=TRUE, nclasses="seven", fao_corr=TRUE, input_magpie=TRUE, years="y1995", round=6), dim=3)
+  weight <- calcOutput("CellArea", aggregate=FALSE)
 
 return(list(
   x=x,
