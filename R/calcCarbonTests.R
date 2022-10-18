@@ -85,6 +85,7 @@ calcCarbonTests <- function(lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de", cro
   carbonStocks[, , "primforest"]      <- natveg
   carbonStocks[, , "secdforest"]      <- natveg
   carbonStocks[, , "urban"]           <- 0
+  carbonStocks[, , "urban.soilc"]     <- natveg[, , "soilc"]
   carbonStocks[, , "other"]           <- natveg # or grass?
 
   # Check for NAs

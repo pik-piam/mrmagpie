@@ -316,14 +316,6 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
   calcOutput("TopsoilCarbon", aggregate = "cluster", lpjml = lpjml, climatetype = climatetype,
     round = 6, years = lpjYears, file = paste0("lpj_carbon_topsoil_", ctype, ".mz"))
 
-  if (dev == "+cFromSink") {
-
-    calcOutput("Carbon_new", aggregate = "cluster", lpjml = lpjml, climatetype = climatetype, fromFlow = TRUE,
-      round = 6, years = lpjYears, file = paste0("lpj_carbon_stocks_new_", ctype, ".mz"))
-    calcOutput("TopsoilCarbon_new", aggregate = "cluster", lpjml = lpjml, climatetype = climatetype, fromFlow = TRUE,
-      round = 6, years = lpjYears, file = paste0("lpj_carbon_topsoil_new_", ctype, ".mz"))
-  }
-
   # 58 peatland
   calcOutput("Peatland", subtype = "degraded", aggregate = FALSE, round = 6, file = "f58_peatland_degrad_0.5.mz")
   calcOutput("Peatland", subtype = "intact",   aggregate = FALSE, round = 6, file = "f58_peatland_intact_0.5.mz")
