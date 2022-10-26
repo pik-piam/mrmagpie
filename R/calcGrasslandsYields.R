@@ -20,30 +20,26 @@
 #'
 #'
 
-calcGrasslandsYields <-
-  function(
-    lpjml = lpjml[["grass"]],
-    climatetype = climatetype,
-    subtype = "/co2/Nreturn0p5",
-    lsu_levels = c(seq(0, 2, 0.2), 2.5),
-    past_mngmt = "me2") {
-
-    # subtype <- toolSplitSubtype(subtype, list(lpjml = NULL, climatetype = NULL, scenario = NULL))
+calcGrasslandsYields <- function(lpjml = lpjml[["grass"]], climatetype = climatetype, subtype = "/co2/Nreturn0p5", # nolint
+                                 lsu_levels = c(seq(0, 2, 0.2), 2.5), past_mngmt = "me2") { # nolint
 
     gCm2yTotDMy <- (10000 * 2.21 / 1e6)
-    x <- calcOutput("RangelandsMax_new", lsu_levels = lsu_levels, lpjml =lpjml, climatetype = climatetype, scenario = paste0(subtype, "/limN"), report = "harvest", aggregate = F)
-    if(past_mngmt == "mdef") {
-      N <- "/unlimN"
+    x <- calcOutput("RangelandsMaxNew", lsuLevels = lsu_levels, lpjml = lpjml, climatetype = climatetype,
+                    scenario = paste0(subtype, "/limN"), report = "harvest", aggregate = FALSE)
+    if (past_mngmt == "mdef") {
+      n <- "/unlimN"
     } else if (past_mngmt == "me2") {
-      N <- "/limN"
+      n <- "/limN"
     } else {
       stop("past_mngmt not available yet")
     }
-    y <- calcOutput("Pastr_new", past_mngmt = past_mngmt, lpjml =lpjml, climatetype = climatetype, scenario = paste0(subtype, N), aggregate = F)
+    y <- calcOutput("Pastr_new", past_mngmt = past_mngmt, lpjml = lpjml, climatetype = climatetype,
+                    scenario = paste0(subtype, n), aggregate = FALSE)
     invalid <- (y - x) < 0
-    y[invalid]  <- x[invalid] #substituting pastr yields that are smalled than rangelands by the value of rangeland yields
+    # substituting pastr yields that are smaller than rangelands by the value of rangeland yields
+    y[invalid]  <- x[invalid]
     pasture <- mbind(x, y)
-    invalid <- (pasture[,,"pastr"] - pasture[,,"range"]) < 0
+    invalid <- (pasture[, , "pastr"] - pasture[, , "range"]) < 0
     pasture <- toolHoldConstantBeyondEnd(pasture)
     pasture <- pasture * gCm2yTotDMy
 
@@ -52,21 +48,19 @@ calcGrasslandsYields <-
     landcoords <- cbind(landcoords, rep(1, nrow(landcoords)))
     landcoords <- raster::rasterFromXYZ(landcoords)
     crs(landcoords) <- "+proj=longlat"
-    cell_size <- raster::area(landcoords)
-    weight <- cell_size * landcoords
+    cellSize <- raster::area(landcoords)
+    weight <- cellSize * landcoords
     weight <- as.magpie(weight)
     weight <- toolOrderCells(collapseDim(addLocation(weight), dim = c("x", "y")))
-
-    # weight <- calcOutput("LUH2v2", aggregate = F, landuse_types = "LUH2v2", cellular = TRUE)[,1995,c("range", "pastr")]
 
     return(
       list(
         x = pasture,
         weight = weight,
         unit = "t/DM/y",
-        description = paste("Maximum grasslands yields obtained with rangelands and managed pastures yields for", past_mngmt),
+        description = paste("Maximum grasslands yields obtained with rangelands and managed pastures yields for",
+                            past_mngmt),
         isocountries = FALSE
       )
     )
   }
-  

@@ -57,7 +57,7 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
 
   climatescen <- str_split(climatetype, ":")[[1]][2]
 
-  cat(paste0("Start preprocessing for \n climatescenario: ", climatetype,
+  message(paste0("Start preprocessing for \n climatescenario: ", climatetype,
     "\n LPJmL-Versions: ", paste(names(lpjml), lpjml, sep = "->", collapse = ", "),
     "\n clusterweight: ", paste(names(clusterweight), clusterweight, sep = ":", collapse = ", "),
     "\n isimip yield subtype: ", paste(names(isimip), isimip, sep = ":", collapse = ", ")))

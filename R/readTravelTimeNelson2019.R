@@ -32,7 +32,7 @@ readTravelTimeNelson2019 <- function(subtype = "cities") {
   # convert to magpie cells and add missing cells as NA
   out <- toolCoord2Isocell(out, fillMissing = NA)
 
-  #fill with value(s) of cells i away, first try using the average of the 2 sides, if one doesn't exist, use the other
+  # fill with value(s) of cells i away, first try using the average of the 2 sides, if one doesn't exist, use the other
   .fillNeighbours <- function(fill, tofill, i) {
 
     neighbour <- ifelse(is.na((tofill[which(is.na(tofill)) + i] + tofill[which(is.na(tofill)) - i]) / 2),
@@ -43,13 +43,11 @@ readTravelTimeNelson2019 <- function(subtype = "cities") {
 
   fills <- ifelse(is.na(fill), ifelse(is.na(neighbour), NA, neighbour), fill)
 
-  #print(length(which(is.na(fills))))
-
   return(fills)
   }
 
 
-  #fill NAs with value of cell beside
+  # fill NAs with value of cell beside
   fill <- vector(length = length(which(is.na(out))))
   fill[] <- NA
   # run a couple times but still some NAs hard to get rid of
@@ -61,11 +59,11 @@ t4 <- .fillNeighbours(fill = t3, tofill = out, i = 5)
 
 out[is.na(out)] <- t4
 
-#fill rest with avg for that slice
+# fill rest with avg for that slice
 avgs <- dimSums(out, dim = 1, na.rm = TRUE) / 59199
 
-for (i in c(seq(getItems(out, dim=3)))) {
-  out[,,i][which(is.na(out[,,i]))] <- as.numeric(avgs[,,i])
+for (i in c(seq(getItems(out, dim = 3)))) {
+  out[, , i][which(is.na(out[, , i]))] <- as.numeric(avgs[, , i])
 }
 
 return(out)
