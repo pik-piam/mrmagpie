@@ -16,10 +16,10 @@ Magpie object with results on cellular level for 12 IPCC climate zone types
 Correct IPCC climate classification
 }
 \examples{
-
 \dontrun{
-readSource("IPCCClimate", convert="onlycorrect")
+readSource("IPCCClimate", convert = "onlycorrect")
 }
+
 }
 \author{
 Kristine Karstens

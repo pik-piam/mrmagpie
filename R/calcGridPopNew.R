@@ -128,8 +128,8 @@ calcGridPopNew <- function(source = "ISIMIP", subtype = "all", cellular = TRUE, 
 
     if (urban) {
 
-      vcat(verbosity = 1, "note for this data source urban/rural is diaggregated using uniform country level value. Use
-         Gao source instead for cellular urban/rural population")
+      message("This data source urban/rural is diaggregated using uniform country level value. ",
+              "Use Gao source instead for cellular urban/rural population")
 
       urban <- calcOutput("Urban", aggregate = FALSE)[, getYears(x), ]
       getNames(urban) <- gsub("pop_", "", getNames(urban))
