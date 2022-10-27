@@ -7,28 +7,29 @@
 toolMoveValues(x, y, z, w = NULL)
 }
 \arguments{
-\item{x}{Unidimensional magpie object (one time and one data dimension) with location information caring for the 
+\item{x}{Unidimensional magpie object (one time and one data dimension) with location information caring for the
 values that must be checked and moved if necessary.}
 
-\item{y}{Unidimensional magpie object (one time and one data dimension) that has a binary or logical 
+\item{y}{Unidimensional magpie object (one time and one data dimension) that has a binary or logical
 mapping (see \link[base]{as.logical}) of the unsuitable areas for the values in x}
 
 \item{z}{Unidimensional magpie object (one time and one data dimension) that has a binary or logical
 (see \link[base]{as.logical}) mapping of the areas that can receive the values from x.}
 
 \item{w}{Unidimensional magpie object (one time and one data dimension) that has a binary or logical
-(see \link[base]{as.logical}) mapping of the areas that have to be zeroed. If left empty, the inverse of `z` is assumed.}
+(see \link[base]{as.logical}) mapping of the areas that have to be zeroed. If left empty, the inverse of `z` is
+assumed.}
 }
 \value{
-Unidimensional magpie object with summed values of the moved values to the nearest suitale neighbor. All the unmoved 
-and discarded values are set to 0.
+Unidimensional magpie object with summed values of the moved values to the nearest suitale neighbor.
+All the unmoved and discarded values are set to 0.
 }
 \description{
-Distances are calculated from the lat and lon coordinates. Therefore, all magpie objects must have 
-location information (see \link[magpiesets]{addLocation}). Values are only moved within a country. If no suitable cell is 
-available in the same country, the undesirable values are discarded. 
-This function takes only magpie objects with only one time and data dimensions to allow for more flexibility. 
-Whenever more than one dimension is available in the magpie objects, 
+Distances are calculated from the lat and lon coordinates. Therefore, all magpie objects must have
+location information (see \link[magpiesets]{addLocation}). Values are only moved within a country. If no suitable
+cell is available in the same country, the undesirable values are discarded.
+This function takes only magpie objects with only one time and data dimensions to allow for more flexibility.
+Whenever more than one dimension is available in the magpie objects,
 I suggest using a loop (see \link[base]{for} and \link[base]{apply}).
 }
 \details{
