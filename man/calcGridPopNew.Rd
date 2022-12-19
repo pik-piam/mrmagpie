@@ -8,21 +8,29 @@ calcGridPopNew(
   source = "ISIMIP",
   subtype = "all",
   cellular = TRUE,
+  cells = "magpiecell",
   FiveYear = TRUE,
   harmonize_until = 2015,
   urban = FALSE
 )
 }
 \arguments{
-\item{source}{default source or Gao data (readGridPopGao) which is split into urban and rural.}
+\item{source}{default source (ISIMIP) or
+Gao data (readGridPopGao) which is split into urban and rural.}
 
-\item{subtype}{past (1965-2005), future (2005-2010) or all (divergence starts at year in harmonize_until)}
+\item{subtype}{time horizon to be returned.
+Options: past (1965-2005),
+future (2005-2010) or
+all (divergence starts at year in harmonize_until)}
 
-\item{cellular}{only cellular}
+\item{cellular}{if true: half degree grid cell data returned}
+
+\item{cells}{number of halfdegree grid cells to be returned.
+Options: "magpiecell" (59199), "lpjcell" (67420)}
 
 \item{FiveYear}{TRUE for 5 year time steps, otherwise yearly from source}
 
-\item{harmonize_until}{2015 default divergence of SSPs}
+\item{harmonize_until}{harmonization year until which SSPs diverge (default: 2015)}
 
 \item{urban}{TRUE to return only urban gridded population based on iso share}
 }
@@ -36,5 +44,5 @@ NOTE that some scaling factors for the future (for small countries Gambia and Dj
 data read in is 50% of WDI data, most likely due to large resolution
 }
 \author{
-David Chen
+David Chen, Felicitas Beier
 }

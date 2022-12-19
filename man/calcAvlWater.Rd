@@ -19,7 +19,9 @@ calcAvlWater(
 
 \item{stage}{Degree of processing: raw, smoothed, harmonized, harmonized2020}
 
-\item{seasonality}{grper (default): water available in growing period per year; total: total water available throughout the year; monthly: monthly water availability (for further processing, e.g. in calcEnvmtlFlow)}
+\item{seasonality}{grper (default): water available in growing period per year;
+total: total water available throughout the year;
+monthly: monthly water availability (for further processing, e.g. in calcEnvmtlFlow)}
 }
 \value{
 magpie object in cellular resolution
@@ -28,7 +30,9 @@ magpie object in cellular resolution
 This function calculates water availability for MAgPIE retrieved from LPJmL
 }
 \examples{
-\dontrun{ calcOutput("AvlWater", aggregate = FALSE) }
+\dontrun{
+calcOutput("AvlWater", aggregate = FALSE)
+}
 
 }
 \author{

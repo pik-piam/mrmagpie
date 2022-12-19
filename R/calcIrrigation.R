@@ -22,47 +22,48 @@ calcIrrigation <- function(lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de", crop
 
   cfg <- toolLPJmLVersion(version = lpjml["crop"], climatetype = climatetype)
 
-  sizelimit <- getOption("magclass_sizeLimit")
-  options(magclass_sizeLimit = 1e+12)
-  on.exit(options(magclass_sizeLimit = sizelimit))
+  sizelimit <- getOption("magclass_sizeLimit") # nolint
+  options(magclass_sizeLimit = 1e+12) # nolint
+  on.exit(options(magclass_sizeLimit = sizelimit)) # nolint
 
   if (grepl("GSWP3-W5E5", climatetype)) {
- stage       <- "smoothed"
-                                              climatetype <- cfg$baseline_hist
+    stage       <- "smoothed"
+    climatetype <- cfg$baseline_hist
   } else {
-                                    stage       <- "harmonized2020"
-}
+    stage       <- "harmonized2020"
+  }
 
   # Read in airrig (irrigation water applied additionally to rainfall where irrigation takes place):
-  lpj_airrig   <- toolCoord2Isocell(collapseNames(calcOutput("LPJmL_new", version = lpjml["crop"],
+  airrigLPJ   <- toolCoord2Isocell(collapseNames(calcOutput("LPJmL_new", version = lpjml["crop"],
                                                              climatetype = climatetype, subtype = "irrig",
                                                              aggregate = FALSE, stage = stage)))
 
   # Load LPJmL to MAgPIE mapping to aggregate to MAgPIE crops
-  LPJ2MAG      <- toolGetMapping("MAgPIE_LPJmL.csv", type = "sectoral", where = "mappingfolder")
+  mapping     <- toolGetMapping("MAgPIE_LPJmL.csv",
+                                 type = "sectoral", where = "mappingfolder")
   # Aggregate to MAgPIE crops
-  mag_airrig   <- toolAggregate(lpj_airrig, LPJ2MAG, from = "LPJmL", to = "MAgPIE", dim = 3.1, partrel = TRUE)
+  airrigMAG   <- toolAggregate(airrigLPJ, mapping,
+                               from = "LPJmL", to = "MAgPIE", dim = 3.1, partrel = TRUE)
   # Remove pasture (pasture is not irrigated in MAgPIE)
-  mag_airrig   <- mag_airrig[, , "pasture", invert = TRUE]
+  airrigMAG   <- airrigMAG[, , "pasture", invert = TRUE]
   # Remove negative airrig
-  mag_airrig[mag_airrig < 0] <- 0
+  airrigMAG[airrigMAG < 0] <- 0
 
   # Check for NAs
-  if (any(is.na(mag_airrig))) {
+  if (any(is.na(airrigMAG))) {
     stop("produced NA airrig")
   }
 
   # Clustering weight:
-  cropland_total   <- dimSums(calcOutput("Croparea", sectoral = "kcr", physical = TRUE, cellular = TRUE,
+  totalCropland  <- dimSums(calcOutput("Croparea", sectoral = "kcr", physical = TRUE, cellular = TRUE,
                                          irrigation = TRUE, aggregate = FALSE, years = "y1995", round = 6), dim = 3.2)
-  crop_area_weight <- collapseNames(cropland_total[, , "irrigated"]) +
-                                      rainfedweight * collapseNames(cropland_total[, , "rainfed"])
+  weightCropArea <- collapseNames(totalCropland[, , "irrigated"]) +
+                                  rainfedweight * collapseNames(totalCropland[, , "rainfed"])
 
-  return(list(
-    x = mag_airrig,
-    weight = crop_area_weight,
-    unit = "m^3 per ha per yr",
-    description = "Irrigation water (water applied in addition to rainfall) for
-                   different crop types following LPJmL irrigation system assumptions",
-    isocountries = FALSE))
+  return(list(x = airrigMAG,
+              weight = weightCropArea,
+              unit = "m^3 per ha per yr",
+              description = "Irrigation water (water applied in addition to rainfall) for
+                             different crop types following LPJmL irrigation system assumptions",
+              isocountries = FALSE))
 }

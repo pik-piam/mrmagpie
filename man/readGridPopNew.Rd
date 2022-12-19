@@ -18,5 +18,5 @@ ISIMIP database, Past data is based on HYDE3.2, while future SSPs are based
 on projections from Jones & O'Neill 2016
 }
 \author{
-David Chen, Marcos Alves
+David Chen, Marcos Alves, Felicitas Beier
 }

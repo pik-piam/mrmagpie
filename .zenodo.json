@@ -1,7 +1,7 @@
 {
   "title": "mrmagpie: madrat based MAgPIE Input Data Library",
-  "version": "1.28.13",
-  "description": "<p>Provides functions for MAgPIE country and cellular input data generation.<\/p>",
+  "version": "1.28.14",
+  "description": "<p>Provides functions for MAgPIE country and cellular input data\n    generation.<\/p>",
   "creators": [
     {
       "name": "Karstens, Kristine"
