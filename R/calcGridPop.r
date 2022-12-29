@@ -58,11 +58,11 @@ calcGridPop <- function(source = "ISIMIP", subtype = "all", # nolint
       past   <- calcOutput("GridPop", source = "ISIMIP", subtype = "past",
                            cellular = cellular, cells = "lpjcell",
                            FiveYear = FiveYear, # nolint
-                           harmonize_until = 2015, urban = urban) 
+                           harmonize_until = 2015, urban = urban, aggregate = FALSE) 
       future   <- calcOutput("GridPop", source = source, subtype = "future",
                            cellular = cellular, cells = "lpjcell",
                            FiveYear = FiveYear, # nolint
-                           harmonize_until = 2015, urban = urban) 
+                           harmonize_until = 2015, urban = urban, aggregate = FALSE) 
 
     if (source == "Gao") {
       intYears <- seq(2005, 2095, 10)
