@@ -5,6 +5,7 @@
 #' @author David Chen, Felicitas Beier
 #' @importFrom raster brick aggregate projectRaster
 #' @import magclass
+#' @export
 
 readGridPopGao <- function(subtype = "future") {
 

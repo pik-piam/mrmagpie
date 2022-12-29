@@ -180,10 +180,10 @@ calcGridPop <- function(source = "ISIMIP", subtype = "all", # nolint
 
   # Checks
   if (any(is.na(x))) {
-    stop("Function calcGridPopNew returned NAs.")
+    stop("Function calcGridPop returned NAs.")
   }
   if (any(round(x, digits = 4) < 0)) {
-    stop("Function calcGridPopNew returned negative values.")
+    stop("Function calcGridPop returned negative values.")
   }
 
   return(list(x = x,

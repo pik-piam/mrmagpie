@@ -133,10 +133,10 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
   calcOutput("PastrTauHist", round = 2, past_mngmt = "mdef", file = "f13_pastr_tau_hist.csv", aggregate = superregion)
 
   # 09 drivers
-  calcOutput("GridPopNew", source = "Gao", subtype = "all", cellular = TRUE, harmonize_until = 2015, urban = FALSE,
+  calcOutput("GridPop", source = "Gao", subtype = "all", cellular = TRUE, harmonize_until = 2015, urban = FALSE,
              aggregate = "cluster", years = magYears, round = 6, file = "f09_pop_grid.cs3")
 
-  calcOutput("GridPopNew", source = "Gao", subtype = "all", cellular = TRUE, harmonize_until = 2015, urban = TRUE,
+  calcOutput("GridPop", source = "Gao", subtype = "all", cellular = TRUE, harmonize_until = 2015, urban = TRUE,
              aggregate = "cluster", years = magYears, round = 6, file = "f09_urbanpop_grid.cs3")
 
   # 10 land
