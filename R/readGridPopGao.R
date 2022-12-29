@@ -1,12 +1,14 @@
 #' @title readGridPopGao
 #' @description Read gridded population, by urban and rural, from Gao O'Neill and JOnes dataset,
 #' see https://www.cgd.ucar.edu/iam/modeling/spatial-population-scenarios.html https://doi.org/10.7927/m30p-j498
+#' @param subtype only "future" post-2000 available for this source
 #' @author David Chen, Felicitas Beier
 #' @importFrom raster brick aggregate projectRaster
 #' @import magclass
 
-readGridPopGao <- function() {
+readGridPopGao <- function(subtype = "future") {
 
+if (subtype == "future") {
   ssps   <- c("SSP1", "SSP2", "SSP3", "SSP4", "SSP5")
   years  <- seq(2010, 2100, 10)
   urbans <- c("rural", "urban")
@@ -76,4 +78,7 @@ readGridPopGao <- function() {
   getSets(x)  <- c("x", "y", "iso", "year", "data", "newdim")
 
   return(x)
-}
+  } else if (subtype == "past") {
+       stop("Data only available from 2000 onwards, use ISIMIP source instead")
+    }
+  }

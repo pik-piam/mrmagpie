@@ -4,7 +4,10 @@
 \alias{readGridPopGao}
 \title{readGridPopGao}
 \usage{
-readGridPopGao()
+readGridPopGao(subtype = "future")
+}
+\arguments{
+\item{subtype}{only "future" post-2000 available for this source}
 }
 \description{
 Read gridded population, by urban and rural, from Gao O'Neill and JOnes dataset,
