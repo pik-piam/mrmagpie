@@ -14,6 +14,7 @@
 #' @param cellular if true: half degree grid cell data returned
 #' @param cells    number of halfdegree grid cells to be returned.
 #'                 Options: "magpiecell" (59199), "lpjcell" (67420)
+#' @param scale  if true: scales sum of gridded values to match country level totals
 #' @param FiveYear TRUE for 5 year time steps, otherwise yearly from source
 #' @param harmonize_until harmonization year until which SSPs diverge (default: 2015)
 #' @param urban    TRUE to return only urban gridded population based on iso share
@@ -31,14 +32,14 @@
 
 calcGridPop <- function(source = "ISIMIP", subtype = "all", # nolint
                            cellular = TRUE, cells = "magpiecell",
-                           FiveYear = TRUE, # nolint
+                           FiveYear = TRUE,  scale = TRUE, # nolint
                            harmonize_until = 2015, urban = FALSE) { # nolint
 
   if (!cellular) (stop("Run calcPopulation instead"))
   
   # Gridded population data
     # past data
-    if (subtype != "all") {
+ if (subtype != "all") {
 
       if (source == "ISIMIP") {
        x <- readSource("GridPopIsimip", subtype = subtype, convert = FALSE)
@@ -51,17 +52,24 @@ calcGridPop <- function(source = "ISIMIP", subtype = "all", # nolint
         x <- (x[, , -1])
         }
 
-      } else if (source == "Gao"){
+      } else if (source == "Gao") {
        x <- readSource("GridPopGao", subtype = subtype, convert = FALSE)
-      } 
-    }  else if (subtype == "all") {
+       getNames(x, dim = 1) <- paste0("pop_", getNames(x, dim = 1))
+
+      if (!urban && subtype == "future") {
+        x <- collapseNames(dimSums(x, dim = 3.2))
+         }
+         
+      }
+
+} else if (subtype == "all") {
       past   <- calcOutput("GridPop", source = "ISIMIP", subtype = "past",
                            cellular = cellular, cells = "lpjcell",
-                           FiveYear = FiveYear, # nolint
+                           FiveYear = FiveYear, scale = FALSE, # nolint
                            harmonize_until = 2015, urban = urban, aggregate = FALSE) 
       future   <- calcOutput("GridPop", source = source, subtype = "future",
                            cellular = cellular, cells = "lpjcell",
-                           FiveYear = FiveYear, # nolint
+                           FiveYear = FiveYear, scale = FALSE, # nolint
                            harmonize_until = 2015, urban = urban, aggregate = FALSE) 
 
     if (source == "Gao") {
@@ -69,7 +77,7 @@ calcGridPop <- function(source = "ISIMIP", subtype = "all", # nolint
       future       <- time_interpolate(future, interpolated_year = intYears,
                                    integrate_interpolated_years = TRUE)
       
-       if (urban){
+  if (urban){
         # hold past rural urban share constant in each grid for now, based on year 2000
 
        ratio <- future[, 2000, ] / dimSums(future[, 2000, ], dim = 3.2)
@@ -78,9 +86,7 @@ calcGridPop <- function(source = "ISIMIP", subtype = "all", # nolint
     
        past <- setYears(ratio, NULL) * past
 
-       } else if (!urban) { # nolint
-        future <- collapseNames(dimSums(future, dim = 3.2))
-     }
+       }
     
   } else if (source == "ISIMIP") {
         
@@ -109,9 +115,12 @@ calcGridPop <- function(source = "ISIMIP", subtype = "all", # nolint
      # harmonize future SSPs to divergence year by making them SSP2
      selectY           <- 1:which(getYears(future, as.integer = TRUE) == harmonize_until)
      harmY             <- getYears(future, as.integer = TRUE)[selectY]
-     future[, harmY, ] <- future[, harmY, "SSP2"]
-    
-      x <- mbind(past, future)
+     future[, harmY, ] <- future[, harmY, "pop_SSP2"]
+
+     #take future years in case of overlap
+    pYears <- setdiff(getYears(past), getYears(future))
+
+     x <- mbind(past[,pYears,], future)
      x <- toolHoldConstantBeyondEnd(x)
 
     }
@@ -121,6 +130,22 @@ calcGridPop <- function(source = "ISIMIP", subtype = "all", # nolint
     x <- toolCoord2Isocell(x, cells = cells)
   }
 
+      # Add SDP, SDP_EI, SDP_RC and SDP_MC scenarios as copy of SSP1 
+      if ("pop_SSP1" %in% getNames(x, dim = 1) && !("pop_SDP" %in% getNames(x, dim = 1))) {
+        combinedSDP <- x[, , "pop_SSP1"]
+        for  (i in c("SDP", "SDP_EI", "SDP_RC", "SDP_MC")) {
+          getNames(combinedSDP) <- gsub("SSP1", i, getNames(x[, , "pop_SSP1"]))
+          x <- mbind(x, combinedSDP)
+        }
+      }
+      # Add SSP2EU as copy of SSP2 
+      if ("pop_SSP2" %in% getNames(x, dim = 1) && !("pop_SSP2EU" %in% getNames(x, dim = 1))) {
+        combinedEU <- x[, , "pop_SSP2"]
+        getNames(combinedEU) <- gsub("SSP2", "SSP2EU", getNames(x[, , "pop_SSP2"]))
+        x <- mbind(x, combinedEU)
+      }
+
+if (scale) {
   ## Scale to match country-level data
    # Country-level population data (in million)
   pop <- calcOutput("Population", aggregate = FALSE)
@@ -151,33 +176,18 @@ calcGridPop <- function(source = "ISIMIP", subtype = "all", # nolint
       for (i in missing) {
         x[i, , ] <- pop[i, , "pop_SSP2"] / length(getCells(x[i, , ]))
       }
-
+}
  # unit conversion to million people
- x <- x/1e6
-
-      # Add SDP, SDP_EI, SDP_RC and SDP_MC scenarios as copy of SSP1 
-      if ("pop_SSP1" %in% getNames(x) && !("pop_SDP" %in% getNames(x))) {
-        combinedSDP <- x[, , "pop_SSP1"]
-        for  (i in c("SDP", "SDP_EI", "SDP_RC", "SDP_MC")) {
-          getNames(combinedSDP) <- gsub("SSP1", i, getNames(x[, , "pop_SSP1"]))
-          x <- mbind(x, combinedSDP)
-        }
-      }
-      # Add SSP2EU as copy of SSP2 
-      if ("pop_SSP2" %in% getNames(x) && !("pop_SSP2EU" %in% getNames(x))) {
-        combinedEU <- x[, , "pop_SSP2"]
-        getNames(combinedEU) <- gsub("SSP2", "SSP2EU", getNames(x[, , "pop_SSP2"]))
-        x <- mbind(x, combinedEU)
-      }
+  x <- x/1e6
     
-       if (FiveYear == TRUE) {
+      if (FiveYear == TRUE) {
       years <- findset("time")
       x     <- x[, intersect(years, getYears(x)), ]
-      x     <- toolHoldConstantBeyondEnd(x)
-    }
+    } 
 
+    if(subtype == "all") {
     getNames(x) <- gsub("pop_", "", getNames(x))
-
+    }
   # Checks
   if (any(is.na(x))) {
     stop("Function calcGridPop returned NAs.")

@@ -10,6 +10,7 @@ calcGridPop(
   cellular = TRUE,
   cells = "magpiecell",
   FiveYear = TRUE,
+  scale = TRUE,
   harmonize_until = 2015,
   urban = FALSE
 )
@@ -29,6 +30,8 @@ all (divergence starts at year in harmonize_until)}
 Options: "magpiecell" (59199), "lpjcell" (67420)}
 
 \item{FiveYear}{TRUE for 5 year time steps, otherwise yearly from source}
+
+\item{scale}{if true: scales sum of gridded values to match country level totals}
 
 \item{harmonize_until}{harmonization year until which SSPs diverge (default: 2015)}
 
