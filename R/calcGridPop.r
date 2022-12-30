@@ -150,8 +150,11 @@ if (scale) {
    # Country-level population data (in million)
   pop <- calcOutput("Population", aggregate = FALSE)
   # aggregate to country-level and scale to match WDI country-level pop
+      if (cells == "lpjcell"){
       agg <- collapseNames(dimSums(x, dim = c("x", "y")))
-
+      } else if (cells == "magpiecell") {
+        agg <- collapseNames(dimSums(x, dim = "cell"))
+      }
       # fill missing years
       pop <- time_interpolate(pop, interpolated_year = getYears(agg))
       # scale from millions to units in agg
