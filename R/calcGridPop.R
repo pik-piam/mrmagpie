@@ -29,171 +29,161 @@
 #'
 #' @export
 calcGridPop <- function(source = "ISIMIP", subtype = "all", # nolint
-                           cellular = TRUE, cells = "magpiecell",
-                           FiveYear = TRUE,  scale = TRUE, # nolint
-                           harmonize_until = 2015, urban = FALSE) { # nolint
+                        cellular = TRUE, cells = "magpiecell",
+                        FiveYear = TRUE, scale = TRUE, # nolint
+                        harmonize_until = 2015, urban = FALSE) { # nolint
 
   if (!cellular) {
     stop("Run calcPopulation instead")
   }
 
-  # rename source because otherwise the linter will always assume base::source is called
+  # the linter assumes `source` refers to `base::source` which is undesirable
+  # rename so we need to nolint only once
   src <- source # nolint
 
   # Gridded population data
-    # past data
- if (subtype != "all") {
+  # past data
+  if (subtype != "all") {
+    if (src == "ISIMIP") {
+      x <- readSource("GridPopIsimip", subtype = subtype, convert = FALSE)
 
-      if (src == "ISIMIP") {
-       x <- readSource("GridPopIsimip", subtype = subtype, convert = FALSE)
-
-        if (subtype == "past") {
+      if (subtype == "past") {
         # Add scenario dimension and fill with same value
-        x <- add_columns(x, dim = 3.1, addnm = c("pop_SSP1", "pop_SSP2", "pop_SSP3",
-                                                "pop_SSP4", "pop_SSP5"))
+        x <- add_columns(x, dim = 3.1, addnm = c("pop_SSP1", "pop_SSP2", "pop_SSP3", "pop_SSP4", "pop_SSP5"))
         x[, , 2:6] <- x[, , 1]
         x <- (x[, , -1])
-        }
-
-      } else if (src == "Gao") {
-       x <- readSource("GridPopGao", subtype = subtype, convert = FALSE)
-       getNames(x, dim = 1) <- paste0("pop_", getNames(x, dim = 1))
+      }
+    } else if (src == "Gao") {
+      x <- readSource("GridPopGao", subtype = subtype, convert = FALSE)
+      getNames(x, dim = 1) <- paste0("pop_", getNames(x, dim = 1))
 
       if (!urban && subtype == "future") {
         x <- collapseNames(dimSums(x, dim = 3.2))
-         }
-
       }
-
-} else if (subtype == "all") {
-      past   <- calcOutput("GridPop", source = "ISIMIP", subtype = "past",
-                           cellular = cellular, cells = "lpjcell",
-                           FiveYear = FiveYear, scale = FALSE, # nolint
-                           harmonize_until = 2015, urban = urban, aggregate = FALSE)
-      future   <- calcOutput("GridPop", source = src, subtype = "future",
-                           cellular = cellular, cells = "lpjcell",
-                           FiveYear = FiveYear, scale = FALSE, # nolint
-                           harmonize_until = 2015, urban = urban, aggregate = FALSE)
+    }
+  } else if (subtype == "all") {
+    past <- calcOutput("GridPop", source = "ISIMIP", subtype = "past", cellular = cellular, cells = "lpjcell",
+                       FiveYear = FiveYear, scale = FALSE, harmonize_until = 2015, urban = urban, aggregate = FALSE)
+    future <- calcOutput("GridPop", source = src, subtype = "future", cellular = cellular, cells = "lpjcell",
+                         FiveYear = FiveYear, scale = FALSE, harmonize_until = 2015, urban = urban, aggregate = FALSE)
 
     if (src == "Gao") {
       intYears <- seq(2005, 2095, 10)
-      future       <- time_interpolate(future, interpolated_year = intYears,
-                                   integrate_interpolated_years = TRUE)
+      future <- time_interpolate(future, interpolated_year = intYears, integrate_interpolated_years = TRUE)
 
-  if (urban) {
+      if (urban) {
         # hold past rural urban share constant in each grid for now, based on year 2000
 
-       ratio <- future[, 2000, ] / dimSums(future[, 2000, ], dim = 3.2)
-       ratio[is.na(ratio)] <- 0
-       ratio[is.infinite(ratio)] <- 0
+        ratio <- future[, 2000, ] / dimSums(future[, 2000, ], dim = 3.2)
+        ratio[is.na(ratio)] <- 0
+        ratio[is.infinite(ratio)] <- 0
 
-       past <- setYears(ratio, NULL) * past
+        past <- setYears(ratio, NULL) * past
+      }
+    } else if (src == "ISIMIP") {
+      if (urban) {
+        message("This data source urban/rural is diaggregated using uniform country level value. ",
+                "Use Gao source instead for cellular urban/rural population")
 
-       }
+        # urban population at country-level
+        urban <- calcOutput("Urban", aggregate = FALSE)
+        getNames(urban) <- gsub("urb_", "", getNames(urban))
+        # disaggregate to cell level
+        coordMapping <- toolGetMappingCoord2Country()
+        urban <- toolAggregate(urban,
+          rel = coordMapping,
+          from = "iso", to = "coords", partrel = TRUE
+        )
+        getCells(urban) <- paste(getItems(urban, dim = 1),
+          coordMapping$iso[coordMapping$coords == getItems(urban, dim = 1)],
+          sep = "."
+        )
+        getSets(urban) <- c("x", "y", "iso", "year", "data")
 
-  } else if (src == "ISIMIP") {
-
-       if (urban) {
-      message("This data source urban/rural is diaggregated using uniform country level value. ",
-              "Use Gao source instead for cellular urban/rural population")
-
-      # urban population at country-level
-      urban           <- calcOutput("Urban", aggregate = FALSE)
-      getNames(urban) <- gsub("urb_", "", getNames(urban))
-      # disaggregate to cell level
-      coordMapping    <- toolGetMappingCoord2Country()
-      urban           <- toolAggregate(urban, rel = coordMapping,
-                                       from = "iso", to = "coords", partrel = TRUE)
-      getCells(urban) <- paste(getItems(urban, dim = 1),
-                           coordMapping$iso[coordMapping$coords == getItems(urban, dim = 1)],
-                           sep = ".")
-      getSets(urban)  <- c("x", "y", "iso", "year", "data")
-
-      past <- past * urban[, getYears(past), ]
-      future <- future * urban[, getYears(future), ]
+        past <- past * urban[, getYears(past), ]
+        future <- future * urban[, getYears(future), ]
+      }
     }
-       }
 
 
-     # harmonize future SSPs to divergence year by making them SSP2
-     selectY           <- 1:which(getYears(future, as.integer = TRUE) == harmonize_until)
-     harmY             <- getYears(future, as.integer = TRUE)[selectY]
-     future[, harmY, ] <- future[, harmY, "pop_SSP2"]
+    # harmonize future SSPs to divergence year by making them SSP2
+    selectY <- 1:which(getYears(future, as.integer = TRUE) == harmonize_until)
+    harmY <- getYears(future, as.integer = TRUE)[selectY]
+    future[, harmY, ] <- future[, harmY, "pop_SSP2"]
 
-     # take future years in case of overlap
+    # take future years in case of overlap
     pYears <- setdiff(getYears(past), getYears(future))
 
-     x <- mbind(past[, pYears, ], future)
-     x <- toolHoldConstantBeyondEnd(x)
-
-    }
+    x <- mbind(past[, pYears, ], future)
+    x <- toolHoldConstantBeyondEnd(x)
+  }
 
   # Reduce number of grid cells to 59199
   if (cells == "magpiecell") {
     x <- toolCoord2Isocell(x, cells = cells)
   }
 
-      # Add SDP, SDP_EI, SDP_RC and SDP_MC scenarios as copy of SSP1
-      if ("pop_SSP1" %in% getNames(x, dim = 1) && !("pop_SDP" %in% getNames(x, dim = 1))) {
-        combinedSDP <- x[, , "pop_SSP1"]
-        for  (i in c("SDP", "SDP_EI", "SDP_RC", "SDP_MC")) {
-          getNames(combinedSDP) <- gsub("SSP1", i, getNames(x[, , "pop_SSP1"]))
-          x <- mbind(x, combinedSDP)
-        }
-      }
-      # Add SSP2EU as copy of SSP2
-      if ("pop_SSP2" %in% getNames(x, dim = 1) && !("pop_SSP2EU" %in% getNames(x, dim = 1))) {
-        combinedEU <- x[, , "pop_SSP2"]
-        getNames(combinedEU) <- gsub("SSP2", "SSP2EU", getNames(x[, , "pop_SSP2"]))
-        x <- mbind(x, combinedEU)
-      }
+  # Add SDP, SDP_EI, SDP_RC and SDP_MC scenarios as copy of SSP1
+  if ("pop_SSP1" %in% getNames(x, dim = 1) && !("pop_SDP" %in% getNames(x, dim = 1))) {
+    combinedSDP <- x[, , "pop_SSP1"]
+    for  (i in c("SDP", "SDP_EI", "SDP_RC", "SDP_MC")) {
+      getNames(combinedSDP) <- gsub("SSP1", i, getNames(x[, , "pop_SSP1"]))
+      x <- mbind(x, combinedSDP)
+    }
+  }
+  # Add SSP2EU as copy of SSP2
+  if ("pop_SSP2" %in% getNames(x, dim = 1) && !("pop_SSP2EU" %in% getNames(x, dim = 1))) {
+    combinedEU <- x[, , "pop_SSP2"]
+    getNames(combinedEU) <- gsub("SSP2", "SSP2EU", getNames(x[, , "pop_SSP2"]))
+    x <- mbind(x, combinedEU)
+  }
 
-if (scale) {
-  ## Scale to match country-level data
-   # Country-level population data (in million)
-  pop <- calcOutput("Population", aggregate = FALSE)
-  # aggregate to country-level and scale to match WDI country-level pop
-      if (cells == "lpjcell") {
+  if (scale) {
+    ## Scale to match country-level data
+    # Country-level population data (in million)
+    pop <- calcOutput("Population", aggregate = FALSE)
+    # aggregate to country-level and scale to match WDI country-level pop
+    if (cells == "lpjcell") {
       agg <- collapseNames(dimSums(x, dim = c("x", "y")))
-      } else if (cells == "magpiecell") {
-        agg <- collapseNames(dimSums(x, dim = "cell"))
-      }
-      # fill missing years
-      pop <- time_interpolate(pop, interpolated_year = getYears(agg))
-      # scale from millions to units in agg
-      pop <- pop * 1e6
+    } else if (cells == "magpiecell") {
+      agg <- collapseNames(dimSums(x, dim = "cell"))
+    }
+    # fill missing years
+    pop <- time_interpolate(pop, interpolated_year = getYears(agg))
+    # scale from millions to units in agg
+    pop <- pop * 1e6
 
-      commonCountries <- intersect(getItems(agg, dim = 1), getItems(pop, dim = 1))
-      # Note: 15 countries are dropped because they are not in the spatial
-      #       data ("ABW" "AND" "ATA" "BES" "BLM" "BVT" "GIB" "LIE"
-      #             "MAC" "MAF" "MCO" "SMR" "SXM" "VAT" "VGB")
-      # scaling factor scF applied to every cell
-      if (urban) {
-          scF <- (dimSums(agg[commonCountries, , ], dim = 3.2)) / pop[commonCountries, , ]
-          } else {
-          scF <- agg[commonCountries, , ] / pop[commonCountries, , ]
-          }
+    commonCountries <- intersect(getItems(agg, dim = 1), getItems(pop, dim = 1))
+    # Note: 15 countries are dropped because they are not in the spatial
+    #       data ("ABW" "AND" "ATA" "BES" "BLM" "BVT" "GIB" "LIE"
+    #             "MAC" "MAF" "MCO" "SMR" "SXM" "VAT" "VGB")
+    # scaling factor scF applied to every cell
+    if (urban) {
+      scF <- (dimSums(agg[commonCountries, , ], dim = 3.2)) / pop[commonCountries, , ]
+    } else {
+      scF <- agg[commonCountries, , ] / pop[commonCountries, , ]
+    }
 
-      x <- x[commonCountries, , ] / scF[commonCountries, , ]
+    x <- x[commonCountries, , ] / scF[commonCountries, , ]
 
-      # Some countries have 0 population in grid, but the cells exist, so get filled.
-      # even division of population across cells
-      missing <- where(scF[commonCountries, , ] == 0)$true$regions
-      for (i in missing) {
-        x[i, , ] <- pop[i, , "pop_SSP2"] / length(getCells(x[i, , ]))
-      }
-}
- # unit conversion to million people
+    # Some countries have 0 population in grid, but the cells exist, so get filled.
+    # even division of population across cells
+    missing <- where(scF[commonCountries, , ] == 0)$true$regions
+    for (i in missing) {
+      x[i, , ] <- pop[i, , "pop_SSP2"] / length(getCells(x[i, , ]))
+    }
+  }
+  # unit conversion to million people
   x <- x / 1e6
 
-      if (FiveYear == TRUE) {
-      years <- findset("time")
-      x     <- x[, intersect(years, getYears(x)), ]
-    }
+  if (FiveYear) {
+    years <- findset("time")
+    x <- x[, intersect(years, getYears(x)), ]
+  }
 
-    if (subtype == "all") {
+  if (subtype == "all") {
     getNames(x) <- gsub("pop_", "", getNames(x))
-    }
+  }
   # Checks
   if (any(is.na(x))) {
     stop("Function calcGridPop returned NAs.")
