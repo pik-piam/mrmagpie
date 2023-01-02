@@ -37,7 +37,7 @@ stop("only minDist for cities are 5, 20 and 50 thousand people")
       }
   }
 
-  weight <- calcOutput("GridPopNew", aggregate = FALSE)[, 2015, "SSP2"]
+  weight <- calcOutput("GridPop", aggregate = FALSE)[, 2015, "SSP2"]
 
   return(list(
     x = out,
