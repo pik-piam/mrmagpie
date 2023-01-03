@@ -15,7 +15,7 @@ calcPastureSuit <- function(subtype = "ISIMIP3b:IPSL-CM6A-LR:1850-2100", smoothP
   x <- toolSplitSubtype(subtype, list(version = NULL, climatemodel = NULL, period = NULL))
 
   # pasture drivers
-  population <- calcOutput("GridPopNew", subtype = "all", cellular = TRUE, FiveYear = TRUE,
+  population <- calcOutput("GridPop", subtype = "all", cellular = TRUE, FiveYear = TRUE,
                            harmonize_until = 2015, aggregate = FALSE)
 
   precipitation <- list()

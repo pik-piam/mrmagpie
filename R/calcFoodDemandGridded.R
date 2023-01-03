@@ -16,7 +16,7 @@ foodDemand <- dimSums(foodDemand[, , c("food", "feed", "flour1")],
 hist <- getYears(foodDemand)
 
 
-gridPop <- collapseNames(calcOutput("GridPopNew", aggregate = FALSE,
+gridPop <- collapseNames(calcOutput("GridPop", aggregate = FALSE,
                                     source = "Gao", urban = TRUE)[, hist, "SSP2"])
 
 mapping <- toolGetMapping("CountryToCellMapping.csv", type = "cell")
