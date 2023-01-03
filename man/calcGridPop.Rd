@@ -46,6 +46,11 @@ Data is scaled to match WDI data from calcPopulation
 NOTE that some scaling factors for the future (for small countries Gambia and Djibouti) are off,
 data read in is 50% of WDI data, most likely due to large resolution
 }
+\examples{
+\dontrun{
+calcOutput("GridPop", aggregate = FALSE)
+}
+}
 \author{
 David Chen, Felicitas Beier
 }

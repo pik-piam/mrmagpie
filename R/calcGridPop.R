@@ -27,6 +27,10 @@
 #' @importFrom magpiesets findset
 #' @importFrom madrat calcOutput toolGetMapping toolAggregate
 #'
+#' @examples
+#' \dontrun{
+#' calcOutput("GridPop", aggregate = FALSE)
+#' }
 #' @export
 calcGridPop <- function(source = "ISIMIP", subtype = "all", # nolint
                         cellular = TRUE, cells = "magpiecell",
