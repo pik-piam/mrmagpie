@@ -21,7 +21,7 @@ A matrix containing the data
 }
 \description{
 Reads a series of MAgPIE files and combines them to a matrix
-which is then used for calculating a clustering.
+             which is then used for calculating a clustering.
 }
 \seealso{
 \code{\link{calcCluster}}

@@ -77,10 +77,10 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
                         paste0(versionTag, "_gsoilc-", emu_id))
 
 
-  magYearsPastLong  <- c("y1995", "y2000", "y2005", "y2010", "y2015")
-  magYears <- findset("time")
-  shortYears <- findset("t_all")
-  lpjYears <- seq(1995, 2100, by = 5)
+  magYearsPastLong <- c("y1995", "y2000", "y2005", "y2010", "y2015")
+  magYears         <- findset("time")
+  shortYears       <- findset("t_all")
+  lpjYears         <- seq(1995, 2100, by = 5)
 
   map      <- calcOutput("Cluster", ctype = ctype, weight = clusterweight, lpjml = lpjml,
     clusterdata = "yield_airrig", aggregate = FALSE)
@@ -279,9 +279,10 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
   calcOutput("AvlWater", lpjml = lpjml, years = lpjYears, climatetype = climatetype, seasonality = "total",
     aggregate = "cluster", round = 6, file = paste0("lpj_watavail_total_", ctype, ".mz"))
 
-
   calcOutput("EnvmtlFlow", lpjml = lpjml, years = lpjYears, climatetype = climatetype, aggregate = "cluster",
     round = 6, seasonality = "grper", file = paste0("lpj_envflow_grper_", ctype, ".mz"))
+  calcOutput("EnvmtlFlow", lpjml = lpjml, years = lpjYears, climatetype = climatetype, aggregate = "cluster",
+             round = 6, seasonality = "total", file = paste0("lpj_envflow_total_", ctype, ".mz"))
 
   if (rev < 4.67) {
     calcOutput("WaterUseNonAg", datasource = "WATCH_ISIMIP_WATERGAP", years = lpjYears, seasonality = "grper",
