@@ -8,6 +8,7 @@ calcIrrigation(
   lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de", crop =
     "ggcmi_phase3_nchecks_9ca735cb"),
   climatetype = "GSWP3-W5E5:historical",
+  cells = "magpiecell",
   rainfedweight = 0.01
 )
 }
@@ -15,6 +16,9 @@ calcIrrigation(
 \item{lpjml}{Defines LPJmL version for crop/grass and natveg specific inputs}
 
 \item{climatetype}{Switch between different climate scenarios}
+
+\item{cells}{Number of cells to be returned:
+"magpiecell" for 59199 cells or "lpjcell" for 67420 cells}
 
 \item{rainfedweight}{For clustering airrig is weighted with
 cropland_irrigated + rainfedweight * cropland_rainfed (default: 0.01)}
@@ -24,7 +28,7 @@ magpie object in cellular resolution
 }
 \description{
 This function extracts irrigation water (airrig: water applied additionally to rainfall)
-             from LPJmL to MAgPIE
+             from LPJmL for MAgPIE
 }
 \examples{
 \dontrun{

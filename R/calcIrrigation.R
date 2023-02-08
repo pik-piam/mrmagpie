@@ -1,9 +1,11 @@
 #' @title calcIrrigation
 #' @description This function extracts irrigation water (airrig: water applied additionally to rainfall)
-#'              from LPJmL to MAgPIE
+#'              from LPJmL for MAgPIE
 #'
-#' @param lpjml Defines LPJmL version for crop/grass and natveg specific inputs
-#' @param climatetype Switch between different climate scenarios
+#' @param lpjml         Defines LPJmL version for crop/grass and natveg specific inputs
+#' @param climatetype   Switch between different climate scenarios
+#' @param cells         Number of cells to be returned:
+#'                      "magpiecell" for 59199 cells or "lpjcell" for 67420 cells
 #' @param rainfedweight For clustering airrig is weighted with
 #'                      cropland_irrigated + rainfedweight * cropland_rainfed (default: 0.01)
 #'
@@ -16,15 +18,16 @@
 #' }
 #'
 #' @importFrom magpiesets findset
+#' @importFrom mrcommons toolLPJmLVersion toolGetMappingCoord2Country toolCoord2Isocell
+#' @importFrom madrat toolGetMapping calcOutput toolAggregate
+#' @importFrom magclass dimSums getItems getSets collapseNames
+#' @importFrom withr local_options
 
 calcIrrigation <- function(lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de", crop = "ggcmi_phase3_nchecks_9ca735cb"),
-                           climatetype = "GSWP3-W5E5:historical", rainfedweight = 0.01) {
+                           climatetype = "GSWP3-W5E5:historical", cells = "magpiecell", rainfedweight = 0.01) {
 
+  # Extract arguments
   cfg <- toolLPJmLVersion(version = lpjml["crop"], climatetype = climatetype)
-
-  sizelimit <- getOption("magclass_sizeLimit") # nolint
-  options(magclass_sizeLimit = 1e+12) # nolint
-  on.exit(options(magclass_sizeLimit = sizelimit)) # nolint
 
   if (grepl("GSWP3-W5E5", climatetype)) {
     stage       <- "smoothed"
@@ -33,19 +36,23 @@ calcIrrigation <- function(lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de", crop
     stage       <- "harmonized2020"
   }
 
+  # Set size limit
+  local_options(magclass_sizeLimit = 1e+12)
+
   # Read in airrig (irrigation water applied additionally to rainfall where irrigation takes place):
-  airrigLPJ   <- toolCoord2Isocell(collapseNames(calcOutput("LPJmL_new", version = lpjml["crop"],
-                                                             climatetype = climatetype, subtype = "irrig",
-                                                             aggregate = FALSE, stage = stage)))
+  airrigLPJ   <- collapseNames(calcOutput("LPJmL_new", version = lpjml["crop"],
+                                          climatetype = climatetype, subtype = "irrig",
+                                          stage = stage,
+                                          aggregate = FALSE))
 
   # Load LPJmL to MAgPIE mapping to aggregate to MAgPIE crops
-  mapping     <- toolGetMapping("MAgPIE_LPJmL.csv",
-                                 type = "sectoral", where = "mappingfolder")
+  mapping   <- toolGetMapping("MAgPIE_LPJmL.csv",
+                              type = "sectoral", where = "mappingfolder")
   # Aggregate to MAgPIE crops
-  airrigMAG   <- toolAggregate(airrigLPJ, mapping,
-                               from = "LPJmL", to = "MAgPIE", dim = 3.1, partrel = TRUE)
+  airrigMAG <- toolAggregate(airrigLPJ, mapping,
+                             from = "LPJmL", to = "MAgPIE", dim = 3.1, partrel = TRUE)
   # Remove pasture (pasture is not irrigated in MAgPIE)
-  airrigMAG   <- airrigMAG[, , "pasture", invert = TRUE]
+  airrigMAG <- airrigMAG[, , "pasture", invert = TRUE]
   # Remove negative airrig
   airrigMAG[airrigMAG < 0] <- 0
 
@@ -55,10 +62,23 @@ calcIrrigation <- function(lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de", crop
   }
 
   # Clustering weight:
-  totalCropland  <- dimSums(calcOutput("Croparea", sectoral = "kcr", physical = TRUE, cellular = TRUE,
-                                         irrigation = TRUE, aggregate = FALSE, years = "y1995", round = 6), dim = 3.2)
+  totalCropland <- dimSums(calcOutput("Croparea", sectoral = "kcr", physical = TRUE,
+                                       cellular = TRUE, cells = cells,
+                                       years = "y1995", round = 6,
+                                       irrigation = TRUE, aggregate = FALSE),
+                            dim = 3.2)
+  map <- toolGetMappingCoord2Country()
+  getItems(totalCropland, dim = 1, raw = TRUE) <- paste(map$coords, map$iso, sep = ".")
+  getSets(totalCropland) <- c("x", "y", "iso", "year", "irrigation")
+
   weightCropArea <- collapseNames(totalCropland[, , "irrigated"]) +
                                   rainfedweight * collapseNames(totalCropland[, , "rainfed"])
+
+  # Reduce to 59199 cells
+  if (cells == "magpiecell") {
+    airrigMAG      <- toolCoord2Isocell(airrigMAG)
+    weightCropArea <- toolCoord2Isocell(weightCropArea)
+  }
 
   return(list(x = airrigMAG,
               weight = weightCropArea,
