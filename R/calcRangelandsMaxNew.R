@@ -22,7 +22,7 @@
 
 
 calcRangelandsMaxNew <- function(lsuLevels = c(seq(0, 2.2, 0.2), 2.5), lpjml = "lpjml5.2_pasture",
-                                  climatetype = "IPSL_CM6A_LR", scenario = "ssp126_co2_limN", report = "harvest") {
+                                 climatetype = "IPSL_CM6A_LR", scenario = "ssp126_co2_limN", report = "harvest") {
 
     # tidyr variables initiation to avoid problems with buildlibrary()
     water <- NULL
@@ -58,11 +58,11 @@ calcRangelandsMaxNew <- function(lsuLevels = c(seq(0, 2.2, 0.2), 2.5), lpjml = "
         names_to = c("year", ".value", "water"),
         names_sep = "\\."
       )
-    y <- pivot_longer(y, cols = matches("^[0-9]*p*[0-9]*$"), names_to = "lsuHa")
+    y <- pivot_longer(y, cols = dplyr::matches("^[0-9]*p*[0-9]*$"), names_to = "lsuHa")
     y <- mutate(y, year = substr(year, 2, 5), lsuHa = as.numeric(gsub("p", ".", lsuHa)))
-    y <- group_by(y, cell, year, water)
-    y <- filter(y, value == max(value))
-    y <- filter(y, lsuHa == min(lsuHa))
+    y <- dplyr::group_by(y, cell, year, water)
+    y <- dplyr::filter(y, value == max(value))
+    y <- dplyr::filter(y, lsuHa == min(lsuHa))
 
     if (report == "harvest") {
       maxHarvest <- as.magpie(y[, -4], tidy = TRUE, replacement = ".")
