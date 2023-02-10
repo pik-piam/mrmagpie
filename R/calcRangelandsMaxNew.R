@@ -54,7 +54,7 @@ calcRangelandsMaxNew <- function(lsuLevels = c(seq(0, 2.2, 0.2), 2.5), lpjml = "
     y <-
       pivot_longer(
         w,
-        cols = -last_col(),
+        cols = -dplyr::last_col(),
         names_to = c("year", ".value", "water"),
         names_sep = "\\."
       )

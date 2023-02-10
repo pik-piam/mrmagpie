@@ -27,7 +27,7 @@ calcRangelandsMax <- function(lsu_levels = c(seq(0, 2, 0.2), 2.5), # nolint: obj
     value <- NULL
 
 
-    lsu_levels <- gsub("\\.", "p", lsu_levels)
+    lsu_levels <- gsub("\\.", "p", lsu_levels) # nolint: object_name_linter.
     y <- list()
     for (lsu in lsu_levels) {
       .subtype <- paste(paste(lpjml, climatetype, lsu, sep = ":"), "harvest", sep = ".")
