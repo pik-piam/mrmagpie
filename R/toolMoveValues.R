@@ -23,7 +23,7 @@
 #' @importFrom magclass getCoords
 #' @importFrom class knn1
 #' @importFrom tidyr unite
-#' @import dplyr
+#' @importFrom dplyr %>%
 #' @export
 
 toolMoveValues <- function(x, y, z, w = NULL) {

@@ -10,10 +10,13 @@ calcAgeClassDistribution()
 magpie object in cluster resolution
 }
 \description{
-This function calculates the share of each age class in secondary forests in each MAgPIE simulation cluster based on Global Forest Age Dataset from Poulter et al. 2019
+This function calculates the share of each age class in secondary forests in each
+             MAgPIE simulation cluster based on Global Forest Age Dataset from Poulter et al. 2019
 }
 \examples{
-\dontrun{ calcOutput("AgeClassDistribution", aggregate = FALSE) }
+\dontrun{
+calcOutput("AgeClassDistribution", aggregate = FALSE)
+}
 
 }
 \author{

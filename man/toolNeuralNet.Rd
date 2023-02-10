@@ -4,10 +4,10 @@
 \alias{toolNeuralNet}
 \title{Neural Network Reconstruction}
 \usage{
-toolNeuralNet(inputs_ml, weights, activation)
+toolNeuralNet(inputsMl, weights, activation)
 }
 \arguments{
-\item{inputs_ml}{Neural Network input features properly scaled with
+\item{inputsMl}{Neural Network input features properly scaled with
 the scale and center attributes of the scaled training set in a matrix format.}
 
 \item{weights}{The learned weights and biases in a list format as outputed by the

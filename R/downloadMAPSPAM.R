@@ -2,7 +2,7 @@
 #' @description Downloads the MAP-SPAM (SPAM) data set for harvested and physical croparea
 #' @return raw files for MAPSPAM
 #' @author Edna J. Molina Bacca
-#' @importFrom utils download.file
+#' @importFrom utils download.file unzip
 #' @seealso [downloadSource()]
 #' @examples
 #' \dontrun{
@@ -10,18 +10,17 @@
 #' }
 #'
 downloadMAPSPAM <- function() {
-
   # MAP-SPAM data sets for harvested and physical area
   # more information at: https://www.mapspam.info/data/
   #                      https://www.mapspam.info/publications/
 
  links <- c(
-          Harv2000  = "https://s3.amazonaws.com/mapspam/2000/v3.0.7/geotiff/spam2000v3.0.7_global_harvested-area.geotiff.zip",
-          Phy2000   = "https://s3.amazonaws.com/mapspam/2000/v3.0.7/geotiff/spam2000v3.0.7_global_physical-area.geotiff.zip",
-          Harv2005  = "https://s3.amazonaws.com/mapspam/2005/v3.2/geotiff/spam2005v3r2_global_harv_area.geotiff.zip",
-          Phy2005   = "https://s3.amazonaws.com/mapspam/2005/v3.2/geotiff/spam2005v3r2_global_phys_area.geotiff.zip",
-          Harv2010  = "https://s3.amazonaws.com/mapspam/2010/v2.0/geotiff/spam2010v2r0_global_harv_area.geotiff.zip",
-          Phy2010   = "https://s3.amazonaws.com/mapspam/2010/v2.0/geotiff/spam2010v2r0_global_phys_area.geotiff.zip"
+          Harv2000  = "https://s3.amazonaws.com/mapspam/2000/v3.0.7/geotiff/spam2000v3.0.7_global_harvested-area.geotiff.zip", #nolint
+          Phy2000   = "https://s3.amazonaws.com/mapspam/2000/v3.0.7/geotiff/spam2000v3.0.7_global_physical-area.geotiff.zip",  #nolint
+          Harv2005  = "https://s3.amazonaws.com/mapspam/2005/v3.2/geotiff/spam2005v3r2_global_harv_area.geotiff.zip", #nolint
+          Phy2005   = "https://s3.amazonaws.com/mapspam/2005/v3.2/geotiff/spam2005v3r2_global_phys_area.geotiff.zip", #nolint
+          Harv2010  = "https://s3.amazonaws.com/mapspam/2010/v2.0/geotiff/spam2010v2r0_global_harv_area.geotiff.zip", #nolint
+          Phy2010   = "https://s3.amazonaws.com/mapspam/2010/v2.0/geotiff/spam2010v2r0_global_phys_area.geotiff.zip"  #nolint
         )
 
  names <- c(Harv2000  = "spam2000v3r7_global_HA_geotiff",

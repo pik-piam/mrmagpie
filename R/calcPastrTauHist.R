@@ -8,25 +8,32 @@
 #' calcOutput("PastrTauHist", past_mngmt)
 #' }
 #'
-calcPastrTauHist <- function(past_mngmt = "2me") {
+#' @importFrom magclass where
+
+calcPastrTauHist <- function(past_mngmt = "2me") { # nolint
+
+  pastMngmt <- past_mngmt # nolint
+
   past <- findset("past")
   # Production
-  prod <- calcOutput("GrasslandBiomass", aggregate = F)[, past, "pastr"]
+  prod <- calcOutput("GrasslandBiomass", aggregate = FALSE)[, past, "pastr"]
   prod <- toolCountryFill(prod, fill = 0)
 
   # areas
-  pastr_weight <- calcOutput("PastureSuit",
-    subtype = paste("ISIMIP3bv2", "MRI-ESM2-0", "1850_2100", sep = ":"), aggregate = F
-  )[, past, 1]
+  pastr_weight <- calcOutput("PastureSuit", # nolint
+    subtype = paste("ISIMIP3bv2", "MRI-ESM2-0", "1850_2100", sep = ":"), aggregate = FALSE
+  )[, past, 1] # Please Check this variable is not used in the code so far
   # regional mapping
   cell2reg <- toolGetMapping("CountryToCellMapping.csv", type = "cell")
 
   # pasture areas
-  area <- calcOutput("LUH2v2", landuse_types = "LUH2v2", cellular = F, aggregate = F)[, past, "pastr"]
+  area <- calcOutput("LUH2v2", landuse_types = "LUH2v2", cellular = FALSE, aggregate = FALSE)[, past, "pastr"]
   area <- toolCountryFill(area, fill = 0)
 
-  # Adding 'otherland' as an extra source of grass biomass comparable to managed pastures in India, Pakistan and Bangladesh.
-  otherland <- calcOutput("LUH2v2", landuse_types = "LUH2v2", cellular = F, aggregate = F)[, past, c("secdn", "primn")]
+  # Adding 'otherland' as an extra source of grass biomass comparable
+  # to managed pastures in India, Pakistan and Bangladesh.
+  otherland <- calcOutput("LUH2v2", landuse_types = "LUH2v2", cellular = FALSE,
+                          aggregate = FALSE)[, past, c("secdn", "primn")]
   area["IND", , "pastr"] <- area["IND", , "pastr"] + setNames(dimSums(otherland["IND", , ], dim = 3), "pastr")
   area["BGD", , "pastr"] <- area["BGD", , "pastr"] + setNames(dimSums(otherland["BGD", , ], dim = 3), "pastr")
   area["PAK", , "pastr"] <- area["PAK", , "pastr"] + setNames(dimSums(otherland["PAK", , ], dim = 3), "pastr")
@@ -37,15 +44,15 @@ calcPastrTauHist <- function(past_mngmt = "2me") {
 
   # reference yields
   yref <- calcOutput("GrasslandsYields",
-    lpjml = "lpjml5p2_pasture", climatetype = "MRI-ESM2-0:ssp245", subtype = "/co2/Nreturn0p5",
-    lsu_levels = c(seq(0, 2.2, 0.2), 2.5), past_mngmt = past_mngmt,
-    aggregate = F
+    lpjml = "lpjml5p2_pasture", climatetype = "MRI-ESM2-0:ssp245", subtype = "/co2/Nreturn0p5", # nolint
+    lsu_levels = c(seq(0, 2.2, 0.2), 2.5), pastMngmt = pastMngmt,
+    aggregate = FALSE
   )[, past, "pastr.rainfed"]
 
   yref <- collapseNames(yref)
 
-  yref_weights <- calcOutput("LUH2v2", landuse_types = "LUH2v2", cellular = T, aggregate = F)[, past, "pastr"]
-  yref <- toolAggregate(yref, rel = cell2reg, from = "celliso", to = "iso", weight = yref_weights)
+  yrefWeights <- calcOutput("LUH2v2", landuse_types = "LUH2v2", cellular = TRUE, aggregate = FALSE)[, past, "pastr"]
+  yref <- toolAggregate(yref, rel = cell2reg, from = "celliso", to = "iso", weight = yrefWeights)
   yref <- toolCountryFill(yref, fill = 0)
 
   # tau calculation
@@ -54,18 +61,18 @@ calcPastrTauHist <- function(past_mngmt = "2me") {
   t <- collapseNames(t)
 
   # replacing unrealistic high tau values by regional averages
-  reg_map <- toolGetMapping("regionmappingH12.csv", type = "cell")
-  t_reg <- toolAggregate(t, rel = reg_map, weight = area, from = "CountryCode", to = "RegionCode")
-  regions <- reg_map$RegionCode
-  names(regions) <- reg_map[, "CountryCode"]
+  regMap <- toolGetMapping("regionmappingH12.csv", type = "cell")
+  tReg <- toolAggregate(t, rel = regMap, weight = area, from = "CountryCode", to = "RegionCode")
+  regions <- regMap$RegionCode
+  names(regions) <- regMap[, "CountryCode"]
 
-  largeTC <- where(t >= 10)$true$individual # tau threshold
+  largeTC <- magclass::where(t >= 10)$true$individual # tau threshold
   colnames(largeTC)[1] <- "country"
   largeTC <- as.data.frame(largeTC)
 
   for (i in as.vector(largeTC[, "country"])) {
     for (j in as.vector(largeTC[largeTC$country == i, "year"])) {
-      t[i, j, ] <- t_reg[regions[i], j, ]
+      t[i, j, ] <- tReg[regions[i], j, ]
     }
   }
 

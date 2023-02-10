@@ -2,7 +2,7 @@
 #'
 #' Reconstructs and evaluate a neural network from the weights and biases provided as arguments
 #'
-#' @param inputs_ml Neural Network input features properly scaled with
+#' @param inputsMl Neural Network input features properly scaled with
 #' the scale and center attributes of the scaled training set in a matrix format.
 #' @param weights The learned weights and biases in a list format as outputed by the
 #' function \code{keras::get_weights()}.
@@ -11,11 +11,11 @@
 #'  activation function can be passed using a "." to indicate where the layer inputs should be piped.
 #' @return The evaluated result of the neural network for the \code{input_ml} parameter.
 #' @author Marcos Alves
-#' @import dplyr
+#' @importFrom dplyr %>%
 #' @importFrom pbapply pboptions pbapply
 #' @export toolNeuralNet
 
-toolNeuralNet <- function(inputs_ml, weights, activation) {
+toolNeuralNet <- function(inputsMl, weights, activation) { #nolint
   if (activation %in% c("relu", "softplus", "sigmoid")) {
     activation <- switch(activation,
       relu = "{pmax(0,.)}",
@@ -23,7 +23,7 @@ toolNeuralNet <- function(inputs_ml, weights, activation) {
       sigmoid = "{1/(1-exp(-.))}",
     )
   }
-  if (dim(weights[[1]])[1] != dim(inputs_ml)[2]) {
+  if (dim(weights[[1]])[1] != dim(inputsMl)[2]) {
     stop(paste0("Inputs and weights are not conformable. Inputs are expected to have ",
       dim(weights[[1]])[1], " features/columns"))
   }
@@ -42,9 +42,9 @@ toolNeuralNet <- function(inputs_ml, weights, activation) {
   func <- eval(parse(text = x))
   pboptions(type = "txt", style = 3, char = "=")
   if (interactive()) {
-    out <- pbapply(inputs_ml, 1, func)
+    out <- pbapply(inputsMl, 1, func)
   } else {
-    out <- apply(inputs_ml, 1, func)
+    out <- apply(inputsMl, 1, func)
   }
   return(out)
 }

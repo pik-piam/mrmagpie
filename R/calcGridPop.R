@@ -170,7 +170,7 @@ calcGridPop <- function(source = "ISIMIP", subtype = "all", # nolint
 
     # Some countries have 0 population in grid, but the cells exist, so get filled.
     # even division of population across cells
-    missing <- where(scF[commonCountries, , ] == 0)$true$regions
+    missing <- magclass::where(scF[commonCountries, , ] == 0)$true$regions
     for (i in missing) {
       x[i, , ] <- pop[i, , "pop_SSP2"] / length(getCells(x[i, , ]))
     }
