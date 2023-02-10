@@ -8,8 +8,8 @@ calcScaleEnvironmentData_new(
   subtype = "ISIMIP3b:IPSL-CM6A-LR:ssp126:1965-2100",
   aggr = F,
   sar = 20,
-  sel_feat = c("tas", "pr", "lwnet", "rsds", "CO2", "Ks", "Sf", "w_pwp", "w_fc",
-    "w_sat", "hsg")
+  sel_feat = c("tas", "pr", "lwnet", "rsds", "CO2", "Ks", "Sf", "w_pwp", "w_fc", "w_sat",
+    "hsg")
 )
 }
 \arguments{
