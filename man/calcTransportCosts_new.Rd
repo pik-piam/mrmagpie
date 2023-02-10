@@ -21,6 +21,7 @@ transport costs, cellular production, and cellular travel time
 \dontrun{
 calcOutput("TransportCosts_new")
 }
+
 }
 \seealso{
 [calcTransportTime()],

@@ -7,16 +7,17 @@
 calcCollectEnvironmentData_new(
   subtype = "ISIMIP3b:IPSL-CM6A-LR:ssp126:1965-2100",
   sar = 20,
-  sel_feat = c("tas", "pr", "lwnet", "rsds", "CO2", "Ks", "Sf", "w_pwp", "w_fc", "w_sat",
-    "hsg", "wet")
+  selFeat = c("tas", "pr", "lwnet", "rsds", "CO2", "Ks", "Sf", "w_pwp", "w_fc",
+    "w_sat", "hsg", "wet")
 )
 }
 \arguments{
-\item{subtype}{Switch between different climate scenarios (default: "CRU_4") eg. "ISIMIP3b:IPSL-CM6A-LR:ssp126:1965-2100"}
+\item{subtype}{Switch between different climate scenarios
+(default: "CRU_4") eg. "ISIMIP3b:IPSL-CM6A-LR:ssp126:1965-2100"}
 
 \item{sar}{Average range for smoothing annual variations}
 
-\item{sel_feat}{features names to be included in the output file}
+\item{selFeat}{features names to be included in the output file}
 }
 \value{
 magpie object in cellular resolution

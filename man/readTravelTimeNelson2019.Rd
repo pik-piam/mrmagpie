@@ -4,10 +4,11 @@
 \alias{readTravelTimeNelson2019}
 \title{readTravelTimeNelson2019}
 \usage{
-readTravelTimeNelson2019(subtype = "cities")
+readTravelTimeNelson2019(subtype = "cities50")
 }
 \arguments{
-\item{subtype}{cities or ports data}
+\item{subtype}{currently only cities of 5, 20, or 50 thousand people ("cities5", "cities20", "cities50") or
+ports of various sizes ("portsLarge|Medium|Small|VerySmall|Any")}
 }
 \value{
 gridded magpie object for 2015, minimum travel time to cities in minutes

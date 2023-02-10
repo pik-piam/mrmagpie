@@ -12,7 +12,7 @@ Provides functions for MAgPIE country and cellular input data generation.
 Useful links:
 \itemize{
   \item \url{https://github.com/pik-piam/mrmagpie}
-  \item \doi{10.5281/zenodo.4319612}
+  \item \url{https://doi.org/10.5281/zenodo.4319612}
   \item Report bugs at \url{https://github.com/pik-piam/mrmagpie/issues}
 }
 

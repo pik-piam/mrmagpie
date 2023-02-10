@@ -36,4 +36,6 @@ readSource("SoilClassification", subtype="HWSD.soil", convert="onlycorrect")
 }
 \author{
 Marcos Alves, Kristine Karstens
+
+Marcos Alves, Kristine Karstens
 }
