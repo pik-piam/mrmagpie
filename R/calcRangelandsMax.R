@@ -14,28 +14,26 @@
 #' @import magclass
 #' @importFrom tidyr pivot_longer
 #' @importFrom dplyr mutate select
-#'
-#'
-
-
-calcRangelandsMax <-
-  function(lsu_levels = c(seq(0, 2, 0.2), 2.5), lpjml = "LPJmL_range", climatetype = "HadGEM2_ES:rcp8p5:co2", report = "harvest") {
+calcRangelandsMax <- function(lsu_levels = c(seq(0, 2, 0.2), 2.5), # nolint: object_name_linter.
+                              lpjml = "LPJmL_range",
+                              climatetype = "HadGEM2_ES:rcp8p5:co2",
+                              report = "harvest") {
 
     #tidyr variables initiation to avoid problems with buildlibrary()
     water <- NULL
     year <- NULL
     cell <- NULL
-    lsu_ha <- NULL
+    lsu_ha <- NULL # nolint: object_name_linter.
     value <- NULL
 
 
-    lsu_levels <- gsub("\\.", "p", lsu_levels)
+    lsu_levels <- gsub("\\.", "p", lsu_levels) # nolint: object_name_linter.
     y <- list()
     for (lsu in lsu_levels) {
       .subtype <- paste(paste(lpjml, climatetype, lsu, sep = ":"), "harvest", sep = ".")
       x <- readSource("LPJmL", subtype = .subtype, convert = "onlycorrect")
       x <- x[, , "mgrass"]
-      getNames(x) <- gsub("mgrass",lsu,getNames(x))
+      getNames(x) <- gsub("mgrass", lsu, getNames(x))
       y[[lsu]] <- x
     }
     y <- mbind(y)
@@ -45,22 +43,22 @@ calcRangelandsMax <-
     y <-
       pivot_longer(
         w,
-        cols = -last_col(),
+        cols = -dplyr::last_col(),
         names_to = c("year", ".value", "water"),
         names_sep = "\\."
       )
-    y <- pivot_longer(y, cols = matches("^[0-9]*p*[0-9]*$"), names_to = "lsu_ha")
+    y <- pivot_longer(y, cols = dplyr::matches("^[0-9]*p*[0-9]*$"), names_to = "lsu_ha")
     y <- mutate(y, year = substr(year, 2, 5), lsu_ha = as.numeric(gsub("p", ".", lsu_ha)))
-    y <- group_by(y, cell, year, water)
-    y <- filter(y, value == max(value))
-    y <- filter(y, lsu_ha == min(lsu_ha))
+    y <- dplyr::group_by(y, cell, year, water)
+    y <- dplyr::filter(y, value == max(value))
+    y <- dplyr::filter(y, lsu_ha == min(lsu_ha))
 
     if (report == "harvest") {
-      max_harvest <- as.magpie(y[, -4], tidy = TRUE, replacement = ".")
-      max_harvest <- add_dimension(max_harvest, dim = 3.1, add = "CO2", nm = "range")
+      maxHarvest <- as.magpie(y[, -4], tidy = TRUE, replacement = ".")
+      maxHarvest <- add_dimension(maxHarvest, dim = 3.1, add = "CO2", nm = "range")
       return(
         list(
-          x = max_harvest,
+          x = maxHarvest,
           weight = NULL,
           unit = "t/DM/y",
           description = "Maximum pasture yields obtained with rangelands",
@@ -69,12 +67,12 @@ calcRangelandsMax <-
       )
     }
     if (report == "lsu/ha") {
-      optm_lsu <- as.magpie(y[, -5], tidy = TRUE, replacement = ".")
-      optm_lsu[optm_lsu > 2.5] <- 2.5
-      optm_lsu <- add_dimension(optm_lsu, dim = 3.1, add = "CO2", nm = "range")
+      optmLsu <- as.magpie(y[, -5], tidy = TRUE, replacement = ".")
+      optmLsu[optmLsu > 2.5] <- 2.5
+      optmLsu <- add_dimension(optmLsu, dim = 3.1, add = "CO2", nm = "range")
       return(
         list(
-          x = optm_lsu,
+          x = optmLsu,
           weight = NULL,
           unit = "lsu/ha",
           description = "Optimal LSU density that corresponds to the maximum grass yields",

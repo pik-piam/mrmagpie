@@ -1,8 +1,8 @@
 Type: Package
 Package: mrmagpie
 Title: madrat based MAgPIE Input Data Library
-Version: 1.33.2
-Date: 2023-02-10
+Version: 1.33.3
+Date: 2023-02-13
 Authors@R: c(
     person("Kristine", "Karstens", , "karstens@pik-potsdam.de", role = c("aut", "cre")),
     person("Jan Philipp", "Dietrich", , "dietrich@pik-potsdam.de", role = "aut"),
@@ -12,7 +12,8 @@ Authors@R: c(
     person("Felicitas", "Beier", , "beier@pik-potsdam.de", role = "aut"),
     person("Patrick", "v. Jeetze", , "vjeetze@pik-potsdam.de", role = "aut"),
     person("Abhijeet", "Mishra", , "mishra@pik-potsdam.de", role = "aut"),
-    person("Florian", "Humpenoeder", , "humpenoeder@pik-potsdam.de", role = "aut")
+    person("Florian", "Humpenoeder", , "humpenoeder@pik-potsdam.de", role = "aut"),
+    person("Pascal", "Führlich", , "pascal.fuehrlich@pik-potsdam.de", role = "aut")
   )
 Description: Provides functions for MAgPIE country and cellular input data
     generation.
