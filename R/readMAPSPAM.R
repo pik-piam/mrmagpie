@@ -16,7 +16,6 @@
 #' }
 #'
 readMAPSPAM <- function(subtype = "harvested") {
-
   type <- subtype
   mapping <- toolGetMapping("CountryToCellMapping.rds", where = "mrcommons")
   kcr <- findset("kcr")
@@ -25,22 +24,22 @@ readMAPSPAM <- function(subtype = "harvested") {
                     names = c(paste0(kcr, ".rainfed"), paste0(kcr, ".irrigated")), fill = NA)
 
   for (year in c(2000, 2005, 2010)) {
-  Spam2Magpie <- if (year == 2000) toolGetMapping("SPAMtoMAGPIE2000.csv",
-                                                  type = "sectoral", where = "mrcommons") else
-                                                    toolGetMapping("SPAMtoMAGPIE2005.csv",
-                                                                   type = "sectoral", where = "mrcommons")
-  colnames(Spam2Magpie) <- c("crop", "name", "SPAM", "Magpie")
-  cropsSpam <- Spam2Magpie[, "SPAM"]
+    spam2Magpie <- if (year == 2000) toolGetMapping("SPAMtoMAGPIE2000.csv",
+                                                    type = "sectoral", where = "mrcommons") else
+                                                      toolGetMapping("SPAMtoMAGPIE2005.csv",
+                                                                     type = "sectoral", where = "mrcommons")
+    colnames(spam2Magpie) <- c("crop", "name", "SPAM", "Magpie")
+    cropsSpam <- spam2Magpie[, "SPAM"]
 
-  ty <- if (type == "harvested") "HA" else if (type == "physical") "PA" else stop("Not a valid type")
-  factor <- 6
+    ty <- if (type == "harvested") "HA" else if (type == "physical") "PA" else stop("Not a valid type")
+    factor <- 6
 
     hisT <- NULL
     hisI <- NULL
 
     for (i in seq_len(length(cropsSpam))) {
 
-        if (year == 2000) {
+      if (year == 2000) {
         # Reads raster data from SPAM
         tyArea <- if (ty == "HA") "harvested-area" else if (ty == "PA") "physical-area"
         rasterAscT <- paste0("spam2000v3r7_global_", ty, "_geotiff/spam2000v3r7_", tyArea, "_", cropsSpam[i], ".tif")
@@ -63,7 +62,7 @@ readMAPSPAM <- function(subtype = "harvested") {
                              cropsSpam[i], "_I.tif")
       }
 
-      .ValuesExtract <- function(rasterAscT) {
+      .valuesExtract <- function(rasterAscT) {
 
         dataAscT <- rast(rasterAscT)
         dataAscT <- aggregate(dataAscT, fact = factor, fun = sum)
@@ -79,38 +78,34 @@ readMAPSPAM <- function(subtype = "harvested") {
         return(historicalT[, c("celliso", "Year", "crop", "Value")])
       }
 
+      if (file.exists(rasterAscT) && file.exists(rasterAscI)) {
 
-      if (file.exists(rasterAscT) & file.exists(rasterAscI)) {
-
-        historicalT <- .ValuesExtract(rasterAscT)
+        historicalT <- .valuesExtract(rasterAscT)
         hisT <- rbind(hisT, historicalT)
 
-        historicalI <- .ValuesExtract(rasterAscI)
+        historicalI <- .valuesExtract(rasterAscI)
         hisI <- rbind(hisI, historicalI)
-
 
       }
     }
 
     .convertMag <- function(hisT) {
-
-      MagObjSPAMT <- as.magpie(hisT)
-      Spam2Magpie <- Spam2Magpie[Spam2Magpie$SPAM %in% getNames(MagObjSPAMT), ]
-      MagObjSPAMT <- speed_aggregate(MagObjSPAMT, rel = Spam2Magpie, from = "SPAM", to = "Magpie", dim = 3)
-      getCells(MagObjSPAMT) <- gsub("_", "\\.", getCells(MagObjSPAMT))
-
-      return(MagObjSPAMT)
+      magObjSPAMT <- as.magpie(hisT)
+      spam2Magpie <- spam2Magpie[spam2Magpie$SPAM %in% getNames(magObjSPAMT), ]
+      magObjSPAMT <- speed_aggregate(magObjSPAMT, rel = spam2Magpie, from = "SPAM", to = "Magpie", dim = 3)
+      getCells(magObjSPAMT) <- gsub("_", "\\.", getCells(magObjSPAMT))
+      return(magObjSPAMT)
     }
 
-    MagObjSPAMT <- .convertMag(hisT)
-    MagObjSPAMI <- .convertMag(hisI)
-    MagObjSPAMR <- MagObjSPAMT - MagObjSPAMI
+    magObjSPAMT <- .convertMag(hisT)
+    magObjSPAMI <- .convertMag(hisI)
+    magObjSPAMR <- magObjSPAMT - magObjSPAMI
 
-    MagObjSPAM <- mbind(setNames(MagObjSPAMI, paste0(getNames(MagObjSPAMI), ".irrigated")),
-               setNames(MagObjSPAMR, paste0(getNames(MagObjSPAMR), ".rainfed")))
+    magObjSPAM <- mbind(setNames(magObjSPAMI, paste0(getNames(magObjSPAMI), ".irrigated")),
+                        setNames(magObjSPAMR, paste0(getNames(magObjSPAMR), ".rainfed")))
 
-    out[, intersect(getYears(out), getYears(MagObjSPAM)), intersect(getNames(out), getNames(MagObjSPAM))] <- MagObjSPAM
+    out[, intersect(getYears(out), getYears(magObjSPAM)), intersect(getNames(out), getNames(magObjSPAM))] <- magObjSPAM
   }
 
-   return(out)
+  return(out)
 }
