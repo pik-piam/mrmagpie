@@ -1,70 +1,52 @@
 #' @title readTravelTimeNelson2019
 #' @description Read minimum travel time to cities and ports and
 #' ports of various size, see metadata file in source folder
-#' @param subtype cities or ports data
+#' @param subtype currently only cities of 5, 20, or 50 thousand people ("cities5", "cities20", "cities50") or
+#' ports of various sizes ("portsLarge|Medium|Small|VerySmall|Any")
 #' @return gridded magpie object for 2015, minimum travel time to cities in minutes
 #' @author David M Chen
 #' @importFrom terra aggregate project rast classify focal
-#' @importFrom raster brick
+#' @importFrom raster brick extract
 
+readTravelTimeNelson2019 <- function(subtype = "cities50") {
 
-readTravelTimeNelson2019 <- function(subtype = "cities") {
+  layers  <- c(cities5             = "travel_time_to_cities_12.tif",
+               cities20            = "travel_time_to_cities_10.tif",
+               cities50            = "travel_time_to_cities_11.tif",
+               portsLarge          = "travel_time_to_ports_1.tif",
+               portsMedium         = "travel_time_to_ports_2.tif",
+               portsSmall          = "travel_time_to_ports_3.tif",
+               portsVerySmall      = "travel_time_to_ports_4.tif",
+               portsAny            = "travel_time_to_ports_5.tif")
 
-  files <- list.files(path = "./TravelTimeNelson_unzipped", pattern = ".tif", full.names = TRUE)
-  files <- files[grep(pattern = subtype, files)]
+  file <- toolSubtypeSelect(subtype, layers)
+  file <- list.files(path = "./TravelTimeNelson_unzipped", pattern = file, full.names = TRUE)
 
   r <- rast(res = 0.5)
 
-  x <- rast(files)
+  x <- rast(file)
   x <- terra::classify(x, cbind(65534, 65536, NA), right = FALSE)
   x <- aggregate(x, fact = 60, fun = "mean")
   x <- terra::project(x, r)
 
-# fill NAs with focal function (neighbour mean)
-  x <- terra::focal(x, w = 3, mean, na.policy = "only", na.rm = TRUE)
+  # fill NAs with focal function (neighbour mean)
+  x <- terra::focal(x, w = 9, mean, na.policy = "only", na.rm = TRUE)
 
   x <- raster::brick(x)
 
-  out <- as.magpie(x)
+  # get spatial mapping
+  map <- toolGetMappingCoord2Country(pretty = TRUE)
+  # transform raster to magpie object
+  out <- as.magpie(raster::extract(x, map[c("lon", "lat")]), spatial = 1)
+  # set dimension names
+  dimnames(out) <- list("x.y.iso" = paste(map$coords, map$iso, sep = "."),
+                        "year" = NULL,
+                        "data" = subtype)
 
   getItems(out, dim = 2) <- "y2015"
 
-  # convert to magpie cells and add missing cells as NA
-  out <- toolCoord2Isocell(out, fillMissing = NA)
+  # fill remote island NAs with high transport time
+  out[is.na(out)] <- quantile(out, na.rm = TRUE, 0.90)
 
-  # fill with value(s) of cells i away, first try using the average of the 2 sides, if one doesn't exist, use the other
-  .fillNeighbours <- function(fill, tofill, i) {
-
-    neighbour <- ifelse(is.na((tofill[which(is.na(tofill)) + i] + tofill[which(is.na(tofill)) - i]) / 2),
-                    ifelse(is.na(tofill[which(is.na(tofill)) + i]),
-                    tofill[which(is.na(tofill)) - i],
-                    tofill[which(is.na(tofill)) + i]),
-           (tofill[which(is.na(tofill)) + i] + tofill[which(is.na(tofill)) - i]) / 2)
-
-  fills <- ifelse(is.na(fill), ifelse(is.na(neighbour), NA, neighbour), fill)
-
-  return(fills)
-  }
-
-
-  # fill NAs with value of cell beside
-  fill <- vector(length = length(which(is.na(out))))
-  fill[] <- NA
-  # run a couple times but still some NAs hard to get rid of
-t <- .fillNeighbours(fill = fill, tofill = out, i = 1)
-t1 <- .fillNeighbours(fill = t, tofill = out, i = 2)
-t2 <- .fillNeighbours(fill = t1, tofill = out, i = 3)
-t3 <- .fillNeighbours(fill = t2, tofill = out, i = 4)
-t4 <- .fillNeighbours(fill = t3, tofill = out, i = 5)
-
-out[is.na(out)] <- t4
-
-# fill rest with avg for that slice
-avgs <- dimSums(out, dim = 1, na.rm = TRUE) / 59199
-
-for (i in c(seq(getItems(out, dim = 3)))) {
-  out[, , i][which(is.na(out[, , i]))] <- as.numeric(avgs[, , i])
-}
-
-return(out)
+  return(out)
 }

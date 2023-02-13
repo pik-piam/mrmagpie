@@ -12,7 +12,8 @@ calcCollectEnvironmentData_new(
 )
 }
 \arguments{
-\item{subtype}{Switch between different climate scenarios (default: "CRU_4") eg. "ISIMIP3b:IPSL-CM6A-LR:ssp126:1965-2100"}
+\item{subtype}{Switch between different climate scenarios (default: "CRU_4")
+eg. "ISIMIP3b:IPSL-CM6A-LR:ssp126:1965-2100"}
 
 \item{sar}{Average range for smoothing annual variations}
 
