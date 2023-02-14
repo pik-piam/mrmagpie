@@ -19,7 +19,7 @@ calcLivestockDistribution <- function() {
   #############################
 
   mapping <- toolGetMapping(name = "CountryToCellMapping.csv", type = "cell")
-  glw3    <- readSource("gLW3", subtype = "Da", convert = "onlycorrect")
+  glw3    <- readSource("GLW3", subtype = "Da", convert = "onlycorrect")
 
   #############################
   ### FAO livestock Numbers ###
@@ -32,7 +32,7 @@ calcLivestockDistribution <- function() {
   ###        Feedbaskets        ###
   #################################
 
-  fbask                  <- calcOutput("FeedBasketsPast", aggregate = FALSE)
+  fbask                <- calcOutput("FeedBasketsPast", aggregate = FALSE)
   fbaskRumPasture      <- dimSums(fbask[, past, c("alias_livst_rum", "alias_livst_milk")][, , "pasture"])
   fbaskRumTotal        <- dimSums(fbask[, past, c("alias_livst_rum", "alias_livst_milk")])
   fbaskPastureFraction <- fbaskRumPasture / fbaskRumTotal
@@ -51,15 +51,13 @@ calcLivestockDistribution <- function() {
   livestockFAOscaled           <- dimSums(livestockFAOscaled[, , c(1, 4)])
   getYears(livestockFAOscaled) <- past
   livestockFAOscaled           <- livestockFAOscaled[unique(mapping$iso)]
-  livestockCell                 <- toolAggregate(livestockFAOscaled, rel = mapping,
-                                                  from = "iso", to = "celliso", weight = glw3)
-  livestockCell                 <- livestockCell / 1e6
+  livestockCell                <- toolAggregate(livestockFAOscaled, rel = mapping,
+                                                from = "iso", to = "celliso", weight = glw3)
+  livestockCell                <- livestockCell / 1e6
 
-  return(list(
-    x = livestockCell,
-    weight = NULL,
-    unit = "Total Livestock numbers per cell (mio)",
-    description = "Pasture correction factor for the historical dates",
-    isocountries = FALSE
-  ))
+  return(list(x = livestockCell,
+              weight = NULL,
+              unit = "Total Livestock numbers per cell (mio)",
+              description = "Pasture correction factor for the historical dates",
+              isocountries = FALSE))
 }

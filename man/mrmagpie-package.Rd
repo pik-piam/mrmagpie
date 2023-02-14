@@ -30,6 +30,7 @@ Authors:
   \item Patrick v. Jeetze \email{vjeetze@pik-potsdam.de}
   \item Abhijeet Mishra \email{mishra@pik-potsdam.de}
   \item Florian Humpenoeder \email{humpenoeder@pik-potsdam.de}
+  \item Pascal Führlich \email{pascal.fuehrlich@pik-potsdam.de}
 }
 
 }
