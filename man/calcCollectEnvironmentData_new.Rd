@@ -7,7 +7,7 @@
 calcCollectEnvironmentData_new(
   subtype = "ISIMIP3b:IPSL-CM6A-LR:ssp126:1965-2100",
   sar = 20,
-  selFeat = c("tas", "pr", "lwnet", "rsds", "CO2", "Ks", "Sf", "w_pwp", "w_fc", "w_sat",
+  sel_feat = c("tas", "pr", "lwnet", "rsds", "CO2", "Ks", "Sf", "w_pwp", "w_fc", "w_sat",
     "hsg", "wet")
 )
 }
