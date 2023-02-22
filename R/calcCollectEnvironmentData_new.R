@@ -21,12 +21,7 @@
 #' @importFrom magpiesets findset
 #'
 
-<<<<<<< HEAD
-calcCollectEnvironmentData_new <- function(subtype = "ISIMIP3b:IPSL-CM6A-LR:ssp126:1965-2100", # nolint
-                                            sar = 20, selFeat = c(
-=======
 calcCollectEnvironmentData_new <- function(subtype = "ISIMIP3b:IPSL-CM6A-LR:ssp126:1965-2100", sar = 20, sel_feat = c( # nolint
->>>>>>> e7806f7f2ef8529372286490ec1a1fa471249dd6
   "tas",
   "pr",
   "lwnet",
@@ -51,23 +46,6 @@ calcCollectEnvironmentData_new <- function(subtype = "ISIMIP3b:IPSL-CM6A-LR:ssp1
   fyear <- years[2]
   sar   <- 0 # test mush be erased after
 
-<<<<<<< HEAD
-  # read in the individual climate variables, then smooth
-   # the dataset with toolAverage and extend the standardize the number of years)
-  GCMVariables <- list() # nolint
-  for (climateVariable in climateVariables) {
-    GCMVariables[[climateVariable]] <- calcOutput("GCMClimate", aggregate = FALSE, # nolint
-                                               subtype = paste(x$version, x$climatemodel, x$scenario,
-                                               fullSimulationPeriod, climateVariable,
-                                                "annual_mean", sep = ":"))
-    GCMVariables[[climateVariable]] <- toolHoldConstant(GCMVariables[[climateVariable]], # nolint
-                                       seq((max(getYears(GCMVariables[[climateVariable]],  # nolint
-                                       as.integer = TRUE)) + 1), 2150, 5))
-  }
-  variables <- mbind(GCMVariables) # nolint
-  co2 <- calcOutput("CO2Atmosphere_new", aggregate = FALSE, subtype = paste(x$version, x$scenario, sep = ":"),
-                      co2_evolution = "rising")[, (syear - sar / 2):fyear, ]
-=======
   # read in the individual climate variables, then smooth the dataset with
   # toolAverage and extend the standardize the number of years)
   gcmVariables <- list()
@@ -84,7 +62,6 @@ calcCollectEnvironmentData_new <- function(subtype = "ISIMIP3b:IPSL-CM6A-LR:ssp1
   co2 <- calcOutput("CO2Atmosphere_new", aggregate = FALSE,
                     subtype = paste(x$version, x$scenario, sep = ":"),
                     co2_evolution = "rising")[, (syear - sar / 2):fyear, ]
->>>>>>> e7806f7f2ef8529372286490ec1a1fa471249dd6
   co2 <- toolHoldConstant(co2,  seq((max(getYears(co2, as.integer = TRUE)) + 1), 2150, 5))
   soil <- calcOutput("SoilCharacteristics", aggregate = FALSE)[, getYears(co2), ]
 
@@ -92,11 +69,7 @@ calcCollectEnvironmentData_new <- function(subtype = "ISIMIP3b:IPSL-CM6A-LR:ssp1
   constants <- constants[, getYears(variables), ]
 
   env <- mbind(variables, constants)
-<<<<<<< HEAD
-  features <- paste0(selFeat, collapse = "+|")
-=======
   features <- paste0(sel_feat, collapse = "+|")
->>>>>>> e7806f7f2ef8529372286490ec1a1fa471249dd6
   select <- grepl(pattern = features, getItems(env, dim = 3), ignore.case = TRUE)
   env <- env[, , select]
 
