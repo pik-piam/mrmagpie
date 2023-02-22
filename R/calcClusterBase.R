@@ -17,13 +17,13 @@ calcClusterBase <- function(clusterdata = "yield_airrig", lpjml = c(natveg = "LP
   if (clusterdata == "yield_airrig") {
     d$yld    <- calcOutput("Yields",     source = c(lpjml = lpjml[["crop"]]), selectyears = 1995, aggregate = FALSE)
     d$irrig  <- calcOutput("Irrigation", lpjml = lpjml, years = 1995, aggregate = FALSE)
-    d$td     <- calcOutput("TransportDistance",      aggregate = FALSE)[, , rep(1, floor(ndata(d$yld) / 2))]
+    d$td     <- calcOutput("TransportTime",      aggregate = FALSE)[, , rep(1, floor(ndata(d$yld) / 2))]
   } else if (clusterdata == "yield_increment") {
     yield    <- calcOutput("Yields", source = c(lpjml = lpjml[["crop"]]), selectyears = 1995, aggregate = FALSE)
     d$yld    <- collapseNames(yield[, , "rainfed"])
     d$irrig  <- (collapseNames(yield[, , "irrigated"][, , "pasture", invert = TRUE])
                  - collapseNames(yield[, , "rainfed"][, , "pasture", invert = TRUE]))
-    d$td     <- calcOutput("TransportDistance", aggregate = FALSE)[, , rep(1, ndata(d$yld))]
+    d$td     <- calcOutput("TransportTime", aggregate = FALSE)[, , rep(1, ndata(d$yld))]
   } else {
     stop("Specify clusterdata argument: yield_airrig (old clustering data) or yield_increment (new clustering data)")
   }
