@@ -22,9 +22,6 @@ readSource("CO2Atmosphere_new", subtype = "ISIMIP3b:ssp126", convert = FALSE)
 }
 
 }
-\seealso{
-\code{\link{readCO2Atmosphere}}
-}
 \author{
 Marcos Alves, Kristine Karstens
 }

@@ -11,7 +11,7 @@
 #' }
 #' @importFrom raster area rasterFromXYZ
 
-calcPastureSuit <- function(subtype = "ISIMIP3b:IPSL-CM6A-LR:1850-2100", smoothPrecipitation = 10, smoothOut = 10) {
+calcPastureSuit <- function(subtype = "ISIMIP3bv2:IPSL-CM6A-LR:1850-2100", smoothPrecipitation = 10, smoothOut = 10) {
   x <- toolSplitSubtype(subtype, list(version = NULL, climatemodel = NULL, period = NULL))
 
   # pasture drivers
@@ -92,7 +92,7 @@ calcPastureSuit <- function(subtype = "ISIMIP3b:IPSL-CM6A-LR:1850-2100", smoothP
   histPastrReg <- toolAggregate(histPastr, rel = map, from = "celliso", to = "iso")
   corrReg <- histPastrReg[, pastLy, ] / pastureSuitAreaReg[, pastLy, ]
   pastureSuitArea[, future, ] <- toolAggregate(corrReg, rel = map, from = "iso", to = "celliso") *
-                                 pastureSuitArea[, future, ]
+    pastureSuitArea[, future, ]
 
   pastureSuitArea[is.infinite(pastureSuitArea) | is.nan(pastureSuitArea) | is.na(pastureSuitArea)] <- 0
   pastureSuitArea[pastureSuitArea < 0] <- 0

@@ -15,9 +15,9 @@ calcTransportTime <- function(subtype = "cities50", cells = "magpiecell") {
 
   x <- readSource("TravelTimeNelson2019", subtype = subtype, convert = FALSE)
 
-   if (cells == "magpiecell") {
-      x <- toolCoord2Isocell(x)
-    }
+  if (cells == "magpiecell") {
+    x <- toolCoord2Isocell(x)
+  }
 
   weight <- calcOutput("CellArea", cells = cells, aggregate = FALSE)
   return(list(

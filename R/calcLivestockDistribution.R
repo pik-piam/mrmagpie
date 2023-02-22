@@ -7,17 +7,10 @@
 #' calcOutput("LivestockDistribution")
 #' }
 #'
-#' @import madrat
 #' @importFrom tidyr pivot_wider
-#' @import magpiesets
-#' @import magclass
-#' @rawNamespace import(dplyr, except = where)
 #' @export
 #'
-
 calcLivestockDistribution <- function() {
-
-  #nolint start
   past <- findset("past")
   past <- past[7:length(past)]
 
@@ -26,23 +19,23 @@ calcLivestockDistribution <- function() {
   #############################
 
   mapping <- toolGetMapping(name = "CountryToCellMapping.csv", type = "cell")
-  GLW3    <- readSource("GLW3", subtype = "Da", convert = "onlycorrect")
+  glw3    <- readSource("GLW3", subtype = "Da", convert = "onlycorrect")
 
   #############################
   ### FAO livestock Numbers ###
   #############################
 
-  lvst_types    <- c("1746|Cattle and Buffaloes + (Total).stock", "1749|Sheep and Goats + (Total).stock")
-  livestock_FAO <- readSource("FAO", subtype = "LiveHead")[, past, lvst_types]
+  lvstTypes    <- c("1746|Cattle and Buffaloes + (Total).stock", "1749|Sheep and Goats + (Total).stock")
+  livestockFAO <- readSource("FAO", subtype = "LiveHead")[, past, lvstTypes]
 
   #################################
   ###        Feedbaskets        ###
   #################################
 
-  fbask                  <- calcOutput("FeedBasketsPast", aggregate = FALSE)
-  fbask_rum_pasture      <- dimSums(fbask[, past, c("alias_livst_rum", "alias_livst_milk")][, , "pasture"])
-  fbask_rum_total        <- dimSums(fbask[, past, c("alias_livst_rum", "alias_livst_milk")])
-  fbask_pasture_fraction <- fbask_rum_pasture / fbask_rum_total
+  fbask                <- calcOutput("FeedBasketsPast", aggregate = FALSE)
+  fbaskRumPasture      <- dimSums(fbask[, past, c("alias_livst_rum", "alias_livst_milk")][, , "pasture"])
+  fbaskRumTotal        <- dimSums(fbask[, past, c("alias_livst_rum", "alias_livst_milk")])
+  fbaskPastureFraction <- fbaskRumPasture / fbaskRumTotal
 
   #################################
   ### Calculating LSU/ha        ###
@@ -50,25 +43,21 @@ calcLivestockDistribution <- function() {
 
   # source calulation from EU statistics
   # https://docs.google.com/spreadsheets/d/1SZAAVl1SLwrrK6j329tq5zo1VZhfFtxUHTmsGQKYCCk/edit#gid=0
-  conversion_rate_LSU            <- c(0.7, 0.1)
-  conversion_rate_LSU            <- as.magpie(conversion_rate_LSU)
-  dimnames(conversion_rate_LSU)  <- list("region", "year", c("large", "small"))
+  conversionRateLSU            <- c(0.7, 0.1)
+  conversionRateLSU            <- as.magpie(conversionRateLSU)
+  dimnames(conversionRateLSU)  <- list("region", "year", c("large", "small"))
 
-  livestock_FAO_scaled           <- livestock_FAO * conversion_rate_LSU * fbask_pasture_fraction
-  livestock_FAO_scaled           <- dimSums(livestock_FAO_scaled[, , c(1, 4)])
-  getYears(livestock_FAO_scaled) <- past
-  livestock_FAO_scaled           <- livestock_FAO_scaled[unique(mapping$iso)]
-  livestock_cell                 <- toolAggregate(livestock_FAO_scaled, rel = mapping,
-                                                  from = "iso", to = "celliso", weight = GLW3)
-  livestock_cell                 <- livestock_cell / 1e6
+  livestockFAOscaled           <- livestockFAO * conversionRateLSU * fbaskPastureFraction
+  livestockFAOscaled           <- dimSums(livestockFAOscaled[, , c(1, 4)])
+  getYears(livestockFAOscaled) <- past
+  livestockFAOscaled           <- livestockFAOscaled[unique(mapping$iso)]
+  livestockCell                <- toolAggregate(livestockFAOscaled, rel = mapping,
+                                                from = "iso", to = "celliso", weight = glw3)
+  livestockCell                <- livestockCell / 1e6
 
-  return(list(
-    x = livestock_cell,
-    weight = NULL,
-    unit = "Total Livestock numbers per cell (mio)",
-    description = "Pasture correction factor for the historical dates",
-    isocountries = FALSE
-  ))
-
-  #nolint end
+  return(list(x = livestockCell,
+              weight = NULL,
+              unit = "Total Livestock numbers per cell (mio)",
+              description = "Pasture correction factor for the historical dates",
+              isocountries = FALSE))
 }

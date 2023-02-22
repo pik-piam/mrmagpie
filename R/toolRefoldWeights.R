@@ -9,10 +9,10 @@
 toolRefoldWeights <- function(x) {
   y <- list()
   for (i in getItems(x, dim = 3.1)) {
-    tmp <- x[,,i]
-    x_dim <- getItems(tmp,dim = 3.2) %>% str_split("_") %>% unlist() %>% as.numeric()
+    tmp <- x[, , i]
+    xDim <- getItems(tmp, dim = 3.2) %>% str_split("_") %>% unlist() %>% as.numeric()
     tmp <- as.matrix(tmp)
-    dim(tmp) <- x_dim
+    dim(tmp) <- xDim
     y[[i]] <- tmp
   }
   return(y)

@@ -87,10 +87,11 @@ calcTransportCosts_new <- function(transport = "all") { # nolint
   # Rename GTAP to MAgPIE commodities
   magpieComms <- unlist(cftRel)
 
-  transportMagpie <- transportPowerMagpie <-  new.magpie(0,
-                                              cells_and_regions = getItems(transportPerTonPerDistance, dim = 1),
-                                              years = "y2005",
-                                              names = magpieComms)
+  transportMagpie <- transportPowerMagpie <- new.magpie(0,
+                                                         cells_and_regions = getItems(transportPerTonPerDistance,
+                                                                                      dim = 1),
+                                                         years = "y2005",
+                                                         names = magpieComms)
 
   for (i in getNames(transportMagpie)) {
     transportMagpie[, , i] <- toolFillWithRegionAvg(transportPerTonPerDistance[, , names(cftRel)[grep(i, cftRel)]],

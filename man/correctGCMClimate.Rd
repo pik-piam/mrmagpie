@@ -14,11 +14,12 @@ Magpie objects with results on cellular level, weight, unit and description.
 }
 \description{
 Correct GCMs climate variables
+             NOTE: This function will be depreciate soon, please use mrland::correctLPJmLClimate
 }
 \examples{
 
 \dontrun{
-readSource("GCMClimate", subtype="HadGEM2_ES:rcp8p5.temperature", convert="onlycorrect")
+readSource("GCMClimate", subtype, convert="onlycorrect")
 }
 
 }
@@ -26,5 +27,5 @@ readSource("GCMClimate", subtype="HadGEM2_ES:rcp8p5.temperature", convert="onlyc
 \code{\link{readGCMClimate}}
 }
 \author{
-Marcos Alves
+Marcos Alves, Felicitas Beier
 }

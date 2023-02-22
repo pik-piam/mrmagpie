@@ -1,24 +1,25 @@
 #' @title correctGCMClimate
 #' @description Correct GCMs climate variables
+#'              NOTE: This function will be depreciate soon, please use mrland::correctLPJmLClimate
 #' @param x magpie object provided by the read function
 #' @return Magpie objects with results on cellular level, weight, unit and description.
-#' @author Marcos Alves
+#' @author Marcos Alves, Felicitas Beier
 #' @seealso
 #' \code{\link{readGCMClimate}}
 #' @examples
 #'
 #' \dontrun{
-#' readSource("GCMClimate", subtype="HadGEM2_ES:rcp8p5.temperature", convert="onlycorrect")
+#' readSource("GCMClimate", subtype, convert="onlycorrect")
 #' }
 #'
 #' @import magclass
 #' @importFrom madrat toolConditionalReplace
-#' @importFrom mrcommons toolCell2isoCell
 
-correctGCMClimate <- function(x){
+correctGCMClimate <- function(x) { # nolint
 
-  x <- toolConditionalReplace(x, conditions = c("is.na()"), replaceby = 0)
-  x <- toolCell2isoCell(x)
+  x <- toolConditionalReplace(x,
+                              conditions = c("is.na()"),
+                              replaceby = 0)
 
   return(x)
 }

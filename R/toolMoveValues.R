@@ -65,8 +65,8 @@ toolMoveValues <- function(x, y, z, w = NULL) {
       names(isoWrongDf) <- paste0("wr", ".", names(isoWrongDf))
       wr..value <- NULL # nolint
       aggCells  <- cbind(isoNcDf, isoWrongDf)
-      aggCells  <-  group_by(aggCells, across(1:2)) %>%
-        summarise(value = sum(wr..value)) %>%
+      aggCells  <- dplyr::group_by(aggCells, dplyr::across(1:2)) %>%
+        dplyr::summarise(value = sum(wr..value)) %>%
         unite("cell", 1:2, sep = "_", remove = FALSE)
 
       tmp       <- as.magpie(aggCells[, c("cell", "value")], spatial = 1)
