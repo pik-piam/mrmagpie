@@ -256,7 +256,7 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
 
   # 40
  # calcOutput("TransportDistance", aggregate = "cluster", round = 6, file = paste0("transport_distance_", ctype, ".mz")) # nolint
- # calcOutput("TransportDistance", aggregate = FALSE, round = 6, file = "transport_distance.mz") #nolint
+ #calcOutput("TransportDistance", aggregate = FALSE, round = 6, file = "transport_distance.mz") #nolint
  calcOutput("TransportTime", aggregate = "cluster", round = 6, file = paste0("transport_distance_", ctype, ".mz"))
  calcOutput("TransportTime", aggregate = FALSE, round = 6, file = "transport_distance.mz")
 

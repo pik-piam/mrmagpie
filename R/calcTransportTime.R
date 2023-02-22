@@ -20,6 +20,10 @@ calcTransportTime <- function(subtype = "cities50", cells = "magpiecell") {
   }
 
   weight <- calcOutput("CellArea", cells = cells, aggregate = FALSE)
+
+ getYears(x) <- NULL
+ getNames(x) <- NULL
+
   return(list(
     x = x,
     weight = weight,
