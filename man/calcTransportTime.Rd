@@ -4,13 +4,13 @@
 \alias{calcTransportTime}
 \title{calcTransportTime}
 \usage{
-calcTransportTime(object = "cities", minDist = 50)
+calcTransportTime(subtype = "cities50", cells = "magpiecell")
 }
 \arguments{
-\item{object}{cities or ports}
+\item{subtype}{currently only cities of 5, 20, or 50 thousand people ("cities5", "cities20", "cities50") or
+ports of various sizes ("portsLarge|Medium|Small|VerySmall|Any")}
 
-\item{minDist}{5 or 50 for cities, Large|Medium|Small|Very Small|Any for ports. For Cities, indicates
-5 000 or 20 000 or 50 000 as settlement population size for travel time to, while .}
+\item{cells}{number of cells to be returned: magpiecell (59199), lpjcell (67420)}
 }
 \value{
 magpie object in cellular resolution

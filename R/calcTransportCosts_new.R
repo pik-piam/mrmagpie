@@ -12,30 +12,32 @@
 #' \dontrun{
 #' calcOutput("TransportCosts_new")
 #' }
+#'
+calcTransportCosts_new <- function(transport = "all") { # nolint
 
-calcTransportCosts_new <- function(transport = "all") {
+  # load distance (travel time), production, and gtap transport costs
+  distance <- calcOutput("TransportTime", subtype = "cities50", cells = "magpiecell",  aggregate = FALSE)
 
-  #load distance (travel time), production, and gtap transport costs
-  distance <- calcOutput("TransportTime", minDist = 50, aggregate = FALSE)
  if (transport == "all") {
-  # read from magpie or from input data? # convert to tDM ? #production also only goes up to 2010..
+
   production <- calcOutput("Production", cellular = TRUE,
                            irrigation = FALSE, aggregate = FALSE)[, 2005, "dm"] * 10^6
   productionLi <- calcOutput("Production", cellular = TRUE,
                               irrigation = FALSE, aggregate = FALSE,
                               products = "kli")[, 2005, "dm"] * 10^6
   production <- mbind(production, productionLi)
+
  } else if (transport == "nonlocal") {
-   production <- calcOutput("NonLocalTransport", aggregate = FALSE)[,2005, ] * 10^6 } else {
+   production <- calcOutput("NonLocalTransport", aggregate = FALSE)[, 2005, ] * 10^6
+ } else {
    stop("only all or nonlocal production available for subtype")
    }
 
-  transportGtap <- calcOutput("GTAPTotalTransportCosts", aggregate = FALSE)[, 2004,] * 10^6
+  transportGtap <- calcOutput("GTAPTotalTransportCosts", aggregate = FALSE)[, 2004, ] * 10^6
+  # transform 10^6 USD -> USD
+  # this is  in 2004 and 2007 current USD, and we don't have same year for travel time, and pretend GTAP is 2005
 
-  #transform 10^6 USD -> USD
-  # this is  in 2004 and 2007 current USD, don't have same year for travel time, and pretend GTAP is 2005
-
-  #map gtap cfts to MAgPIE cfts
+  # map gtap cfts to MAgPIE cfts
   cftRel <- list()
   cftRel[["pdr"]] <- c("rice_pro")
   cftRel[["wht"]] <- c("tece")
@@ -44,14 +46,12 @@ calcTransportCosts_new <- function(transport = "all") {
   cftRel[["osd"]] <- c("soybean", "oilpalm", "rapeseed", "sunflower", "groundnut")
   cftRel[["c_b"]] <- c("sugr_beet", "sugr_cane")
   cftRel[["ocr"]] <- c("foddr")
-  cftRel[["ctl"]] <- c("livst_rum","livst_milk")
-  cftRel[["oap"]] <- c("livst_chick","livst_egg", "livst_pig")
+  cftRel[["ctl"]] <- c("livst_rum", "livst_milk")
+  cftRel[["oap"]] <- c("livst_chick", "livst_egg", "livst_pig")
 
-
-
-  #calculate transport power (amount * distance) &
-  #create average transport costs per ton per distance dummy
-  #calculate transport power (amount * distance)
+  # calculate transport power (amount * distance) &
+  # create average transport costs per ton per distance dummy
+  # calculate transport power (amount * distance)
   mapping <- toolGetMapping(type = "cell", name = "CountryToCellMapping.csv")
 
   tmpPower <- new.magpie(0, cells_and_regions = getItems(distance, dim = 1),
@@ -62,29 +62,29 @@ calcTransportCosts_new <- function(transport = "all") {
                                years = "y2005",
                                names = names(cftRel))
 
-  #create average transport costs per ton per distance dummy
+  # create average transport costs per ton per distance dummy
   transportPerTonPerDistance <- NULL
 
-  #sum up distances across gtap crops and aggregate to iso level, divide costs by distance
-  for (i in 1:length(cftRel)) {
+  # sum up distances across gtap crops and aggregate to iso level, divide costs by distance
+  for (i in seq_along(cftRel)) {
 
     if (length(cftRel[[i]]) > 1) {
-      tmpPower[,,names(cftRel)[i]] <- dimSums(production[,,cftRel[[i]]], dim = 3) * distance
+      tmpPower[, , names(cftRel)[i]] <- dimSums(production[, , cftRel[[i]]], dim = 3) * distance
     } else {
-      tmpPower[,,names(cftRel)[i]] <- production[,,cftRel[[i]]] * distance
+      tmpPower[, , names(cftRel)[i]] <- dimSums(production[, , cftRel[[i]]], dim = 3) * distance
     }
-    transportPower[,,names(cftRel)[i]] <- toolAggregate(x = tmpPower[,,names(cftRel)[i]],
+     transportPower[, , names(cftRel)[i]] <- toolAggregate(x = tmpPower[, , names(cftRel)[i]],
                                                         rel = mapping, from = "celliso", to = "iso")
 
-    tP_filled <- toolCountryFill(transportPower, fill = 0) # need to fill first to divide
+    tpFilled <- toolCountryFill(transportPower, fill = 0) # need to fill first to divide
     transportPerTonPerDistance <- mbind(transportPerTonPerDistance,
-                                        (transportGtap[,,names(cftRel)[i]]/tP_filled[,,names(cftRel)[i]]))
+                                        (transportGtap[, , names(cftRel)[i]] / tpFilled[, , names(cftRel)[i]]))
   }
 
-  #fill the transport power object to use as weights at the end
+  # fill the transport power object to use as weights at the end
   transportPower <- toolCountryFill(transportPower, fill = 0)
 
-  #Rename GTAP to MAgPIE commodities
+  # Rename GTAP to MAgPIE commodities
   magpieComms <- unlist(cftRel)
 
   transportMagpie <- transportPowerMagpie <-  new.magpie(0,
@@ -93,11 +93,22 @@ calcTransportCosts_new <- function(transport = "all") {
                                               names = magpieComms)
 
   for (i in getNames(transportMagpie)) {
-    transportMagpie[,, i] <- toolFillWithRegionAvg(transportPerTonPerDistance[,, names(cftRel)[grep(i, cftRel)]],
+    transportMagpie[, , i] <- toolFillWithRegionAvg(transportPerTonPerDistance[, , names(cftRel)[grep(i, cftRel)]],
                                                    valueToReplace = Inf, warningThreshold = 0.99)
-                                                  #warning threshold is so high as there is a lack of foddr in SSA
-    transportPowerMagpie[,, i] <- transportPower[,, names(cftRel)[grep(i, cftRel)]]
+                                                  # warning threshold is so high as there is a lack of foddr in SSA
+    transportPowerMagpie[, , i] <- transportPower[, , names(cftRel)[grep(i, cftRel)]]
   }
+
+
+ # add wood and woodfuel with foddr costs and pasture with 0 costs (not transported)
+ transportMagpie <- add_columns(transportMagpie, addnm = c("pasture", "wood", "woodfuel"),
+                                dim = 3.1, fill = 0)
+ transportMagpie[, , c("wood", "woodfuel")] <- transportMagpie[, , "foddr"]
+
+ # what weight to add for these?
+ transportPowerMagpie <- add_columns(transportPowerMagpie, addnm = c("pasture", "wood", "woodfuel"),
+                                dim = 3.1, fill = 0)
+ transportPowerMagpie[, , c("wood", "woodfuel")] <- transportPowerMagpie[, , "foddr"]
 
 
   return(list(x = transportMagpie,
