@@ -1,11 +1,11 @@
 #' @title readCO2Atmosphere
 #' @description Read CO2 global atmospheric concentration
+#'
 #' @param subtype Switch between different inputs
 #' @return Magpie objects with results on global level
 #' @author Marcos Alves, Kristine Karstens
 #'
 #' @examples
-#'
 #' \dontrun{
 #' readSource("CO2Atmosphere_new", subtype = "ISIMIP3b:ssp126", convert = FALSE)
 #' }

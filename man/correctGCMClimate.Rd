@@ -17,7 +17,6 @@ Correct GCMs climate variables
              NOTE: This function will be depreciate soon, please use mrland::correctLPJmLClimate
 }
 \examples{
-
 \dontrun{
 readSource("GCMClimate", subtype, convert="onlycorrect")
 }

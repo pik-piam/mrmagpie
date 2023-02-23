@@ -7,7 +7,6 @@
 #' @seealso
 #' \code{\link{readGCMClimate}}
 #' @examples
-#'
 #' \dontrun{
 #' readSource("GCMClimate", subtype, convert="onlycorrect")
 #' }
