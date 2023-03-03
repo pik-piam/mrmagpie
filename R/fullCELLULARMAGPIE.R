@@ -166,9 +166,9 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
     aggregate = "cluster", round = 6, file = paste0("wdpa_baseline_", ctype, ".mz"))
 
   if (rev < 4.82) {
-  calcOutput("Brooks2005ConservationPriorities", nclasses = "seven", cells = "magpiecell",
+  calcOutput("Brooks2005OldConservationPrios", nclasses = "seven", cells = "magpiecell",
              aggregate = FALSE, round = 6, file = "consv_prio_areas_0.5.mz")
-  calcOutput("Brooks2005ConservationPriorities", nclasses = "seven", cells = "magpiecell",
+  calcOutput("Brooks2005OldConservationPrios", nclasses = "seven", cells = "magpiecell",
              aggregate = "cluster", round = 6, file = paste0("consv_prio_areas_", ctype, ".mz"))
   } else {
   calcOutput("ConservationPriorities", nclasses = "seven", cells = "magpiecell",
