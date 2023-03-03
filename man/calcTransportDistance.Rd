@@ -11,6 +11,7 @@ magpie object in cellular resolution
 }
 \description{
 Function extracts travel time to major cities in minutes
+This function now deprecated - use calcTransportTime instead
 }
 \examples{
 \dontrun{
