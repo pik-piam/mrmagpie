@@ -16,7 +16,6 @@ Magpie objects with results on global level
 Read CO2 global atmospheric concentration
 }
 \examples{
-
 \dontrun{
 readSource("CO2Atmosphere_new", subtype = "ISIMIP3b:ssp126", convert = FALSE)
 }

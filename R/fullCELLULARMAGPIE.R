@@ -164,10 +164,18 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
     aggregate = FALSE, round = 6, file = "wdpa_baseline_0.5.mz")
   calcOutput("ProtectedAreaBaseline", nclasses = "seven", cells = "magpiecell", magpie_input = TRUE,
     aggregate = "cluster", round = 6, file = paste0("wdpa_baseline_", ctype, ".mz"))
-  calcOutput("ConservationPriority", nclasses = "seven", cells = "magpiecell",
+
+  if (rev < 4.82) {
+  calcOutput("Brooks2005OldConservationPrios", nclasses = "seven", cells = "magpiecell",
              aggregate = FALSE, round = 6, file = "consv_prio_areas_0.5.mz")
-  calcOutput("ConservationPriority", nclasses = "seven", cells = "magpiecell",
+  calcOutput("Brooks2005OldConservationPrios", nclasses = "seven", cells = "magpiecell",
              aggregate = "cluster", round = 6, file = paste0("consv_prio_areas_", ctype, ".mz"))
+  } else {
+  calcOutput("ConservationPriorities", nclasses = "seven", cells = "magpiecell",
+             aggregate = FALSE, round = 6, file = "consv_prio_areas_0.5.mz")
+  calcOutput("ConservationPriorities", nclasses = "seven", cells = "magpiecell",
+             aggregate = "cluster", round = 6, file = paste0("consv_prio_areas_", ctype, ".mz"))
+  }
 
   calcOutput("ProtectArea", bhifl = ifelse(rev > 4.66, TRUE, FALSE), aggregate = "cluster", round = 6,
              file = paste0("protect_area_", ctype, ".mz"))
@@ -186,7 +194,6 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
     country_level = TRUE, round = 6, file = paste0("avl_cropland_iso.cs3"))
 
   # 31 past
-
   calcOutput("GrasslandBiomass",  round = 3, file = "f31_grass_bio_hist.cs3", aggregate = "region")
   calcOutput("LUH2v2", aggregate = "cluster", landuse_types = "LUH2v2", cellular = TRUE,
              file = paste0("f31_LUH2v2_", ctype, ".mz"))
