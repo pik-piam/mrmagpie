@@ -1,4 +1,4 @@
-#' @title calcTransportCosts_new
+#' @title calcTransportCosts
 #' @description calculates country-level transport costs from GTAP total
 #' transport costs, cellular production, and cellular travel time
 #' @param transport "all" or "nonlocal". "all" means all production incurs transport costs,
@@ -13,7 +13,7 @@
 #' calcOutput("TransportCosts_new")
 #' }
 #'
-calcTransportCosts_new <- function(transport = "all") { # nolint
+calcTransportCosts <- function(transport = "all") { # nolint
 
   # load distance (travel time), production, and gtap transport costs
   distance <- calcOutput("TransportTime", subtype = "cities50", cells = "magpiecell",  aggregate = FALSE)
@@ -111,6 +111,7 @@ calcTransportCosts_new <- function(transport = "all") { # nolint
                                 dim = 3.1, fill = 0)
  transportPowerMagpie[, , c("wood", "woodfuel")] <- transportPowerMagpie[, , "foddr"]
 
+getYears(transportMagpie) <- NULL
 
   return(list(x = transportMagpie,
               weight = transportPowerMagpie,

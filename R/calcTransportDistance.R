@@ -1,6 +1,6 @@
 #' @title calcTransportDistance
 #' @description Function extracts travel time to major cities in minutes
-#'
+#' This function now deprecated - use calcTransportTime instead
 #' @return magpie object in cellular resolution
 #' @author David Chen
 #'
