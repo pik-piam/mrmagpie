@@ -9,6 +9,9 @@
 #' @importFrom raster brick extract
 
 readTravelTimeNelson2019 <- function(subtype = "cities50") {
+  terra::terraOptions(tempdir = withr::local_tempdir(tmpdir = getConfig("tmpfolder")),
+                      todisk = TRUE, memfrac = 0.5)
+  withr::defer(terra::terraOptions(tempdir = tempdir()))
 
   layers  <- c(cities5             = "travel_time_to_cities_12.tif",
                cities20            = "travel_time_to_cities_10.tif",
