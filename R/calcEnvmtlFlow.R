@@ -40,11 +40,11 @@ calcEnvmtlFlow <- function(lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de",
   cfgNatveg <- toolLPJmLVersion(version = lpjml["natveg"], climatetype = climatetype)
   cfgCrop   <- toolLPJmLVersion(version = lpjml["crop"],   climatetype = climatetype)
 
-  lpjmlReadin  <- c(natveg = cfgNatveg$readin_version,
-                    crop   = cfgCrop$readin_version)
+  lpjmlReadin  <- c(natveg = unname(cfgNatveg$readin_version),
+                    crop   = unname(cfgCrop$readin_version))
 
-  lpjmlBaseline <- c(natveg = cfgNatveg$baseline_version,
-                     crop   = cfgCrop$baseline_version)
+  lpjmlBaseline <- c(natveg = unname(cfgNatveg$baseline_version),
+                     crop   = unname(cfgCrop$baseline_version))
 
   if (stage %in% c("raw", "smoothed")) {
     ############################################################
