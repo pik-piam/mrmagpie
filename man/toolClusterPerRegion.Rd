@@ -2,7 +2,7 @@
 % Please edit documentation in R/toolClusterPerRegion.R
 \name{toolClusterPerRegion}
 \alias{toolClusterPerRegion}
-\title{Cluster per Region}
+\title{toolClusterPerRegion}
 \usage{
 toolClusterPerRegion(cells, ncluster, weight = NULL)
 }
@@ -11,17 +11,19 @@ toolClusterPerRegion(cells, ncluster, weight = NULL)
 
 \item{ncluster}{The desired total number of clusters.}
 
-\item{weight}{named vector with weighting factors for each region for the cluster distribution
-,e.g. weight=c(AFR=3,EUR=0.5). weight > 1 will grant more cluster to a region and
+\item{weight}{named vector with weighting factors for each region
+for the cluster distribution,
+e.g. weight=c(AFR=3,EUR=0.5).
+weight > 1 will grant more cluster to a region and
 weight < 1 less cluster than by default.}
 }
 \value{
-A matrix with regions in rows and number of cells and clusters in
-columns
+A matrix with regions in rows and number of cells
+        and clusters in columns
 }
 \description{
-This function calculates an appropriate number of clusters per region as it
-is needed for ClusterKMeans
+This function calculates an appropriate number of clusters
+             per region as it is needed for ClusterKMeans
 }
 \seealso{
 \code{\link{calcClusterKMeans}}, \code{\link{calcClusterBase}}

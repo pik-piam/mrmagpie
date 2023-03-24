@@ -2,7 +2,7 @@
 % Please edit documentation in R/calcClusterHierarchical.R
 \name{calcClusterHierarchical}
 \alias{calcClusterHierarchical}
-\title{MAgPIE Hierarchical clustering}
+\title{calcClusterHierarchical}
 \usage{
 calcClusterHierarchical(
   regionscode,
@@ -14,9 +14,10 @@ calcClusterHierarchical(
 )
 }
 \arguments{
-\item{regionscode}{regionscode of the regional mapping to be used. Must agree
-with the regionscode of the mapping mentioned in the madrat config! Can be
-retrieved via \code{regionscode()}.}
+\item{regionscode}{regionscode of the regional mapping to be used.
+Must agree with the regionscode of the mapping mentioned
+in the madrat config!
+Can be retrieved via \code{regionscode()}.}
 
 \item{ncluster}{The desired total number of clusters.}
 
@@ -25,11 +26,14 @@ retrieved via \code{regionscode()}.}
 \item{clusterdata}{similarity data to be used to determine clusters:
 yield_airrig (current default) or yield_increment}
 
-\item{mode}{Clustering type. At the moment you can choose between complete
-linkage clustering (h), single linkage clustering (s) and Ward clustering (w).}
+\item{mode}{Clustering type. At the moment you can choose between
+complete linkage clustering (h),
+single linkage clustering (s) and
+Ward clustering (w).}
 
-\item{weight}{named vector with weighting factors for each region for the cluster distribution
-,e.g. weight=c(AFR=3,EUR=0.5). weight > 1 will grant more cluster to a region and
+\item{weight}{named vector with weighting factors for each region for the 
+cluster distribution, e.g. weight=c(AFR=3,EUR=0.5).
+weight > 1 will grant more cluster to a region and
 weight < 1 less cluster than by default.}
 }
 \value{
@@ -37,9 +41,8 @@ A mapping between regions and clusters
 }
 \description{
 Performs MAgPIE hierarchical clustering and calculates corresponding spam
-relation matrix
-}
-\details{
+             relation matrix
+
 As the creation of a clustering tree is very time consuming the function
 checks first in the input folder if the corresponding data already exists
 and if not it stores the tree information in the input folder for later use

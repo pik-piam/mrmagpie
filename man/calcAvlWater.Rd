@@ -33,7 +33,6 @@ This function calculates water availability for MAgPIE retrieved from LPJmL
 \dontrun{
 calcOutput("AvlWater", aggregate = FALSE)
 }
-
 }
 \author{
 Felicitas Beier, Kristine Karstens, Abhijeet Mishra

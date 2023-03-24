@@ -2,7 +2,7 @@
 % Please edit documentation in R/toolClusterPerRegionManual.R
 \name{toolClusterPerRegionManual}
 \alias{toolClusterPerRegionManual}
-\title{Cluster per Region set manually}
+\title{toolClusterPerRegionManual}
 \usage{
 toolClusterPerRegionManual(cells, ncluster, ncluster2reg)
 }
@@ -14,12 +14,13 @@ toolClusterPerRegionManual(cells, ncluster, ncluster2reg)
 \item{ncluster2reg}{named vector with numbers per region}
 }
 \value{
-A matrix with regions in rows and number of cells and clusters in
-columns
+A matrix with regions in rows and number of cells
+        and clusters in columns
 }
 \description{
-This function translates weights into number of clusters per region as it
-is needed for ClusterKMeans. Weights have to sum up to total number of clusters.
+This function translates weights into number of clusters
+             per region as it is needed for ClusterKMeans.
+             Weights have to sum up to total number of clusters.
 }
 \seealso{
 \code{\link{calcClusterKMeans}}, \code{\link{calcClusterBase}}
