@@ -82,12 +82,44 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
   shortYears       <- findset("t_all")
   lpjYears         <- seq(1995, 2100, by = 5)
 
+  # Clustering based on 67420 cells
   map      <- calcOutput("Cluster", ctype = ctype, weight = clusterweight, lpjml = lpjml,
-    clusterdata = "yield_airrig", aggregate = FALSE)
+                        clusterdata = "yield_airrig", aggregate = FALSE)
   weightID <- ifelse(is.null(clusterweight), "", paste0("_", names(clusterweight), clusterweight, collapse = ""))
-  clustermapname <- sub("\\.[^.]*$", ".rds", paste0("clustermap_rev", rev, dev, "_", ctype,
-    weightID, "_", getConfig("regionmapping")))
+  clustermapname <- sub("\\.[^.]*$", ".rds",
+                        paste0("clustermap_rev", rev, dev, "_", ctype, "_67420",
+                               weightID, "_", getConfig("regionmapping")))
   addMapping(clustermapname, map)
+
+  # Assigning clusters to 59199 cells (necessary until transition to 67420 is complete)
+  map67420to59199 <- toolGetMapping("map67420to59199.rds", where = "mrmagpie")
+  map67420to59199 <- merge(map, map67420to59199)
+  map67420to59199 <- map67420to59199[map67420to59199$is59199, ]
+  map67420to59199$cellnumber <- as.numeric(gsub(".*\\.", "", map67420to59199$celliso))
+  map67420to59199 <- map67420to59199[order(map67420to59199$cellnumber), ]
+  map2 <- data.frame(cell = map67420to59199$celliso,
+                     cluster = map67420to59199$cluster,
+                     region = map67420to59199$region,
+                     country = map67420to59199$country,
+                     global = map67420to59199$global)
+  clustermapname2 <- sub("\\.[^.]*$", ".rds",
+                         paste0("clustermap_rev", rev, dev, "_", ctype,
+                         weightID, "_", getConfig("regionmapping")))
+  addMapping(clustermapname2, map2)
+
+  # check whether there are clusters that are in 67420, but not in 59199
+  if (length(sort(unique(map$cluster))) != length(sort(unique(map2$cluster)))) {
+    warning(paste0("The following clusters are missing in the case of 59199 cells ", 
+                    setdiff(sort(unique(map$cluster)), sort(unique(map2$cluster)))))
+  }
+
+
+  # What would be the most basic test?
+  # 0) check clusters (c200, c1000)
+  # a) Reference: current default with current clustering
+  # b) still use magpie cells, but with new clustering mapping & preprocessing & magpie run
+  # c) transform every function where 67k cells possible & preprocessing & magpie run
+
 
   # plot map with regions and clusters
   clustermap <- readRDS(clustermapname)
@@ -98,7 +130,8 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
 
   if (dev == "+calibYield") {
 
-    calcOutput("YieldsCalibrated", aggregate = "cluster", source = c(lpjml = lpjml[["crop"]], isimip = isimip),
+    calcOutput("YieldsCalibrated", aggregate = "cluster", cells = "lpjcell",
+               source = c(lpjml = lpjml[["crop"]], isimip = isimip),
                climatetype = climatetype, round = 2, years = lpjYears, file = paste0("lpj_yields_", ctype, ".mz"))
 
   } else if (grepl("india", dev)) {
@@ -108,7 +141,8 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
                weighting = "crop+irrigSpecific", indiaYields = TRUE, scaleFactor = 0.5)
 
 
-    calcOutput("Yields", aggregate = "cluster", source = c(lpjml = lpjml[["crop"]], isimip = isimip),
+    calcOutput("Yields", aggregate = "cluster", cells = "lpjcell",
+               source = c(lpjml = lpjml[["crop"]], isimip = isimip),
                climatetype = climatetype, round = 2, years = lpjYears, file = paste0("lpj_yields_", ctype, ".mz"),
                weighting = "crop+irrigSpecific", indiaYields = TRUE, scaleFactor = 0.5)
 
@@ -116,9 +150,10 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
 
     calcOutput("Yields", aggregate = FALSE, source = c(lpjml = lpjml[["crop"]], isimip = isimip),
                climatetype = climatetype, round = 2, years = lpjYears, file = paste0("lpj_yields_0.5.mz"),
-               weighting = ifelse(grepl("YieldWeights_", dev), gsub("YieldWeights_", "", dev), "totalCrop"))
+               weighting = ifelse(grepl("YieldWeights_", dev), gsub("YieldWeights_", "", dev), "totalCrop")) # needed at 59k or 67k?
 
-    calcOutput("Yields", aggregate = "cluster", source = c(lpjml = lpjml[["crop"]], isimip = isimip),
+    calcOutput("Yields", aggregate = "cluster", cells = "lpjcell",
+               source = c(lpjml = lpjml[["crop"]], isimip = isimip),
                climatetype = climatetype, round = 2, years = lpjYears, file = paste0("lpj_yields_", ctype, ".mz"),
                weighting = ifelse(grepl("YieldWeights_", dev), gsub("YieldWeights_", "", dev), "totalCrop"))
 
@@ -133,17 +168,20 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
   calcOutput("PastrTauHist", round = 2, past_mngmt = "mdef", file = "f13_pastr_tau_hist.csv", aggregate = superregion)
 
   # 09 drivers
-  calcOutput("GridPop", source = "Gao", subtype = "all", cellular = TRUE, harmonize_until = 2015, urban = FALSE,
-             aggregate = "cluster", years = magYears, round = 6, file = "f09_pop_grid.cs3")
+  calcOutput("GridPop", source = "Gao", subtype = "all", harmonize_until = 2015, urban = FALSE,
+             cellular = TRUE, cells = "lpjcell", aggregate = "cluster",
+             years = magYears, round = 6, file = "f09_pop_grid.cs3")
 
-  calcOutput("GridPop", source = "Gao", subtype = "all", cellular = TRUE, harmonize_until = 2015, urban = TRUE,
-             aggregate = "cluster", years = magYears, round = 6, file = "f09_urbanpop_grid.cs3")
+  calcOutput("GridPop", source = "Gao", subtype = "all", harmonize_until = 2015, urban = TRUE,
+             cellular = TRUE, cells = "lpjcell", aggregate = "cluster", 
+             years = magYears, round = 6, file = "f09_urbanpop_grid.cs3")
 
   # 10 land
   # seven land classes
   calcOutput("LanduseInitialisation", aggregate = FALSE, cellular = TRUE, cells = "magpiecell", nclasses = "seven",
-             input_magpie = TRUE, selectyears = magYearsPastLong, round = 6, file = "avl_land_t_0.5.mz")
-  calcOutput("LanduseInitialisation", aggregate = "cluster", cellular = TRUE, nclasses = "seven", input_magpie = TRUE,
+             input_magpie = TRUE, selectyears = magYearsPastLong, round = 6, file = "avl_land_t_0.5.mz") #@JAN: This should probably also be 67k to be consistent. Can MAgPIE handle this?
+  calcOutput("LanduseInitialisation", aggregate = "cluster", cellular = TRUE, cells = "lpjcell", # @JAN: Only possible in combination with adjustments done in mrcommonsFork
+             nclasses = "seven", input_magpie = TRUE,
              selectyears = magYearsPastLong, round = 6, file = paste0("avl_land_t_", ctype, ".mz"))
   calcOutput("LanduseInitialisation", aggregate = FALSE, cellular = FALSE, nclasses = "seven",
              input_magpie = TRUE, selectyears = magYearsPastLong, round = 6, file = paste0("avl_land_t_iso.cs3"))
@@ -151,19 +189,21 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
   # nine land classes
   calcOutput("LanduseInitialisation", aggregate = FALSE, cellular = TRUE, cells = "magpiecell", nclasses = "nine",
             input_magpie = TRUE, selectyears = magYearsPastLong, round = 6, file = "avl_land_full_t_0.5.mz")
-  calcOutput("LanduseInitialisation", aggregate = "cluster", cellular = TRUE, nclasses = "nine", input_magpie = TRUE,
+  calcOutput("LanduseInitialisation", aggregate = "cluster", cellular = TRUE, cells = "lpjcell",
+             nclasses = "nine", input_magpie = TRUE,
              selectyears = magYearsPastLong, round = 6, file = paste0("avl_land_full_t_", ctype, ".mz"))
   calcOutput("LanduseInitialisation", aggregate = FALSE, cellular = FALSE, nclasses = "nine", input_magpie = TRUE,
              selectyears = magYearsPastLong, round = 6, file = paste0("avl_land_full_t_iso.cs3"))
 
-  calcOutput("AvlLandSi", aggregate = FALSE, round = 6, file = "avl_land_si_0.5.mz")
-  calcOutput("AvlLandSi", aggregate = "cluster", round = 6, file = paste0("avl_land_si_", ctype, ".mz"))
+  calcOutput("AvlLandSi", aggregate = FALSE, round = 6, file = "avl_land_si_0.5.mz") #@JAN: This should probably also be 67k to be consistent. Can MAgPIE handle this?
+  calcOutput("AvlLandSi", cells = "lpjcell", aggregate = "cluster",
+            round = 6, file = paste0("avl_land_si_", ctype, ".mz"))
 
   # 22 land conservation
   calcOutput("ProtectedAreaBaseline", nclasses = "seven", cells = "magpiecell", magpie_input = TRUE,
-    aggregate = FALSE, round = 6, file = "wdpa_baseline_0.5.mz")
-  calcOutput("ProtectedAreaBaseline", nclasses = "seven", cells = "magpiecell", magpie_input = TRUE,
-    aggregate = "cluster", round = 6, file = paste0("wdpa_baseline_", ctype, ".mz"))
+             aggregate = FALSE, round = 6, file = "wdpa_baseline_0.5.mz") # Where is this used? Can it be 67k as well?
+  calcOutput("ProtectedAreaBaseline", nclasses = "seven", cells = "lpjcell", magpie_input = TRUE,
+             aggregate = "cluster", round = 6, file = paste0("wdpa_baseline_", ctype, ".mz"))
 
   if (rev < 4.82) {
   calcOutput("Brooks2005OldConservationPrios", nclasses = "seven", cells = "magpiecell",
@@ -173,11 +213,12 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
   } else {
   calcOutput("ConservationPriorities", nclasses = "seven", cells = "magpiecell",
              aggregate = FALSE, round = 6, file = "consv_prio_areas_0.5.mz")
-  calcOutput("ConservationPriorities", nclasses = "seven", cells = "magpiecell",
+  calcOutput("ConservationPriorities", nclasses = "seven", cells = "lpjcell",
              aggregate = "cluster", round = 6, file = paste0("consv_prio_areas_", ctype, ".mz"))
   }
 
-  calcOutput("ProtectArea", bhifl = ifelse(rev > 4.66, TRUE, FALSE), aggregate = "cluster", round = 6,
+  calcOutput("ProtectArea", bhifl = ifelse(rev > 4.66, TRUE, FALSE),
+             cells = "lpjcell", aggregate = "cluster", round = 6,
              file = paste0("protect_area_", ctype, ".mz"))
 
   # 30 crop
@@ -186,16 +227,18 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
   calcOutput("Croparea", sectoral = "kcr", physical = TRUE, cellular = TRUE, irrigation = TRUE,
     aggregate = "cluster", file = paste0("f30_croparea_w_initialisation_", ctype, ".mz"))
 
-  calcOutput("AvlCropland", marginal_land = "magpie", cell_upper_bound = 0.9,  aggregate = FALSE, round = 6,
-    file = "avl_cropland_0.5.mz")
-  calcOutput("AvlCropland", marginal_land = "magpie", cell_upper_bound = 0.9, aggregate = "cluster", round = 6,
-    file = paste0("avl_cropland_", ctype, ".mz"))
+  calcOutput("AvlCropland", marginal_land = "magpie", cell_upper_bound = 0.9, 
+            aggregate = FALSE, round = 6,
+             file = "avl_cropland_0.5.mz")      # where is it used? 59k or 67k?
+  calcOutput("AvlCropland", marginal_land = "magpie", cell_upper_bound = 0.9,
+             aggregate = "cluster", cells = "lpjcell",
+             round = 6, file = paste0("avl_cropland_", ctype, ".mz"))
   calcOutput("AvlCropland", marginal_land = "magpie", cell_upper_bound = 0.9, aggregate = FALSE,
-    country_level = TRUE, round = 6, file = paste0("avl_cropland_iso.cs3"))
+             country_level = TRUE, round = 6, file = paste0("avl_cropland_iso.cs3"))
 
   # 31 past
   calcOutput("GrasslandBiomass",  round = 3, file = "f31_grass_bio_hist.cs3", aggregate = "region")
-  calcOutput("LUH2v2", aggregate = "cluster", landuse_types = "LUH2v2", cellular = TRUE,
+  calcOutput("LUH2v2", aggregate = "cluster", landuse_types = "LUH2v2", cellular = TRUE, cells = "lpjcell",
              file = paste0("f31_LUH2v2_", ctype, ".mz"))
   # hard coded climate scenario for harmonization of data
   calcOutput("GrasslandsYields", lpjml = lpjml[["grass"]], climatetype = "MRI-ESM2-0:ssp126",
@@ -249,11 +292,12 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
   calcOutput("UrbanLandFuture", subtype = "LUH2v2", aggregate = FALSE, round = 6, years = shortYears,
              file = "f34_urbanland_0.5.mz")
   calcOutput("UrbanLandFuture", subtype = "LUH2v2", aggregate = "cluster", round = 6, years = shortYears,
-    file = paste0("f34_urbanland_", ctype, ".mz"))
+             file = paste0("f34_urbanland_", ctype, ".mz"))
   }
 
   # 35 natveg
-  calcOutput("AgeClassDistribution", aggregate = "cluster", round = 6, file = paste0("forestageclasses_", ctype, ".mz"))
+  calcOutput("AgeClassDistribution", aggregate = "cluster", round = 6, 
+             file = paste0("forestageclasses_", ctype, ".mz"))
 
   # 37 labour prod
   calcOutput("LabourProdImpactEmu", aggregate = "cluster", round = 6, subtype = "impact",
@@ -262,24 +306,29 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
              file = paste0("f37_labourprodrelief_", ctype, ".mz"))
 
   # 40
- calcOutput("TransportTime", aggregate = "cluster", round = 6, file = paste0("transport_distance_", ctype, ".mz"))
- calcOutput("TransportTime", aggregate = FALSE, round = 6, file = "transport_distance.mz")
+ calcOutput("TransportTime", aggregate = "cluster", cells = "lpjcell",
+            round = 6, file = paste0("transport_distance_", ctype, ".mz"))
+ calcOutput("TransportTime", aggregate = FALSE, round = 6, file = "transport_distance.mz") # where is it used 59k needed or also 67k possible?
  calcOutput("TransportCosts", aggregate = "GLO", round = 4, file = "f40_transport_costs.csv")
 
+
   # 41 area equipped for irrigation
-  calcOutput("AreaEquippedForIrrigation", aggregate = "cluster", cellular = TRUE, source = "Siebert",
-    round = 6, file = paste0("avl_irrig_", ctype, ".mz"))
-  calcOutput("AreaEquippedForIrrigation", aggregate = "cluster", cellular = TRUE, source = "LUH2v2",
-    selectyears = magYearsPastLong, round = 6, file = paste0("avl_irrig_luh_t_", ctype, ".mz"))
+  calcOutput("AreaEquippedForIrrigation",source = "Siebert",
+             aggregate = "cluster", cellular = TRUE, cells = "lpjcell", # need mrcommonsFork for this to work
+             round = 6, file = paste0("avl_irrig_", ctype, ".mz"))
+  calcOutput("AreaEquippedForIrrigation", source = "LUH2v2",
+             aggregate = "cluster", cellular = TRUE, cells = "lpjcell", # need mrcommonsFork for this to work
+             selectyears = magYearsPastLong, round = 6, file = paste0("avl_irrig_luh_t_", ctype, ".mz"))
 
 
   # 42 water demand
-  calcOutput("Irrigation", lpjml = lpjml, years = lpjYears, climatetype = climatetype, aggregate = "cluster",
-    round = 6, file = paste0("lpj_airrig_", ctype, ".mz"))
+  calcOutput("Irrigation", lpjml = lpjml, years = lpjYears, climatetype = climatetype,
+             cells = "lpjcell", aggregate = "cluster", round = 6,
+             file = paste0("lpj_airrig_", ctype, ".mz"))
 
   # dummy Growing Period calc
   calcOutput("GrowingPeriod", lpjml = lpjml, years = lpjYears, climatetype = climatetype, yield_ratio = 0.1,
-    aggregate = FALSE, round = 2, file = "lpj_grper_0.5.mz")
+    aggregate = FALSE, round = 2, file = "lpj_grper_0.5.mz") # where is it used 59k needed or also 67k possible?
 
   # 43 water availability
   calcOutput("AvlWater", lpjml = lpjml, years = lpjYears, climatetype = climatetype, seasonality = "grper",
@@ -294,16 +343,18 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
 
   if (rev < 4.67) {
     calcOutput("WaterUseNonAg", datasource = "WATCH_ISIMIP_WATERGAP", years = lpjYears, seasonality = "grper",
-               lpjml = lpjml, climatetype = climatetype, aggregate = "cluster",
+               lpjml = lpjml, climatetype = climatetype,
+               aggregate = "cluster", cells = "magpiecell", # needs adjustment of calcGrowingPeriod before switchting to lpjcell -> need mrcommonsFork
                file = paste0("watdem_nonagr_grper_", ctype, ".mz"))
   } else {
     calcOutput("WaterUseNonAg", datasource = "WATERGAP_ISIMIP", usetype = "all:withdrawal",
                selectyears = lpjYears, seasonality = "grper", lpjml = lpjml, climatetype = climatetype,
-               aggregate = "cluster", file = paste0("watdem_nonagr_grper_", ctype, ".mz"))
+               aggregate = "cluster", cells = "magpiecell", # needs adjustment of calcGrowingPeriod before switchting to lpjcell
+               file = paste0("watdem_nonagr_grper_", ctype, ".mz"))
   }
 
   # 44 biodiversity
-  calcOutput("BiomeType", aggregate = "cluster", cells = "magpiecell", round = 6,
+  calcOutput("BiomeType", aggregate = "cluster", cells = "lpjcell", round = 6,
              file = paste0("biorealm_biome_", ctype, ".mz"))
   calcOutput("Luh2SideLayers", aggregate = "cluster", round = 6, file = paste0("luh2_side_layers_", ctype, ".mz"))
   calcOutput("Luh2SideLayers", aggregate = FALSE, round = 6, file = "luh2_side_layers_0.5.mz")
@@ -311,14 +362,14 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
 
   # 50 nitrogen
   calcOutput("AtmosphericDepositionRates", cellular = TRUE, aggregate = FALSE, round = 6,
-    file = "f50_AtmosphericDepositionRates_0.5.mz")
-  calcOutput("NitrogenFixationRateNatural",               aggregate = FALSE, round = 6,
-    file = "f50_NitrogenFixationRateNatural_0.5.mz")
+            file = "f50_AtmosphericDepositionRates_0.5.mz")
+  calcOutput("NitrogenFixationRateNatural", aggregate = FALSE, round = 6,
+            file = "f50_NitrogenFixationRateNatural_0.5.mz")
 
   calcOutput("AtmosphericDepositionRates", cellular = TRUE, aggregate = "cluster", round = 6,
     file = paste0("f50_AtmosphericDepositionRates_", ctype, ".mz"))
-  calcOutput("NitrogenFixationRateNatural",               aggregate = "cluster", round = 6,
-    file = paste0("f50_NitrogenFixationRateNatural_", ctype, ".mz"))
+  calcOutput("NitrogenFixationRateNatural", cells = "lpjcell", aggregate = "cluster", round = 6,
+            file = paste0("f50_NitrogenFixationRateNatural_", ctype, ".mz"))
 
   calcOutput("Carbon", aggregate = FALSE, lpjml = lpjml, climatetype = climatetype,
     round = 6, years = "y1995", file = "lpj_carbon_stocks_0.5.mz")
@@ -327,8 +378,9 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
 
   calcOutput("Carbon", aggregate = "cluster", lpjml = lpjml, climatetype = climatetype,
     round = 6, years = lpjYears, file = paste0("lpj_carbon_stocks_", ctype, ".mz"))
-  calcOutput("TopsoilCarbon", aggregate = "cluster", lpjml = lpjml, climatetype = climatetype,
-    round = 6, years = lpjYears, file = paste0("lpj_carbon_topsoil_", ctype, ".mz"))
+  calcOutput("TopsoilCarbon", aggregate = "cluster", cells = "lpjcell", # note: depends on changes in mrland
+             lpjml = lpjml, climatetype = climatetype,
+             round = 6, years = lpjYears, file = paste0("lpj_carbon_topsoil_", ctype, ".mz"))
 
   # 58 peatland
   calcOutput("Peatland", subtype = "degraded", aggregate = FALSE, round = 6, file = "f58_peatland_degrad_0.5.mz")
@@ -370,8 +422,12 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
   }
   nrClusterPerRegion <- substr(attributes(p$data)$legend_text, 6,
                                   nchar(attributes(p$data)$legend_text) - 1)
-  writeInfo(file = "info.txt", lpjmlData = climatetype,
-    resHigh = "0.5", resOut = ctype, rev = rev, cluster = nrClusterPerRegion)
+  writeInfo(file = "info.txt",
+            lpjmlData = climatetype,
+            resHigh = "0.5",
+            resOut = ctype,
+            rev = rev,
+            cluster = nrClusterPerRegion)
 
   return(list(tag = versionTag,
               pucTag = sub("^[^_]*_", "", versionTag)))

@@ -15,7 +15,7 @@
 calcLuh2SideLayers <- function() {
 
   x      <- readSource("BendingTheCurve", subtype = "luh2_side_layers", convert = "onlycorrect")
-  weight <- calcOutput("CellArea", aggregate = FALSE)
+  weight <- calcOutput("LandArea", aggregate = FALSE)
 
 return(list(
   x = x,

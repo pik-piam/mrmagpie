@@ -17,7 +17,7 @@ calcBphEffect <- function() {
 
   x <- readSource("BphEffect", convert = "onlycorrect")
   k <- readSource("Koeppen", subtype = "cellular", convert = "onlycorrect")[, 1995, ]
-  weight <- calcOutput("CellArea", aggregate = FALSE)
+  weight <- calcOutput("LandArea", aggregate = FALSE)
 
   # mapping to connect cell names with latitudes
   map <- toolGetMapping(type = "cell", name = "CountryToCellMapping.csv")

@@ -1,9 +1,9 @@
 #' @title calcAvlWater
 #' @description This function calculates water availability for MAgPIE retrieved from LPJmL
 #'
-#' @param lpjml Defines LPJmL version for crop/grass and natveg specific inputs
+#' @param lpjml       Defines LPJmL version for crop/grass and natveg specific inputs
 #' @param climatetype Switch between different climate scenarios
-#' @param stage Degree of processing: raw, smoothed, harmonized, harmonized2020
+#' @param stage       Degree of processing: raw, smoothed, harmonized, harmonized2020
 #' @param seasonality grper (default): water available in growing period per year;
 #'                    total: total water available throughout the year;
 #'                    monthly: monthly water availability (for further processing, e.g. in calcEnvmtlFlow)
@@ -19,9 +19,10 @@
 #' \dontrun{
 #' calcOutput("AvlWater", aggregate = FALSE)
 #' }
-#'
+
 calcAvlWater <- function(lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de", crop = "ggcmi_phase3_nchecks_9ca735cb"),
-                         climatetype = "GSWP3-W5E5:historical", stage = "harmonized2020", seasonality = "grper") {
+                         climatetype = "GSWP3-W5E5:historical",
+                         stage = "harmonized2020", seasonality = "grper") {
 
   cfg <- toolLPJmLVersion(version = lpjml["natveg"], climatetype = climatetype)
 

@@ -13,17 +13,21 @@
 
 calcCellCountryFraction <- function() {
 
-  weight <- calcOutput("CellArea", aggregate = FALSE)
+  weight <- calcOutput("LandArea", cells = "lpjcell", aggregate = FALSE)
 
-  x <- new.magpie(getCells(weight), NULL, getItems(weight, dim = 1.1), fill = 0)
-  for (r in getItems(x, dim = 1.1)) {
+  x <- new.magpie(cells_and_regions = getItems(weight, dim = 1),
+                  years = NULL,
+                  names = getItems(weight, dim = 1.3),
+                  fill = 0)
+  for (r in getItems(weight, dim = 1.3)) {
     x[r, , r] <- 1
   }
 
-  return(list(
-    x = x,
-    weight = weight,
-    unit = "share",
-    description = "cell fraction belonging to a country",
-    isocountries = FALSE))
+  getSets(x) <- c("x", "y", "iso", "year", "data")
+
+  return(list(x = x,
+              weight = weight,
+              unit = "share",
+              description = "cell fraction belonging to a country",
+              isocountries = FALSE))
 }

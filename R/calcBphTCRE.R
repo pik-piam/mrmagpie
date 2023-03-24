@@ -16,7 +16,7 @@
 calcBphTCRE <- function() {
 
   x <- readSource("BphTCRE", convert = "onlycorrect")
-  weight <- calcOutput("CellArea", aggregate = FALSE)
+  weight <- calcOutput("LandArea", aggregate = FALSE)
 
   return(list(
     x = x,

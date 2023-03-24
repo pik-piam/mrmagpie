@@ -17,12 +17,11 @@ calcBphMask <- function() {
 
   x <- readSource("BphMask", convert = "onlycorrect")
 
-  weight <- calcOutput("CellArea", aggregate = FALSE)
+  weight <- calcOutput("LandArea", aggregate = FALSE)
 
-  return(list(
-    x = x,
-    weight = weight,
-    unit = "none",
-    description = "Nonan Mask of BPH Effect Dataset",
-    isocountries = FALSE))
+  return(list(x = x,
+              weight = weight,
+              unit = "none",
+              description = "Nonan Mask of BPH Effect Dataset",
+              isocountries = FALSE))
 }

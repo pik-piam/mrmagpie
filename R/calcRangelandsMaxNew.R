@@ -26,11 +26,10 @@ calcRangelandsMaxNew <- function(lsuLevels = c(seq(0, 2.2, 0.2), 2.5), lpjml = "
 
     # tidyr variables initiation to avoid problems with buildlibrary()
     water <- NULL
-    year <- NULL
-    cell <- NULL
+    year  <- NULL
+    cell  <- NULL
     lsuHa <- NULL
     value <- NULL
-
 
     lsuLevels <- gsub("\\.", "p", lsuLevels)
     years <- seq(1965, 2100, 5)

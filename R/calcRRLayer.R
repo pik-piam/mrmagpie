@@ -15,7 +15,7 @@
 calcRRLayer <- function() {
 
   x      <- readSource("BendingTheCurve", subtype = "rr_layer", convert = "onlycorrect")
-  weight <- calcOutput("CellArea", aggregate = FALSE)
+  weight <- calcOutput("LandArea", aggregate = FALSE)
 
 return(list(
   x = x,

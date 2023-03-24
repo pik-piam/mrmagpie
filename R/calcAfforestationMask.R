@@ -15,12 +15,11 @@
 calcAfforestationMask <- function(subtype) {
 
   x      <- readSource("AfforestationMask", subtype = subtype, convert = "onlycorrect")
-  weight <- calcOutput("CellArea", aggregate = FALSE)
+  weight <- calcOutput("LandArea", aggregate = FALSE)
 
-  return(list(
-    x = x,
-    weight = weight,
-    unit = "binary",
-    description = "",
-    isocountries = FALSE))
+  return(list(x = x,
+              weight = weight,
+              unit = "binary",
+              description = "",
+              isocountries = FALSE))
 }
