@@ -26,21 +26,27 @@ calcEnvmtlFlow(
 
 \item{LFR_val}{Strictness of environmental flow requirements}
 
-\item{HFR_LFR_less10}{High flow requirements (share of total water for cells) with LFR<10percent of total water}
+\item{HFR_LFR_less10}{High flow requirements (share of total water for cells)
+with LFR<10percent of total water}
 
-\item{HFR_LFR_10_20}{High flow requirements (share of total water for cells) with 10percent < LFR < 20percent of total water}
+\item{HFR_LFR_10_20}{High flow requirements (share of total water for cells)
+with 10percent < LFR < 20percent of total water}
 
-\item{HFR_LFR_20_30}{High flow requirements (share of total water for cells) with 20percent < LFR < 30percent of total water}
+\item{HFR_LFR_20_30}{High flow requirements (share of total water for cells)
+with 20percent < LFR < 30percent of total water}
 
-\item{HFR_LFR_more30}{High flow requirements (share of total water for cells) with LFR>30percent of total water}
+\item{HFR_LFR_more30}{High flow requirements (share of total water for cells)
+with LFR>30percent of total water}
 
-\item{seasonality}{grper (default): EFR in growing period per year; total: EFR throughout the year; monthly: monthly EFRs}
+\item{seasonality}{grper (default): EFR in growing period per year; total:
+EFR throughout the year; monthly: monthly EFRs}
 }
 \value{
 magpie object in cellular resolution
 }
 \description{
-This function calculates environmental flow requirements (EFR) for MAgPIE retrieved from LPJmL monthly discharge and water availability
+This function calculates environmental flow requirements (EFR) for MAgPIE
+             retrieved from LPJmL monthly discharge and water availability
 }
 \examples{
 \dontrun{

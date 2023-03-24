@@ -24,7 +24,14 @@ calcAvlWater <- function(lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de", crop =
                          climatetype = "GSWP3-W5E5:historical",
                          stage = "harmonized2020", seasonality = "grper") {
 
-  cfg <- toolLPJmLVersion(version = lpjml["natveg"], climatetype = climatetype)
+  cfgNatveg <- toolLPJmLVersion(version = lpjml["natveg"], climatetype = climatetype)
+  cfgCrop   <- toolLPJmLVersion(version = lpjml["crop"],   climatetype = climatetype)
+
+  lpjmlReadin  <- c(natveg = unname(cfgNatveg$readin_version),
+                    crop   = unname(cfgCrop$readin_version))
+
+  lpjmlBaseline <- c(natveg = unname(cfgNatveg$baseline_version),
+                     crop   = unname(cfgCrop$baseline_version))
 
   ######################################################
   ############ Water availability per cell #############
@@ -35,7 +42,8 @@ calcAvlWater <- function(lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de", crop =
     ### Monthly Discharge (unit (after calcLPJmL): mio. m^3/month)
     monthDischargeMAG <- toolCoord2Isocell(calcOutput("LPJmL_new", subtype = "mdischarge",
                                                       stage = "raw",
-                                                      version = lpjml["natveg"], climatetype = climatetype,
+                                                      version = lpjmlReadin["natveg"],
+                                                      climatetype = climatetype,
                                                       aggregate = FALSE))
     # Transform to array (faster calculation)
     monthDischargeMAG <- as.array(collapseNames(monthDischargeMAG))
@@ -43,7 +51,8 @@ calcAvlWater <- function(lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de", crop =
     ### Monthly Runoff (unit (after calcLPJmL): mio. m^3/month)
     monthRunoffMAG    <- toolCoord2Isocell(calcOutput("LPJmL_new", subtype = "mrunoff",
                                                       stage = "raw",
-                                                      version = lpjml["natveg"], climatetype = climatetype,
+                                                      version = lpjmlReadin["natveg"],
+                                                      climatetype = climatetype,
                                                       aggregate = FALSE))
     # Transform to array (faster calculation)
     monthRunoffMAG    <- as.array(collapseNames(monthRunoffMAG))
@@ -114,7 +123,7 @@ calcAvlWater <- function(lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de", crop =
       dailyAvlWat <- monthAvlWat / monthDayMAG
 
       # Growing days per month
-      growDAYS <- calcOutput("GrowingPeriod", lpjml = lpjml, climatetype = climatetype,
+      growDAYS <- calcOutput("GrowingPeriod", lpjml = lpjmlReadin, climatetype = climatetype,
                               stage = stage, yield_ratio = 0.1, aggregate = FALSE)
 
       # Adjust years
@@ -143,36 +152,36 @@ calcAvlWater <- function(lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de", crop =
 
   } else if (stage == "harmonized") {
     # load smoothed data
-    baseline <- calcOutput("AvlWater", lpjml = lpjml, climatetype = cfg$baseline_hist, seasonality = seasonality,
-                           aggregate = FALSE, stage = "smoothed")
+    baseline <- calcOutput("AvlWater", lpjml = lpjmlBaseline, climatetype = cfgNatveg$baseline_hist,
+                           seasonality = seasonality, aggregate = FALSE, stage = "smoothed")
 
-    if (climatetype == cfg$baseline_hist) {
+    if (climatetype == cfgNatveg$baseline_hist) {
 
       out <- baseline
 
     } else {
 
-      x   <- calcOutput("AvlWater", lpjml = lpjml, climatetype = climatetype, seasonality = seasonality,
-                        aggregate = FALSE, stage = "smoothed")
+      x   <- calcOutput("AvlWater", lpjml = lpjmlReadin, climatetype = climatetype,
+                        seasonality = seasonality, aggregate = FALSE, stage = "smoothed")
       # Harmonize to baseline
-      out <- toolHarmonize2Baseline(x = x, base = baseline, ref_year = cfg$ref_year_hist)
+      out <- toolHarmonize2Baseline(x = x, base = baseline, ref_year = cfgNatveg$ref_year_hist)
     }
 
   } else if (stage == "harmonized2020") {
     # read in historical data for subtype
-    baseline2020 <- calcOutput("AvlWater", lpjml = lpjml, climatetype = cfg$baseline_gcm, seasonality = seasonality,
-                               aggregate = FALSE, stage = "harmonized")
+    baseline2020 <- calcOutput("AvlWater", lpjml = lpjmlBaseline, climatetype = cfgNatveg$baseline_gcm,
+                               seasonality = seasonality, aggregate = FALSE, stage = "harmonized")
 
-    if (climatetype == cfg$baseline_gcm) {
+    if (climatetype == cfgNatveg$baseline_gcm) {
       out <- baseline2020
 
     } else {
 
       x   <- calcOutput("AvlWater", stage = "smoothed",
-                        lpjml = lpjml, climatetype = climatetype,
+                        lpjml = lpjmlReadin, climatetype = climatetype,
                         seasonality = seasonality,
                         aggregate = FALSE)
-      out <- toolHarmonize2Baseline(x, baseline2020, ref_year = cfg$ref_year_gcm)
+      out <- toolHarmonize2Baseline(x, baseline2020, ref_year = cfgNatveg$ref_year_gcm)
     }
 
   } else {
