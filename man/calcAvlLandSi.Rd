@@ -16,7 +16,9 @@ magpie object in cellular resolution
 Extracts si0 and nsi0 areas based on Ramankutty dataset
 }
 \examples{
-\dontrun{ calcOutput("AvlLandSi", aggregate = FALSE) }
+\dontrun{
+calcOutput("AvlLandSi", aggregate = FALSE)
+}
 
 }
 \author{

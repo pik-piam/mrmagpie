@@ -41,7 +41,7 @@ or yield_increment}
 A mapping between regions and clusters
 }
 \description{
-Performs MAgPIE kmeans clustering and 
+Performs MAgPIE kmeans clustering and
              calculates corresponding spam relation matrix
 }
 \seealso{

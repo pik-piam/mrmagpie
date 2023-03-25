@@ -1,6 +1,6 @@
 {
   "title": "mrmagpie: madrat based MAgPIE Input Data Library",
-  "version": "1.35.1",
+  "version": "1.35.2",
   "description": "<p>Provides functions for MAgPIE country and cellular input data\n    generation.<\/p>",
   "creators": [
     {

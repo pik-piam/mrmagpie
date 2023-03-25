@@ -109,7 +109,7 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
 
   # check whether there are clusters that are in 67420, but not in 59199
   if (length(sort(unique(map$cluster))) != length(sort(unique(map2$cluster)))) {
-    warning(paste0("The following clusters are missing in the case of 59199 cells ", 
+    warning(paste0("The following clusters are missing in the case of 59199 cells ",
                     setdiff(sort(unique(map$cluster)), sort(unique(map2$cluster)))))
   }
 
@@ -150,7 +150,8 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
 
     calcOutput("Yields", aggregate = FALSE, source = c(lpjml = lpjml[["crop"]], isimip = isimip),
                climatetype = climatetype, round = 2, years = lpjYears, file = paste0("lpj_yields_0.5.mz"),
-               weighting = ifelse(grepl("YieldWeights_", dev), gsub("YieldWeights_", "", dev), "totalCrop")) # needed at 59k or 67k?
+               weighting = ifelse(grepl("YieldWeights_", dev), gsub("YieldWeights_", "", dev), "totalCrop"))
+    # Jan: needed at 59k or 67k?
 
     calcOutput("Yields", aggregate = "cluster", cells = "lpjcell",
                source = c(lpjml = lpjml[["crop"]], isimip = isimip),
@@ -173,14 +174,15 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
              years = magYears, round = 6, file = "f09_pop_grid.cs3")
 
   calcOutput("GridPop", source = "Gao", subtype = "all", harmonize_until = 2015, urban = TRUE,
-             cellular = TRUE, cells = "lpjcell", aggregate = "cluster", 
+             cellular = TRUE, cells = "lpjcell", aggregate = "cluster",
              years = magYears, round = 6, file = "f09_urbanpop_grid.cs3")
 
   # 10 land
   # seven land classes
   calcOutput("LanduseInitialisation", aggregate = FALSE, cellular = TRUE, cells = "magpiecell", nclasses = "seven",
-             input_magpie = TRUE, selectyears = magYearsPastLong, round = 6, file = "avl_land_t_0.5.mz") #@JAN: This should probably also be 67k to be consistent. Can MAgPIE handle this?
-  calcOutput("LanduseInitialisation", aggregate = "cluster", cellular = TRUE, cells = "lpjcell", # @JAN: Only possible in combination with adjustments done in mrcommonsFork
+             input_magpie = TRUE, selectyears = magYearsPastLong, round = 6, file = "avl_land_t_0.5.mz")
+  # @JAN: This should probably also be 67k to be consistent. Can MAgPIE handle this?
+  calcOutput("LanduseInitialisation", aggregate = "cluster", cellular = TRUE, cells = "lpjcell",
              nclasses = "seven", input_magpie = TRUE,
              selectyears = magYearsPastLong, round = 6, file = paste0("avl_land_t_", ctype, ".mz"))
   calcOutput("LanduseInitialisation", aggregate = FALSE, cellular = FALSE, nclasses = "seven",
@@ -195,7 +197,8 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
   calcOutput("LanduseInitialisation", aggregate = FALSE, cellular = FALSE, nclasses = "nine", input_magpie = TRUE,
              selectyears = magYearsPastLong, round = 6, file = paste0("avl_land_full_t_iso.cs3"))
 
-  calcOutput("AvlLandSi", aggregate = FALSE, round = 6, file = "avl_land_si_0.5.mz") #@JAN: This should probably also be 67k to be consistent. Can MAgPIE handle this?
+  calcOutput("AvlLandSi", aggregate = FALSE, round = 6, file = "avl_land_si_0.5.mz")
+  # @JAN: This should probably also be 67k to be consistent. Can MAgPIE handle this?
   calcOutput("AvlLandSi", cells = "lpjcell", aggregate = "cluster",
             round = 6, file = paste0("avl_land_si_", ctype, ".mz"))
 
@@ -227,7 +230,7 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
   calcOutput("Croparea", sectoral = "kcr", physical = TRUE, cellular = TRUE, irrigation = TRUE,
     aggregate = "cluster", file = paste0("f30_croparea_w_initialisation_", ctype, ".mz"))
 
-  calcOutput("AvlCropland", marginal_land = "magpie", cell_upper_bound = 0.9, 
+  calcOutput("AvlCropland", marginal_land = "magpie", cell_upper_bound = 0.9,
             aggregate = FALSE, round = 6,
              file = "avl_cropland_0.5.mz")      # where is it used? 59k or 67k?
   calcOutput("AvlCropland", marginal_land = "magpie", cell_upper_bound = 0.9,
@@ -296,7 +299,7 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
   }
 
   # 35 natveg
-  calcOutput("AgeClassDistribution", aggregate = "cluster", round = 6, 
+  calcOutput("AgeClassDistribution", aggregate = "cluster", round = 6,
              file = paste0("forestageclasses_", ctype, ".mz"))
 
   # 37 labour prod
@@ -308,16 +311,17 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
   # 40
  calcOutput("TransportTime", aggregate = "cluster", cells = "lpjcell",
             round = 6, file = paste0("transport_distance_", ctype, ".mz"))
- calcOutput("TransportTime", aggregate = FALSE, round = 6, file = "transport_distance.mz") # where is it used 59k needed or also 67k possible?
+ calcOutput("TransportTime", aggregate = FALSE, round = 6, file = "transport_distance.mz")
+ # Jan: where is it used 59k needed or also 67k possible?
  calcOutput("TransportCosts", aggregate = "GLO", round = 4, file = "f40_transport_costs.csv")
 
 
   # 41 area equipped for irrigation
-  calcOutput("AreaEquippedForIrrigation",source = "Siebert",
-             aggregate = "cluster", cellular = TRUE, cells = "lpjcell", # need mrcommonsFork for this to work
+  calcOutput("AreaEquippedForIrrigation", source = "Siebert",
+             aggregate = "cluster", cellular = TRUE, cells = "lpjcell",
              round = 6, file = paste0("avl_irrig_", ctype, ".mz"))
   calcOutput("AreaEquippedForIrrigation", source = "LUH2v2",
-             aggregate = "cluster", cellular = TRUE, cells = "lpjcell", # need mrcommonsFork for this to work
+             aggregate = "cluster", cellular = TRUE, cells = "lpjcell",
              selectyears = magYearsPastLong, round = 6, file = paste0("avl_irrig_luh_t_", ctype, ".mz"))
 
 
@@ -326,9 +330,10 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
              cells = "lpjcell", aggregate = "cluster", round = 6,
              file = paste0("lpj_airrig_", ctype, ".mz"))
 
-  # dummy Growing Period calc
+  # dummy Growing Period
   calcOutput("GrowingPeriod", lpjml = lpjml, years = lpjYears, climatetype = climatetype, yield_ratio = 0.1,
-    aggregate = FALSE, round = 2, file = "lpj_grper_0.5.mz") # where is it used 59k needed or also 67k possible?
+    aggregate = FALSE, round = 2, file = "lpj_grper_0.5.mz")
+  # Jan: where is it used 59k needed or also 67k possible?
 
   # 43 water availability
   calcOutput("AvlWater", lpjml = lpjml, years = lpjYears, climatetype = climatetype, seasonality = "grper",
@@ -344,12 +349,12 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
   if (rev < 4.67) {
     calcOutput("WaterUseNonAg", datasource = "WATCH_ISIMIP_WATERGAP", years = lpjYears, seasonality = "grper",
                lpjml = lpjml, climatetype = climatetype,
-               aggregate = "cluster", cells = "magpiecell", # needs adjustment of calcGrowingPeriod before switchting to lpjcell -> need mrcommonsFork
+               aggregate = "cluster", cells = "lpjcell",
                file = paste0("watdem_nonagr_grper_", ctype, ".mz"))
   } else {
     calcOutput("WaterUseNonAg", datasource = "WATERGAP_ISIMIP", usetype = "all:withdrawal",
                selectyears = lpjYears, seasonality = "grper", lpjml = lpjml, climatetype = climatetype,
-               aggregate = "cluster", cells = "magpiecell", # needs adjustment of calcGrowingPeriod before switchting to lpjcell
+               aggregate = "cluster", cells = "lpjcell",
                file = paste0("watdem_nonagr_grper_", ctype, ".mz"))
   }
 

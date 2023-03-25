@@ -2,7 +2,7 @@
 #'
 #' @description Performs MAgPIE hierarchical clustering and calculates corresponding spam
 #'              relation matrix
-#' 
+#'
 #' As the creation of a clustering tree is very time consuming the function
 #' checks first in the input folder if the corresponding data already exists
 #' and if not it stores the tree information in the input folder for later use
@@ -20,7 +20,7 @@
 #'                    single linkage clustering (s) and
 #'                    Ward clustering (w).
 #' @param lpjml       defines LPJmL version for crop/grass and natveg specific inputs
-#' @param weight      named vector with weighting factors for each region for the 
+#' @param weight      named vector with weighting factors for each region for the
 #'                    cluster distribution, e.g. weight=c(AFR=3,EUR=0.5).
 #'                    weight > 1 will grant more cluster to a region and
 #'                    weight < 1 less cluster than by default.

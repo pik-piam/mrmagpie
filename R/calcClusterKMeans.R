@@ -1,6 +1,6 @@
 #' @title calcClusterKMeans
 #'
-#' @description Performs MAgPIE kmeans clustering and 
+#' @description Performs MAgPIE kmeans clustering and
 #'              calculates corresponding spam relation matrix
 #'
 #' @param regionscode regionscode of the regional mapping to be used.
@@ -26,7 +26,6 @@
 
 calcClusterKMeans <- function(regionscode, ncluster, weight = NULL, cpr = NULL, seed = 42,
                               lpjml = c(natveg = "LPJmL4", crop = "LPJmL5"), clusterdata = "yield_airrig") {
-
   # read in clustering base data
   cdata <- toolApplyRegionNames(cdata = calcOutput("ClusterBase", aggregate = FALSE,
                                                     lpjml = lpjml, clusterdata = clusterdata),

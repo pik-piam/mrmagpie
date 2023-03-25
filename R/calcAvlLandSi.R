@@ -7,7 +7,9 @@
 #' @author Felicitas Beier
 #'
 #' @examples
-#' \dontrun{ calcOutput("AvlLandSi", aggregate = FALSE) }
+#' \dontrun{
+#' calcOutput("AvlLandSi", aggregate = FALSE)
+#' }
 #'
 #' @importFrom madrat readSource calcOutput
 #' @importFrom magclass dimSums getCells getYears getNames mbind collapseDim
@@ -16,7 +18,6 @@
 #'
 
 calcAvlLandSi <- function(cells = "magpiecell") {
-
   # input data (Ramankutty)
   x        <- readSource("Ramankutty", convert = "onlycorrect")
 
@@ -67,8 +68,8 @@ calcAvlLandSi <- function(cells = "magpiecell") {
   return(list(x = out,
               weight = NULL,
               unit = "Mha",
-              description = paste0("si and nsi0 areas based on Ramankutty", 
-                                  "suitability information and LUH area", 
+              description = paste0("si and nsi0 areas based on Ramankutty",
+                                  "suitability information and LUH area",
                                   "information from initialization year"),
               isocountries = FALSE))
 }

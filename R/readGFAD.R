@@ -16,7 +16,7 @@
 readGFAD <- function() {
 
   poulterData   <- "GFAD_V1-1.nc"
-  gfad          <- nc_open(poulterData)
+  gfad          <- nc_open(poulterData) # nolint
 
   mapping       <- toolGetMappingCoord2Country()
 

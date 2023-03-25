@@ -13,8 +13,6 @@
 #' calcOutput("Pastr_new", past_mngmt = "me2", lpjml = "LPJml_pastr", climatetype)
 #' }
 #'
-
-
 calcPastr_new <- function(past_mngmt = "me2", # nolint
                           lpjml = "lpjml5p2_pasture", climatetype = "IPSL_CM6A_LR",
                           scenario = "ssp126_co2_limN", cells = "magpiecell") {
@@ -23,7 +21,7 @@ calcPastr_new <- function(past_mngmt = "me2", # nolint
   .subtype <- paste0(lpjml, ":", climatetype, paste0(scenario, "/", past_mngmt))
   hist <- readSource("LPJmL_new", subtype = paste(.subtype, "grass_pft_hist", sep = ":"), convert = FALSE)
   scen <- readSource("LPJmL_new", subtype = paste(.subtype, "grass_pft_scen", sep = ":"), convert = FALSE)
-  yearsScen <- seq(2015,max(getYears(scen, as.integer = TRUE)), 5)
+  yearsScen <- seq(2015, max(getYears(scen, as.integer = TRUE)), 5)
   hist <- hist[, yearsHist, "mgrass"]
   scen <- scen[, yearsScen, "mgrass"]
   x <- mbind(hist, scen)

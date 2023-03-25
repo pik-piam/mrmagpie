@@ -31,7 +31,7 @@ complete linkage clustering (h),
 single linkage clustering (s) and
 Ward clustering (w).}
 
-\item{weight}{named vector with weighting factors for each region for the 
+\item{weight}{named vector with weighting factors for each region for the
 cluster distribution, e.g. weight=c(AFR=3,EUR=0.5).
 weight > 1 will grant more cluster to a region and
 weight < 1 less cluster than by default.}

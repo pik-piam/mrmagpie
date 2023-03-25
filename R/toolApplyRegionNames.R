@@ -19,10 +19,8 @@
 #' @seealso \code{\link{calcClusterKMeans}}, \code{\link{calcClusterBase}}
 #' @importFrom madrat toolGetMapping regionscode
 #' @importFrom mrland spatial_header
-#' @importFrom data.table merge
 
 toolApplyRegionNames <- function(cdata, regionscode) {
-
   ### APPLY REGIONS HERE ON SPATIAL NAMING OF CDATA INSTEAD OF COUNTRIES ###
   ### regionscode needs to be checked and provided as argument to ensure
   ### that caching is not mixing up aggregations with different regional
@@ -36,14 +34,14 @@ toolApplyRegionNames <- function(cdata, regionscode) {
   # Get countries from magpie object and extend mapping
   isocountries <- getItems(cdata, dim = 1.3, full = TRUE)
   isoMap       <- data.frame(CountryCode = isocountries)
-  map          <- merge(isoMap, map, by = "CountryCode",
+  map          <- base::merge(isoMap, map, by = "CountryCode",
                         all.x = TRUE, sort = FALSE, no.dups = TRUE)
   # correct cell order
   map          <- map[match(isocountries, map$CountryCode), ]
 
   # Add regional information to magpie object
   getItems(cdata, dim = 1, raw = TRUE) <- paste(gsub(".*\\.", "", getItems(cdata, dim = 1)),
-                                                map$RegionCode, 
+                                                map$RegionCode,
                                                 as.character(seq_along(isocountries)),
                                                 sep = ".")
   getSets(cdata, fulldim = FALSE)[1] <- "country.region.cell"
