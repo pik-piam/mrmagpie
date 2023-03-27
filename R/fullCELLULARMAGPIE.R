@@ -123,8 +123,9 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
 
   # plot map with regions and clusters
   clustermap <- readRDS(clustermapname)
-  p <- plotregionscluster(clustermap$cluster)
-  ggsave(sub(".rds", ".pdf", sub("clustermap", "spamplot", clustermapname)), p, height = 6, width = 10, scale = 1)
+  # p <- plotregionscluster(clustermap$cluster)
+  # ggsave(sub(".rds", ".pdf", sub("clustermap", "spamplot", clustermapname)), p, height = 6, width = 10, scale = 1)
+  # Florian/Jan: We need to adjust our luplot functions to 67k cells!
 
   # 14 yields
 
