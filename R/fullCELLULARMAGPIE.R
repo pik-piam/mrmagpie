@@ -226,10 +226,12 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
              file = paste0("protect_area_", ctype, ".mz"))
 
   # 30 crop
-  calcOutput("Croparea", sectoral = "kcr", physical = TRUE, cellular = TRUE, irrigation = FALSE,
-    aggregate = "cluster", file = paste0("f30_croparea_initialisation_", ctype, ".mz"))
-  calcOutput("Croparea", sectoral = "kcr", physical = TRUE, cellular = TRUE, irrigation = TRUE,
-    aggregate = "cluster", file = paste0("f30_croparea_w_initialisation_", ctype, ".mz"))
+  calcOutput("Croparea", sectoral = "kcr", physical = TRUE,
+             cellular = TRUE, cells = "lpjcell", irrigation = FALSE,
+             aggregate = "cluster", file = paste0("f30_croparea_initialisation_", ctype, ".mz"))
+  calcOutput("Croparea", sectoral = "kcr", physical = TRUE,
+             cellular = TRUE, cells = "lpjcell", irrigation = TRUE,
+             aggregate = "cluster", file = paste0("f30_croparea_w_initialisation_", ctype, ".mz"))
 
   calcOutput("AvlCropland", marginal_land = "magpie", cell_upper_bound = 0.9,
             aggregate = FALSE, round = 6,
@@ -242,7 +244,8 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
 
   # 31 past
   calcOutput("GrasslandBiomass",  round = 3, file = "f31_grass_bio_hist.cs3", aggregate = "region")
-  calcOutput("LUH2v2", aggregate = "cluster", landuse_types = "LUH2v2", cellular = TRUE, cells = "lpjcell",
+  calcOutput("LUH2v2", aggregate = "cluster", landuse_types = "LUH2v2",
+             cellular = TRUE, cells = "lpjcell",
              file = paste0("f31_LUH2v2_", ctype, ".mz"))
   # hard coded climate scenario for harmonization of data
   calcOutput("GrasslandsYields", lpjml = lpjml[["grass"]], climatetype = "MRI-ESM2-0:ssp126",
