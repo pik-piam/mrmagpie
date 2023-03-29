@@ -9,7 +9,8 @@
 #' \dontrun{
 #' calcOutput("GrasslandBiomass")
 #' }
-#'
+#' @importFrom mrcommons toolCoord2Isocell
+
 calcGrasslandBiomass <- function() {
   magYearsPast <- findset("past")
   biomass <- calcOutput("FAOmassbalance", aggregate = FALSE)[, , "production.dm"][, magYearsPast, "pasture"]
@@ -26,28 +27,41 @@ calcGrasslandBiomass <- function() {
   # roadside grazing. To reduce demand/area ratio, I'm adding to the areas of managed pastures the category
   # "other land" that is assumed to be used for grazing in those three countries.
 
-  grasslLand["IND", , "pastr"] <- grasslLand["IND", , "pastr"] + setNames(dimSums(land["IND",,c("primother","secdother")], dim = 3), "pastr")
-  grasslLand["BGD", , "pastr"] <- grasslLand["BGD", , "pastr"] + setNames(dimSums(land["BGD",,c("primother","secdother")], dim = 3), "pastr")
-  grasslLand["PAK", , "pastr"] <- grasslLand["PAK", , "pastr"] + setNames(dimSums(land["PAK",,c("primother","secdother")], dim = 3), "pastr")
-  
-  grassYld <- calcOutput("GrasslandsYields", lpjml = "lpjml5p2_pasture", climatetype = paste0("MRI-ESM2-0",":","ssp245"),
-             subtype = "/co2/Nreturn0p5", # nolint
-             lsu_levels = c(seq(0, 2.2, 0.2), 2.5), past_mngmt = "mdef", aggregate = F)[,,"rainfed"]
-  grassYld <- collapseNames(grassYld)   
+  grasslLand["IND", , "pastr"] <- grasslLand["IND", , "pastr"] +
+                                    setNames(dimSums(land["IND", , c("primother", "secdother")],
+                                                    dim = 3),
+                                             "pastr")
+  grasslLand["BGD", , "pastr"] <- grasslLand["BGD", , "pastr"] +
+                                    setNames(dimSums(land["BGD", , c("primother", "secdother")],
+                                                     dim = 3),
+                                              "pastr")
+  grasslLand["PAK", , "pastr"] <- grasslLand["PAK", , "pastr"] +
+                                    setNames(dimSums(land["PAK", , c("primother", "secdother")],
+                                                     dim = 3),
+                                              "pastr")
+
+  grassYld <- calcOutput("GrasslandsYields",
+                         lpjml = "lpjml5p2_pasture",
+                         climatetype = paste0("MRI-ESM2-0", ":", "ssp245"),
+                         subtype = "/co2/Nreturn0p5", # nolint
+                         lsu_levels = c(seq(0, 2.2, 0.2), 2.5), past_mngmt = "mdef", # nolint
+                         aggregate = FALSE)[, , "rainfed"]
+  grassYld <- collapseNames(grassYld)
   grassYld[grassYld == 0.00088]  <- 0
 
-  potBioMass <- grasslLand * grassYld[,getYears(grasslLand),]
+  potBioMass <- grasslLand * grassYld[, getYears(grasslLand), ]
 
   potBioMassShare <- setNames(potBioMass[, , "pastr"] / dimSums(potBioMass, dim = 3), "pastr")
   potBioMassShare <- add_columns(potBioMassShare, addnm = "range", dim = 3.1)
-  potBioMassShare[,,"range"] <- potBioMass[, , "range"] / dimSums(potBioMass, dim = 3)
+  potBioMassShare[, , "range"] <- potBioMass[, , "range"] / dimSums(potBioMass, dim = 3)
   potBioMassShare[is.nan(potBioMassShare)] <- 0
   potBioMassShare[is.infinite(potBioMassShare)]  <- 1
 
   mapping <- toolGetMapping("CountryToCellMapping.rds", where = "mrcommons")
 
-  livestock <- setNames(toolCell2isoCell(readSource("GLW3", subtype = "Aw")), "liv_numb")
-  livestock[livestock<1] <- 0
+  livestock <- setNames(toolCoord2Isocell(readSource("GLW3", subtype = "Aw")),
+                        "liv_numb")
+  livestock[livestock < 1] <- 0
 
   # I am working with the assumption that in most places, the proportional distribution of
   # livestock heads was kept the same between 1965 and 2010. One notable exception is Brasil,
@@ -56,7 +70,7 @@ calcGrasslandBiomass <- function() {
   # of livestock being in rangelands and managed pastures, and avoid distortions on the amount
   # of grass biomass production assigned to each system.
 
-  livstSplit <- livestock * potBioMassShare 
+  livstSplit <- livestock * potBioMassShare
   livstSplit <- collapseNames(livstSplit)
   livstSplitCtry <- toolAggregate(livstSplit, rel = mapping, to = "iso", from = "celliso")
   livstShareCtry <- livstSplitCtry[, , "pastr"] / dimSums(livstSplitCtry, dim = 3)
@@ -73,14 +87,13 @@ calcGrasslandBiomass <- function() {
   biomassSplit <- biomass * livstShareCtry
   biomassSplit <- toolCountryFill(biomassSplit, fill = 0)
 
-  # OBS: we could add a diet correction factor for animals bening reared in different system (as to say: even thought the LSUs number might be the same, animais on 
+  # OBS: we could add a diet correction factor for animals being reared in different system
+  # (as to say: even thought the LSUs number might be the same, animals on
   # rangelands might eat less grass than animals on managed pastures)
 
-  return(list(
-    x = biomassSplit,
-    weight = NULL,
-    isocountries = FALSE,
-    unit = "tDM",
-    description = "Pasture biomass demand"
-  ))
+  return(list(x = biomassSplit,
+              weight = NULL,
+              isocountries = FALSE,
+              unit = "tDM",
+              description = "Pasture biomass demand"))
 }
