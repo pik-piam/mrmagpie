@@ -321,12 +321,13 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
 
 
   # 41 area equipped for irrigation
-  calcOutput("AreaEquippedForIrrigation", source = "Siebert",
+  calcOutput("AreaEquippedForIrrigation", source = "Mehta2022",
              aggregate = "cluster", cellular = TRUE, cells = "lpjcell",
              round = 6, file = paste0("avl_irrig_", ctype, ".mz"))
   calcOutput("AreaEquippedForIrrigation", source = "LUH2v2",
              aggregate = "cluster", cellular = TRUE, cells = "lpjcell",
-             selectyears = magYearsPastLong, round = 6, file = paste0("avl_irrig_luh_t_", ctype, ".mz"))
+             selectyears = magYearsPastLong, round = 6,
+             file = paste0("avl_irrig_luh_t_", ctype, ".mz"))
 
 
   # 42 water demand
@@ -341,12 +342,12 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
 
   # 43 water availability
   calcOutput("AvlWater", lpjml = lpjml, years = lpjYears, climatetype = climatetype, seasonality = "grper",
-    aggregate = "cluster", round = 6, file = paste0("lpj_watavail_grper_", ctype, ".mz"))
+             aggregate = "cluster", round = 6, file = paste0("lpj_watavail_grper_", ctype, ".mz"))
   calcOutput("AvlWater", lpjml = lpjml, years = lpjYears, climatetype = climatetype, seasonality = "total",
-    aggregate = "cluster", round = 6, file = paste0("lpj_watavail_total_", ctype, ".mz"))
+             aggregate = "cluster", round = 6, file = paste0("lpj_watavail_total_", ctype, ".mz"))
 
   calcOutput("EnvmtlFlow", lpjml = lpjml, years = lpjYears, climatetype = climatetype, aggregate = "cluster",
-    round = 6, seasonality = "grper", file = paste0("lpj_envflow_grper_", ctype, ".mz"))
+             round = 6, seasonality = "grper", file = paste0("lpj_envflow_grper_", ctype, ".mz"))
   calcOutput("EnvmtlFlow", lpjml = lpjml, years = lpjYears, climatetype = climatetype, aggregate = "cluster",
              round = 6, seasonality = "total", file = paste0("lpj_envflow_total_", ctype, ".mz"))
 
