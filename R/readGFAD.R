@@ -9,7 +9,7 @@
 #' }
 #' @importFrom raster brick subset as.matrix t
 #' @importFrom ncdf4 nc_open ncvar_get
-#' @importFrom madrat toolGetMapping
+#' @importFrom mrcommons toolGetMappingCoord2Country
 #' @importFrom magclass clean_magpie add_dimension setYears getSets
 #' @export
 
@@ -36,8 +36,10 @@ readGFAD <- function() {
       getItems(mag, dim = 2) <- "y2010"
       getItems(mag, dim = 3) <- i
 
-      getSets(mag) <- c("cell", "t", "ac")
-      mag <- add_dimension(x = mag, dim = 3.1, add = "type", nm = forestPoulter[forestType])
+      getSets(mag) <- c("x", "y", "t", "ac")
+      mag <- add_dimension(x = mag, dim = 3.1,
+                           add = "type",
+                           nm = forestPoulter[forestType])
 
       temp <- mbind(temp, mag)
     }
