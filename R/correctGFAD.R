@@ -12,12 +12,14 @@
 #' }
 #'
 #' @importFrom madrat toolConditionalReplace
-#' @importFrom mrcommons toolCell2isoCell
+#' @importFrom mrcommons toolCoord2Isocoord
 
-correctGFAD <- function(x){
+correctGFAD <- function(x) {
 
-  x <- toolConditionalReplace(x, conditions = c("is.na()","<0"), replaceby = 0)
-  x <- toolCell2isoCell(x)
+  x <- toolConditionalReplace(x,
+                              conditions = c("is.na()", "<0"),
+                              replaceby = 0)
+  x <- toolCoord2Isocoord(x)
 
   return(x)
 }
