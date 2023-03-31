@@ -16,7 +16,6 @@ Calculates pasture biomass demand for the historical period split between rangel
 \dontrun{
 calcOutput("GrasslandBiomass")
 }
-
 }
 \seealso{
 \code{\link{calcOutput}}, \code{\link{calcFAOmassbalance}},

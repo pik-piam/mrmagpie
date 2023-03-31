@@ -13,7 +13,7 @@ correctGFAD(x)
 List of magpie objects with results on cellular level, weight, unit and description.
 }
 \description{
-Correct Global forest age dataset
+Correct Global Forest Age Dataset
 }
 \examples{
 

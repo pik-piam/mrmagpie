@@ -19,7 +19,7 @@ correctGFAD <- function(x) {
   x <- toolConditionalReplace(x,
                               conditions = c("is.na()", "<0"),
                               replaceby = 0)
-  x <- mrcommons::toolCoord2Isocoord(x)
+  x <- toolCoord2Isocoord(x)
 
   return(x)
 }
