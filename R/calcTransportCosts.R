@@ -10,19 +10,19 @@
 #' [calcGTAPTotalTransportCosts()]
 #' @examples
 #' \dontrun{
-#' calcOutput("TransportCosts_new")
+#' calcOutput("TransportCosts")
 #' }
 #'
 calcTransportCosts <- function(transport = "all") { # nolint
 
   # load distance (travel time), production, and gtap transport costs
-  distance <- calcOutput("TransportTime", subtype = "cities50", cells = "magpiecell",  aggregate = FALSE)
+  distance <- calcOutput("TransportTime", subtype = "cities50", cells = "lpjcell",  aggregate = FALSE)
 
  if (transport == "all") {
 
-  production <- calcOutput("Production", cellular = TRUE,
+  production <- calcOutput("Production", cellular = TRUE, cells = "lpjcell",
                            irrigation = FALSE, aggregate = FALSE)[, 2005, "dm"] * 10^6
-  productionLi <- calcOutput("Production", cellular = TRUE,
+  productionLi <- calcOutput("Production", cellular = TRUE, cells = "lpjcell",
                               irrigation = FALSE, aggregate = FALSE,
                               products = "kli")[, 2005, "dm"] * 10^6
   production <- mbind(production, productionLi)
@@ -31,11 +31,11 @@ calcTransportCosts <- function(transport = "all") { # nolint
    production <- calcOutput("NonLocalTransport", aggregate = FALSE)[, 2005, ] * 10^6
  } else {
    stop("only all or nonlocal production available for subtype")
-   }
+ }
 
   transportGtap <- calcOutput("GTAPTotalTransportCosts", aggregate = FALSE)[, 2004, ] * 10^6
   # transform 10^6 USD -> USD
-  # this is  in 2004 and 2007 current USD, and we don't have same year for travel time, and pretend GTAP is 2005
+  # this is in 2004 and 2007 current USD, and we don't have same year for travel time, and pretend GTAP is 2005
 
   # map gtap cfts to MAgPIE cfts
   cftRel <- list()
@@ -52,15 +52,17 @@ calcTransportCosts <- function(transport = "all") { # nolint
   # calculate transport power (amount * distance) &
   # create average transport costs per ton per distance dummy
   # calculate transport power (amount * distance)
-  mapping <- toolGetMapping(type = "cell", name = "CountryToCellMapping.csv")
-
-  tmpPower <- new.magpie(0, cells_and_regions = getItems(distance, dim = 1),
+  tmpPower <- new.magpie(cells_and_regions = getItems(distance, dim = 1),
                          years = "y2005",
-                         names = names(cftRel))
+                         names = names(cftRel),
+                         fill = 0,
+                         sets = c("x", "y", "iso", "year", "data"))
 
-  transportPower <- new.magpie(0, cells_and_regions = unique(mapping$iso),
+  transportPower <- new.magpie(cells_and_regions = getItems(distance, dim = "iso"),
                                years = "y2005",
-                               names = names(cftRel))
+                               names = names(cftRel),
+                               fill = 0,
+                               sets = c("iso", "year", "data"))
 
   # create average transport costs per ton per distance dummy
   transportPerTonPerDistance <- NULL
@@ -73,8 +75,8 @@ calcTransportCosts <- function(transport = "all") { # nolint
     } else {
       tmpPower[, , names(cftRel)[i]] <- dimSums(production[, , cftRel[[i]]], dim = 3) * distance
     }
-     transportPower[, , names(cftRel)[i]] <- toolAggregate(x = tmpPower[, , names(cftRel)[i]],
-                                                        rel = mapping, from = "celliso", to = "iso")
+     transportPower[, , names(cftRel)[i]] <- dimSums(x = tmpPower[, , names(cftRel)[i]],
+                                                     dim = c("x", "y"))
 
     tpFilled <- toolCountryFill(transportPower, fill = 0) # need to fill first to divide
     transportPerTonPerDistance <- mbind(transportPerTonPerDistance,
@@ -87,11 +89,11 @@ calcTransportCosts <- function(transport = "all") { # nolint
   # Rename GTAP to MAgPIE commodities
   magpieComms <- unlist(cftRel)
 
-  transportMagpie <- transportPowerMagpie <- new.magpie(0,
-                                                         cells_and_regions = getItems(transportPerTonPerDistance,
+  transportMagpie <- transportPowerMagpie <- new.magpie(fill = 0,
+                                                        cells_and_regions = getItems(transportPerTonPerDistance,
                                                                                       dim = 1),
-                                                         years = "y2005",
-                                                         names = magpieComms)
+                                                        years = "y2005",
+                                                        names = magpieComms)
 
   for (i in getNames(transportMagpie)) {
     transportMagpie[, , i] <- toolFillWithRegionAvg(transportPerTonPerDistance[, , names(cftRel)[grep(i, cftRel)]],
@@ -111,7 +113,7 @@ calcTransportCosts <- function(transport = "all") { # nolint
                                 dim = 3.1, fill = 0)
  transportPowerMagpie[, , c("wood", "woodfuel")] <- transportPowerMagpie[, , "foddr"]
 
-getYears(transportMagpie) <- NULL
+ getYears(transportMagpie) <- NULL
 
   return(list(x = transportMagpie,
               weight = transportPowerMagpie,
