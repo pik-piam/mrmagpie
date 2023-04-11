@@ -19,7 +19,7 @@ transport costs, cellular production, and cellular travel time
 }
 \examples{
 \dontrun{
-calcOutput("TransportCosts_new")
+calcOutput("TransportCosts")
 }
 
 }

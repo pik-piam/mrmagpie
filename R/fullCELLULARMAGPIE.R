@@ -122,10 +122,9 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
 
 
   # plot map with regions and clusters
-  # clustermap <- readRDS(clustermapname) # nolint
-  # p <- plotregionscluster(clustermap$cluster) # nolint
-  # ggsave(sub(".rds", ".pdf", sub("clustermap", "spamplot", clustermapname)), p, height = 6, width = 10, scale = 1) # nolint
-  # Florian/Jan: We need to adjust our luplot functions to 67k cells!
+  clustermap <- readRDS(clustermapname) # nolint
+  p <- plotregionscluster(clustermap, cells = "lpjcell") # nolint
+  ggsave(sub(".rds", ".pdf", sub("clustermap", "spamplot", clustermapname)), p, height = 6, width = 10, scale = 1) # nolint
 
   # 14 yields
 
@@ -430,10 +429,8 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
       )
     base::cat(info, file = file, sep = "\n")
   }
-  #nrClusterPerRegion <- substr(attributes(p$data)$legend_text, 6, # nolint
-  #                                nchar(attributes(p$data)$legend_text) - 1) # nolint
-  # dummy value until we fixed the graph for 67k cells
-  nrClusterPerRegion <- 1
+  nrClusterPerRegion <- substr(attributes(p$data)$legend_text, 6, # nolint
+                               nchar(attributes(p$data)$legend_text) - 1) # nolint
 
   writeInfo(file = "info.txt",
             lpjmlData = climatetype,
