@@ -16,6 +16,7 @@
 #'                       with LFR>30percent of total water
 #' @param seasonality grper (default): EFR in growing period per year; total:
 #'                    EFR throughout the year; monthly: monthly EFRs
+#' @param cells       lpjcell for 67420 cells or magpiecell for 59199 cells
 #'
 #' @import magclass
 #' @import madrat
@@ -35,7 +36,7 @@ calcEnvmtlFlow <- function(lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de",
                            climatetype = "GSWP3-W5E5:historical", stage = "harmonized2020",
                            LFR_val = 0.1, HFR_LFR_less10 = 0.2, HFR_LFR_10_20 = 0.15, #nolint
                            HFR_LFR_20_30 = 0.07, HFR_LFR_more30 = 0.00,               #nolint
-                           seasonality = "grper") {
+                           seasonality = "grper", cells = "magpiecell") {
 
   # Create settings for LPJmL from version and climatetype argument
   cfgNatveg <- toolLPJmLVersion(version = lpjml["natveg"], climatetype = climatetype)
