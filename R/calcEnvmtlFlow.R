@@ -36,6 +36,7 @@ calcEnvmtlFlow <- function(lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de",
                            LFR_val = 0.1, HFR_LFR_less10 = 0.2, HFR_LFR_10_20 = 0.15, #nolint
                            HFR_LFR_20_30 = 0.07, HFR_LFR_more30 = 0.00,               #nolint
                            seasonality = "grper") {
+
   # Create settings for LPJmL from version and climatetype argument
   cfgNatveg <- toolLPJmLVersion(version = lpjml["natveg"], climatetype = climatetype)
   cfgCrop   <- toolLPJmLVersion(version = lpjml["crop"],   climatetype = climatetype)
@@ -53,10 +54,9 @@ calcEnvmtlFlow <- function(lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de",
     ############################################################
 
     ### Monthly Discharge
-    monthlyDischargeMagpie <- toolCoord2Isocell(
-                                 calcOutput("LPJmL_new", version = lpjmlReadin["natveg"],
-                                            climatetype = climatetype, subtype = "mdischarge",
-                                            aggregate = FALSE, stage = "raw"))
+    monthlyDischargeMagpie <- calcOutput("LPJmL_new", version = lpjmlReadin["natveg"],
+                                        climatetype = climatetype, subtype = "mdischarge",
+                                        aggregate = FALSE, stage = "raw")
     # Extract years for quantile calculation
     years <- getYears(monthlyDischargeMagpie, as.integer = TRUE)
     years <- seq(years[1] + 7, years[length(years)], by = 1)
@@ -79,7 +79,7 @@ calcEnvmtlFlow <- function(lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de",
               MARGIN = c(1), quantile, probs = LFR_val)
     }
     # Time-smooth lfrQuant
-    lfrQuant <- as.magpie(lfrQuant)
+    lfrQuant <- as.magpie(lfrQuant, spatial = 1)
     lfrQuant <- toolFillYears(lfrQuant, getYears(monthlyDischargeMagpie, as.integer = TRUE))
 
     if (stage == "smoothed") lfrQuant <- toolSmooth(lfrQuant)
@@ -88,10 +88,9 @@ calcEnvmtlFlow <- function(lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de",
     rm(monthlyDischargeMagpie)
 
     ### Read in smoothed monthly discharge
-    monthlyDischargeMagpie <- toolCoord2Isocell(
-                                calcOutput("LPJmL_new", version = lpjmlReadin["natveg"],
-                                climatetype = climatetype, subtype = "mdischarge",
-                                aggregate = FALSE, stage = "smoothed"))
+    monthlyDischargeMagpie <- calcOutput("LPJmL_new", version = lpjmlReadin["natveg"],
+                                        climatetype = climatetype, subtype = "mdischarge",
+                                        aggregate = FALSE, stage = "smoothed")
 
     # Transform to array (faster calculation)
     lfrQuant <- as.array(collapseNames(lfrQuant))
@@ -116,7 +115,8 @@ calcEnvmtlFlow <- function(lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de",
     ################################################
     ### Available water per month (smoothed)
     avlWaterMonth <- calcOutput("AvlWater", lpjml = lpjmlReadin, climatetype = climatetype,
-                                  seasonality = "monthly", aggregate = FALSE, stage = "smoothed")
+                                seasonality = "monthly", stage = "smoothed",
+                                aggregate = FALSE, cell = "lpjcell")
 
     # Transform to array for faster calculation
     avlWaterMonth <- as.array(collapseNames(avlWaterMonth))
@@ -127,7 +127,7 @@ calcEnvmtlFlow <- function(lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de",
 
     ### Calculate lfrs
     lfr <- avlWaterMonth * (lfrMonthlyDischarge / monthlyDischargeMagpie)
-    # There are na's where monthlyDischargeMagpie was 0, replace with 0:
+    # There are NA's where monthlyDischargeMagpie was 0, replace with 0:
     lfr[is.nan(lfr)] <- 0
 
     ###################################################################
@@ -139,7 +139,7 @@ calcEnvmtlFlow <- function(lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de",
     ## hfrs of 20% of available water are therefore assigned to rivers with a
     ## low fraction of Q90 in total discharge. Rivers with a more stable flow
     ## regime receive a lower hfr." (Bonsch et al. 2015)
-    hfr     <- lfr
+    hfr       <- lfr
     hfr[, , ] <- NA
 
     hfr[lfr < 0.1 * avlWaterMonth]  <- HFR_LFR_less10 * avlWaterMonth[lfr < 0.1 * avlWaterMonth]
@@ -149,7 +149,7 @@ calcEnvmtlFlow <- function(lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de",
     hfr[avlWaterMonth <= 0]       <- 0
 
     efr <- lfr + hfr
-    efr <- as.magpie(efr)
+    efr <- as.magpie(efr, spatial = 1)
 
     ### aggregation to grper, total
     ### efr per cell per month
@@ -167,7 +167,8 @@ calcEnvmtlFlow <- function(lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de",
 
       # Read in available water (for Smakthin calculation)
       avlWaterTotal <- calcOutput("AvlWater", lpjml = lpjmlReadin, climatetype = climatetype,
-                                    seasonality = "total", aggregate = FALSE, stage = "smoothed")
+                                  seasonality = "total", stage = "smoothed",
+                                  aggregate = FALSE, cells = "lpjcell")
 
       # Reduce EFR to 50% of available water where it exceeds this threshold (according to Smakhtin 2004)
       efrTotal[which(efrTotal / avlWaterTotal > 0.5)] <-
@@ -194,7 +195,8 @@ calcEnvmtlFlow <- function(lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de",
 
       # Growing days per month
       growDays <- calcOutput("GrowingPeriod", lpjml = lpjmlReadin, climatetype = climatetype,
-                              stage = "smoothed", yield_ratio = 0.1, aggregate = FALSE)
+                             stage = "smoothed", yield_ratio = 0.1,
+                             aggregate = FALSE, cells = "lpjcell")
 
       # Available water in growing period
       efrGrper <- efrDay * growDays
@@ -202,7 +204,8 @@ calcEnvmtlFlow <- function(lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de",
       efrGrper <- dimSums(efrGrper, dim = 3)
       # Read in available water (for Smakthin calculation)
       avlWaterGrper <- calcOutput("AvlWater", lpjml = lpjmlReadin, climatetype = climatetype,
-                                    seasonality = "grper", aggregate = FALSE, stage = "smoothed")
+                                  seasonality = "grper", stage = "smoothed",
+                                  aggregate = FALSE, cells = "lpjcell")
 
       # Reduce EFR to 50% of available water where it exceeds this threshold (according to Smakhtin 2004)
       efrGrper[which(efrGrper / avlWaterGrper > 0.5)] <-
@@ -220,7 +223,8 @@ calcEnvmtlFlow <- function(lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de",
   } else if (stage == "harmonized") {
     # Load baseline and climate EFR:
     baseline <- calcOutput("EnvmtlFlow", lpjml = lpjmlBaseline, climatetype = cfgNatveg$baseline_hist,
-                           seasonality = seasonality, aggregate = FALSE, stage = "smoothed")
+                           seasonality = seasonality, stage = "smoothed",
+                           aggregate = FALSE, cells = "lpjcell")
 
     if (climatetype == cfgNatveg$baseline_hist) {
 
@@ -229,7 +233,8 @@ calcEnvmtlFlow <- function(lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de",
     } else {
 
       x   <- calcOutput("EnvmtlFlow", lpjml = lpjmlReadin, climatetype = climatetype,
-                        seasonality = seasonality, aggregate = FALSE, stage = "smoothed")
+                        seasonality = seasonality, stage = "smoothed",
+                         aggregate = FALSE, cells = "lpjcell")
       # Harmonize to baseline
       out <- toolHarmonize2Baseline(x = x, base = baseline, ref_year = cfgNatveg$ref_year_hist)
     }
@@ -237,7 +242,8 @@ calcEnvmtlFlow <- function(lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de",
   } else if (stage == "harmonized2020") {
 
     baseline2020 <- calcOutput("EnvmtlFlow", lpjml = lpjmlBaseline, climatetype = cfgNatveg$baseline_gcm,
-                               seasonality = seasonality, aggregate = FALSE, stage = "harmonized")
+                               seasonality = seasonality, stage = "harmonized",
+                               aggregate = FALSE, cells = "lpjcell")
 
     if (climatetype == cfgNatveg$baseline_gcm) {
 
@@ -246,15 +252,20 @@ calcEnvmtlFlow <- function(lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de",
     } else {
 
       x        <- calcOutput("EnvmtlFlow", lpjml = lpjmlReadin, climatetype = climatetype,
-                             seasonality = seasonality, aggregate = FALSE, stage = "smoothed")
+                             seasonality = seasonality, stage = "smoothed",
+                             aggregate = FALSE, cells = "lpjcell")
       out      <- toolHarmonize2Baseline(x, baseline2020, ref_year = cfgNatveg$ref_year_gcm)
     }
 
   } else {
- stop("Stage argument not supported!")
- }
+    stop("Stage argument not supported!")
+  }
 
   description <- paste0("EFR in ", seasonality)
+
+  if (cells == "magpiecell") {
+    out <- toolCoord2Isocell(out, cells = cells)
+  }
 
   return(list(
     x = out,

@@ -31,19 +31,17 @@ calcAgeClassDistribution <- function() {
 
   forestArea <- dimSums(forestArea, dim = 3.1)
 
-  getNames(forestArea) <- gsub(pattern = "X", replacement = "class", x = getNames(forestArea))
-
-  zeroForestArea <- dimSums(forestArea, dim = 3)
-
-  acDistribution <- forestArea / dimSums(forestArea, dim = 3)
+  getNames(forestArea) <- gsub(pattern = "X",
+                               replacement = "class",
+                               x = getNames(forestArea))
 
   ## Set age classes to 0 where forest does not exist
   ## Only checking where zero forest area exists
+  zeroForestArea <- dimSums(forestArea, dim = 3)
+  acDistribution <- forestArea / zeroForestArea
   acDistribution[magclass::where((setYears(zeroForestArea, "y2000")) == 0)$true$regions, , ] <- 0
 
   out <- acDistribution
-
-  names(dimnames(out))[1] <- "ISO.cell"
 
   return(list(x = out,
               weight = cellArea,
