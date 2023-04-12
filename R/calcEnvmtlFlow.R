@@ -117,7 +117,7 @@ calcEnvmtlFlow <- function(lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de",
     ### Available water per month (smoothed)
     avlWaterMonth <- calcOutput("AvlWater", lpjml = lpjmlReadin, climatetype = climatetype,
                                 seasonality = "monthly", stage = "smoothed",
-                                aggregate = FALSE, cell = "lpjcell")
+                                aggregate = FALSE, cells = "lpjcell")
 
     # Transform to array for faster calculation
     avlWaterMonth <- as.array(collapseNames(avlWaterMonth))
