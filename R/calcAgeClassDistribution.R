@@ -1,6 +1,7 @@
 #' @title calcAgeClassDistribution
 #' @description This function calculates the share of each age class in secondary forests in each
 #'              MAgPIE simulation cluster based on Global Forest Age Dataset from Poulter et al. 2019
+#' @param cells lpjcell for 67420 cells or magpiecell for 59199 cells
 #'
 #' @return magpie object in cluster resolution
 #' @author Abhijeet Mishra, Felicitas Beier
@@ -12,7 +13,7 @@
 #'
 #' @importFrom magclass where
 
-calcAgeClassDistribution <- function() {
+calcAgeClassDistribution <- function(cells = "magpiecell") {
 
   # Cell fraction from poulter data set
   poulterDataset <- readSource("GFAD", convert = "onlycorrect")
@@ -42,6 +43,11 @@ calcAgeClassDistribution <- function() {
   acDistribution[magclass::where((setYears(zeroForestArea, "y2000")) == 0)$true$regions, , ] <- 0
 
   out <- acDistribution
+
+  if (cells == "magpiecell") {
+    out      <- toolCoord2Isocell(out, cells = cells)
+    cellArea <- toolCoord2Isocell(cellArea, cells = cells)
+  }
 
   return(list(x = out,
               weight = cellArea,
