@@ -21,7 +21,7 @@ calcNpiNdcAffPol <- function(cells = "magpiecell") {
                     years = seq(1995, 2150, 5),
                     names = c("none", "npi", "ndc"),
                     fill = 0,
-                    sets = c("x", "y", "iso", "year", "data1"))
+                    sets = c("x.y.iso", "year", "data1"))
   } else if (cells == "magpiecell") {
 
     # create a dummy data set, which is later used to define NDC and NPI policies

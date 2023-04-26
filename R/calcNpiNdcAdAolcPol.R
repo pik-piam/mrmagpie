@@ -19,10 +19,10 @@ calcNpiNdcAdAolcPol <-function(cells = "magpiecell") {
   
   # create a dummy data set, which is later used to define NDC and NPI policies
   x <- new.magpie(cells_and_regions = paste(mapping$coords, mapping$iso, sep = "."),
-                  years=seq(1995, 2150, 5),
+                  years = seq(1995, 2150, 5),
                   names = c("none.forest", "npi.forest", "ndc.forest", "none.other", "npi.other", "ndc.other"),
                   fill = 0, 
-                  sets = c("x", "y", "iso", "year", "data1.new"))
+                  sets = c("x.y.iso", "year", "data1.new"))
 
   } else if (cells == "magpiecell") {
 
