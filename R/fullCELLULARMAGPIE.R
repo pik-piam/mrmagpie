@@ -294,7 +294,8 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
 
   calcOutput("ClimateClass", aggregate = "cluster", years = "y2015", file = paste0("koeppen_geiger_", ctype, ".mz"))
   calcOutput("ClimateClass", aggregate = "cluster", file = paste0("ipcc_climate_zones_", ctype, ".mz"))
-  calcOutput("CellCountryFraction", aggregate = "cluster", file = paste0("cell_country_fraction_", ctype, ".mz"))
+  calcOutput("CellCountryFraction", aggregate = "cluster", cells = cells,
+             file = paste0("cell_country_fraction_", ctype, ".mz"))
 
   # 32 forestry
   calcOutput("AfforestationMask", subtype = "noboreal",     aggregate = "cluster", round = 6,
