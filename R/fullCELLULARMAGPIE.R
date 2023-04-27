@@ -356,7 +356,7 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
  calcOutput("TransportCosts", aggregate = "GLO", round = 4, file = "f40_transport_costs.csv")
 
   # 41 area equipped for irrigation
-  calcOutput("AreaEquippedForIrrigation", source = "Mehta2022",
+  calcOutput("AreaEquippedForIrrigation", source = "Siebert",
              aggregate = "cluster", cellular = TRUE, cells = cells,
              round = 6, file = paste0("avl_irrig_", ctype, ".mz"))
   calcOutput("AreaEquippedForIrrigation", source = "LUH2v2",
