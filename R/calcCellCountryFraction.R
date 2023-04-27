@@ -17,25 +17,30 @@ calcCellCountryFraction <- function(cells = "magpiecell") {
   weight <- calcOutput("LandArea", cells = cells, aggregate = FALSE)
 
   if (cells == "lpjcell") {
+
     x <- new.magpie(cells_and_regions = getItems(weight, dim = 1),
                     years = NULL,
                     names = getItems(weight, dim = 1.3),
                     fill = 0)
+
+    for (r in getItems(weight, dim = 1.3)) {
+      x[r, , r] <- 1
+    }
+
+    getSets(x) <- c("x", "y", "iso", "year", "data")
+
   } else if (cells == "magpiecell") {
+
     x <- new.magpie(cells_and_regions = getItems(weight, dim = 1), 
                     years = NULL,
                     names = getItems(weight, dim = 1.1),
                     fill = 0)
+
+    for (r in getItems(x, dim = 1.1)) {
+      x[r, , r] <- 1
+    }
   } else {
     stop("Please select cells argument: lpjcell for 67420 or magpiecell for 59199")
-  }
-
-  for (r in getItems(weight, dim = 1.3)) {
-    x[r, , r] <- 1
-  }
-  
-  if (cells == "lpjcell") {
-    getSets(x) <- c("x", "y", "iso", "year", "data")
   }
 
   return(list(x = x,

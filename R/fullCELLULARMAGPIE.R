@@ -53,7 +53,7 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
 
   ### Version settings ###
   if (rev < 4.66) stop("mrmagpie(>= 1.19.0) does not support revision below 4.66 anymore.
-                       Please use a older snapshot/version of the library, if you need older revisions.")
+                       Please use an older snapshot/version of the library, if you need older revisions.")
 
   # Development flag while switching to 67420 cells is still in progress
   if (grepl("67k", dev)) {
