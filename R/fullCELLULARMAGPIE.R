@@ -270,7 +270,7 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
   calcOutput("AreaEquippedForIrrigation",
               aggregate = "cluster", cellular = TRUE,
               selectyears = magYearsPastLong, round = 6,
-              file = paste0("avl_irrig_", ctype, ".mz"))
+              file = paste0("avl_irrig_", ctype, ".cs3"))
 
   # 42 water demand
   calcOutput("Irrigation", lpjml = lpjml, years = lpjYears, climatetype = climatetype, aggregate = "cluster",
