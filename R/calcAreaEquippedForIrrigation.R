@@ -81,7 +81,8 @@ calcAreaEquippedForIrrigation <- function(cellular = FALSE,
   #########################
   ### Combine data sets ###
   #########################
-  out <- mbind(luh, mehta)
+  years <- intersect(getItems(luh, dim = 2), getItems(mehta, dim = 2))
+  out   <- mbind(luh[, years, ], mehta[, years, ])
 
   ##############
   ### Output ###
