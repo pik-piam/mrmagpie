@@ -68,7 +68,7 @@ calcAreaEquippedForIrrigation <- function(cellular = FALSE,
   getSets(luh) <- c("x", "y", "iso", "year", "data")
 
   # rename data dimension
-  getItems(luh, dim = 3) <- "luh2v2"
+  getItems(luh, dim = 3) <- "LUH2v2"
 
   ########################################
   ### Read in Mehta et al. (2022) data ###
@@ -76,7 +76,7 @@ calcAreaEquippedForIrrigation <- function(cellular = FALSE,
   mehta <- readSource("Mehta2022", convert = "onlycorrect")
   years <- intersect(getItems(mehta, dim = 2), selectyears)
   mehta <- mehta[, years, ]
-  getItems(mehta, dim = 3) <- "mehta2022"
+  getItems(mehta, dim = 3) <- "Mehta2022"
 
   #########################
   ### Combine data sets ###
