@@ -11,36 +11,17 @@
 #' }
 #' @importFrom raster area rasterFromXYZ
 
-calcPastureSuit <- function(subtype = "ISIMIP3bv2:IPSL-CM6A-LR:1850-2100", smoothPrecipitation = 10, smoothOut = 10) {
-  x <- toolSplitSubtype(subtype, list(version = NULL, climatemodel = NULL, period = NULL))
-
-  # pasture drivers
+calcPastureSuit <- function(datasource = "ISIMIP3bv2",climatetype = "MRI-ESM2-0:ssp126", smoothPrecipitation = 10, smoothOut = 10) {
+  x <- toolSplitSubtype(climatetype, list(climatemodel = NULL, scenario = NULL))
+  period = "1850-2100"
+  # Drivers of managed pastures
+  subtype <- paste(datasource, x$climatemodel, x$scenario, period, "pr", "annual_mean", sep = ":")
+  precipitation <- calcOutput("GCMClimate", subtype = subtype, smooth = smoothPrecipitation, aggregate = FALSE)
   population <- calcOutput("GridPop", subtype = "all", cellular = TRUE, FiveYear = TRUE,
-                           harmonize_until = 2015, aggregate = FALSE)
-
-  precipitation <- list()
-  scenarios <- c("ssp126", "ssp245", "ssp370", "ssp460", "ssp585") # Current ISIMIP3bv2 scenarios
-  for (scenario in scenarios) {
-    subtype <- paste(x$version, x$climatemodel, scenario, x$period, "pr", "annual_mean", sep = ":")
-    precipitation[[scenario]] <- setNames(calcOutput("GCMClimate", subtype = subtype,
-                                                     smooth = smoothPrecipitation, aggregate = FALSE), scenario)
-  }
-  precipitation <- collapseNames(mbind(precipitation))
-
-  evapotranspiration <- calcOutput("Evapotranspiration", subtype = "H08:mri-esm2-0", aggregate = FALSE)
-
-  # temporary mapping of evapotranspiration RCP scenarios unavailable in ISIMIP3bv2
-  evapotranspiration <- add_columns(evapotranspiration, addnm = "ssp245", dim = 3.1, fill = NA)
-  evapotranspiration[, , "ssp245"] <- evapotranspiration[, , "ssp370"]
-  evapotranspiration <- add_columns(evapotranspiration, addnm = "ssp460", dim = 3.1, fill = NA)
-  evapotranspiration[, , "ssp460"] <- evapotranspiration[, , "ssp370"]
-
-  evapotranspiration <- evapotranspiration[, , getItems(precipitation, dim = 3)]
-
-  # matching available ssps scenarios
-  regex <- paste0("[", paste0("+", strtrim(getItems(evapotranspiration, dim = 3), 4), collapse = "|"), "]", "{4}$")
-  avlSSPs <- grep(regex, getNames(population), ignore.case = TRUE)
-  population <- population[, , avlSSPs]
+                           harmonize_until = 2015, aggregate = FALSE)[,,toupper(substring(x$scenario,first = 0,last = 4))]
+  evapotranspiration <- calcOutput("Evapotranspiration", subtype = "H08:mri-esm2-0", aggregate = FALSE)[,,x$scenario]
+  # Need new function for evapt. Should be something like this. So it gets LPJMl evap for the same climate model and spp as the prec
+  # evapotranspiration <- calcOutput("Evapotranspiration", datasource = "LPJmL"?, climatetype = climatetype, aggregate = FALSE)
 
   # Cell area calculation
   landcoords <- as.data.frame(toolGetMapping("magpie_coord.rda", type = "cell"))
@@ -57,12 +38,9 @@ calcPastureSuit <- function(subtype = "ISIMIP3bv2:IPSL-CM6A-LR:1850-2100", smoot
   popDensity[is.infinite(popDensity)] <- 0
   popDensity[is.nan(popDensity)] <- 0
 
-
   yearsCom <- intersect(getYears(popDensity), getYears(precipitation))
 
-  # Aridity (the real aridity is measured as the ratio between evapotranspiration
-  # and precipitarion (I have complete this calculation))
-  aridity <- precipitation[, yearsCom, ] / (evapotranspiration[, yearsCom, ])
+  aridity <- precipitation[, yearsCom, ] / evapotranspiration[, yearsCom, ]
   aridity[is.infinite(aridity) | is.nan(aridity)] <- 0
   # 0.5 aridity threshold for managed pastures. Same from HYDE 3.2.
   aridity[aridity < 0.5] <- 0
@@ -90,9 +68,10 @@ calcPastureSuit <- function(subtype = "ISIMIP3bv2:IPSL-CM6A-LR:1850-2100", smoot
   map <- toolGetMapping("CountryToCellMapping.csv", type = "cell")
   pastureSuitAreaReg <- toolAggregate(pastureSuitArea, rel = map, from = "celliso", to = "iso")
   histPastrReg <- toolAggregate(histPastr, rel = map, from = "celliso", to = "iso")
-  corrReg <- histPastrReg[, pastLy, ] / pastureSuitAreaReg[, pastLy, ]
-  pastureSuitArea[, future, ] <- toolAggregate(corrReg, rel = map, from = "iso", to = "celliso") *
-    pastureSuitArea[, future, ]
+  calibReg <- histPastrReg[, pastLy, ] / pastureSuitAreaReg[, pastLy, ]
+  calibReg[is.infinite(calibReg)] <- 1
+  calibReg[is.nan(calibReg)] <- 0
+  pastureSuitArea[, future, ] <- toolAggregate(calibReg, rel = map, from = "iso", to = "celliso") * pastureSuitArea[, future, ]
 
   pastureSuitArea[is.infinite(pastureSuitArea) | is.nan(pastureSuitArea) | is.na(pastureSuitArea)] <- 0
   pastureSuitArea[pastureSuitArea < 0] <- 0
@@ -115,3 +94,12 @@ calcPastureSuit <- function(subtype = "ISIMIP3bv2:IPSL-CM6A-LR:1850-2100", smoot
     isocountries = FALSE
   ))
 }
+
+
+    pet    <- calcOutput("LPJmL_new", version = "LPJmL4_for_MAgPIE_44ac93de",
+                         climatetype = "MRI-ESM2-0:ssp370", subtype = "mpet",
+                         stage = "smoothed", aggregate = FALSE)
+    prec   <- calcOutput("LPJmLClimateInput", lpjmlVersion = "LPJmL4_for_MAgPIE_44ac93de",
+                         climatetype  = "GSWP3-W5E5:historical",
+                         variable = "precipitation:monthlySum",
+                         stage = "smoothed", aggregate = FALSE)
