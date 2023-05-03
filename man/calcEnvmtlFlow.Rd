@@ -14,7 +14,8 @@ calcEnvmtlFlow(
   HFR_LFR_10_20 = 0.15,
   HFR_LFR_20_30 = 0.07,
   HFR_LFR_more30 = 0,
-  seasonality = "grper"
+  seasonality = "grper",
+  cells = "magpiecell"
 )
 }
 \arguments{
@@ -40,6 +41,8 @@ with LFR>30percent of total water}
 
 \item{seasonality}{grper (default): EFR in growing period per year; total:
 EFR throughout the year; monthly: monthly EFRs}
+
+\item{cells}{lpjcell for 67420 cells or magpiecell for 59199 cells}
 }
 \value{
 magpie object in cellular resolution

@@ -4,7 +4,10 @@
 \alias{calcCellCountryFraction}
 \title{calcCellCountryFraction}
 \usage{
-calcCellCountryFraction()
+calcCellCountryFraction(cells = "magpiecell")
+}
+\arguments{
+\item{cells}{lpjcell for 67420 cells or magpiecell for 59199 cells}
 }
 \value{
 Clustered MAgPIE object on requested resolution

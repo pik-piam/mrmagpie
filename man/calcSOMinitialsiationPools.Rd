@@ -4,13 +4,18 @@
 \alias{calcSOMinitialsiationPools}
 \title{calcSOMinitialsiationPools}
 \usage{
-calcSOMinitialsiationPools()
+calcSOMinitialsiationPools(cells = "magpiecell")
+}
+\arguments{
+\item{cells}{"magpiecell" for 59199 cells or "lpjcell" for 67420 cells}
 }
 \value{
-List of magpie object with results on country or cellular level, weight on cellular level, unit and description.
+List of magpie object with results on country or cellular level,
+        weight on cellular level, unit and description.
 }
 \description{
-calculates Soil Organic Matter Pool, accounting for the management history as initialisation to magpie
+calculates Soil Organic Matter Pool, accounting for
+             the management history as initialisation to magpie
 }
 \examples{
 \dontrun{

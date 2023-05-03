@@ -3,6 +3,7 @@
 #'
 #' @param lpjml Defines LPJmL version for crop/grass and natveg specific inputs
 #' @param climatetype Switch between different GCM climate scenarios
+#' @param cells "magpiecell" for 59199 cells or "lpjcell" for 67420 cells
 #'
 #' @return magpie object in cellular resolution
 #' @author Kristine Karstens
@@ -16,14 +17,13 @@
 #' @importFrom magclass add_dimension
 
 calcCarbon <- function(lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de", crop = "ggcmi_phase3_nchecks_9ca735cb"),
-                           climatetype = "GSWP3-W5E5:historical") {
+                           climatetype = "GSWP3-W5E5:historical", cells = "magpiecell") {
 
   .getLPJmLCPools <- function(pool, cfg) {
     out <- calcOutput("LPJmL_new", version = cfg$lpjml,
                       climatetype = cfg$climatetype,
                       subtype = pool, stage = "harmonized2020",
                       aggregate = FALSE)
-    out <- toolCoord2Isocell(out)
     out <- setNames(out, pool)
     return(out)
   }
@@ -40,8 +40,9 @@ calcCarbon <- function(lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de", crop = "
 
   getNames(grass) <- getNames(natveg)
 
-  topsoilc       <- calcOutput("TopsoilCarbon", lpjml = lpjml, climatetype = climatetype, aggregate = FALSE)
-  cshare         <- calcOutput("SOCLossShare", aggregate = FALSE, years = "y1995")
+  topsoilc       <- calcOutput("TopsoilCarbon", lpjml = lpjml, climatetype = climatetype,
+                               cells = "lpjcell", aggregate = FALSE)
+  cshare         <- calcOutput("SOCLossShare", aggregate = FALSE, cells = "lpjcell")
 
   ####################################################
   # Create the output object
@@ -55,7 +56,7 @@ calcCarbon <- function(lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de", crop = "
                                  nm = c("crop", "past", "forestry", "primforest", "secdforest", "urban", "other"))
 
   landuse <- calcOutput("LanduseInitialisation", aggregate = FALSE, cellular = TRUE, nclasses = "seven",
-                        input_magpie = TRUE, years = "y1995", round = 6)
+                        input_magpie = TRUE, cells = "lpjcell", years = "y1995", round = 6)
 
   ####################################################
   # Calculate the appropriate values for all land types and carbon types.
@@ -89,6 +90,11 @@ calcCarbon <- function(lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de", crop = "
   }
 
   landuse <- dimSums(landuse, dim = 3)
+
+  if (cells == "magpiecell") {
+    carbonStocks <- toolCoord2Isocell(carbonStocks)
+    landuse      <- toolCoord2Isocell(landuse)
+  }
 
   return(list(
     x = carbonStocks,

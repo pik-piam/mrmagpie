@@ -1,34 +1,38 @@
 #' @title fullCELLULARMAGPIE
-#' @description Function that produces the complete cellular data set required for running the
-#' MAgPIE model.
+#' @description Function that produces the complete cellular data set required
+#'              for running the MAgPIE model.
 #'
 #' @param rev data revision which should be used as input (positive numeric).
-#' @param ctype aggregation clustering type, which is a combination of a single letter, indicating the cluster
-#' methodology, and a number, indicating the number of resulting clusters. Available methodologies are hierarchical
-#' clustering (h), normalized k-means clustering (n) and combined hierarchical/normalized k-means clustering (c).
-#' In the latter hierarchical clustering is used to determine the cluster distribution among regions whereas
-#' normalized k-means is used for the clustering within a region.
+#' @param ctype aggregation clustering type, which is a combination of a single letter,
+#'              indicating the cluster methodology, and a number, indicating the number
+#'              of resulting clusters. Available methodologies are
+#'              - hierarchical clustering (h),
+#'              - normalized k-means clustering (n) and
+#'              - combined hierarchical/normalized k-means clustering (c).
+#'              In the latter hierarchical clustering is used to determine the cluster
+#'              distribution among regions whereas normalized k-means is used for the
+#'              clustering within a region.
 #' @param dev development suffix to distinguish development versions for the same data revision.
-#' This can be useful to distinguish parallel lines of development.
+#'            This can be useful to distinguish parallel lines of development.
 #' @param climatetype Global Circulation Model to be used
 #' @param lpjml Defines LPJmL version for crop/grass and natveg specific inputs
 #' @param isimip Defines isimip crop model input which replace maiz, tece, rice_pro and soybean
 #' @param emu_id Pasture Soil carbon emulator ID
-#' @param clusterweight Should specific regions be resolved with more or less detail? Values > 1 mean higher share,
-#' < 1 lower share e.g. cfg$clusterweight <- c(LAM=2) means that a higher level of detail for region LAM if set to NULL
-#' all weights will be assumed to be 1.
-#' examples:
-#' c(LAM=1.5,SSA=1.5,OAS=1.5)
-#' c(LAM=2,SSA=2,OAS=2)
-#' \code{\link{setConfig}} (e.g. for setting the mainfolder if not already set
-#' properly).
+#' @param clusterweight Should specific regions be resolved with more or less detail?
+#'                      Values > 1 mean higher share, < 1 lower share
+#'                      e.g. cfg$clusterweight <- c(LAM=2) means that
+#'                      a higher level of detail for region LAM if set to NULL
+#'                      all weights will be assumed to be 1. Examples:
+#'                      c(LAM=1.5,SSA=1.5,OAS=1.5) or c(LAM=2,SSA=2,OAS=2)
+#' \code{\link{setConfig}} (e.g. for setting the mainfolder if not already set properly).
+#'
 #' @author Kristine Karstens, Jan Philipp Dietrich
 #' @seealso
-#' \code{\link{readSource}},\code{\link{getCalculations}},\code{\link{calcOutput}},\code{\link{setConfig}}
+#'   \code{\link{readSource}},\code{\link{getCalculations}},\code{\link{calcOutput}},\code{\link{setConfig}}
 #' @examples
-#' \dontrun{
-#' retrieveData("CELLULARMAGPIE", revision = 12, mainfolder = "pathtowhereallfilesarestored")
-#' }
+#'   \dontrun{
+#'   retrieveData("CELLULARMAGPIE", revision = 12, mainfolder = "pathtowhereallfilesarestored")
+#'   }
 #' @importFrom madrat setConfig getConfig
 #' @importFrom magpiesets findset
 #' @importFrom digest digest
@@ -120,13 +124,11 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
                     setdiff(sort(unique(map$cluster)), sort(unique(map2$cluster)))))
   }
 
-
   # What would be the most basic test?
   # 0) check clusters (c200, c1000)
   # a) Reference: current default with current clustering
   # b) still use magpie cells, but with new clustering mapping & preprocessing & magpie run
   # c) transform every function where 67k cells possible & preprocessing & magpie run
-
 
   # plot map with regions and clusters
   clustermap <- readRDS(clustermapname) # nolint
@@ -146,7 +148,7 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
   } else if (grepl("india", dev)) {
 
     calcOutput("Yields", source = c(lpjml = lpjml[["crop"]], isimip = isimip),
-               cells = cells, aggregate = FALSE, 
+               cells = cells, aggregate = FALSE,
                climatetype = climatetype, round = 2, years = lpjYears, file = paste0("lpj_yields_0.5.mz"),
                weighting = "crop+irrigSpecific", indiaYields = TRUE, scaleFactor = 0.5)
 
@@ -191,7 +193,7 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
   # 10 land
   # seven land classes
   calcOutput("LanduseInitialisation", nclasses = "seven",
-             aggregate = FALSE, cellular = TRUE, cells = cells, 
+             aggregate = FALSE, cellular = TRUE, cells = cells,
              input_magpie = TRUE, selectyears = magYearsPastLong,
              round = 6, file = "avl_land_t_0.5.mz")
   calcOutput("LanduseInitialisation", nclasses = "seven",
@@ -205,7 +207,7 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
 
   # nine land classes
   calcOutput("LanduseInitialisation", nclasses = "nine",
-             aggregate = FALSE, cellular = TRUE, cells = cells, 
+             aggregate = FALSE, cellular = TRUE, cells = cells,
              input_magpie = TRUE, selectyears = magYearsPastLong,
              round = 6, file = "avl_land_full_t_0.5.mz")
   calcOutput("LanduseInitialisation", nclasses = "nine",
@@ -214,10 +216,10 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
              round = 6, file = paste0("avl_land_full_t_", ctype, ".mz"))
   calcOutput("LanduseInitialisation", nclasses = "nine",
              aggregate = FALSE, cellular = FALSE, cells = cells,
-             input_magpie = TRUE, selectyears = magYearsPastLong, 
+             input_magpie = TRUE, selectyears = magYearsPastLong,
              round = 6, file = paste0("avl_land_full_t_iso.cs3"))
 
-  calcOutput("AvlLandSi", cells = cells, aggregate = FALSE, 
+  calcOutput("AvlLandSi", cells = cells, aggregate = FALSE,
             round = 6, file = "avl_land_si_0.5.mz")
   calcOutput("AvlLandSi", cells = cells, aggregate = "cluster",
             round = 6, file = paste0("avl_land_si_", ctype, ".mz"))
@@ -292,8 +294,10 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
                file = "PastrMngtLevels.mz", aggregate = FALSE)
   }
 
-  calcOutput("ClimateClass", aggregate = "cluster", years = "y2015", file = paste0("koeppen_geiger_", ctype, ".mz"))
-  calcOutput("ClimateClass", aggregate = "cluster", file = paste0("ipcc_climate_zones_", ctype, ".mz"))
+  calcOutput("ClimateClass", aggregate = "cluster", datasource = "koeppen", cells = cells, years = "y2001",
+             file = paste0("koeppen_geiger_", ctype, ".mz"))          # years available: 1951, 1976, 2001
+  calcOutput("ClimateClass", aggregate = "cluster", datasource = "ipcc", cells = cells,
+             file = paste0("ipcc_climate_zones_", ctype, ".mz"))
   calcOutput("CellCountryFraction", aggregate = "cluster", cells = cells,
              file = paste0("cell_country_fraction_", ctype, ".mz"))
 
@@ -422,18 +426,17 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
 
   calcOutput("AtmosphericDepositionRates", cellular = TRUE, aggregate = "cluster", round = 6,
     file = paste0("f50_AtmosphericDepositionRates_", ctype, ".mz"))
-  calcOutput("NitrogenFixationRateNatural", cells = "lpjcell", aggregate = "cluster", round = 6,
+  calcOutput("NitrogenFixationRateNatural", cells = cells, aggregate = "cluster", round = 6,
             file = paste0("f50_NitrogenFixationRateNatural_", ctype, ".mz"))
 
-  calcOutput("Carbon", aggregate = FALSE, lpjml = lpjml, climatetype = climatetype,
-    round = 6, years = "y1995", file = "lpj_carbon_stocks_0.5.mz")
-  calcOutput("TopsoilCarbon", aggregate = FALSE, lpjml = lpjml, climatetype = climatetype,
-    round = 6, years = "y1995", file = "lpj_carbon_topsoil_0.5.mz")
+  calcOutput("Carbon", aggregate = FALSE, lpjml = lpjml, climatetype = climatetype, cells = cells,
+             round = 6, years = "y1995", file = "lpj_carbon_stocks_0.5.mz")
+  calcOutput("TopsoilCarbon", aggregate = FALSE, lpjml = lpjml, climatetype = climatetype, cells = cells,
+             round = 6, years = "y1995", file = "lpj_carbon_topsoil_0.5.mz")
 
-  calcOutput("Carbon", aggregate = "cluster", lpjml = lpjml, climatetype = climatetype,
-    round = 6, years = lpjYears, file = paste0("lpj_carbon_stocks_", ctype, ".mz"))
-  calcOutput("TopsoilCarbon", aggregate = "cluster", cells = "lpjcell", # note: depends on changes in mrland
-             lpjml = lpjml, climatetype = climatetype,
+  calcOutput("Carbon", aggregate = "cluster", lpjml = lpjml, climatetype = climatetype,  cells = cells,
+             round = 6, years = lpjYears, file = paste0("lpj_carbon_stocks_", ctype, ".mz"))
+  calcOutput("TopsoilCarbon", aggregate = "cluster", lpjml = lpjml, climatetype = climatetype, cells = cells,
              round = 6, years = lpjYears, file = paste0("lpj_carbon_topsoil_", ctype, ".mz"))
 
   # 58 peatland
@@ -446,10 +449,10 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
 
 
   # 59 som
-  calcOutput("SOMinitialsiationPools", aggregate = "cluster", round = 6,
-    file = paste0("f59_som_initialisation_pools_", ctype, ".mz"))
-  calcOutput("SOCLossShare",           aggregate = "cluster", rate = "loss", round = 6, years = "y1995",
-    file = paste0("cshare_released_", ctype, ".mz"))
+  calcOutput("SOMinitialsiationPools", aggregate = "cluster", round = 6, cells = cells,
+             file = paste0("f59_som_initialisation_pools_", ctype, ".mz"))
+  calcOutput("SOCLossShare", aggregate = "cluster", rate = "loss", round = 6, cells = cells,
+             file = paste0("cshare_released_", ctype, ".mz"))
 
   ##### AGGREGATION ######
 

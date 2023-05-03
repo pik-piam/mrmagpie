@@ -1,6 +1,7 @@
 #' @title calcBphEffect
-#' @description Biogeophysical temperature change of afforestation (degree C). File is based on observation datasets
-#' of Bright et al. 2017 and Duveiller et al. 2018
+#' @description Biogeophysical temperature change of afforestation (degree C).
+#'              File is based on observation datasets of Bright et al. 2017
+#'              and Duveiller et al. 2018
 #'
 #' @return magpie object in cellular resolution
 #' @author Michael Windisch
@@ -15,12 +16,17 @@
 
 calcBphEffect <- function() {
 
+  cells <- "magpiecell"
+
   x <- readSource("BphEffect", convert = "onlycorrect")
-  k <- readSource("Koeppen", subtype = "cellular", convert = "onlycorrect")[, 1995, ]
-  weight <- calcOutput("LandArea", aggregate = FALSE)
+  k <- setYears(readSource("Koeppen", subtype = "cellular",
+                           convert = "onlycorrect")[, 1976, ], NULL)
+  if (cells == "magpiecell") k <- toolCoord2Isocell(k)
+  weight <- calcOutput("LandArea", cells = cells, aggregate = FALSE)
 
   # mapping to connect cell names with latitudes
   map <- toolGetMapping(type = "cell", name = "CountryToCellMapping.csv")
+  # map <- toolGetMappingCoord2Country(pretty = TRUE) # mapping for 67420 # nolint
 
   # assuming 0 was NA before.
   x[, , "ann_bph"][x[, , "ann_bph"] == 0] <- NA
