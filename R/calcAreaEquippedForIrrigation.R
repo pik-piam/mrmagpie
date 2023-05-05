@@ -21,7 +21,6 @@
 #' \dontrun{
 #' calcOutput("AreaEquippedForIrrigation", source = "LUH2v2", cellular = TRUE, aggregate = FALSE)
 #' }
-#' @importFrom luscale groupAggregate
 #' @importFrom magpiesets findset
 #'
 #' @export
