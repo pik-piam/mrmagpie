@@ -49,8 +49,9 @@ calcCarbon <- function(lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de", crop = "
   ####################################################
 
   carbonStocks <- new.magpie(cells_and_regions = getCells(natveg),
-                              years = getYears(natveg),
-                              names = getNames(natveg))
+                             years = getYears(natveg),
+                             names = getNames(natveg),
+                             sets = c("x.y.iso", "year", "data"))
 
   carbonStocks <- add_dimension(carbonStocks, dim = 3.1, add = "landtype",
                                  nm = c("crop", "past", "forestry", "primforest", "secdforest", "urban", "other"))
