@@ -56,7 +56,7 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
   withr::local_options(magclass_sizeLimit = 1e+12)
 
   ### Version settings ###
-  if (rev < 4.66) stop("mrmagpie(>= 1.19.0) does not support revision below 4.66 anymore.
+  if (rev < 4.86) stop("mrmagpie(>= 1.35.2) does not support revision below 4.86 anymore.
                        Please use an older snapshot/version of the library, if you need older revisions.")
 
   # Development flag while switching to 67420 cells is still in progress
@@ -360,14 +360,10 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
  calcOutput("TransportCosts", aggregate = "GLO", round = 4, file = "f40_transport_costs.csv")
 
   # 41 area equipped for irrigation
-  calcOutput("AreaEquippedForIrrigation", source = "Siebert",
-             aggregate = "cluster", cellular = TRUE, cells = cells,
-             round = 6, file = paste0("avl_irrig_", ctype, ".mz"))
-  calcOutput("AreaEquippedForIrrigation", source = "LUH2v2",
-             aggregate = "cluster", cellular = TRUE, cells = cells,
-             selectyears = magYearsPastLong, round = 6,
-             file = paste0("avl_irrig_luh_t_", ctype, ".mz"))
-
+  calcOutput("AreaEquippedForIrrigation", cells = cells,
+              aggregate = "cluster", cellular = TRUE,
+              selectyears = magYearsPastLong, round = 6,
+              file = paste0("avl_irrig_", ctype, ".mz"))
 
   # 42 water demand
   calcOutput("Irrigation", lpjml = lpjml, years = lpjYears, climatetype = climatetype,
