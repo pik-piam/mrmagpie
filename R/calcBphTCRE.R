@@ -32,6 +32,11 @@ calcBphTCRE <- function() {
 
   weight <- calcOutput("LandArea", aggregate = FALSE)
 
+  if (cells == "magpiecell") {
+    weight <- toolCoord2Isocell(weight)
+    x      <- toolCoord2Isocell(x)
+  }
+
   return(list(x = x,
               weight = weight,
               unit = "degC per tC per ha",

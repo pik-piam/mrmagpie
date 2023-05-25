@@ -23,7 +23,6 @@
 correctWindisch2021 <- function(x) {
 
   x <- toolConditionalReplace(x, conditions = c("is.na()"), replaceby = 0)
-  x <- toolCoord2Isocell(x)
 
   return(x)
 }

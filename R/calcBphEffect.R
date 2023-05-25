@@ -2,6 +2,7 @@
 #' @description Biogeophysical temperature change of afforestation (degree C).
 #'              File is based on observation datasets of Bright et al. 2017
 #'              and Duveiller et al. 2018
+#' @param cells lpjcell for 67420 cells or magpiecell for 59199 cells
 #'
 #' @return magpie object in cellular resolution
 #' @author Michael Windisch, Felicitas Beier
@@ -11,12 +12,9 @@
 #' calcOutput("BphEffect", aggregate = FALSE)
 #' }
 #'
-#' @importFrom magpiesets findset
-#' @importFrom madrat readSource
+#' @importFrom madrat readSource calcOutput
 
-calcBphEffect <- function() {
-
-  cells <- "magpiecell"
+calcBphEffect <- function(cells = "magpiecell") {
 
   # load BphEffect data
   bph   <- readSource("Windisch2021", subtype = "refordefor_BPHonly_05_new",
@@ -31,14 +29,13 @@ calcBphEffect <- function() {
 
   # read in Koeppen data and cell area weight
   k      <- setYears(readSource("Koeppen", subtype = "cellular",
-                       convert = "onlycorrect")[, 1995, ], NULL)
+                                convert = "onlycorrect")[, "y1976", ],
+                     NULL)
 
-  if (cells == "magpiecell") k <- toolCoord2Isocell(k)
-  weight <- calcOutput("LandArea", cells = cells, aggregate = FALSE)
+  weight <- calcOutput("LandArea", cells = "lpjcell", aggregate = FALSE)
 
   # mapping to connect cell names with latitudes
-  map <- toolGetMapping(type = "cell", name = "CountryToCellMapping.csv")
-  # map <- toolGetMappingCoord2Country(pretty = TRUE) # mapping for 67420 # nolint
+  map <- toolGetMappingCoord2Country(pretty = TRUE) # mapping for 67420 # nolint
 
   # assuming 0 was NA before.
   x[, , "ann_bph"][x[, , "ann_bph"] == 0] <- NA
@@ -69,6 +66,11 @@ calcBphEffect <- function() {
       m <- mean(x[cells, , "ann_bph"], na.rm = TRUE)
       x[cellsNA, , "ann_bph"] <- m
     }
+  }
+
+  if (cells == "magpiecell") {
+    weight <- toolCoord2Isocell(weight)
+    x      <- toolCoord2Isocell(x)
   }
 
   return(list(
