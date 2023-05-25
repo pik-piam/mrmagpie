@@ -10,9 +10,9 @@ calcBphMask()
 magpie object in cellular resolution
 }
 \description{
-Mask of Datapoints of biogeophysical temperature change of afforestation (degree C) to be
-used as weight. File is based on observation datasets of Bright et al. 2017 and Duveiller et al. 2018
-# @param
+Mask of Datapoints of biogeophysical temperature change of afforestation (degree C)
+             to be used as weight.
+             File is based on observation datasets of Bright et al. 2017 and Duveiller et al. 2018
 }
 \examples{
 \dontrun{
@@ -21,5 +21,5 @@ calcOutput("BphMask", aggregate = FALSE)
 
 }
 \author{
-Michael Windisch
+Michael Windisch, Felicitas Beier
 }

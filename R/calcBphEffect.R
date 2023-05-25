@@ -3,7 +3,7 @@
 #' of Bright et al. 2017 and Duveiller et al. 2018
 #'
 #' @return magpie object in cellular resolution
-#' @author Michael Windisch
+#' @author Michael Windisch, Felicitas Beier
 #'
 #' @examples
 #' \dontrun{
@@ -15,8 +15,20 @@
 
 calcBphEffect <- function() {
 
-  x <- readSource("BphEffect", convert = "onlycorrect")
-  k <- readSource("Koeppen", subtype = "cellular", convert = "onlycorrect")[, 1995, ]
+  # load BphEffect data
+  bph   <- readSource("Windisch2021", subtype = "refordefor_BPHonly_05_new",
+                    convert = "onlycorrect")
+
+  # prepare filled (0) plain for the nobgp case
+  x <- new.magpie(cells_and_regions = getItems(bph, dim = 1),
+                  years = NULL,
+                  names = c("nobgp", "ann_bph"),
+                  fill = 0)
+  x[, , "ann_bph"] <- bph[, , 1]
+
+  # read in Koeppen data and cell area weight
+  k      <- readSource("Koeppen", subtype = "cellular",
+                       convert = "onlycorrect")[, 1995, ]
   weight <- calcOutput("CellArea", aggregate = FALSE)
 
   # mapping to connect cell names with latitudes
