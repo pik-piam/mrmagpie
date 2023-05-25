@@ -25,6 +25,7 @@ readWindisch2021 <- function(subtype) {
   if (subtype == "refordefor_dT_ANN_nonzeromask_05") {
     # read in bph mask
     x <- read.magpie(paste0(subtype, ".nc"))
+    getNames(x) <- "mask"
   } else {
     # read in raster objects
     x <- terra::rast(paste0(subtype, ".nc"))
