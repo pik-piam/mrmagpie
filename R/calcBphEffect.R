@@ -32,8 +32,6 @@ calcBphEffect <- function(cells = "magpiecell") {
                                 convert = "onlycorrect")[, "y1976", ],
                      NULL)
 
-  weight <- calcOutput("LandArea", cells = cells, aggregate = FALSE)
-
   # mapping to connect cell names with latitudes
   map <- toolGetMappingCoord2Country(pretty = TRUE)
   map$isocoord <- paste(map$coords, map$iso, sep = ".")
@@ -69,8 +67,15 @@ calcBphEffect <- function(cells = "magpiecell") {
     }
   }
 
+  # clean naming
+  getSets(x) <- c("x", "y", "iso", "year", "data")
+
+  # weight for clustering 
+  weight <- calcOutput("LandArea", cells = cells, aggregate = FALSE)
+
+  # reduce to required number of cells
   if (cells == "magpiecell") {
-    x      <- toolCoord2Isocell(x)
+    x      <- toolCoord2Isocell(x, cells = cells)
   }
 
   return(list(x = x,

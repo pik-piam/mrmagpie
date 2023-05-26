@@ -31,10 +31,15 @@ calcBphTCRE <- function(cells = "magpiecell") {
   x[, , "ann_TCREhigh"] <- a[, , 1] + d[, , 1]
   x[, , "ann_TCRElow"]  <- a[, , 1] - d[, , 1]
 
+  # clean naming
+  getSets(x) <- c("x", "y", "iso", "year", "data")
+
+  # weight for clustering
   weight <- calcOutput("LandArea", cells = cells, aggregate = FALSE)
 
+  # reduce number of cells
   if (cells == "magpiecell") {
-    x      <- toolCoord2Isocell(x)
+    x      <- toolCoord2Isocell(x, cells = cells)
   }
 
   return(list(x = x,

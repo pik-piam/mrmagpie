@@ -19,10 +19,12 @@ calcBphMask <- function(cells = "magpiecell") {
   x <- readSource("Windisch2021", subtype = "refordefor_dT_ANN_nonzeromask_05",
                   convert = "onlycorrect")
 
+  # weight for clustering
   weight <- calcOutput("LandArea", cells = cells, aggregate = FALSE)
 
+  # reduce number of cells
   if (cells == "magpiecell") {
-    x      <- toolCoord2Isocell(x)
+    x      <- toolCoord2Isocell(x, cells = cells)
   }
 
   return(list(x = x,
