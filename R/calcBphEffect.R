@@ -56,15 +56,15 @@ calcBphEffect <- function(cells = "magpiecell") {
   # Loop over climate classes
   for (sel in cclass) {
     # get the magpie cells corresponding to cl
-    cells <- map[ccl %in% sel, "celliso"]
-    # find cells with NA
-    cellsNA <- cells[is.na(x[cells, , "ann_bph"])]
-    # If all cells are NA, use mGlo, otherwise calc mean based on the non NA cells.
-    if (identical(cells, cellsNA)) {
-      x[cellsNA, , "ann_bph"] <- mGlo
+    gridcells <- map[ccl %in% sel, "celliso"]
+    # find gridcells with NA
+    gridcellsNA <- gridcells[is.na(x[gridcells, , "ann_bph"])]
+    # If all gridcells are NA, use mGlo, otherwise calc mean based on the non NA gridcells.
+    if (identical(gridcells, gridcellsNA)) {
+      x[gridcellsNA, , "ann_bph"] <- mGlo
     } else {
-      m <- mean(x[cells, , "ann_bph"], na.rm = TRUE)
-      x[cellsNA, , "ann_bph"] <- m
+      m <- mean(x[gridcells, , "ann_bph"], na.rm = TRUE)
+      x[gridcellsNA, , "ann_bph"] <- m
     }
   }
 

@@ -30,10 +30,9 @@ calcBphTCRE <- function() {
   x[, , "ann_TCREhigh"] <- a[, , 1] + d[, , 1]
   x[, , "ann_TCRElow"]  <- a[, , 1] - d[, , 1]
 
-  weight <- calcOutput("LandArea", aggregate = FALSE)
+  weight <- calcOutput("LandArea", cells = cells, aggregate = FALSE)
 
   if (cells == "magpiecell") {
-    weight <- toolCoord2Isocell(weight)
     x      <- toolCoord2Isocell(x)
   }
 
