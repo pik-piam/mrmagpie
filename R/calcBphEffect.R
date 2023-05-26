@@ -32,10 +32,11 @@ calcBphEffect <- function(cells = "magpiecell") {
                                 convert = "onlycorrect")[, "y1976", ],
                      NULL)
 
-  weight <- calcOutput("LandArea", cells = "lpjcell", aggregate = FALSE)
+  weight <- calcOutput("LandArea", cells = cells, aggregate = FALSE)
 
   # mapping to connect cell names with latitudes
-  map <- toolGetMappingCoord2Country(pretty = TRUE) # mapping for 67420 # nolint
+  map <- toolGetMappingCoord2Country(pretty = TRUE)
+  map$isocoord <- paste(map$coords, map$iso, sep = ".")
 
   # assuming 0 was NA before.
   x[, , "ann_bph"][x[, , "ann_bph"] == 0] <- NA
@@ -56,7 +57,7 @@ calcBphEffect <- function(cells = "magpiecell") {
   # Loop over climate classes
   for (sel in cclass) {
     # get the magpie cells corresponding to cl
-    gridcells <- map[ccl %in% sel, "celliso"]
+    gridcells <- map[ccl %in% sel, "isocoord"]
     # find gridcells with NA
     gridcellsNA <- gridcells[is.na(x[gridcells, , "ann_bph"])]
     # If all gridcells are NA, use mGlo, otherwise calc mean based on the non NA gridcells.
@@ -69,14 +70,12 @@ calcBphEffect <- function(cells = "magpiecell") {
   }
 
   if (cells == "magpiecell") {
-    weight <- toolCoord2Isocell(weight)
     x      <- toolCoord2Isocell(x)
   }
 
-  return(list(
-    x = x,
-    weight = weight,
-    unit = "degC",
-    description = "Biogeophysical temp change of afforestation in degC",
-    isocountries = FALSE))
+  return(list(x = x,
+              weight = weight,
+              unit = "degC",
+              description = "Biogeophysical temp change of afforestation in degC",
+              isocountries = FALSE))
 }
