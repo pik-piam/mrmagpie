@@ -2,6 +2,7 @@
 #' @description Transient Climate Response to accumulated doubling of CO2.
 #'              File based on CMIP5 +1perc CO2 per year experiment.
 #'              To be used in the translation to carbon equivalents of BphEffect
+#' @param cells lpjcell for 67420 cells or magpiecell for 59199 cells
 #' @return magpie object in cellular resolution
 #' @author Michael Windisch, Felicitas Beier
 #'
@@ -12,7 +13,7 @@
 #'
 #' @importFrom madrat readSource
 
-calcBphTCRE <- function() {
+calcBphTCRE <- function(cells = "magpiecell") {
 
   # load input data for BphTCRE
   a <- readSource("Windisch2021", subtype = "annmean_pertCha_05_EW1",
