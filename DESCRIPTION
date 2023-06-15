@@ -1,8 +1,8 @@
 Type: Package
 Package: mrmagpie
 Title: madrat based MAgPIE Input Data Library
-Version: 1.35.5.9005
-Date: 2023-05-25
+Version: 1.35.6.9001
+Date: 2023-06-15
 Authors@R: c(
     person("Kristine", "Karstens", , "karstens@pik-potsdam.de", role = c("aut", "cre")),
     person("Jan Philipp", "Dietrich", , "dietrich@pik-potsdam.de", role = "aut"),
@@ -45,7 +45,7 @@ Imports:
     readxl,
     stats,
     stringr,
-    terra,
+    terra (>= 1.7.18),
     tidyr,
     withr
 Suggests:

@@ -4,7 +4,10 @@
 \alias{calcBphEffect}
 \title{calcBphEffect}
 \usage{
-calcBphEffect()
+calcBphEffect(cells = "magpiecell")
+}
+\arguments{
+\item{cells}{lpjcell for 67420 cells or magpiecell for 59199 cells}
 }
 \value{
 magpie object in cellular resolution
