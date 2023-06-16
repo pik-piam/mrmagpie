@@ -302,11 +302,11 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
              file = paste0("cell_country_fraction_", ctype, ".mz"))
 
   # 32 forestry
-  calcOutput("AfforestationMask", subtype = "noboreal",     aggregate = "cluster", round = 6,
+  calcOutput("AfforestationMask", subtype = "noboreal", cells = cells, aggregate = "cluster", round = 6,
     file = paste0("aff_noboreal_", ctype, ".mz"))
-  calcOutput("AfforestationMask", subtype = "onlytropical", aggregate = "cluster", round = 6,
+  calcOutput("AfforestationMask", subtype = "onlytropical", cells = cells, aggregate = "cluster", round = 6,
     file = paste0("aff_onlytropical_", ctype, ".mz"))
-  calcOutput("AfforestationMask", subtype = "unrestricted", aggregate = "cluster", round = 6,
+  calcOutput("AfforestationMask", subtype = "unrestricted", cells = cells, aggregate = "cluster", round = 6,
     file = paste0("aff_unrestricted_", ctype, ".mz"))
 
   calcOutput("NpiNdcAdAolcPol", aggregate = "cluster", cells = cells,
@@ -439,11 +439,11 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
              round = 6, years = lpjYears, file = paste0("lpj_carbon_topsoil_", ctype, ".mz"))
 
   # 58 peatland
-  calcOutput("Peatland", subtype = "degraded", aggregate = FALSE, round = 6, file = "f58_peatland_degrad_0.5.mz")
-  calcOutput("Peatland", subtype = "intact",   aggregate = FALSE, round = 6, file = "f58_peatland_intact_0.5.mz")
-  calcOutput("Peatland", subtype = "degraded", aggregate = "cluster", round = 6,
+  calcOutput("Peatland", subtype = "degraded", cells = cells, aggregate = FALSE, round = 6, file = "f58_peatland_degrad_0.5.mz")
+  calcOutput("Peatland", subtype = "intact",   cells = cells, aggregate = FALSE, round = 6, file = "f58_peatland_intact_0.5.mz")
+  calcOutput("Peatland", subtype = "degraded", cells = cells, aggregate = "cluster", round = 6,
     file = paste0("f58_peatland_degrad_", ctype, ".mz"))
-  calcOutput("Peatland", subtype = "intact",   aggregate = "cluster", round = 6,
+  calcOutput("Peatland", subtype = "intact",   cells = cells, aggregate = "cluster", round = 6,
     file = paste0("f58_peatland_intact_", ctype, ".mz"))
 
 

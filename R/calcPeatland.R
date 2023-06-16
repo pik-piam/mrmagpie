@@ -55,7 +55,7 @@ calcPeatland <-function(subtype="degraded", cells = "magpiecell"){
     x <- PeatAreaIntact
   }
 
-  y <- toolCoord2Isocell(x, cells = cells)
+  x <- mrcommons::toolCoord2Isocell(x, cells = cells)
 
   return(list(
     x=x,
