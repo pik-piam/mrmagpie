@@ -34,7 +34,9 @@ calcAfforestationMask <- function(subtype, cells = "magpiecell") {
   x <- as.magpie(terra::extract(r, map[c("lon", "lat")])[, -1], spatial = 1)
   dimnames(x) <- list("x.y.iso" = paste(map$coords, map$iso, sep = "."), "t" = NULL, "d3" = NULL)
 
-  x <- mrcommons::toolCoord2Isocell(x, cells = cells)
+  if (cells == "magpiecell") {
+    x <- mrcommons::toolCoord2Isocell(x, cells = cells)
+  }
 
   weight <- calcOutput("LandArea", aggregate = FALSE, cells = cells)
 

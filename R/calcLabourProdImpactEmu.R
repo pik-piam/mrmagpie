@@ -53,7 +53,9 @@ calcLabourProdImpactEmu <- function(timestep = "5year", cellular = TRUE, subtype
                                   country_level = FALSE, aggregate = FALSE)
   avlCropAreaWeight[avlCropAreaWeight == 0] <- 10^-10
 
-  out <- mrcommons::toolCoord2Isocell(out, cells = cells, fillMissing = 1)
+  if (cells == "magpiecell") {
+    out <- mrcommons::toolCoord2Isocell(out, cells = cells, fillMissing = 1)
+  }
 
   return(list(x            = out,
               weight       = avlCropAreaWeight,

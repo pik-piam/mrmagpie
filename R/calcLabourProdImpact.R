@@ -52,8 +52,9 @@ calcLabourProdImpact <-function(timestep = "5year", subtype="Orlov", cellular=TR
   #weight <- calcOutput("ValueProduction",aggregate=F)[,2010,]
   #no weight yet because doesn't work in old preprocessing
 
-  if(subtype!="Orlov") {
-    stop("Not a Valid Subtype")}
+  if (subtype!="Orlov") {
+    stop("Not a Valid Subtype")
+  }
 
 
     return(list(

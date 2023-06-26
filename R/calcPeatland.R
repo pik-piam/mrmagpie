@@ -55,12 +55,13 @@ calcPeatland <-function(subtype="degraded", cells = "magpiecell"){
     x <- PeatAreaIntact
   }
 
-  x <- mrcommons::toolCoord2Isocell(x, cells = cells)
+  if (cells == "magpiecell") {
+    x <- mrcommons::toolCoord2Isocell(x, cells = cells)
+  }
 
-  return(list(
-    x=x,
-    weight=NULL,
-    unit="Mha",
-    description=description,
-    isocountries=FALSE))
+  return(list(x = x,
+              weight = NULL,
+              unit = "Mha",
+              description = description,
+              isocountries = FALSE))
 }
