@@ -18,11 +18,11 @@ calcAfforestationMask <- function(subtype, cells = "magpiecell") {
     r <- terra::rast(res = 0.5, vals = 1)
   } else if (subtype == "noboreal") { #Exclude boreal regions > 50deg N
     r <- terra::rast(res = 0.5, vals = 1)
-    lat <- init(r, "y") |> terra::mask(r)
+    lat <- terra::init(r, "y") |> terra::mask(r)
     r <- terra::mask(r, lat>50, maskvalue=TRUE, updatevalue=0)
   } else if (subtype == "onlytropical") { #only tropical areas between 20deg S and 20deg N
     r <- terra::rast(res = 0.5, vals = 1)
-    lat <- init(r, "y") |> terra::mask(r)
+    lat <- terra::init(r, "y") |> terra::mask(r)
     r <- terra::mask(r, lat > 20, maskvalue=TRUE, updatevalue=0)
     r <- terra::mask(r, lat < -20, maskvalue=TRUE, updatevalue=0)
   }
