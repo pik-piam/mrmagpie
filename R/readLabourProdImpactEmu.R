@@ -26,8 +26,8 @@ readLabourProdImpactEmu <- function() {
            inter           <- toolCoord2Isocoord(inter)
            # clean up object dimensions
            getYears(inter) <- seq(from = 1995, to = 2095, by = 1)
-           getNames(inter) <- paste0(exp, ".", fct, ".", int, "W", ".", sta)
            inter           <- collapseNames(inter)
+           getNames(inter) <- paste0(exp, ".", fct, ".", int, "W", ".", sta)
            getSets(inter)  <- c("x", "y", "iso", "year", "data")
            # bind to previous inputs
            x <- mbind(x, inter)
