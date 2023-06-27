@@ -6,7 +6,7 @@
 \usage{
 calcAreaEquippedForIrrigation(
   cellular = FALSE,
-  cells = "magpiecell",
+  cells = "lpjcell",
   selectyears = "past"
 )
 }

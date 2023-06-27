@@ -13,7 +13,7 @@
 #'
 #' @importFrom madrat readSource
 
-calcBphTCRE <- function(cells = "magpiecell") {
+calcBphTCRE <- function(cells = "lpjcell") {
 
   # load input data for BphTCRE
   a <- readSource("Windisch2021", subtype = "annmean_pertCha_05_EW1",

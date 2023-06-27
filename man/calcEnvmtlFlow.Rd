@@ -15,7 +15,7 @@ calcEnvmtlFlow(
   HFR_LFR_20_30 = 0.07,
   HFR_LFR_more30 = 0,
   seasonality = "grper",
-  cells = "magpiecell"
+  cells = "lpjcell"
 )
 }
 \arguments{

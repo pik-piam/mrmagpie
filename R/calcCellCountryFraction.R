@@ -12,7 +12,7 @@
 #'
 #' @export
 
-calcCellCountryFraction <- function(cells = "magpiecell") {
+calcCellCountryFraction <- function(cells = "lpjcell") {
 
   weight <- calcOutput("LandArea", cells = cells, aggregate = FALSE)
 
@@ -31,7 +31,7 @@ calcCellCountryFraction <- function(cells = "magpiecell") {
 
   } else if (cells == "magpiecell") {
 
-    x <- new.magpie(cells_and_regions = getItems(weight, dim = 1), 
+    x <- new.magpie(cells_and_regions = getItems(weight, dim = 1),
                     years = NULL,
                     names = getItems(weight, dim = 1.1),
                     fill = 0)

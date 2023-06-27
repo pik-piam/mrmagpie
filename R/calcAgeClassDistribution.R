@@ -13,7 +13,7 @@
 #'
 #' @importFrom magclass where
 
-calcAgeClassDistribution <- function(cells = "magpiecell") {
+calcAgeClassDistribution <- function(cells = "lpjcell") {
 
   # Cell fraction from poulter data set
   poulterDataset <- readSource("GFAD", convert = "onlycorrect")

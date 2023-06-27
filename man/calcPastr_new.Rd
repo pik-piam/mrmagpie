@@ -9,7 +9,7 @@ calcPastr_new(
   lpjml = "lpjml5p2_pasture",
   climatetype = "IPSL_CM6A_LR",
   scenario = "ssp126_co2_limN",
-  cells = "magpiecell"
+  cells = "lpjcell"
 )
 }
 \arguments{

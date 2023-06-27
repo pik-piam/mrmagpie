@@ -4,10 +4,12 @@
 \alias{calcAfforestationMask}
 \title{calcAfforestationMask}
 \usage{
-calcAfforestationMask(subtype)
+calcAfforestationMask(subtype, cells = "lpjcell")
 }
 \arguments{
 \item{subtype}{afforestation mask sub type}
+
+\item{cells}{"magpiecell" or "lpjcell"}
 }
 \value{
 magpie object in cellular resolution
@@ -22,5 +24,5 @@ calcOutput("AfforestationMask", subtype = "noboreal", aggregate = FALSE)
 
 }
 \author{
-David Chen
+David Chen, Florian Humpenoeder
 }

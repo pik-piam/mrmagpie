@@ -14,7 +14,7 @@
 #'
 #' @importFrom madrat readSource calcOutput
 
-calcBphEffect <- function(cells = "magpiecell") {
+calcBphEffect <- function(cells = "lpjcell") {
 
   # load BphEffect data
   bph   <- readSource("Windisch2021", subtype = "refordefor_BPHonly_05_new",
@@ -70,7 +70,7 @@ calcBphEffect <- function(cells = "magpiecell") {
   # clean naming
   getSets(x) <- c("x", "y", "iso", "year", "data")
 
-  # weight for clustering 
+  # weight for clustering
   weight <- calcOutput("LandArea", cells = cells, aggregate = FALSE)
 
   # reduce to required number of cells

@@ -4,7 +4,7 @@
 \alias{calcNpiNdcAffPol}
 \title{calcNpiNdcAffPol}
 \usage{
-calcNpiNdcAffPol(cells = "magpiecell")
+calcNpiNdcAffPol(cells = "lpjcell")
 }
 \arguments{
 \item{cells}{lpjcell for 67420 cells or magpiecell for 59199 cells}

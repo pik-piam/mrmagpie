@@ -17,7 +17,7 @@
 #' @importFrom magpiesets addLocation
 #'
 
-calcAvlLandSi <- function(cells = "magpiecell") {
+calcAvlLandSi <- function(cells = "lpjcell") {
   # input data (Ramankutty)
   x        <- readSource("Ramankutty", convert = "onlycorrect")
 

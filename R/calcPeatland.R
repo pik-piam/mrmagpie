@@ -15,7 +15,7 @@
 #' @importFrom madrat toolGetMapping toolAggregate
 #' @importFrom mrcommons toolIso2CellCountries
 
-calcPeatland <-function(subtype="degraded", cells = "magpiecell"){
+calcPeatland <-function(subtype="degraded", cells = "lpjcell"){
 
   GPD         <- readSource("GPD", convert=TRUE)
   potPeatArea <- readSource("Leifeld2018", convert="onlycorrect")
@@ -64,4 +64,5 @@ calcPeatland <-function(subtype="degraded", cells = "magpiecell"){
               unit = "Mha",
               description = description,
               isocountries = FALSE))
+
 }

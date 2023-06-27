@@ -11,7 +11,7 @@
 #' calcOutput("TransportTime", aggregate = FALSE)
 #' }
 #'
-calcTransportTime <- function(subtype = "cities50", cells = "magpiecell") {
+calcTransportTime <- function(subtype = "cities50", cells = "lpjcell") {
 
   x <- readSource("TravelTimeNelson2019", subtype = subtype, convert = FALSE)
 

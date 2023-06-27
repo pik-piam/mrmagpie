@@ -12,7 +12,7 @@
 #' calcOutput("SOMinitialsiationPools")
 #' }
 #'
-calcSOMinitialsiationPools <- function(cells = "magpiecell") {
+calcSOMinitialsiationPools <- function(cells = "lpjcell") {
 
   past <- findset("past")
   som  <- calcOutput("SOM", cells = cells, aggregate = FALSE)

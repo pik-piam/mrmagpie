@@ -10,18 +10,18 @@
 #' @importFrom magpiesets findset
 #'
 
-calcNpiNdcAdAolcPol <-function(cells = "magpiecell") {
+calcNpiNdcAdAolcPol <-function(cells = "lpjcell") {
 
   if (cells == "lpjcell") {
 
   # cell mappping
   mapping <- toolGetMappingCoord2Country()
-  
+
   # create a dummy data set, which is later used to define NDC and NPI policies
   x <- new.magpie(cells_and_regions = paste(mapping$coords, mapping$iso, sep = "."),
                   years = seq(1995, 2150, 5),
                   names = c("none.forest", "npi.forest", "ndc.forest", "none.other", "npi.other", "ndc.other"),
-                  fill = 0, 
+                  fill = 0,
                   sets = c("x.y.iso", "year", "data1.new"))
 
   } else if (cells == "magpiecell") {

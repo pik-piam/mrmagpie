@@ -15,7 +15,7 @@
 #'
 calcPastr_new <- function(past_mngmt = "me2", # nolint
                           lpjml = "lpjml5p2_pasture", climatetype = "IPSL_CM6A_LR",
-                          scenario = "ssp126_co2_limN", cells = "magpiecell") {
+                          scenario = "ssp126_co2_limN", cells = "lpjcell") {
 
   yearsHist <- seq(1965, 2010, 5)
   .subtype <- paste0(lpjml, ":", climatetype, paste0(scenario, "/", past_mngmt))

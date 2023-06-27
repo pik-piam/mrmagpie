@@ -4,7 +4,7 @@
 \alias{calcNpiNdcAdAolcPol}
 \title{calcNpiNdcAdAolcPol}
 \usage{
-calcNpiNdcAdAolcPol(cells = "magpiecell")
+calcNpiNdcAdAolcPol(cells = "lpjcell")
 }
 \arguments{
 \item{cells}{lpjcell for 67420 cells or magpiecell for 59199 cells}

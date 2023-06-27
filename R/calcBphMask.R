@@ -13,7 +13,7 @@
 #'
 #' @importFrom madrat readSource
 
-calcBphMask <- function(cells = "magpiecell") {
+calcBphMask <- function(cells = "lpjcell") {
 
   # load BphMask data
   x <- readSource("Windisch2021", subtype = "refordefor_dT_ANN_nonzeromask_05",

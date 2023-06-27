@@ -5,7 +5,7 @@
 \title{calcTopsoilCarbon}
 \usage{
 calcTopsoilCarbon(
-  cells = "magpiecell",
+  cells = "lpjcell",
   lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de", crop =
     "ggcmi_phase3_nchecks_9ca735cb"),
   climatetype = "GSWP3-W5E5:historical"

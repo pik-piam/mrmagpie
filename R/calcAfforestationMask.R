@@ -12,7 +12,7 @@
 #'
 #' @importFrom magclass as.magpie
 
-calcAfforestationMask <- function(subtype, cells = "magpiecell") {
+calcAfforestationMask <- function(subtype, cells = "lpjcell") {
 
   if (subtype == "unrestricted") {
     r <- terra::rast(res = 0.5, vals = 1)

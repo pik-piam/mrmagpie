@@ -4,7 +4,7 @@
 \alias{calcAvlLandSi}
 \title{calcAvlLandSi}
 \usage{
-calcAvlLandSi(cells = "magpiecell")
+calcAvlLandSi(cells = "lpjcell")
 }
 \arguments{
 \item{cells}{magpiecell (59199 cells) or lpjcell (67420 cells)}

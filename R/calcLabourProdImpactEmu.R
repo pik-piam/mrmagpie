@@ -9,7 +9,8 @@
 #' @author Michael Windisch, Florian Humpenöder
 #' @importFrom magclass dimSums mbind
 
-calcLabourProdImpactEmu <- function(timestep = "5year", cellular = TRUE, subtype = "impact", cells = "magpiecell") {
+calcLabourProdImpactEmu <- function(timestep = "5year", cellular = TRUE,
+                                    subtype = "impact", cells = "lpjcell") {
 
   out <- readSource("LabourProdImpactEmu", convert = "onlycorrect")
 
