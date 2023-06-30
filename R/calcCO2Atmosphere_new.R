@@ -17,25 +17,31 @@
 #' @importFrom magpiesets findset
 #'
 
-calcCO2Atmosphere_new <- function(subtype = "ISIMIP3b:ssp126" , co2_evolution = "rising" ) {
+calcCO2Atmosphere_new <- function(subtype = "ISIMIP3b:ssp126",
+                                  co2_evolution = "rising",
+                                  cells = "lpjcell") {
 
-  x <- readSource("CO2Atmosphere_new", subtype = subtype, convert = F)
+  x <- readSource("CO2Atmosphere_new", subtype = subtype, convert = FALSE)
 
-  if(co2_evolution == "rising"){
-
-    cells <- toolGetMapping("CountryToCellMapping.csv", type = "cell")
-    cells$glo <- "GLO"
-    x <- toolAggregate(x, rel = cells, from = "glo", to = "celliso")
-
-  } else if(co2_evolution == "static") {
+  if (co2_evolution == "static") {
     past <- tail(findset("past"),1)
     f_year <- match(past,getYears(x))
     for (i in f_year:length(getYears(x))) {
       x[, i, ] <- x[,past,]
     }
-    cells <- toolGetMapping("CountryToCellMapping.csv", type = "cell")
-    cells$glo <- "GLO"
-    x <- toolAggregate(x, rel = cells, from = "glo", to = "celliso")
+  }
+
+  # expand to cellular resolution
+  cellMap     <- toolGetMappingCoord2Country(pretty = TRUE)
+  cellMap$glo <- "GLO"
+  x           <- toolAggregate(x, rel = cellMap, from = "glo", to = "coords")
+  x           <- x[cellMap$coords, , ]
+  getItems(x, dim = 1, raw = TRUE) <- paste(cellMap$coords, cellMap$iso, sep = ".")
+  getSets(x) <- c("x", "y", "iso", "year", "data")
+
+  # reduce to 59k cells
+  if (cells == "magpiecell") {
+    x <- toolCoord2Isocell(x, cells = cells)
   }
 
   return(list(
