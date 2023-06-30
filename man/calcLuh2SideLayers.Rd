@@ -4,7 +4,10 @@
 \alias{calcLuh2SideLayers}
 \title{calcLuh2SideLayers}
 \usage{
-calcLuh2SideLayers()
+calcLuh2SideLayers(cells = "lpjcell")
+}
+\arguments{
+\item{cells}{number of cells to be returned: magpiecell (59199), lpjcell (67420)}
 }
 \value{
 magpie object in cellular resolution
@@ -19,5 +22,5 @@ calcOutput("Luh2SideLayers", aggregate = FALSE)
 
 }
 \author{
-Michael Windisch
+Patrick v. Jeetze
 }

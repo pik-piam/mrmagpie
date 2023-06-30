@@ -418,12 +418,12 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
   calcOutput("RRLayer", aggregate = "cluster", round = 6, file = paste0("rr_layer_", ctype, ".mz"))
 
   # 50 nitrogen
-  calcOutput("AtmosphericDepositionRates", cellular = TRUE, aggregate = FALSE, round = 6,
+  calcOutput("AtmosphericDepositionRates", cellular = TRUE, aggregate = FALSE, round = 6, cells = cells,
             file = "f50_AtmosphericDepositionRates_0.5.mz")
   calcOutput("NitrogenFixationRateNatural", aggregate = FALSE, round = 6,
             file = "f50_NitrogenFixationRateNatural_0.5.mz")
 
-  calcOutput("AtmosphericDepositionRates", cellular = TRUE, aggregate = "cluster", round = 6,
+  calcOutput("AtmosphericDepositionRates", cellular = TRUE, aggregate = "cluster", round = 6, cells = cells,
     file = paste0("f50_AtmosphericDepositionRates_", ctype, ".mz"))
   calcOutput("NitrogenFixationRateNatural", cells = cells, aggregate = "cluster", round = 6,
             file = paste0("f50_NitrogenFixationRateNatural_", ctype, ".mz"))
