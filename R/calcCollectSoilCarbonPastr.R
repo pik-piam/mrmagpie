@@ -13,7 +13,6 @@
 #' calcOutput("CollectSoilCarbonPastr", past_mngmt = "me2")
 #' }
 #'
-#'
 #' @import madrat
 #' @import magclass
 #' @importFrom raster rasterFromXYZ
@@ -26,10 +25,10 @@
 calcCollectSoilCarbonPastr <-
   function(past_mngmt = "me2", lpjml = "lpjml5p2_pasture", climatemodel = "IPSL_CM6A_LR", scenario = "ssp126_co2_limN", sar = 1) {
 
-    .subtype <- paste(lpjml, climatemodel,paste0(scenario,"/", past_mngmt),sep = ":")
-    hist <- toolCoord2Isocell(readSource("LPJmL_new", subtype = paste(.subtype, "soilc_past_hist", sep = ":"), convert = F))
-    scen <- toolCoord2Isocell(readSource("LPJmL_new", subtype = paste(.subtype, "soilc_past_scen", sep = ":"), convert = F))
-    y <- mbind(hist,scen)
+    .subtype <- paste(lpjml, climatemodel, paste0(scenario, "/", past_mngmt), sep = ":")
+    hist <- toolCoord2Isocell(readSource("LPJmL_new", subtype = paste(.subtype, "soilc_past_hist", sep = ":"), convert = FALSE))
+    scen <- toolCoord2Isocell(readSource("LPJmL_new", subtype = paste(.subtype, "soilc_past_scen", sep = ":"), convert = FALSE))
+    y <- mbind(hist, scen)
     y <- toolTimeAverage(y, averaging_range = sar)
     y <- toolHoldConstant(y, (max(getYears(y, as.integer = TRUE)) + 1):2150)
     getNames(y) <- "pastr"
@@ -38,14 +37,14 @@ calcCollectSoilCarbonPastr <-
     y <- y * unit_transform
 
     # Calculating weights
-    landcoords <- as.data.frame(toolGetMapping("magpie_coord.rda", type = "cell"))
-    landcoords <- cbind(landcoords, rep(1,nrow(landcoords)))
+    landcoords <- as.data.frame(toolGetMapping("magpie_coord.rda", type = "cell", where = "mappingfolder"))
+    landcoords <- cbind(landcoords, rep(1, nrow(landcoords)))
     landcoords <- raster::rasterFromXYZ(landcoords)
     crs(landcoords) <- "+proj=longlat"
     cell_size <- raster::area(landcoords)
-    weight <- cell_size*landcoords
+    weight <- cell_size * landcoords
     weight <- as.magpie(weight)
-    weight <- toolOrderCells(collapseDim(addLocation(weight),dim=c("x","y")))
+    weight <- toolOrderCells(collapseDim(addLocation(weight), dim = c("x", "y")))
 
     return(
       list(

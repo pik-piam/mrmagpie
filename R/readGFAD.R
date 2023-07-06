@@ -18,7 +18,7 @@ readGFAD <- function() {
 
   gfad <- nc_open(poulterData)
 
-  mapping   <- toolGetMapping(type = "cell", name = "CountryToCellMapping.csv")
+  mapping   <- toolGetMapping(type = "cell", name = "CountryToCellMapping.csv", where = "mappingfolder")
 
   lon <- ncvar_get(gfad, "lon")
   lat <- ncvar_get(gfad, "lat")

@@ -126,7 +126,7 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
 
 
   # distinguish between region and superregion if mapping provides this distinction
-  mapReg <- toolGetMapping(getConfig("regionmapping"), type = "regional")
+  mapReg <- toolGetMapping(getConfig("regionmapping"), type = "regional", where = "mappingfolder")
   superregion <- ifelse("superregion" %in% colnames(mapReg), "superregion", "region")
 
   # 13 TC
@@ -350,7 +350,7 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
   writeInfo <- function(file, lpjmlData, resHigh, resOut, rev, cluster) {
     functioncall <- paste(deparse(sys.call(-3)), collapse = "")
 
-    map <- toolGetMapping(type = "regional", name = getConfig("regionmapping"))
+    map <- toolGetMapping(type = "regional", where = "mappingfolder", name = getConfig("regionmapping"))
     regionscode <- regionscode(map)
 
     info <- c("lpj2magpie settings:",

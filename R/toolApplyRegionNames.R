@@ -19,14 +19,14 @@
 #' @importFrom madrat toolGetMapping regionscode
 #' @importFrom mrland spatial_header
 
-toolApplyRegionNames <- function(cdata,regionscode){
+toolApplyRegionNames <- function(cdata, regionscode) {
   ### APPLY REGIONS HERE ON SPATIAL NAMING OF CDATA INSTEAD OF COUNTRIES ###
   ### regionscode needs to be checked and provided as argument to ensure
   ### that caching is not mixing up aggregations with different regional
   ### mapping.
-  map <- toolGetMapping(type = "regional", name = getConfig("regionmapping"))
-  if(regionscode!=regionscode(map)) stop("Provided regionscode does not match regionscode of regional mapping!")
-  getCells(cdata) <- paste(sub("\\..*$", "", dimnames(cdata)[[1]]), spatial_header(map), sep=".")
-  getSets(cdata,fulldim=FALSE)[1] <- "country.region.cell"
+  map <- toolGetMapping(type = "regional", where = "mappingfolder", name = getConfig("regionmapping"))
+  if (regionscode != regionscode(map)) stop("Provided regionscode does not match regionscode of regional mapping!")
+  getCells(cdata) <- paste(sub("\\..*$", "", dimnames(cdata)[[1]]), spatial_header(map), sep = ".")
+  getSets(cdata, fulldim = FALSE)[1] <- "country.region.cell"
   return(cdata)
 }

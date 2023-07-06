@@ -52,7 +52,7 @@ calcTransportCosts <- function(transport = "all") { # nolint
   # calculate transport power (amount * distance) &
   # create average transport costs per ton per distance dummy
   # calculate transport power (amount * distance)
-  mapping <- toolGetMapping(type = "cell", name = "CountryToCellMapping.csv")
+  mapping <- toolGetMapping(type = "cell", name = "CountryToCellMapping.csv", where = "mappingfolder")
 
   tmpPower <- new.magpie(0, cells_and_regions = getItems(distance, dim = 1),
                          years = "y2005",

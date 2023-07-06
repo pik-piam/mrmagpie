@@ -37,7 +37,7 @@ calcPastrMngtLevels  <- function(climatetype = "MRI-ESM2-0:ssp370", options = c(
     y <- mbind(y,c)
 
     # Calculating weights
-    landcoords <- as.data.frame(toolGetMapping("magpie_coord.rda", type = "cell"))
+    landcoords <- as.data.frame(toolGetMapping("magpie_coord.rda", type = "cell", where = "mappingfolder"))
     landcoords <- cbind(landcoords, rep(1, nrow(landcoords)))
     landcoords <- raster::rasterFromXYZ(landcoords)
     crs(landcoords) <- "+proj=longlat"
