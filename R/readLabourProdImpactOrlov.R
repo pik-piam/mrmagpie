@@ -31,6 +31,15 @@ readLabourProdImpactOrlov <- function(subtype = "IPSL-CM5A-LR_rcp85_wbgtod_hotha
 
   # read in selected file
   x <- read.magpie(file)
+  # sort, rename and replace missing with 0
+  mapping <- toolGetMappingCoord2Country()
+  out <- new.magpie(cells_and_regions = mapping$coords,
+                    years = getItems(x, dim = 2),
+                    names = getItems(x, dim = 3),
+                    fill = 0)
+  out[intersect(getItems(x, dim = 1), mapping$coords), , ] <- x[intersect(getItems(x, dim = 1), mapping$coords), , ]
+  getItems(out, dim = 1, raw = TRUE) <- paste(mapping$coords, mapping$iso, sep = ".")
+  getSets(out) <- c("x", "y", "iso", "year", "data")
 
   return(x)
 
