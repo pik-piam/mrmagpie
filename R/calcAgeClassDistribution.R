@@ -17,7 +17,7 @@ calcAgeClassDistribution <- function() {
   poulterDataset <- readSource("GFAD", convert = "onlycorrect")  ## Poulter data is fraction of each cell
 
   # Area of cells
-  mapping   <- toolGetMapping(type = "cell", name = "CountryToCellMapping.csv")
+  mapping   <- toolGetMapping(type = "cell", name = "CountryToCellMapping.csv", where = "mappingfolder")
 
   ## magpie_coord is loaded automatically with package -- not when running line by line
   cb <- as.data.frame(magpie_coord)

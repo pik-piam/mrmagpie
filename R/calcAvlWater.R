@@ -63,7 +63,7 @@ calcAvlWater <- function(lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de", crop =
 
     ## River basin water allocation algorithm:
     # River basin information
-    basinCode <- toolGetMapping("rivermapping.csv", type = "cell")
+    basinCode <- toolGetMapping("rivermapping.csv", type = "cell", where = "mappingfolder")
     basinCode <- basinCode$basincode
 
     # Sum the runoff in all basins and allocate it to the basin cells with discharge as weight

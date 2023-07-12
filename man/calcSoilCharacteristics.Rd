@@ -13,9 +13,8 @@ Magpie objects with results on cellular level.
 Calculate Soil Characteristics based on a HWDS soil classification map
 }
 \examples{
-
 \dontrun{
-  readSource("SoilClassification", subtype="HWSD.soil", convert="onlycorrect")
+readSource("SoilClassification", subtype = "HWSD.soil", convert = "onlycorrect")
 }
 
 }

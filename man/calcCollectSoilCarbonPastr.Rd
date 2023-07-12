@@ -34,7 +34,6 @@ calculates soil carbon content for pasture areas
 calcOutput("CollectSoilCarbonPastr", past_mngmt = "me2")
 }
 
-
 }
 \author{
 Marcos Alves

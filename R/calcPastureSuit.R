@@ -43,7 +43,7 @@ calcPastureSuit <- function(subtype = "ISIMIP3bv2:IPSL-CM6A-LR:1850-2100", smoot
   population <- population[, , avlSSPs]
 
   # Cell area calculation
-  landcoords <- as.data.frame(toolGetMapping("magpie_coord.rda", type = "cell"))
+  landcoords <- as.data.frame(toolGetMapping("magpie_coord.rda", type = "cell", where = "mappingfolder"))
   landcoords <- cbind(landcoords, rep(1, nrow(landcoords)))
   landcoords <- raster::rasterFromXYZ(landcoords)
   crs(landcoords) <- "+proj=longlat" # outputs cell are in km2

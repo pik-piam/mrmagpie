@@ -16,7 +16,6 @@ List of magpie object with results on cluster level
 Calculate livestock historical livestock densities
 }
 \examples{
-
 \dontrun{
 calcOutput("LsuDensityHist")
 }

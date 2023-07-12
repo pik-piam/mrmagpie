@@ -32,7 +32,7 @@ calcBphEffect <- function() {
   weight <- calcOutput("CellArea", aggregate = FALSE)
 
   # mapping to connect cell names with latitudes
-  map <- toolGetMapping(type = "cell", name = "CountryToCellMapping.csv")
+  map <- toolGetMapping(type = "cell", name = "CountryToCellMapping.csv", where = "mappingfolder")
 
   # assuming 0 was NA before.
   x[, , "ann_bph"][x[, , "ann_bph"] == 0] <- NA

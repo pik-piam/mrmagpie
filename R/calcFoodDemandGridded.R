@@ -19,7 +19,7 @@ hist <- getYears(foodDemand)
 gridPop <- collapseNames(calcOutput("GridPop", aggregate = FALSE,
                                     source = "Gao", urban = TRUE)[, hist, "SSP2"])
 
-mapping <- toolGetMapping("CountryToCellMapping.csv", type = "cell")
+mapping <- toolGetMapping("CountryToCellMapping.csv", type = "cell", where = "mappingfolder")
 popAgg <- toolAggregate(gridPop, rel = mapping, from = "celliso", to = "iso") # not all countries
 
 share <- (gridPop / dimSums(popAgg, dim = 3))

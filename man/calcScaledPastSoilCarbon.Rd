@@ -10,7 +10,7 @@ calcScaledPastSoilCarbon(
   climatetype = "IPSL_CM6A_LR",
   scenario = "ssp126_co2_limN",
   sar = 20,
-  aggr = F
+  aggr = FALSE
 )
 }
 \arguments{
@@ -36,7 +36,6 @@ calculates the mean and sd of the scaled pasture soil carbon dataset
 \dontrun{
 calcOutput("ScaledPastSoilCarbon", lsu_levels = c(seq(0, 2, 0.2), 2.5), scenario)
 }
-
 
 }
 \author{

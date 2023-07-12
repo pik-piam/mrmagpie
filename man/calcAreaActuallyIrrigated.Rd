@@ -18,11 +18,9 @@ magpie object with results on cellular or iso country level
 retrieves irrigated crop area from croparea intialization
 }
 \examples{
-
 \dontrun{
 calcOutput("AreaActuallyIrrigated")
 }
-
 
 }
 \author{
