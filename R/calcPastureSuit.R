@@ -24,7 +24,7 @@ calcPastureSuit <- function(datasource = "ISIMIP3bv2",climatetype = "MRI-ESM2-0:
   # evapotranspiration <- calcOutput("Evapotranspiration", datasource = "LPJmL"?, climatetype = climatetype, aggregate = FALSE)
 
   # Cell area calculation
-  landcoords <- as.data.frame(toolGetMapping("magpie_coord.rda", type = "cell"))
+  landcoords <- as.data.frame(toolGetMapping("magpie_coord.rda", type = "cell", where = "mappingfolder"))
   landcoords <- cbind(landcoords, rep(1, nrow(landcoords)))
   landcoords <- raster::rasterFromXYZ(landcoords)
   crs(landcoords) <- "+proj=longlat" # outputs cell are in km2

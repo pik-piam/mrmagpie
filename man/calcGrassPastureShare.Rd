@@ -13,7 +13,6 @@ List of magpie object with results on cluster level
 Calculate glassland shareas os pasture managed lands.
 }
 \examples{
-
 \dontrun{
 calcOutput("GrassPastureShare")
 }

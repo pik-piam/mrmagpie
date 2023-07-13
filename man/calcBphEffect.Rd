@@ -20,5 +20,5 @@ calcOutput("BphEffect", aggregate = FALSE)
 
 }
 \author{
-Michael Windisch
+Michael Windisch, Felicitas Beier
 }

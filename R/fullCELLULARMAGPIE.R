@@ -52,7 +52,7 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
   withr::local_options(magclass_sizeLimit = 1e+12)
 
   ### Version settings ###
-  if (rev < 4.66) stop("mrmagpie(>= 1.19.0) does not support revision below 4.66 anymore.
+  if (rev < 4.86) stop("mrmagpie(>= 1.35.2) does not support revision below 4.86 anymore.
                        Please use a older snapshot/version of the library, if you need older revisions.")
 
   climatescen <- str_split(climatetype, ":")[[1]][2]
@@ -126,7 +126,7 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
 
 
   # distinguish between region and superregion if mapping provides this distinction
-  mapReg <- toolGetMapping(getConfig("regionmapping"), type = "regional")
+  mapReg <- toolGetMapping(getConfig("regionmapping"), type = "regional", where = "mappingfolder")
   superregion <- ifelse("superregion" %in% colnames(mapReg), "superregion", "region")
 
   # 13 TC
@@ -272,11 +272,10 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
  calcOutput("TransportCosts", aggregate = "GLO", round = 4, file = "f40_transport_costs.csv")
 
   # 41 area equipped for irrigation
-  calcOutput("AreaEquippedForIrrigation", aggregate = "cluster", cellular = TRUE, source = "Siebert",
-    round = 6, file = paste0("avl_irrig_", ctype, ".mz"))
-  calcOutput("AreaEquippedForIrrigation", aggregate = "cluster", cellular = TRUE, source = "LUH2v2",
-    selectyears = magYearsPastLong, round = 6, file = paste0("avl_irrig_luh_t_", ctype, ".mz"))
-
+  calcOutput("AreaEquippedForIrrigation",
+              aggregate = "cluster", cellular = TRUE,
+              selectyears = magYearsPastLong, round = 6,
+              file = paste0("avl_irrig_", ctype, ".mz"))
 
   # 42 water demand
   calcOutput("Irrigation", lpjml = lpjml, years = lpjYears, climatetype = climatetype, aggregate = "cluster",
@@ -356,7 +355,7 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
   writeInfo <- function(file, lpjmlData, resHigh, resOut, rev, cluster) {
     functioncall <- paste(deparse(sys.call(-3)), collapse = "")
 
-    map <- toolGetMapping(type = "regional", name = getConfig("regionmapping"))
+    map <- toolGetMapping(type = "regional", where = "mappingfolder", name = getConfig("regionmapping"))
     regionscode <- regionscode(map)
 
     info <- c("lpj2magpie settings:",

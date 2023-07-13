@@ -4,13 +4,10 @@
 #' @return List of magpie object with results on cluster level
 #' @author Marcos Alves
 #' @examples
-#'
 #' \dontrun{
 #' calcOutput("LsuDensityHist")
 #' }
-
-
-calcLsuDensityHist <- function(disagg_type = "grassland"){
+calcLsuDensityHist <- function(disagg_type = "grassland") {
   mag_years_past <- findset("past")
   biomass <- calcOutput("FAOmassbalance", aggregate = FALSE)[, , "production.dm"][, mag_years_past, "pasture"]
   biomass <- collapseNames(biomass)
@@ -24,7 +21,7 @@ calcLsuDensityHist <- function(disagg_type = "grassland"){
   grassl_shares[, , "range"] <- 1 - grassl_shares[, , "pastr"]
   grassl_shares[is.nan(grassl_shares) | is.infinite(grassl_shares)] <- 0
 
-  mapping <- toolGetMapping(name = "CountryToCellMapping.csv", type = "cell")
+  mapping <- toolGetMapping(name = "CountryToCellMapping.csv", type = "cell", where = "mappingfolder")
 
   livestock <- setNames(toolCell2isoCell(readSource("GLW3")), "liv_numb")
   livst_split <- livestock * grassl_shares
@@ -36,12 +33,12 @@ calcLsuDensityHist <- function(disagg_type = "grassland"){
   livst_share_ctry[, , "range"] <- 1 - livst_share_ctry[, , "pastr"]
 
   if (disagg_type == "livestock") {
-    weight = livst_split
+    weight <- livst_split
   } else {
-    if(disagg_type == "grassland") {
-      weight = grassl_land
+    if (disagg_type == "grassland") {
+      weight <- grassl_land
     } else {
-      stop(paste0("disagg_type " , disagg_type, " is not supported"))
+      stop(paste0("disagg_type ", disagg_type, " is not supported"))
     }
   }
 
@@ -49,13 +46,13 @@ calcLsuDensityHist <- function(disagg_type = "grassland"){
   biomass_split <- biomass * livst_share_ctry
   biomass_split_cell <- toolAggregate(biomass_split, rel = mapping, weight = weight, from = "iso", to = "celliso")
 
-  #removing values above simulation
-  lsu_eq <- (8.9 * 365)/1000 # tDM y-1
-  lsus <- biomass_split_cell/lsu_eq
-  lsu_ha <- lsus/grassl_land
+  # removing values above simulation
+  lsu_eq <- (8.9 * 365) / 1000 # tDM y-1
+  lsus <- biomass_split_cell / lsu_eq
+  lsu_ha <- lsus / grassl_land
   lsu_ha[is.nan(lsu_ha) | is.infinite(lsu_ha)] <- 0
-  lsu_ha[lsu_ha[,,"range"]>2.5] <-  2.5
-  lsu_ha[lsu_ha[,,"pastr"]>10] <-  10
+  lsu_ha[lsu_ha[, , "range"] > 2.5] <-  2.5
+  lsu_ha[lsu_ha[, , "pastr"] > 10] <-  10
 
   return(list(
     x = lsu_ha,

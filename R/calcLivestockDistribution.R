@@ -18,7 +18,7 @@ calcLivestockDistribution <- function() {
   ### Disaggregation weights###
   #############################
 
-  mapping <- toolGetMapping(name = "CountryToCellMapping.csv", type = "cell")
+  mapping <- toolGetMapping(name = "CountryToCellMapping.csv", type = "cell", where = "mappingfolder")
   glw3    <- readSource("GLW3", subtype = "Da", convert = "onlycorrect")
 
   #############################

@@ -34,7 +34,7 @@ calcClusterBase <- function(clusterdata = "yield_airrig", lpjml = c(natveg = "LP
   colnames(cdata) <- paste0("i", seq_len(ncol(cdata)))
 
   # make sure that spatial dimension contains country information
-  iso <- toolGetMapping(type = "cell", name = "CountryToCellMapping.csv")$iso
+  iso <- toolGetMapping(type = "cell", name = "CountryToCellMapping.csv", where = "mappingfolder")$iso
   dimnames(cdata)[[1]] <- paste(iso, seq_along(iso), sep = ".")
 
   return(list(x            = as.magpie(cdata),

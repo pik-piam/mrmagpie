@@ -20,7 +20,7 @@ Disaggregate CO2 global atmospheric concentration to cellular level
 }
 \examples{
 \dontrun{
-calcOutput("CO2Atmosphere_new", aggregate = FALSE, subtype , co2_evolution)
+calcOutput("CO2Atmosphere_new", aggregate = FALSE, subtype, co2_evolution)
 }
 
 }

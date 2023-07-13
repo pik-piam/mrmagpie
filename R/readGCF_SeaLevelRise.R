@@ -12,31 +12,31 @@ readGCF_SeaLevelRise <- function() {
   file <- "agg.tif"
   loss <- raster(file)
 
-  mapping <- toolGetMapping(type = "cell", name = "CountryToCellMapping.csv")
+  mapping <- toolGetMapping(type = "cell", name = "CountryToCellMapping.csv", where = "mappingfolder")
   cellNames <- mapping$celliso
-  lon <- seq(-179.75,179.75,by=0.5)
-  lat <- rev(seq(-89.75,89.75,by=0.5))
+  lon <- seq(-179.75, 179.75, by = 0.5)
+  lat <- rev(seq(-89.75, 89.75, by = 0.5))
 
-  loss <- loss/360000 #divide the aggregated sum by the factor (600*600) for percentage
+  loss <- loss / 360000 # divide the aggregated sum by the factor (600*600) for percentage
 
   loss1 <- loss
   loss1[is.na(loss1[])] <- 0
 
-  r50   <- raster(res=0.5)
-  toMag <- projectRaster(loss1,r50,over=TRUE)
-  toMag[which(toMag[]<0)] <-0
+  r50   <- raster(res = 0.5)
+  toMag <- projectRaster(loss1, r50, over = TRUE)
+  toMag[which(toMag[] < 0)] <- 0
   toMag <- t(as.matrix(toMag))
 
 
 
-  mag <- array(NA,dim=c(59199,1,1),dimnames=list(cellNames,"y2100","percentage_lost"))
+  mag <- array(NA, dim = c(59199, 1, 1), dimnames = list(cellNames, "y2100", "percentage_lost"))
   for (j in 1:59199) {
-    mag[j,,] <- toMag[which(magpie_coord[j, 1]==lon), which(magpie_coord[j,2]==lat)]
+    mag[j, , ] <- toMag[which(magpie_coord[j, 1] == lon), which(magpie_coord[j, 2] == lat)]
   }
 
 
 
-  x <- as.magpie(mag,spatial=1,temporal=2)
+  x <- as.magpie(mag, spatial = 1, temporal = 2)
 
   return(x)
 }
