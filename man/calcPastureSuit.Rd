@@ -5,13 +5,19 @@
 \title{calcPastureSuit}
 \usage{
 calcPastureSuit(
-  subtype = "ISIMIP3bv2:IPSL-CM6A-LR:1850-2100",
+  datasource = "ISIMIP3bv2",
+  climatetype = "MRI-ESM2-0:ssp126",
+  lpjml = "LPJmL4_for_MAgPIE_44ac93de",
   smoothPrecipitation = 10,
   smoothOut = 10
 )
 }
 \arguments{
-\item{subtype}{Select version, climate model and period.}
+\item{datasource}{Document}
+
+\item{climatetype}{Document}
+
+\item{lpjml}{Document}
 
 \item{smoothPrecipitation}{Smooth precipitation climate data over time}
 
@@ -21,7 +27,8 @@ calcPastureSuit(
 List of magpie object with results on cluster level
 }
 \description{
-Calculate glassland suitable for pasture management based on population and aridity criteria.
+Calculate glassland suitable for pasture management based
+on population and aridity criteria.
 }
 \examples{
 \dontrun{
