@@ -1,6 +1,9 @@
 #' @title calcPastureSuit
-#' @description Calculate glassland suitable for pasture management based on population and aridity criteria.
-#' @param subtype Select version, climate model and period.
+#' @description Calculate glassland suitable for pasture management based
+#' on population and aridity criteria.
+#' @param datasource Document
+#' @param climatetype Document
+#' @param lpjml Document
 #' @param smoothPrecipitation Smooth precipitation climate data over time
 #' @param smoothOut smooth the Pasture suitability areas variations over time
 #' @return List of magpie object with results on cluster level
@@ -11,36 +14,54 @@
 #' }
 #' @importFrom raster area rasterFromXYZ
 
-calcPastureSuit <- function(datasource = "ISIMIP3bv2",climatetype = "MRI-ESM2-0:ssp126", smoothPrecipitation = 10, smoothOut = 10) {
+calcPastureSuit <- function(datasource = "ISIMIP3bv2", climatetype = "MRI-ESM2-0:ssp126",
+  lpjml =  "LPJmL4_for_MAgPIE_44ac93de", smoothPrecipitation = 10, smoothOut = 10) {
   x <- toolSplitSubtype(climatetype, list(climatemodel = NULL, scenario = NULL))
-  period = "1850-2100"
   # Drivers of managed pastures
-  subtype <- paste(datasource, x$climatemodel, x$scenario, period, "pr", "annual_mean", sep = ":")
-  precipitation <- calcOutput("GCMClimate", subtype = subtype, smooth = smoothPrecipitation, aggregate = FALSE)
   population <- calcOutput("GridPop", subtype = "all", cellular = TRUE, FiveYear = TRUE,
-                           harmonize_until = 2015, aggregate = FALSE)[,,toupper(substring(x$scenario,first = 0,last = 4))]
-  evapotranspiration <- calcOutput("Evapotranspiration", subtype = "H08:mri-esm2-0", aggregate = FALSE)[,,x$scenario]
-  # Need new function for evapt. Should be something like this. So it gets LPJMl evap for the same climate model and spp as the prec
-  # evapotranspiration <- calcOutput("Evapotranspiration", datasource = "LPJmL"?, climatetype = climatetype, aggregate = FALSE)
+                           harmonize_until = 2015,
+                           aggregate = FALSE)[, , toupper(substring(x$scenario, first = 0, last = 4))]
+
+  cellPrep   <- calcOutput("LPJmLClimateInput", climatetype  = climatetype,
+                             variable     = "precipitation:monthlySum",
+                             stage        = "smoothed",
+                             lpjmlVersion = lpjml,
+                             aggregate    = FALSE)
+
+
+  cellPet    <- calcOutput(type = "LPJmL_new", climatetype = climatetype,
+                             subtype   = "mpet",
+                             stage     = "smoothed",
+                             version   = lpjml,
+                             aggregate = FALSE)
+  cellPrep <- mrwater::toolLPJcell2MAgPIEcell(cellPrep)
+  cellPet <- mrwater::toolLPJcell2MAgPIEcell(cellPet)
+
+  yearsCellPet      <- intersect(getYears(cellPet), findset("time"))
+  yearsCellPrep     <- intersect(findset("time"), getYears(cellPrep))
+  years              <- intersect(yearsCellPet, yearsCellPrep)
+  cellPrep           <- dimSums(cellPrep[, years, ], dim = 3)
+  cellPet            <- dimSums(cellPet[, years, ], dim = 3)
 
   # Cell area calculation
   landcoords <- as.data.frame(toolGetMapping("magpie_coord.rda", type = "cell", where = "mappingfolder"))
   landcoords <- cbind(landcoords, rep(1, nrow(landcoords)))
   landcoords <- raster::rasterFromXYZ(landcoords)
-  crs(landcoords) <- "+proj=longlat" # outputs cell are in km2
+  raster::crs(landcoords) <- "+proj=longlat" # outputs cell are in km2
   cellSize <- raster::area(landcoords)
   cellSize <- cellSize * landcoords
   cellSize <- as.magpie(cellSize)
   cellSize <- toolOrderCells(collapseDim(addLocation(cellSize), dim = c("x", "y")))
 
   # population density
+  population <- population[getCells(cellPet), , ] # fixing the order of the population cells (should not be necessary!)
   popDensity <- (population * 1e6) / cellSize # population density in number of people per km2
   popDensity[is.infinite(popDensity)] <- 0
   popDensity[is.nan(popDensity)] <- 0
 
-  yearsCom <- intersect(getYears(popDensity), getYears(precipitation))
+  years <- intersect(getYears(popDensity), getYears(cellPrep))
 
-  aridity <- precipitation[, yearsCom, ] / evapotranspiration[, yearsCom, ]
+  aridity <- cellPrep[, years, ] / cellPet[, years, ]
   aridity[is.infinite(aridity) | is.nan(aridity)] <- 0
   # 0.5 aridity threshold for managed pastures. Same from HYDE 3.2.
   aridity[aridity < 0.5] <- 0
@@ -71,7 +92,8 @@ calcPastureSuit <- function(datasource = "ISIMIP3bv2",climatetype = "MRI-ESM2-0:
   calibReg <- histPastrReg[, pastLy, ] / pastureSuitAreaReg[, pastLy, ]
   calibReg[is.infinite(calibReg)] <- 1
   calibReg[is.nan(calibReg)] <- 0
-  pastureSuitArea[, future, ] <- toolAggregate(calibReg, rel = map, from = "iso", to = "celliso") * pastureSuitArea[, future, ]
+  pastureSuitArea[, future, ] <- toolAggregate(calibReg, rel = map,
+                                              from = "iso", to = "celliso") * pastureSuitArea[, future, ]
 
   pastureSuitArea[is.infinite(pastureSuitArea) | is.nan(pastureSuitArea) | is.na(pastureSuitArea)] <- 0
   pastureSuitArea[pastureSuitArea < 0] <- 0
@@ -85,7 +107,7 @@ calcPastureSuit <- function(datasource = "ISIMIP3bv2",climatetype = "MRI-ESM2-0:
   pastureSuitArea <- toolHoldConstant(pastureSuitArea, findset("time"))
   pastureSuitArea <- collapseNames(pastureSuitArea)
   pastureSuitArea[, pastAll, ] <- histPastr[, pastAll, ]
-
+  pastureSuitArea <- setNames(pastureSuitArea, "yields")
   return(list(
     x = pastureSuitArea,
     weight = NULL,
@@ -94,12 +116,3 @@ calcPastureSuit <- function(datasource = "ISIMIP3bv2",climatetype = "MRI-ESM2-0:
     isocountries = FALSE
   ))
 }
-
-
-    pet    <- calcOutput("LPJmL_new", version = "LPJmL4_for_MAgPIE_44ac93de",
-                         climatetype = "MRI-ESM2-0:ssp370", subtype = "mpet",
-                         stage = "smoothed", aggregate = FALSE)
-    prec   <- calcOutput("LPJmLClimateInput", lpjmlVersion = "LPJmL4_for_MAgPIE_44ac93de",
-                         climatetype  = "GSWP3-W5E5:historical",
-                         variable = "precipitation:monthlySum",
-                         stage = "smoothed", aggregate = FALSE)
