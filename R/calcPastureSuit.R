@@ -1,9 +1,9 @@
 #' @title calcPastureSuit
 #' @description Calculate glassland suitable for pasture management based
 #' on population and aridity criteria.
-#' @param datasource Document
-#' @param climatetype Document
-#' @param lpjml Document
+#'
+#' @param lpjml Defines LPJmL version for crop/grass and natveg specific inputs
+#' @param climatetype   Switch between different climate scenarios
 #' @param smoothPrecipitation Smooth precipitation climate data over time
 #' @param smoothOut smooth the Pasture suitability areas variations over time
 #' @return List of magpie object with results on cluster level
@@ -14,28 +14,37 @@
 #' }
 #' @importFrom raster area rasterFromXYZ
 
-calcPastureSuit <- function(datasource = "ISIMIP3bv2", climatetype = "MRI-ESM2-0:ssp126",
-  lpjml =  "LPJmL4_for_MAgPIE_44ac93de", smoothPrecipitation = 10, smoothOut = 10) {
+calcPastureSuit <- function(climatetype = "MRI-ESM2-0:ssp126", lpjml =  "LPJmL4_for_MAgPIE_44ac93de") {
+
   x <- toolSplitSubtype(climatetype, list(climatemodel = NULL, scenario = NULL))
+
+  # Extract stage argument information
+  if (grepl("GSWP3-W5E5", climatetype)) {
+    stage <- "smoothed"
+  } else {
+    stage <- "harmonized2020"
+  }
+
   # Drivers of managed pastures
   population <- calcOutput("GridPop", subtype = "all", cellular = TRUE, FiveYear = TRUE,
                            harmonize_until = 2015,
                            aggregate = FALSE)[, , toupper(substring(x$scenario, first = 0, last = 4))]
 
   cellPrep   <- calcOutput("LPJmLClimateInput", climatetype  = climatetype,
-                             variable     = "precipitation:monthlySum",
-                             stage        = "smoothed",
-                             lpjmlVersion = lpjml,
-                             aggregate    = FALSE)
+                           variable     = "precipitation:monthlySum",
+                           stage        = stage,
+                           lpjmlVersion = lpjml,
+                           aggregate    = FALSE)
 
 
   cellPet    <- calcOutput(type = "LPJmL_new", climatetype = climatetype,
-                             subtype   = "mpet",
-                             stage     = "smoothed",
-                             version   = lpjml,
-                             aggregate = FALSE)
+                           subtype   = "mpet",
+                           stage     = stage,
+                           version   = lpjml,
+                           aggregate = FALSE)
+
   cellPrep <- mrwater::toolLPJcell2MAgPIEcell(cellPrep)
-  cellPet <- mrwater::toolLPJcell2MAgPIEcell(cellPet)
+  cellPet  <- mrwater::toolLPJcell2MAgPIEcell(cellPet)
 
   yearsCellPet      <- intersect(getYears(cellPet), findset("time"))
   yearsCellPrep     <- intersect(findset("time"), getYears(cellPrep))
@@ -44,18 +53,13 @@ calcPastureSuit <- function(datasource = "ISIMIP3bv2", climatetype = "MRI-ESM2-0
   cellPet            <- dimSums(cellPet[, years, ], dim = 3)
 
   # Cell area calculation
-  landcoords <- as.data.frame(toolGetMapping("magpie_coord.rda", type = "cell", where = "mappingfolder"))
-  landcoords <- cbind(landcoords, rep(1, nrow(landcoords)))
-  landcoords <- raster::rasterFromXYZ(landcoords)
-  raster::crs(landcoords) <- "+proj=longlat" # outputs cell are in km2
-  cellSize <- raster::area(landcoords)
-  cellSize <- cellSize * landcoords
-  cellSize <- as.magpie(cellSize)
-  cellSize <- toolOrderCells(collapseDim(addLocation(cellSize), dim = c("x", "y")))
+  landArea <- calcOutput("CellArea", aggregate = FALSE)
+  #after merging to
+  #landArea <- calcOutput("LandArea", aggregate = FALSE)
 
   # population density
   population <- population[getCells(cellPet), , ] # fixing the order of the population cells (should not be necessary!)
-  popDensity <- (population * 1e6) / cellSize # population density in number of people per km2
+  popDensity <- (population * 1e6) / landArea # population density in number of people per km2
   popDensity[is.infinite(popDensity)] <- 0
   popDensity[is.nan(popDensity)] <- 0
 
@@ -72,7 +76,8 @@ calcPastureSuit <- function(datasource = "ISIMIP3bv2", climatetype = "MRI-ESM2-0
   popDensity <- popDensity[, getYears(pastureSuit), ]
   pastureSuit[popDensity < 5] <- 0 # 5 hab km2 population threshold for managed pastures. Same from HYDE 3.2.
 
-  pastureSuitArea <- (pastureSuit * cellSize * 100) / 1e6 # (from km2 (x100) to mha (/1e6))
+  ### UNCLEAR IF THIS MAKES SENSE AS IS (with new landArea variable which is in mha)
+  pastureSuitArea <- (pastureSuit * landArea * 100) / 1e6 # (from km2 (x100) to mha (/1e6))
   pastureSuitArea <- collapseDim(pastureSuitArea)
   pastureSuitArea <- toolHoldConstantBeyondEnd(pastureSuitArea)
 
@@ -93,21 +98,19 @@ calcPastureSuit <- function(datasource = "ISIMIP3bv2", climatetype = "MRI-ESM2-0
   calibReg[is.infinite(calibReg)] <- 1
   calibReg[is.nan(calibReg)] <- 0
   pastureSuitArea[, future, ] <- toolAggregate(calibReg, rel = map,
-                                              from = "iso", to = "celliso") * pastureSuitArea[, future, ]
+                                               from = "iso", to = "celliso") * pastureSuitArea[, future, ]
 
   pastureSuitArea[is.infinite(pastureSuitArea) | is.nan(pastureSuitArea) | is.na(pastureSuitArea)] <- 0
   pastureSuitArea[pastureSuitArea < 0] <- 0
   pastureSuitArea[, pastAll, ] <- histPastr[, pastAll, ]
 
-  if (smoothOut > 1) {
-    pastureSuitArea <- toolTimeAverage(pastureSuitArea, averaging_range = smoothOut)
-  }
   y <- intersect(pastAll, getYears(pastureSuitArea))
   pastureSuitArea[, y, ] <- histPastr[, intersect(pastAll, getYears(pastureSuitArea)), ]
   pastureSuitArea <- toolHoldConstant(pastureSuitArea, findset("time"))
   pastureSuitArea <- collapseNames(pastureSuitArea)
   pastureSuitArea[, pastAll, ] <- histPastr[, pastAll, ]
   pastureSuitArea <- setNames(pastureSuitArea, "yields")
+
   return(list(
     x = pastureSuitArea,
     weight = NULL,
