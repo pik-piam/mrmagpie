@@ -4,7 +4,10 @@
 \alias{calcPeatland2}
 \title{calcPeatland2}
 \usage{
-calcPeatland2()
+calcPeatland2(cells = "magpiecell")
+}
+\arguments{
+\item{cells}{number of cells to be returned: magpiecell (59199), lpjcell (67420)}
 }
 \value{
 magpie object in cellular resolution

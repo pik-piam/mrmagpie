@@ -337,8 +337,8 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
   calcOutput("Peatland", subtype = "intact",   aggregate = "cluster", round = 6,
     file = paste0("f58_peatland_intact_", ctype, ".mz"))
 
-  calcOutput("Peatland2", aggregate = FALSE, round = 6, file = "f58_peatland_area_0.5.mz")
-  calcOutput("Peatland2", aggregate = "cluster", round = 6,
+  calcOutput("Peatland2", aggregate = FALSE, cells = "magpiecell", round = 6, file = "f58_peatland_area_0.5.mz")
+  calcOutput("Peatland2", aggregate = "cluster", cells = "magpiecell", round = 6,
              file = paste0("f58_peatland_area_", ctype, ".mz"))
 
   # 59 som
