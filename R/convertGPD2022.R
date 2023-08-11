@@ -32,8 +32,8 @@ convertGPD2022 <- function(x) {
   # do the disaggregation into cropland and grassland
   ag2 <- toolAggregate(ag, map, from = "from", to = "to", dim = 3, weight = w)
   # add the disaggregated categories to the existing categories
-  out[, , "crop"] <- setNames(x[, , "croplandDD", ], "crop") + ag2[, , "crop"]
-  out[, , "past"] <- setNames(x[, , "grasslandDD", ], "past") + ag2[, , "past"]
+  out[, , "crop"] <- setNames(x[, , "croplandDD"], "crop") + ag2[, , "crop"]
+  out[, , "past"] <- setNames(x[, , "grasslandDD"], "past") + ag2[, , "past"]
 
   ## Merge deeply drained (DD) and shallow drained (SD) peatlands used for forestry
   out[, , "forestry"] <- dimSums(x[, , c("forestryDD", "forestrySD")], dim = 3)
