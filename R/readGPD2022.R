@@ -14,12 +14,11 @@
 #' \dontrun{
 #' readSource("x", convert = "onlycorrect")
 #' }
-#' @importFrom readxl read_xls
 
 readGPD2022 <- function() {
-  # read-in xls file Global Peatland Database
-  x <- read_xls("GPD2022.xls")
-  x <- x[x$ISO3 != "NA", ]
+  # read-in csv file Global Peatland Database
+  x <- utils::read.csv("GPD2022.csv", header = TRUE)
+  x <- x[!is.na(x$ISO3), ]
   x <- x[, names(x)[-2]]
 
   # convert to magclass object
