@@ -353,7 +353,7 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
     regionscode <- regionscode(map)
 
     info <- c("lpj2magpie settings:",
-              paste("* LPJmL data:", lpjmlData), #nolint
+              paste("* LPJmL data:", lpjmlData),
               paste("* Revision:", rev),
               "", "aggregation settings:",
               paste("* Input resolution:", resHigh),
@@ -362,8 +362,8 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
               "* Number of clusters per region:",
               paste(format(names(cluster), width = 5, justify = "right"), collapse = ""),
               paste(format(cluster, width = 5, justify = "right"), collapse = ""),
-              paste("* Call:", functioncall)
-    )
+              paste("* Call:", functioncall))
+
     base::cat(info, file = file, sep = "\n")
   }
   nrClusterPerRegion <- substr(attributes(p$data)$legend_text, 6,

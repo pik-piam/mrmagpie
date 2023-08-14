@@ -112,9 +112,8 @@ calcPastureSuit <- function(climatetype = "MRI-ESM2-0:ssp126", lpjml =  "LPJmL4_
   pastureSuitArea <- setNames(pastureSuitArea, "yields")
 
   return(list(x            = pastureSuitArea,
-              weight       = NULL,  #nolint
+              weight       = NULL,
               unit         = "Mha",
               description  = "Area suitable for pasture management in mha",
-              isocountries = FALSE
-  ))
+              isocountries = FALSE))
 }
