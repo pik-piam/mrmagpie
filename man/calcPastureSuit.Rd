@@ -5,23 +5,14 @@
 \title{calcPastureSuit}
 \usage{
 calcPastureSuit(
-  datasource = "ISIMIP3bv2",
   climatetype = "MRI-ESM2-0:ssp126",
-  lpjml = "LPJmL4_for_MAgPIE_44ac93de",
-  smoothPrecipitation = 10,
-  smoothOut = 10
+  lpjml = "LPJmL4_for_MAgPIE_44ac93de"
 )
 }
 \arguments{
-\item{datasource}{Document}
+\item{climatetype}{Switch between different climate scenarios}
 
-\item{climatetype}{Document}
-
-\item{lpjml}{Document}
-
-\item{smoothPrecipitation}{Smooth precipitation climate data over time}
-
-\item{smoothOut}{smooth the Pasture suitability areas variations over time}
+\item{lpjml}{Defines LPJmL version for crop/grass and natveg specific inputs}
 }
 \value{
 List of magpie object with results on cluster level

@@ -4,8 +4,7 @@
 #'
 #' @param lpjml Defines LPJmL version for crop/grass and natveg specific inputs
 #' @param climatetype   Switch between different climate scenarios
-#' @param smoothPrecipitation Smooth precipitation climate data over time
-#' @param smoothOut smooth the Pasture suitability areas variations over time
+#'
 #' @return List of magpie object with results on cluster level
 #' @author Marcos Alves
 #' @examples
@@ -48,14 +47,14 @@ calcPastureSuit <- function(climatetype = "MRI-ESM2-0:ssp126", lpjml =  "LPJmL4_
 
   yearsCellPet      <- intersect(getYears(cellPet), findset("time"))
   yearsCellPrep     <- intersect(findset("time"), getYears(cellPrep))
-  years              <- intersect(yearsCellPet, yearsCellPrep)
-  cellPrep           <- dimSums(cellPrep[, years, ], dim = 3)
-  cellPet            <- dimSums(cellPet[, years, ], dim = 3)
+  years             <- intersect(yearsCellPet, yearsCellPrep)
+  cellPrep          <- dimSums(cellPrep[, years, ], dim = 3)
+  cellPet           <- dimSums(cellPet[, years, ], dim = 3)
 
   # Cell area calculation
-  landArea <- calcOutput("CellArea", aggregate = FALSE)
+  landArea <- calcOutput("CellArea", aggregate = FALSE) / 100 # transformed to km^2
   #after merging to
-  #landArea <- calcOutput("LandArea", aggregate = FALSE)
+  #landArea <- calcOutput("LandArea", aggregate = FALSE) / 100 # transformed to km^2 #nolint
 
   # population density
   population <- population[getCells(cellPet), , ] # fixing the order of the population cells (should not be necessary!)
@@ -109,13 +108,13 @@ calcPastureSuit <- function(climatetype = "MRI-ESM2-0:ssp126", lpjml =  "LPJmL4_
   pastureSuitArea <- toolHoldConstant(pastureSuitArea, findset("time"))
   pastureSuitArea <- collapseNames(pastureSuitArea)
   pastureSuitArea[, pastAll, ] <- histPastr[, pastAll, ]
+  #maybe change to: pastureSuitArea[, pastAll, ] <- max(histPastr[, pastAll, ], pastureSuitArea[, pastAll, ]) #nolint
   pastureSuitArea <- setNames(pastureSuitArea, "yields")
 
-  return(list(
-    x = pastureSuitArea,
-    weight = NULL,
-    unit = "Mha",
-    description = "Area suitable for pasture management in mha",
-    isocountries = FALSE
+  return(list(x            = pastureSuitArea,
+              weight       = NULL,  #nolint
+              unit         = "Mha",
+              description  = "Area suitable for pasture management in mha",
+              isocountries = FALSE
   ))
 }
