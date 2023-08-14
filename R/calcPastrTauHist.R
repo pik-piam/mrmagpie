@@ -19,10 +19,6 @@ calcPastrTauHist <- function(past_mngmt = "2me") { # nolint
   prod <- calcOutput("GrasslandBiomass", aggregate = FALSE)[, past, "pastr"]
   prod <- toolCountryFill(prod, fill = 0)
 
-  # areas
-  pastr_weight <- calcOutput("PastureSuit", # nolint
-    subtype = paste("ISIMIP3bv2", "MRI-ESM2-0", "1850_2100", sep = ":"), aggregate = FALSE
-  )[, past, 1] # Please Check this variable is not used in the code so far
   # regional mapping
   cell2reg <- toolGetMapping("CountryToCellMapping.csv", type = "cell", where = "mappingfolder")
 
