@@ -12,6 +12,13 @@ convertGPD2022 <- function(x) {
   # convert to Mha
   x <- x / 1000
 
+  # remove values for Netherland Antilles if they are 0 as they otherwise trigger warnings
+  # but only remove if they are really 0 as otherwise a split and redistribution of the
+  # data to nowadays existing ISO countries is required.
+  if (all(x["ANT", , ] == 0)) {
+    x <- x["ANT", , , invert = TRUE]
+  }
+
   # create output object for filling
   out <- new.magpie(getCells(x), NULL, c("intact", "crop", "past", "forestry", "peatExtract"), fill = 0)
 
