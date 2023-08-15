@@ -8,7 +8,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' calcOutput("CO2Atmosphere_new", aggregate = FALSE, subtype , co2_evolution)
+#' calcOutput("CO2Atmosphere_new", aggregate = FALSE, subtype, co2_evolution)
 #' }
 #'
 #' @import madrat
@@ -24,10 +24,10 @@ calcCO2Atmosphere_new <- function(subtype = "ISIMIP3b:ssp126",
   x <- readSource("CO2Atmosphere_new", subtype = subtype, convert = FALSE)
 
   if (co2_evolution == "static") {
-    past <- tail(findset("past"),1)
-    f_year <- match(past,getYears(x))
+    past <- tail(findset("past"), 1)
+    f_year <- match(past, getYears(x))
     for (i in f_year:length(getYears(x))) {
-      x[, i, ] <- x[,past,]
+      x[, i, ] <- x[, past, ]
     }
   }
 

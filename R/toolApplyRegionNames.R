@@ -25,7 +25,7 @@ toolApplyRegionNames <- function(cdata, regionscode) {
   ### regionscode needs to be checked and provided as argument to ensure
   ### that caching is not mixing up aggregations with different regional
   ### mapping.
-  map <- toolGetMapping(type = "regional", name = getConfig("regionmapping"))
+  map <- toolGetMapping(type = "regional", where = "mappingfolder", name = getConfig("regionmapping"))
 
   if (regionscode != regionscode(map)) {
     stop("Provided regionscode does not match regionscode of regional mapping!")

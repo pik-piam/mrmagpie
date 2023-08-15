@@ -9,36 +9,38 @@
 #' @author Florian Humpenoeder
 #'
 #' @examples
-#' \dontrun{ calcOutput("Peatland", aggregate = FALSE) }
+#' \dontrun{
+#' calcOutput("Peatland", aggregate = FALSE)
+#' }
 #'
 #' @importFrom magclass clean_magpie
 #' @importFrom madrat toolGetMapping toolAggregate
 #' @importFrom mrcommons toolIso2CellCountries
 
-calcPeatland <-function(subtype="degraded", cells = "lpjcell"){
+calcPeatland <-function(subtype = "degraded", cells = "lpjcell"){
 
-  GPD         <- readSource("GPD", convert=TRUE)
-  potPeatArea <- readSource("Leifeld2018", convert="onlycorrect")
+  GPD         <- readSource("GPD", convert = TRUE)
+  potPeatArea <- readSource("Leifeld2018", convert = "onlycorrect")
 
-  #Total and drained peatland area
-  PeatAreaTotal   <- collapseNames(GPD[,,"PeatAreaTotal"])
-  names(dimnames(PeatAreaTotal)) <- c("iso","t","d3")
-  PeatAreaDrained <- collapseNames(GPD[,,"PeatAreaDrained"])
-  names(dimnames(PeatAreaDrained)) <- c("iso","t","d3")
+  # Total and drained peatland area
+  PeatAreaTotal   <- collapseNames(GPD[, , "PeatAreaTotal"])
+  names(dimnames(PeatAreaTotal)) <- c("iso", "t", "d3")
+  PeatAreaDrained <- collapseNames(GPD[, , "PeatAreaDrained"])
+  names(dimnames(PeatAreaDrained)) <- c("iso", "t", "d3")
 
   #Dissag. from country to cell
   #CountryToCell   <- toolGetMapping("CountryToCellMapping.csv", type = "cell")
   map <- toolGetMappingCoord2Country(pretty = TRUE)
-  PeatAreaTotal   <- toolAggregate(x=toolIso2CellCountries(PeatAreaTotal, cells = "lpjcell"), rel=map, weight = potPeatArea, dim=1, from="iso", to="coords")
+  PeatAreaTotal   <- toolAggregate(x=toolIso2CellCountries(PeatAreaTotal, cells = "lpjcell"), rel = map, weight = potPeatArea, dim = 1, from = "iso", to = "coords")
   names(dimnames(PeatAreaTotal)) <- c("coords","t","d3")
-  PeatAreaDrained <- toolAggregate(x=toolIso2CellCountries(PeatAreaDrained, cells = "lpjcell"), rel=map, weight=potPeatArea, dim=1, from="iso", to="coords")
-  names(dimnames(PeatAreaDrained)) <- c("coords","t","d3")
+  PeatAreaDrained <- toolAggregate(x=toolIso2CellCountries(PeatAreaDrained, cells = "lpjcell"), rel = map, weight = potPeatArea, dim = 1, from = "iso", to = "coords")
+  names(dimnames(PeatAreaDrained)) <- c("coords", "t", "d3")
 
-  #potPeatArea is the upper limit of peatland area in a cell; this will reduce the peatland area of GPD!
-  PeatAreaTotal[PeatAreaTotal>potPeatArea] <- potPeatArea[PeatAreaTotal>potPeatArea]
-  PeatAreaDrained[PeatAreaDrained>potPeatArea] <- potPeatArea[PeatAreaDrained>potPeatArea]
+  # potPeatArea is the upper limit of peatland area in a cell; this will reduce the peatland area of GPD!
+  PeatAreaTotal[PeatAreaTotal > potPeatArea] <- potPeatArea[PeatAreaTotal > potPeatArea]
+  PeatAreaDrained[PeatAreaDrained > potPeatArea] <- potPeatArea[PeatAreaDrained > potPeatArea]
 
-  #check; GPD is somewhat higher because we used potPeatArea as upper limit!
+  # check; GPD is somewhat higher because we used potPeatArea as upper limit!
   # dimSums(GPD,dim=1)
   # dimSums(PeatAreaTotal,dim=1)
   # dimSums(PeatAreaDrained,dim=1)
@@ -50,7 +52,7 @@ calcPeatland <-function(subtype="degraded", cells = "lpjcell"){
   if(subtype=="degraded") {
     description <- "Degraded peatland area (Mha) in 0.5 degree resolution based on Humpenoeder et al 2020 (DOI 10.1088/1748-9326/abae2a)"
     x <- PeatAreaDrained
-  } else if(subtype=="intact") {
+  } else if(subtype == "intact") {
     description <- "Intact peatland area (Mha) in 0.5 degree resolution based on Humpenoeder et al 2020 (DOI 10.1088/1748-9326/abae2a)"
     x <- PeatAreaIntact
   }

@@ -14,7 +14,6 @@
 #' calcOutput("ScaledPastSoilCarbon", lsu_levels = c(seq(0, 2, 0.2), 2.5), scenario)
 #' }
 #'
-#'
 #' @import madrat
 #' @import magclass
 #' @importFrom raster rasterFromXYZ
@@ -25,22 +24,22 @@
 #'
 
 calcScaledPastSoilCarbon <-
-  function(lsu_levels = c(seq(0, 2, 0.2), 2.5), lpjml = "LPJML5.2_pasture", climatetype = "IPSL_CM6A_LR", scenario = "ssp126_co2_limN", sar = 20, aggr = F) {
+  function(lsu_levels = c(seq(0, 2, 0.2), 2.5), lpjml = "LPJML5.2_pasture", climatetype = "IPSL_CM6A_LR", scenario = "ssp126_co2_limN", sar = 20, aggr = FALSE) {
 
     x <- calcOutput("CollectSoilCarbonLSU", lsu_levels = lsu_levels, lpjml = lpjml, climatetype = climatetype, scenario = scenario, sar = sar, aggregate = aggr)
     xmax <- max(x)
     xmin <-  min(x)
-    y <- (x - xmin)/(xmax - xmin)
+    y <- (x - xmin) / (xmax - xmin)
 
     # Calculating weights
-    landcoords <- as.data.frame(toolGetMapping("magpie_coord.rda", type = "cell"))
-    landcoords <- cbind(landcoords, rep(1,nrow(landcoords)))
+    landcoords <- as.data.frame(toolGetMapping("magpie_coord.rda", type = "cell", where = "mappingfolder"))
+    landcoords <- cbind(landcoords, rep(1, nrow(landcoords)))
     landcoords <- raster::rasterFromXYZ(landcoords)
     crs(landcoords) <- "+proj=longlat"
     cell_size <- raster::area(landcoords)
-    weight <- cell_size*landcoords
+    weight <- cell_size * landcoords
     weight <- as.magpie(weight)
-    weight <- toolOrderCells(collapseDim(addLocation(weight),dim=c("x","y")))
+    weight <- toolOrderCells(collapseDim(addLocation(weight), dim = c("x", "y")))
 
     return(
       list(

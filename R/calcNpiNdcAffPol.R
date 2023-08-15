@@ -6,7 +6,9 @@
 #' @author Patrick v. Jeetze, Michael Windisch
 #'
 #' @examples
-#' \dontrun{ calcOutput("NpiNdcAffPol", aggregate = FALSE) }
+#' \dontrun{
+#' calcOutput("NpiNdcAffPol", aggregate = FALSE)
+#' }
 #' @importFrom magpiesets findset
 #'
 

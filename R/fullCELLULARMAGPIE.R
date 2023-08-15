@@ -28,11 +28,11 @@
 #'
 #' @author Kristine Karstens, Jan Philipp Dietrich
 #' @seealso
-#'   \code{\link{readSource}},\code{\link{getCalculations}},\code{\link{calcOutput}},\code{\link{setConfig}}
+#' \code{\link{readSource}},\code{\link{getCalculations}},\code{\link{calcOutput}},\code{\link{setConfig}}
 #' @examples
-#'   \dontrun{
-#'   retrieveData("CELLULARMAGPIE", revision = 12, mainfolder = "pathtowhereallfilesarestored")
-#'   }
+#' \dontrun{
+#' retrieveData("CELLULARMAGPIE", revision = 12, mainfolder = "pathtowhereallfilesarestored")
+#' }
 #' @importFrom madrat setConfig getConfig
 #' @importFrom magpiesets findset
 #' @importFrom digest digest
@@ -69,23 +69,23 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
   climatescen <- str_split(climatetype, ":")[[1]][2]
 
   message(paste0("Start preprocessing for \n climatescenario: ", climatetype,
-    "\n LPJmL-Versions: ", paste(names(lpjml), lpjml, sep = "->", collapse = ", "),
-    "\n clusterweight: ", paste(names(clusterweight), clusterweight, sep = ":", collapse = ", "),
-    "\n isimip yield subtype: ", paste(names(isimip), isimip, sep = ":", collapse = ", ")))
+                 "\n LPJmL-Versions: ", paste(names(lpjml), lpjml, sep = "->", collapse = ", "),
+                 "\n clusterweight: ", paste(names(clusterweight), clusterweight, sep = ":", collapse = ", "),
+                 "\n isimip yield subtype: ", paste(names(isimip), isimip, sep = ":", collapse = ", ")))
 
   # Create version tag (will be returned at the very end of this function)
   versionTag <- paste(ctype,
-                       gsub(":", "-", climatetype),
-                       paste0("lpjml-", digest::digest(lpjml, algo = getConfig("hash"))),
-                       sep = "_")
+                      gsub(":", "-", climatetype),
+                      paste0("lpjml-", digest::digest(lpjml, algo = getConfig("hash"))),
+                      sep = "_")
   versionTag <- ifelse(is.null(isimip), versionTag,
-                        paste0(versionTag, "_isimip-",
-                               digest::digest(isimip, algo = getConfig("hash"))))
+                       paste0(versionTag, "_isimip-",
+                              digest::digest(isimip, algo = getConfig("hash"))))
   versionTag <- ifelse(is.null(clusterweight), versionTag,
-                        paste0(versionTag, "_clusterweight-",
-                               digest::digest(clusterweight, algo = getConfig("hash"))))
+                       paste0(versionTag, "_clusterweight-",
+                              digest::digest(clusterweight, algo = getConfig("hash"))))
   versionTag <- ifelse(is.null(emu_id), versionTag,
-                        paste0(versionTag, "_gsoilc-", emu_id))
+                       paste0(versionTag, "_gsoilc-", emu_id))
 
 
   magYearsPastLong <- c("y1995", "y2000", "y2005", "y2010", "y2015")
@@ -95,7 +95,7 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
 
   # Clustering based on 67420 cells
   map      <- calcOutput("Cluster", ctype = ctype, weight = clusterweight, lpjml = lpjml,
-                        clusterdata = "yield_airrig", aggregate = FALSE)
+                         clusterdata = "yield_airrig", aggregate = FALSE)
   weightID <- ifelse(is.null(clusterweight), "", paste0("_", names(clusterweight), clusterweight, collapse = ""))
   clustermapname <- sub("\\.[^.]*$", ".rds",
                         paste0("clustermap_rev", rev, dev, "_", ctype, "_67420",
@@ -174,7 +174,7 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
 
 
   # distinguish between region and superregion if mapping provides this distinction
-  mapReg      <- toolGetMapping(getConfig("regionmapping"), type = "regional")
+  mapReg      <- toolGetMapping(getConfig("regionmapping"), type = "regional", where = "mappingfolder")
   superregion <- ifelse("superregion" %in% colnames(mapReg), "superregion", "region")
 
   # 13 TC
@@ -233,10 +233,10 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
              aggregate = "cluster", round = 6, file = paste0("wdpa_baseline_", ctype, ".mz"))
 
   if (rev < 4.82) {
-  calcOutput("Brooks2005OldConservationPrios", nclasses = "seven", cells = "magpiecell",
-             aggregate = FALSE, round = 6, file = "consv_prio_areas_0.5.mz")
-  calcOutput("Brooks2005OldConservationPrios", nclasses = "seven", cells = "magpiecell",
-             aggregate = "cluster", round = 6, file = paste0("consv_prio_areas_", ctype, ".mz"))
+    calcOutput("Brooks2005OldConservationPrios", nclasses = "seven", cells = "magpiecell",
+               aggregate = FALSE, round = 6, file = "consv_prio_areas_0.5.mz")
+    calcOutput("Brooks2005OldConservationPrios", nclasses = "seven", cells = "magpiecell",
+               aggregate = "cluster", round = 6, file = paste0("consv_prio_areas_", ctype, ".mz"))
   } else {
   calcOutput("ConservationPriorities", nclasses = "seven", cells = cells,
              aggregate = FALSE, round = 6, file = "consv_prio_areas_0.5.mz")
@@ -282,11 +282,10 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
              subtype = "/co2/Nreturn0p5", # nolint
              lsu_levels = c(seq(0, 2.2, 0.2), 2.5), past_mngmt = "mdef",
              file = paste0("f31_grassl_yld.mz"), years = magYears, aggregate = FALSE)
-  calcOutput("PastureSuit",  subtype = paste("ISIMIP3bv2", "MRI-ESM2-0", "1850_2100", sep = ":"),
+  calcOutput("PastureSuit", climatetype = climatetype, lpjml =  lpjml[["natveg"]],
              file = paste0("f31_pastr_suitability_", ctype, ".mz"), years = magYears, aggregate = "cluster")
-  calcOutput("PastureSuit",  subtype = paste("ISIMIP3bv2", "MRI-ESM2-0", "1850_2100", sep = ":"),
+  calcOutput("PastureSuit", climatetype = climatetype, lpjml =  lpjml[["natveg"]],
              file = "f31_pastr_suitability.mz", years = magYears, aggregate = FALSE)
-
 
   if (grepl("+PastrMngtLevels", dev)) {
     calcOutput("PastrMngtLevels", climatetype = paste0("MRI-ESM2-0", ":", climatescen),
@@ -446,6 +445,9 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
   calcOutput("Peatland", subtype = "intact",   cells = cells, aggregate = "cluster", round = 6,
     file = paste0("f58_peatland_intact_", ctype, ".mz"))
 
+  calcOutput("Peatland2", aggregate = FALSE, cells = cells, round = 6, file = "f58_peatland_area_0.5.mz")
+  calcOutput("Peatland2", aggregate = "cluster", cells = "magpiecell", round = 6,
+             file = paste0("f58_peatland_area_", ctype, ".mz"))
 
   # 59 som
   calcOutput("SOMinitialsiationPools", aggregate = "cluster", round = 6, cells = cells,
@@ -459,25 +461,25 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
   writeInfo <- function(file, lpjmlData, resHigh, resOut, rev, cluster) {
     functioncall <- paste(deparse(sys.call(-3)), collapse = "")
 
-    map <- toolGetMapping(type = "regional", name = getConfig("regionmapping"))
+    map <- toolGetMapping(type = "regional", where = "mappingfolder", name = getConfig("regionmapping"))
     regionscode <- regionscode(map)
 
     info <- c("lpj2magpie settings:",
-      paste("* LPJmL data:", lpjmlData),
-      paste("* Revision:", rev),
-      "", "aggregation settings:",
-      paste("* Input resolution:", resHigh),
-      paste("* Output resolution:", resOut),
-      paste("* Regionscode:", regionscode),
-      "* Number of clusters per region:",
-      paste(format(names(cluster), width = 5, justify = "right"), collapse = ""),
-      paste(format(cluster, width = 5, justify = "right"), collapse = ""),
-      paste("* Call:", functioncall)
-      )
+              paste("* LPJmL data:", lpjmlData),
+              paste("* Revision:", rev),
+              "", "aggregation settings:",
+              paste("* Input resolution:", resHigh),
+              paste("* Output resolution:", resOut),
+              paste("* Regionscode:", regionscode),
+              "* Number of clusters per region:",
+              paste(format(names(cluster), width = 5, justify = "right"), collapse = ""),
+              paste(format(cluster, width = 5, justify = "right"), collapse = ""),
+              paste("* Call:", functioncall))
+
     base::cat(info, file = file, sep = "\n")
   }
-  nrClusterPerRegion <- substr(attributes(p$data)$legend_text, 6, # nolint
-                               nchar(attributes(p$data)$legend_text) - 1) # nolint
+  nrClusterPerRegion <- substr(attributes(p$data)$legend_text, 6,
+                               nchar(attributes(p$data)$legend_text) - 1)
 
   writeInfo(file = "info.txt",
             lpjmlData = climatetype,

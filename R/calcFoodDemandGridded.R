@@ -34,6 +34,7 @@ foodDisagg <- toolAggregate(foodDemand[countries, , ], rel = mapping,
 
 foodDisaggUrb <- foodDisagg * share
 
+
 return(list(x = foodDisaggUrb,
             weight = NULL,
             unit = "Mt",
