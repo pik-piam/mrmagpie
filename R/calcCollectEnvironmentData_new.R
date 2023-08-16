@@ -61,7 +61,7 @@ calcCollectEnvironmentData_new <- function(subtype = "ISIMIP3b:IPSL-CM6A-LR:ssp1
   variables <- mbind(gcmVariables)
   co2 <- calcOutput("CO2Atmosphere_new", aggregate = FALSE,
                     subtype = paste(x$version, x$scenario, sep = ":"),
-                    co2_evolution = "rising")[, (syear - sar / 2):fyear, ]
+                    co2Evolution = "rising")[, (syear - sar / 2):fyear, ]
   co2 <- toolHoldConstant(co2,  seq((max(getYears(co2, as.integer = TRUE)) + 1), 2150, 5))
   soil <- calcOutput("SoilCharacteristics", aggregate = FALSE)[, getYears(co2), ]
 

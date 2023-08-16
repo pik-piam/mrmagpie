@@ -4,13 +4,19 @@
 \alias{calcCO2Atmosphere_new}
 \title{calcCO2Atmosphere_new}
 \usage{
-calcCO2Atmosphere_new(subtype = "ISIMIP3b:ssp126", co2_evolution = "rising")
+calcCO2Atmosphere_new(
+  subtype = "ISIMIP3b:ssp126",
+  co2Evolution = "rising",
+  cells = "lpjcell"
+)
 }
 \arguments{
 \item{subtype}{specify the version and scenario eg. "ISIMIP3b:ssp126"}
 
-\item{co2_evolution}{Define `rising` for rising CO2 according to the climate scenario selected or
+\item{co2Evolution}{Define `rising` for rising CO2 according to the climate scenario selected or
 `static` for stable CO2 at the last past time step level.}
+
+\item{cells}{"magpiecell" or "lpjcell"}
 }
 \value{
 magpie object in cellular resolution
@@ -20,7 +26,7 @@ Disaggregate CO2 global atmospheric concentration to cellular level
 }
 \examples{
 \dontrun{
-calcOutput("CO2Atmosphere_new", aggregate = FALSE, subtype, co2_evolution)
+calcOutput("CO2Atmosphere_new", aggregate = FALSE, subtype, co2Evolution)
 }
 
 }
