@@ -16,11 +16,15 @@ readGPM2 <- function() {
   # read-in file
   r <- terra::rast("peatMAY22_1x1_mw_RUS30.tif")
 
+  # choose only 1st layer
+  r1 <- terra::segregate(r, other = NA)
+  r1 <- r1[[1]]
+
   # project r to lon/lat
-  r2 <- terra::project(r, "+proj=longlat +datum=WGS84")
+  r2 <- terra::project(r1, "+proj=longlat +datum=WGS84", method = "near")
 
   # get cell area
-  a <- terra::cellSize(r2[[1]], unit = "ha", mask = TRUE) * 1e-6
+  a <- terra::cellSize(r2, unit = "ha", mask = TRUE) * 1e-6
 
   # project or aggregate to 0.5 degree
   # use terra::aggregate because terra::project(a, terra::rast(res = 0.5), method = "sum") is not working
