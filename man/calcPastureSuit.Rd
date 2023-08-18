@@ -6,13 +6,17 @@
 \usage{
 calcPastureSuit(
   climatetype = "MRI-ESM2-0:ssp126",
-  lpjml = "LPJmL4_for_MAgPIE_44ac93de"
+  lpjml = "LPJmL4_for_MAgPIE_44ac93de",
+  cells = "lpjcell"
 )
 }
 \arguments{
 \item{climatetype}{Switch between different climate scenarios}
 
 \item{lpjml}{Defines LPJmL version for crop/grass and natveg specific inputs}
+
+\item{cells}{number of halfdegree grid cells to be returned.
+Options: "magpiecell" (59199), "lpjcell" (67420)}
 }
 \value{
 List of magpie object with results on cluster level
@@ -27,5 +31,5 @@ calcOutput("PastureSuit")
 }
 }
 \author{
-Marcos Alves
+Marcos Alves, Kristine Karstens
 }
