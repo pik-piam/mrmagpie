@@ -56,10 +56,10 @@ calcPastrTauHist <- function(past_mngmt = "2me", cells = "lpjcell") { # nolint
                             cellular = TRUE, cells = cells, 
                             aggregate = FALSE)[, past, "pastr"]
 
-  if (cells = "magpiecell") {
+  if (cells == "magpiecell") {
     yref <- toolAggregate(yref, rel = cell2reg, weight = yrefWeights, 
                           from = "celliso", to = "iso")
-  } else if (cells = "lpjcell") {
+  } else if (cells == "lpjcell") {
     yref <- collapseDim(yref, "iso")
     yrefWeights <- collapseDim(yrefWeights, "iso")
     yref <- toolAggregate(yref, rel = cell2reg, weight = yrefWeights, 
