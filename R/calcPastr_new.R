@@ -14,8 +14,8 @@
 #' }
 #'
 calcPastr_new <- function(past_mngmt = "me2", # nolint
-                          lpjml = "lpjml5p2_pasture", climatetype = "IPSL_CM6A_LR",
-                          scenario = "ssp126_co2_limN", cells = "lpjcell") {
+                          lpjml = "lpjml5p2_pasture", climatetype = "MRI-ESM2-0:ssp370",
+                          scenario = "/co2/Nreturn0p5/limN", cells = "lpjcell") {
 
   yearsHist <- seq(1965, 2010, 5)
   .subtype <- paste0(lpjml, ":", climatetype, paste0(scenario, "/", past_mngmt))
@@ -34,6 +34,6 @@ calcPastr_new <- function(past_mngmt = "me2", # nolint
   return(list(x = x,
               weight = NULL,
               unit = "gC/m2/y",
-              description = paste("Managed pasture yields"),
+              description = "Managed pasture yields",
               isocountries = FALSE))
 }

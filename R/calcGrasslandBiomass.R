@@ -1,6 +1,6 @@
-#' Calculate grassland biomass split between rangelands and pasture demand.
-#'
-#' Calculates pasture biomass demand for the historical period split between rangelands and managed pastures.
+#' @title calcGrasslandBiomass
+#' @description Calculates pasture biomass demand for the historical period split between rangelands and managed pastures.
+#' @param cells "magpiecell" for 59199 cells or "lpjcell" for 67420 cells
 #' @return Regional biomass demand
 #' @author Marcos Alves
 #' @seealso \code{\link{calcOutput}}, \code{\link{calcFAOmassbalance}},
@@ -10,14 +10,19 @@
 #' calcOutput("GrasslandBiomass")
 #' }
 #' @importFrom mrcommons toolCoord2Isocell
+#' @importFrom magpiesets findset
 
-calcGrasslandBiomass <- function() {
+calcGrasslandBiomass <- function(cells = "lpjcell") {
+
+  # select years
   magYearsPast <- findset("past")
+
+  # biomass production
   biomass <- calcOutput("FAOmassbalance", aggregate = FALSE)[, , "production.dm"][, magYearsPast, "pasture"]
   biomass <- collapseNames(biomass)
-  biomass <- toolIso2CellCountries(biomass)
 
-  land <- calcOutput("LanduseInitialisation", cellular = TRUE, nclasses = "nine", aggregate = FALSE)[, magYearsPast, ]
+  land <- calcOutput("LanduseInitialisation", cellular = TRUE, cells = cells,
+                     nclasses = "nine", aggregate = FALSE)[, magYearsPast, ]
   grasslLand <- land[, , c("past", "range")]
   grasslLand <- setNames(grasslLand, c("pastr", "range"))
 
@@ -45,6 +50,7 @@ calcGrasslandBiomass <- function() {
                          climatetype = paste0("MRI-ESM2-0", ":", "ssp245"),
                          subtype = "/co2/Nreturn0p5", # nolint
                          lsu_levels = c(seq(0, 2.2, 0.2), 2.5), past_mngmt = "mdef", # nolint
+                         cells = cells,
                          aggregate = FALSE)[, , "rainfed"]
   grassYld <- collapseNames(grassYld)
   grassYld[grassYld == 0.00088]  <- 0
@@ -54,13 +60,14 @@ calcGrasslandBiomass <- function() {
   potBioMassShare <- setNames(potBioMass[, , "pastr"] / dimSums(potBioMass, dim = 3), "pastr")
   potBioMassShare <- add_columns(potBioMassShare, addnm = "range", dim = 3.1)
   potBioMassShare[, , "range"] <- potBioMass[, , "range"] / dimSums(potBioMass, dim = 3)
-  potBioMassShare[is.nan(potBioMassShare)] <- 0
+  potBioMassShare[is.nan(potBioMassShare)]       <- 0
   potBioMassShare[is.infinite(potBioMassShare)]  <- 1
 
-  mapping <- toolGetMapping("CountryToCellMapping.rds", where = "mrcommons")
-
-  livestock <- setNames(toolCoord2Isocell(readSource("GLW3", subtype = "Aw")),
+  livestock <- setNames(readSource("GLW3", subtype = "Aw"),
                         "liv_numb")
+  if (cells == "magpiecell") {
+       livestock <- toolCoord2Isocell(livestock)
+  }
   livestock[livestock < 1] <- 0
 
   # I am working with the assumption that in most places, the proportional distribution of
@@ -72,7 +79,13 @@ calcGrasslandBiomass <- function() {
 
   livstSplit <- livestock * potBioMassShare
   livstSplit <- collapseNames(livstSplit)
-  livstSplitCtry <- toolAggregate(livstSplit, rel = mapping, to = "iso", from = "celliso")
+  if (cells == "lpjcell") {
+       livstSplitCtry <- dimSums(livstSplit, dim = c("x", "y"))
+  } else if (cells == "magpiecell") {
+       livstSplitCtry <- dimSums(livstSplit, dim = 1.2)
+  } else {
+       stop("Please select cells argument in calcGrasslandBiomass")
+  }
   livstShareCtry <- livstSplitCtry[, , "pastr"] / dimSums(livstSplitCtry, dim = 3)
   livstShareCtry[is.nan(livstShareCtry) | is.infinite(livstShareCtry)] <- 0
   livstShareCtry <- add_columns(livstShareCtry, addnm = "range", dim = 3.1)
@@ -83,8 +96,9 @@ calcGrasslandBiomass <- function() {
   # with the production of grass in pastures and rangelands in a country. That can be
   # derived by the fact that the feedbaskets assume the same feed ingredients shares
   # within a country.
-
-  biomassSplit <- biomass * livstShareCtry
+  commonCtrs <- intersect(getItems(biomass, dim = 1), 
+                          unique(getItems(livstShareCtry, dim = "iso")))
+  biomassSplit <- biomass[commonCtrs, , ] * livstShareCtry[commonCtrs, , ]
   biomassSplit <- toolCountryFill(biomassSplit, fill = 0)
 
   # OBS: we could add a diet correction factor for animals being reared in different system

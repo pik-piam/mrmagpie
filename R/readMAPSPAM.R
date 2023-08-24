@@ -1,12 +1,11 @@
 #' @title readMAPSPAM
 #' @description Reads the MAP-SPAM crop data per year (mapping each year different)
 #' @return magpie object with croparea data in ha
-#' @author Edna J. Molina Bacca
+#' @author Edna J. Molina Bacca, Felicitas Beier
 #' @param subtype It can be either "harvested" or "physical" area
 #' @importFrom terra rast values crds aggregate
 #' @importFrom luscale speed_aggregate
-#' @importFrom madrat toolGetMapping
-#' @importFrom luscale speed_aggregate
+#' @importFrom mrcommons toolGetMappingCoord2Country
 #' @importFrom magpiesets findset
 #' @importFrom magclass new.magpie
 #' @seealso [readSource()]
@@ -14,24 +13,37 @@
 #' \dontrun{
 #' a <- readSource("MAPSPAM")
 #' }
-#'
+
 readMAPSPAM <- function(subtype = "harvested") {
-  type <- subtype
-  mapping <- toolGetMapping("CountryToCellMapping.rds", where = "mrcommons")
-  kcr <- findset("kcr")
-  kcr <- c(kcr, "remaining")
-  out <- new.magpie(cells_and_regions = mapping[, "celliso"], years = c(2000, 2005, 2010),
-                    names = c(paste0(kcr, ".rainfed"), paste0(kcr, ".irrigated")), fill = NA)
+
+  type    <- subtype
+  mapping <- toolGetMappingCoord2Country(pretty = TRUE)
+  kcr     <- findset("kcr")
+  kcr     <- c(kcr, "remaining")
+  out     <- new.magpie(cells_and_regions = paste(mapping$coords, mapping$iso, sep = "."),
+                        years = c(2000, 2005, 2010),
+                        names = c(paste0(kcr, ".rainfed"), paste0(kcr, ".irrigated")),
+                        fill = NA)
 
   for (year in c(2000, 2005, 2010)) {
-    spam2Magpie <- if (year == 2000) toolGetMapping("SPAMtoMAGPIE2000.csv",
-                                                    type = "sectoral", where = "mrcommons") else
-                                                      toolGetMapping("SPAMtoMAGPIE2005.csv",
-                                                                     type = "sectoral", where = "mrcommons")
+    if (year == 2000) {
+      spam2Magpie <- toolGetMapping("SPAMtoMAGPIE2000.csv",
+                                    type = "sectoral", where = "mrcommons")
+    } else {
+      spam2Magpie <- toolGetMapping("SPAMtoMAGPIE2005.csv",
+                                    type = "sectoral", where = "mrcommons")
+    }
     colnames(spam2Magpie) <- c("crop", "name", "SPAM", "Magpie")
     cropsSpam <- spam2Magpie[, "SPAM"]
 
-    ty <- if (type == "harvested") "HA" else if (type == "physical") "PA" else stop("Not a valid type")
+    if (type == "harvested") {
+      ty <- "HA"
+    } else if (type == "physical") {
+      ty <- "PA"
+    } else {
+      stop("Not a valid type")
+    }
+    # factor for aggregation
     factor <- 6
 
     hisT <- NULL
@@ -40,11 +52,14 @@ readMAPSPAM <- function(subtype = "harvested") {
     for (i in seq_len(length(cropsSpam))) {
 
       if (year == 2000) {
+
         # Reads raster data from SPAM
         tyArea <- if (ty == "HA") "harvested-area" else if (ty == "PA") "physical-area"
         rasterAscT <- paste0("spam2000v3r7_global_", ty, "_geotiff/spam2000v3r7_", tyArea, "_", cropsSpam[i], ".tif")
         rasterAscI <- paste0("spam2000v3r7_global_", ty, "_geotiff/spam2000v3r7_", tyArea, "_", cropsSpam[i], "_I.tif")
+
       } else if (year == 2005) {
+
         # Reads raster data from SPAM
         tyArea <- if (ty == "HA") "H" else if (ty == "PA") "A"
         tyArea1 <- if (ty == "HA") "harv_area" else if (ty == "PA") "phys_area"
@@ -53,48 +68,72 @@ readMAPSPAM <- function(subtype = "harvested") {
                              tyArea, "_TA_", cropsSpam[i], "_A.tif")
         rasterAscI <- paste0("spam2005v3r2_global_", ty, "_geotiff/geotiff_global_", tyArea1, "/SPAM2005V3r2_global_",
                              tyArea, "_TI_", cropsSpam[i], "_I.tif")
+
       } else if (year == 2010) {
+
         tyArea <- if (ty == "HA") "H" else if (ty == "PA") "A"
 
         rasterAscT <- paste0("spam2010v2r0_global_", ty, "_geotiff/spam2010V2r0_global_", tyArea, "_",
                              cropsSpam[i], "_A.tif")
         rasterAscI <- paste0("spam2010v2r0_global_", ty, "_geotiff/spam2010V2r0_global_", tyArea, "_",
                              cropsSpam[i], "_I.tif")
+
       }
 
       .valuesExtract <- function(rasterAscT) {
 
+        # load raster
         dataAscT <- rast(rasterAscT)
+        # aggregate to 0.5 resolution
         dataAscT <- aggregate(dataAscT, fact = factor, fun = sum)
+
+        # extract values from raster
         valuesAscT <- values(dataAscT, mat = FALSE, dataframe = TRUE)
         valuesAscT[is.na(valuesAscT)] <- 0
+        # extract coordinate information from rster
         coorAscT <- round(crds(dataAscT, na.rm = FALSE), 2)
+        
+        # combine coordinate info and values in data frame
         rasDataAsc <- as.data.frame(cbind(coorAscT, valuesAscT))
         colnames(rasDataAsc) <- c("lon", "lat", "Value")
-        historicalT <- merge(rasDataAsc, mapping, by = c("lon", "lat"))
-        historicalT$Year <- year
-        historicalT$crop <- paste0(cropsSpam[i])
 
-        return(historicalT[, c("celliso", "Year", "crop", "Value")])
+        # merge mapping with raster data
+        historicalT <- merge(rasDataAsc, mapping, by = c("lon", "lat"))
+        # transform to magpie object
+        historicalT <- historicalT[, c("coords", "Value")]
+        historicalT <- as.magpie(historicalT, spatial = 1)
+        
+        # add dimension names
+        getItems(historicalT, dim = 2) <- year
+        getItems(historicalT, dim = 3) <- paste0(cropsSpam[i])
+
+        # name and reorder first dimension
+        getItems(historicalT, dim = 1, raw = TRUE) <- gsub("_", ".", getItems(historicalT, dim = 1))
+        historicalT <- historicalT[mapping$coords, , ]
+        getItems(historicalT, dim = 1, raw = TRUE) <- paste(mapping$coords, mapping$iso, sep = ".")
+        
+        # rename sets
+        getSets(historicalT) <- c("x", "y", "iso", "year", "Value")
+
+        return(historicalT)
       }
 
       if (file.exists(rasterAscT) && file.exists(rasterAscI)) {
 
         historicalT <- .valuesExtract(rasterAscT)
-        hisT <- rbind(hisT, historicalT)
+        hisT        <- mbind(hisT, historicalT)
 
         historicalI <- .valuesExtract(rasterAscI)
-        hisI <- rbind(hisI, historicalI)
+        hisI        <- mbind(hisI, historicalI)
 
       }
     }
 
-    .convertMag <- function(hisT) {
-      magObjSPAMT <- as.magpie(hisT)
-      spam2Magpie <- spam2Magpie[spam2Magpie$SPAM %in% getNames(magObjSPAMT), ]
-      magObjSPAMT <- speed_aggregate(magObjSPAMT, rel = spam2Magpie, from = "SPAM", to = "Magpie", dim = 3)
-      getCells(magObjSPAMT) <- gsub("_", "\\.", getCells(magObjSPAMT))
-      return(magObjSPAMT)
+    .convertMag <- function(x) {
+      spam2Magpie <- spam2Magpie[spam2Magpie$SPAM %in% getNames(x), ]
+      x           <- luscale::speed_aggregate(x, rel = spam2Magpie,
+                                              from = "SPAM", to = "Magpie", dim = 3)
+      return(x)
     }
 
     magObjSPAMT <- .convertMag(hisT)
@@ -104,7 +143,9 @@ readMAPSPAM <- function(subtype = "harvested") {
     magObjSPAM <- mbind(setNames(magObjSPAMI, paste0(getNames(magObjSPAMI), ".irrigated")),
                         setNames(magObjSPAMR, paste0(getNames(magObjSPAMR), ".rainfed")))
 
-    out[, intersect(getYears(out), getYears(magObjSPAM)), intersect(getNames(out), getNames(magObjSPAM))] <- magObjSPAM
+    out[, intersect(getYears(out), getYears(magObjSPAM)),
+          intersect(getNames(out), getNames(magObjSPAM))] <- magObjSPAM[, intersect(getYears(out), getYears(magObjSPAM)),
+                                                                          intersect(getNames(out), getNames(magObjSPAM))]
   }
 
   return(out)

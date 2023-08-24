@@ -5,6 +5,7 @@
 #' @param subtype Switch between different climate scenarios
 #' @param lpjml Defines LPJmL version for crop/grass and natveg specific inputs
 #' @param climatetype Global Circulation Model to be used
+#' @param cells       "magpiecell" for 59199 cells or "lpjcell" for 67420 cells
 #' @return magpie object in cellular resolution
 #' @author Marcos Alves
 #'
@@ -20,12 +21,17 @@
 #'
 #'
 
-calcGrasslandsYields <- function(lpjml = lpjml[["grass"]], climatetype = climatetype, subtype = "/co2/Nreturn0p5", # nolint
+calcGrasslandsYields <- function(lpjml = "lpjml5p2_pasture", climatetype = "MRI-ESM2-0:ssp370",
+                                 cells = "lpjcell",
+                                 subtype = "/co2/Nreturn0p5", # nolint
                                  lsu_levels = c(seq(0, 2, 0.2), 2.5), past_mngmt = "me2") { # nolint
 
     gCm2yTotDMy <- (10000 * 2.21 / 1e6)
-    x <- calcOutput("RangelandsMaxNew", lsuLevels = lsu_levels, lpjml = lpjml, climatetype = climatetype,
-                    scenario = paste0(subtype, "/limN"), report = "harvest", aggregate = FALSE)
+    x <- calcOutput("RangelandsMaxNew", lsuLevels = lsu_levels,
+                    lpjml = lpjml, climatetype = climatetype,
+                    scenario = paste0(subtype, "/limN"),
+                    report = "harvest", aggregate = FALSE)
+
     if (past_mngmt == "mdef") {
       n <- "/unlimN"
     } else if (past_mngmt == "me2") {
@@ -33,33 +39,34 @@ calcGrasslandsYields <- function(lpjml = lpjml[["grass"]], climatetype = climate
     } else {
       stop("past_mngmt not available yet")
     }
-    y <- calcOutput("Pastr_new", past_mngmt = past_mngmt, lpjml = lpjml, climatetype = climatetype,
+
+    y <- calcOutput("Pastr_new", cells = "lpjcell",
+                    past_mngmt = past_mngmt,
+                    lpjml = lpjml, climatetype = climatetype,
                     scenario = paste0(subtype, n), aggregate = FALSE)
     invalid <- (y - x) < 0
+    invalid <- collapseNames(invalid)
     # substituting pastr yields that are smaller than rangelands by the value of rangeland yields
     y[invalid]  <- x[invalid]
     pasture <- mbind(x, y)
-    invalid <- (pasture[, , "pastr"] - pasture[, , "range"]) < 0
     pasture <- toolHoldConstantBeyondEnd(pasture)
-    pasture <- pasture * gCm2yTotDMy
+    x <- pasture * gCm2yTotDMy
 
-    # Calculating weights
-    landcoords <- as.data.frame(toolGetMapping("magpie_coord.rda", type = "cell", where = "mappingfolder"))
-    landcoords <- cbind(landcoords, rep(1, nrow(landcoords)))
-    landcoords <- raster::rasterFromXYZ(landcoords)
-    crs(landcoords) <- "+proj=longlat"
-    cellSize <- raster::area(landcoords)
-    weight <- cellSize * landcoords
-    weight <- as.magpie(weight)
-    weight <- toolOrderCells(collapseDim(addLocation(weight), dim = c("x", "y")))
+    # reduce to old grid cell format
+    if (cells == "magpiecell") {
+      x <- toolCoord2Isocell(x)
+    }
+    # Land area as weights
+    landArea <- calcOutput("LandArea", cells = cells)
 
     return(
       list(
-        x = pasture,
-        weight = weight,
+        x = x,
+        weight = landArea,
         unit = "t/DM/y",
-        description = paste("Maximum grasslands yields obtained with rangelands and managed pastures yields for",
-                            past_mngmt),
+        description = paste0("Maximum grasslands yields obtained with rangelands ",
+                             "and managed pastures yields for",
+                             past_mngmt),
         isocountries = FALSE
       )
     )

@@ -27,17 +27,8 @@ calcSoilCharacteristics <- function() {
   # landcoords <- as.RasterBrick(x)
   # cell_size <- area(landcoords)
   # raster::plot(cell_size)
-  #
-
-  landcoords <- as.data.frame(toolGetMapping("magpie_coord.rda", type = "cell", where = "mappingfolder"))
-  landcoords <- cbind(landcoords, rep(1, nrow(landcoords)))
-  landcoords <- raster::rasterFromXYZ(landcoords)
-  crs(landcoords) <- "+proj=longlat"
-  cell_size <- raster::area(landcoords)
-  weight <- cell_size * landcoords
-  weight <- as.magpie(weight)
-  weight <- toolOrderCells(collapseDim(addLocation(weight), dim = c("x", "y")))
-
+  # cell_size <- as.magpie(cell_size)[map$coords,,]
+  
   x  <- readSource("SoilClassification", subtype = "HWSD.soil", convert = "onlycorrect")
   years <- seq(1900, 2150, 1)
   z <- array(NA, dim = c(dim(x)[1], length(years), 1),
@@ -63,7 +54,7 @@ calcSoilCharacteristics <- function() {
 
   return(list(
     x = x,
-    weight = weight,
+    weight = cellArea,
     unit =
 "Ks: mm/h, Sf: mm ,
  w_pwp: % ,

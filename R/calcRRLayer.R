@@ -14,7 +14,7 @@
 #' @importFrom magpiesets findset
 #'
 
-calcRRLayer <- function(cells="lpjcell") {
+calcRRLayer <- function(cells = "lpjcell") {
 
   x <- readSource("BendingTheCurve", subtype = "rr_layer", convert = "onlycorrect")
 
@@ -30,12 +30,13 @@ calcRRLayer <- function(cells="lpjcell") {
       stop("Please specify cells argument")
   }
 
-  weight <- calcOutput("LandArea", aggregate = FALSE)
+  weight <- calcOutput("LandArea", cells = cells, aggregate = FALSE)
 
 return(list(
   x = x,
   weight = weight,
   unit = "Range-Rarity (-)",
-  description = "range-rarity layer provided by David Leclere from IIASA, Bending the curve on biodiversity loss",
+  description = paste0("range-rarity layer provided by David Leclere from IIASA, ",
+                       "Bending the curve on biodiversity loss"),
   isocountries = FALSE))
 }

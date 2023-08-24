@@ -59,11 +59,11 @@ calcCollectEnvironmentData_new <- function(subtype = "ISIMIP3b:IPSL-CM6A-LR:ssp1
                                                                           as.integer = TRUE)) + 1), 2150, 5))
   }
   variables <- mbind(gcmVariables)
-  co2 <- calcOutput("CO2Atmosphere_new", aggregate = FALSE,
+  co2 <- calcOutput("CO2Atmosphere_new", cells = "lpjcell", aggregate = FALSE,
                     subtype = paste(x$version, x$scenario, sep = ":"),
                     co2Evolution = "rising")[, (syear - sar / 2):fyear, ]
   co2 <- toolHoldConstant(co2,  seq((max(getYears(co2, as.integer = TRUE)) + 1), 2150, 5))
-  soil <- calcOutput("SoilCharacteristics", aggregate = FALSE)[, getYears(co2), ]
+  soil <- calcOutput("SoilCharacteristics", aggregate = FALSE)[, getYears(co2), ]          ### To Do (Alex K., Marcos, Kristine, Feli): adjust to 67k 
 
   constants <- mbind(co2, soil)
   constants <- constants[, getYears(variables), ]
@@ -73,20 +73,18 @@ calcCollectEnvironmentData_new <- function(subtype = "ISIMIP3b:IPSL-CM6A-LR:ssp1
   select <- grepl(pattern = features, getItems(env, dim = 3), ignore.case = TRUE)
   env <- env[, , select]
 
-
-  # Calculating weights
-  landcoords <- as.data.frame(toolGetMapping("magpie_coord.rda", type = "cell", where = "mappingfolder"))
-  landcoords <- cbind(landcoords, rep(1, nrow(landcoords)))
-  landcoords <- raster::rasterFromXYZ(landcoords)
-  crs(landcoords) <- "+proj=longlat"
-  cellSize <- raster::area(landcoords)
-  weight <- cellSize * landcoords
-  weight <- as.magpie(weight)
-  weight <- toolOrderCells(collapseDim(addLocation(weight), dim = c("x", "y")))
+  # Calculate weight: cellarea
+  mapping <- toolGetMappingCoord2Country()
+  cb <- toolGetMapping("LPJ_CellBelongingsToCountries.csv",
+                       type = "cell", where = "mrcommons")
+  cellArea <- (111e3 * 0.5) * (111e3 * 0.5) * cos(cb$lat / 180 * pi)
+  cellArea <- as.magpie(cellArea, spatial = 1)
+  getItems(cellArea, dim = 1, raw = TRUE) <- paste(mapping$coords, mapping$iso, sep = ".")
+  getSets(cellArea) <- c("x", "y", "iso", "year", "data")
 
   return(list(
     x = env,
-    weight = weight,
+    weight = cellArea,
     unit =
       "temperature: Degree Celcius,
     precipitation: mm3 per year,

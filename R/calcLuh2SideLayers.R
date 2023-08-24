@@ -14,7 +14,7 @@
 #' @importFrom magpiesets findset
 #'
 
-calcLuh2SideLayers <- function(cells="lpjcell") {
+calcLuh2SideLayers <- function(cells = "lpjcell") {
 
   x  <- readSource("BendingTheCurve", subtype = "luh2_side_layers", convert = "onlycorrect")
 
@@ -30,12 +30,13 @@ calcLuh2SideLayers <- function(cells="lpjcell") {
       stop("Please specify cells argument")
   }
 
-  weight <- calcOutput("LandArea", aggregate = FALSE)
+  weight <- calcOutput("LandArea", cells = cells, aggregate = FALSE)
 
 return(list(
   x = x,
   weight = weight,
   unit = "boolean",
-  description = "Data from LUH2 provided by David Leclere from IIASA, Bending the curve on biodiversity loss",
+  description = paste0("Data from LUH2 provided by David Leclere from IIASA, ",
+                       "Bending the curve on biodiversity loss"),
   isocountries = FALSE))
 }
