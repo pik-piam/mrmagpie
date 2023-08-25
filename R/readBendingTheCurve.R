@@ -16,6 +16,7 @@ readBendingTheCurve <- function(subtype) {
   map <- toolGetMappingCoord2Country(pretty = TRUE)
 
   if (subtype == "rr_layer") {
+
     x <- terra::rast("./RangeRarityLayer/table_weights_30Nov2017.nc")
     x <- x[["weighted.rescaled.logTransCstBase"]]
 
@@ -23,12 +24,10 @@ readBendingTheCurve <- function(subtype) {
     dimnames(out) <- list(
       "x.y.iso" = paste(map$coords, map$iso, sep = "."),
       "t" = NULL,
-      "data" = NULL
-    )
-    return(out)
-  }
+      "data" = NULL)
 
-  if (subtype == "luh2_side_layers") {
+  } else if (subtype == "luh2_side_layers") {
+
     x <- read.magpie("./LUHSideLayers/table_LUH_side_data_16Nov2017.nc")
     getYears(x) <- NULL
 
@@ -44,21 +43,21 @@ readBendingTheCurve <- function(subtype) {
     getNames(primveg) <- "primveg"
     getNames(secdveg) <- "secdveg"
 
-    #p <- a[,,c("MaskFvsNF_aggval")]
     forested <- collapseNames(x[,,"MaskFvsNF_aggval"])
     forested[is.na(forested)] <- 0 #assume nonforested in case of NA
     nonforested <- -(forested-1)
     getNames(forested) <- "forested"
     getNames(nonforested) <- "nonforested"
 
-    all <- mbind(manpast,rangeland,primveg,secdveg,forested,nonforested)
+    all <- mbind(manpast, rangeland, primveg, secdveg, forested, nonforested)
 
-    out <- all[map$coords,,]
+    out <- all[map$coords, , ]
+    getItems(out, dim = 1, raw = TRUE) <- paste(map$coords, map$iso, sep = ".")
+    getSets(out) <- c("x", "y", "iso", "year", "data")
 
-    return(out)
-  }
-
-  if (subtype != "luh2_side_layers" || subtype != "rr_layer") {
+  } else {
     stop("Not a Valid Subtype")
   }
+
+  return(out)
 }
