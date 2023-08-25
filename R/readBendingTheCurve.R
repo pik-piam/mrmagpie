@@ -10,12 +10,14 @@
 #' }
 #'
 
-readBendingTheCurve <- function(subtype){
-  if(subtype=="rr_layer"){
+readBendingTheCurve <- function(subtype) {
+  
+  # coordinate mapping
+  map <- toolGetMappingCoord2Country(pretty = TRUE)
+
+  if (subtype == "rr_layer") {
     x <- terra::rast("./RangeRarityLayer/table_weights_30Nov2017.nc")
     x <- x[["weighted.rescaled.logTransCstBase"]]
-
-    map <- toolGetMappingCoord2Country(pretty = TRUE)
 
     out <- as.magpie(extract(x, map[c("lon", "lat")])[, 2], spatial = 1)
     dimnames(out) <- list(
@@ -25,7 +27,8 @@ readBendingTheCurve <- function(subtype){
     )
     return(out)
   }
-  if(subtype=="luh2_side_layers"){
+
+  if (subtype == "luh2_side_layers") {
     x <- read.magpie("./LUHSideLayers/table_LUH_side_data_16Nov2017.nc")
     getYears(x) <- NULL
 
@@ -54,7 +57,8 @@ readBendingTheCurve <- function(subtype){
 
     return(out)
   }
-  if(subtype!= "luh2_side_layers" | "rr_layer") {
+
+  if (subtype != "luh2_side_layers" || subtype != "rr_layer") {
     stop("Not a Valid Subtype")
   }
 }
