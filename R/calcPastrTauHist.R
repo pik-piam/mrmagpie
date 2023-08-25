@@ -4,6 +4,7 @@
 #' @param cells      "magpiecell" for 59199 cells or "lpjcell" for 67420 cells
 #' @return List of magpie objects with results on country level, weight on country level, unit and description.
 #' @author Marcos Alves
+#' @importFrom magpiesets findset
 #' @examples
 #' \dontrun{
 #' calcOutput("PastrTauHist", past_mngmt)

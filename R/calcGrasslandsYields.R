@@ -57,7 +57,8 @@ calcGrasslandsYields <- function(lpjml = "lpjml5p2_pasture", climatetype = "MRI-
       x <- toolCoord2Isocell(x)
     }
     # Land area as weights
-    landArea <- calcOutput("LandArea", cells = cells)
+    landArea <- calcOutput("LandArea", cells = cells,
+                           aggregate = FALSE)
 
     return(
       list(
