@@ -24,7 +24,7 @@
 calcGrasslandsYields <- function(lpjml = "lpjml5p2_pasture", climatetype = "MRI-ESM2-0:ssp370",
                                  cells = "lpjcell",
                                  subtype = "/co2/Nreturn0p5", # nolint
-                                 lsu_levels = c(seq(0, 2, 0.2), 2.5), past_mngmt = "me2") { # nolint
+                                 lsu_levels = c(seq(0, 2, 0.2), 2.5), past_mngmt = "mdef") { # nolint
 
     gCm2yTotDMy <- (10000 * 2.21 / 1e6)
     x <- calcOutput("RangelandsMaxNew", lsuLevels = lsu_levels,

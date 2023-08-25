@@ -12,7 +12,7 @@
 #'
 #' @importFrom magclass where
 
-calcPastrTauHist <- function(past_mngmt = "2me", cells = "lpjcell") { # nolint
+calcPastrTauHist <- function(past_mngmt = "mdef", cells = "lpjcell") { # nolint
 
   pastMngmt <- past_mngmt # nolint
 
@@ -21,11 +21,6 @@ calcPastrTauHist <- function(past_mngmt = "2me", cells = "lpjcell") { # nolint
   prod <- calcOutput("GrasslandBiomass", cells = cells,
                       aggregate = FALSE)[, past, "pastr"]
   prod <- toolCountryFill(prod, fill = 0)
-
-  # coordinate-to-cell mapping
-  coord2iso <- toolGetMappingCoord2Country()
-  cell2reg  <- toolGetMapping("CountryToCellMapping.csv",
-                              type = "cell", where = "mappingfolder")
 
   # pasture areas
   area <- calcOutput("LUH2v2", landuse_types = "LUH2v2",
@@ -46,8 +41,8 @@ calcPastrTauHist <- function(past_mngmt = "2me", cells = "lpjcell") { # nolint
 
   # reference yields
   yref <- calcOutput("GrasslandsYields", cells = cells,
-    lpjml = "lpjml5p2_pasture", climatetype = "MRI-ESM2-0:ssp245", subtype = "/co2/Nreturn0p5", # nolint
-    lsu_levels = c(seq(0, 2.2, 0.2), 2.5), past_mngmt = pastMngmt,
+    lpjml = "lpjml5p2_pasture", climatetype = "MRI-ESM2-0:ssp245", subtype = "/co2/Nreturn0p5",
+    lsu_levels = c(seq(0, 2.2, 0.2), 2.5), past_mngmt = pastMngmt, # nolint
     aggregate = FALSE
   )[, past, "pastr.rainfed"]
 
@@ -58,12 +53,19 @@ calcPastrTauHist <- function(past_mngmt = "2me", cells = "lpjcell") { # nolint
                             aggregate = FALSE)[, past, "pastr"]
 
   if (cells == "magpiecell") {
+    # mapping 
+    cell2reg <- toolGetMapping("CountryToCellMapping.csv",
+                                type = "cell", where = "mappingfolder")
     yref <- toolAggregate(yref, rel = cell2reg, weight = yrefWeights, 
                           from = "celliso", to = "iso")
   } else if (cells == "lpjcell") {
-    yref <- collapseDim(yref, "iso")
-    yrefWeights <- collapseDim(yrefWeights, "iso")
-    yref <- toolAggregate(yref, rel = cell2reg, weight = yrefWeights, 
+    # coordinate-to-cell mapping
+    coord2iso <- toolGetMappingCoord2Country()
+    # collapse iso dimension for mapping 
+    yref        <- collapseDim(yref, dim = 1.3)
+    yrefWeights <- collapseDim(yrefWeights, dim = 1.3)
+    # country-level grassland yields
+    yref <- toolAggregate(yref, rel = coord2iso, weight = yrefWeights, 
                           from = "coords", to = "iso")
   } else {
     stop("Please select cells magpiecell or lpjcell")
@@ -77,7 +79,8 @@ calcPastrTauHist <- function(past_mngmt = "2me", cells = "lpjcell") { # nolint
 
   # replacing unrealistic high tau values by regional averages
   regMap <- toolGetMapping("regionmappingH12.csv", type = "cell")
-  tReg   <- toolAggregate(t, rel = regMap, weight = area, from = "CountryCode", to = "RegionCode")
+  tReg   <- toolAggregate(t, rel = regMap, weight = area,
+                          from = "CountryCode", to = "RegionCode")
   regions <- regMap$RegionCode
   names(regions) <- regMap[, "CountryCode"]
 

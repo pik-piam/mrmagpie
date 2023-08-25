@@ -179,7 +179,8 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
 
   # 13 TC
   calcOutput("PastrTauHist", round = 2, past_mngmt = "mdef",
-             file = "f13_pastr_tau_hist.csv", aggregate = superregion)
+             file = "f13_pastr_tau_hist.csv",
+             cells = cells, aggregate = superregion)
 
   # 09 drivers
   calcOutput("GridPop", source = "Gao", subtype = "all", harmonize_until = 2015, urban = FALSE,
@@ -269,7 +270,7 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
   # 31 past
   # Note: all pasture functions still need adjustment to 67k cells
   calcOutput("GrasslandBiomass",  round = 3, file = "f31_grass_bio_hist.cs3",
-             aggregate = "region")
+             cells = cells, aggregate = "region")
   calcOutput("LUH2v2", aggregate = "cluster", landuse_types = "LUH2v2",
              cellular = TRUE, cells = cells,
              file = paste0("f31_LUH2v2_", ctype, ".mz"))
@@ -277,11 +278,13 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
   calcOutput("GrasslandsYields", lpjml = lpjml[["grass"]], climatetype = "MRI-ESM2-0:ssp126",
              subtype = "/co2/Nreturn0p5", # nolint
              lsu_levels = c(seq(0, 2.2, 0.2), 2.5), past_mngmt = "mdef",
-             file = paste0("f31_grassl_yld_", ctype, ".mz"), years = magYears, aggregate = "cluster")
+             file = paste0("f31_grassl_yld_", ctype, ".mz"), years = magYears,
+             cells = cells, aggregate = "cluster")
   calcOutput("GrasslandsYields", lpjml = lpjml[["grass"]], climatetype = "MRI-ESM2-0:ssp126",
              subtype = "/co2/Nreturn0p5", # nolint
              lsu_levels = c(seq(0, 2.2, 0.2), 2.5), past_mngmt = "mdef",
-             file = paste0("f31_grassl_yld.mz"), years = magYears, aggregate = FALSE)
+             file = paste0("f31_grassl_yld.mz"), years = magYears,
+             cells = cells, aggregate = FALSE)
   calcOutput("PastureSuit", climatetype = climatetype, lpjml =  lpjml[["natveg"]], cells = cells,
              file = paste0("f31_pastr_suitability_", ctype, ".mz"), years = magYears, aggregate = "cluster")
   calcOutput("PastureSuit", climatetype = climatetype, lpjml =  lpjml[["natveg"]], cells = cells,
