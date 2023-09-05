@@ -179,8 +179,8 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
                aggregate = "cluster", round = 6, file = paste0("consv_prio_areas_", ctype, ".mz"))
   }
 
-  calcOutput("ProtectArea", bhifl = ifelse(rev > 4.66, TRUE, FALSE), aggregate = "cluster", round = 6,
-             file = paste0("protect_area_", ctype, ".mz"))
+#  calcOutput("ProtectArea", bhifl = ifelse(rev > 4.66, TRUE, FALSE), aggregate = "cluster", round = 6,
+#             file = paste0("protect_area_", ctype, ".mz"))
 
   # 30 crop
   calcOutput("Croparea", sectoral = "kcr", physical = TRUE, cellular = TRUE, irrigation = FALSE,
