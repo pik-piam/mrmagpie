@@ -97,7 +97,7 @@ calcGrasslandBiomass <- function(cells = "lpjcell") {
   # derived by the fact that the feedbaskets assume the same feed ingredients shares
   # within a country.
   commonCtrs <- intersect(getItems(biomass, dim = 1), 
-                          unique(getItems(livstShareCtry, dim = "iso")))
+                          unique(getItems(livstShareCtry, dim = 1)))
   biomassSplit <- biomass[commonCtrs, , ] * livstShareCtry[commonCtrs, , ]
   biomassSplit <- toolCountryFill(biomassSplit, fill = 0)
 
