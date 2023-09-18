@@ -78,11 +78,13 @@ calcRangelandsMaxNew <- function(lsuLevels = c(seq(0, 2.2, 0.2), 2.5),
       optmLsu <- as.magpie(y[, -5], spatial = 1, tidy = TRUE, replacement = ".")
       optmLsu[optmLsu > 2.5] <- 2.5
       optmLsu <- add_dimension(optmLsu, dim = 3.1, add = "CO2", nm = "range")
-      
+
       x <- optmLsu
       unit <- "lsu/ha"
       description <- "Optimal LSU density that corresponds to the maximum grass yields"
     }
+
+    getSets(x, fulldim = FALSE)[1] <- c("x.y.iso")
 
     # reduce to old grid cell format
     if (cells == "magpiecell") {

@@ -40,8 +40,7 @@ calcGrasslandsYields <- function(lpjml = "lpjml5p2_pasture", climatetype = "MRI-
       stop("past_mngmt not available yet")
     }
 
-    y <- calcOutput("Pastr_new", cells = cells,
-                    past_mngmt = past_mngmt,
+    y <- calcOutput("Pastr_new", past_mngmt = past_mngmt,
                     lpjml = lpjml, climatetype = climatetype,
                     scenario = paste0(subtype, n), aggregate = FALSE)
     invalid <- (y - x) < 0
