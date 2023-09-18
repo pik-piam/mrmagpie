@@ -92,6 +92,7 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
   magYears         <- findset("time")
   shortYears       <- findset("t_all")
   lpjYears         <- seq(1995, 2100, by = 5)
+  roundArea        <- 5
 
   # Clustering based on 67420 cells
   map      <- calcOutput("Cluster", ctype = ctype, weight = clusterweight, lpjml = lpjml,
@@ -196,76 +197,77 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
   calcOutput("LanduseInitialisation", nclasses = "seven",
              aggregate = FALSE, cellular = TRUE, cells = cells,
              input_magpie = TRUE, selectyears = magYearsPastLong,
-             round = 6, file = "avl_land_t_0.5.mz")
+             round = roundArea, file = "avl_land_t_0.5.mz")
   calcOutput("LanduseInitialisation", nclasses = "seven",
              aggregate = "cluster", cellular = TRUE, cells = cells,
              input_magpie = TRUE, selectyears = magYearsPastLong,
-             round = 6, file = paste0("avl_land_t_", ctype, ".mz"))
+             round = roundArea, file = paste0("avl_land_t_", ctype, ".mz"))
   calcOutput("LanduseInitialisation", nclasses = "seven",
              aggregate = FALSE, cellular = FALSE, cells = cells,
              input_magpie = TRUE, selectyears = magYearsPastLong,
-             round = 6, file = paste0("avl_land_t_iso.cs3"))
+             round = roundArea, file = paste0("avl_land_t_iso.cs3"))
 
   # nine land classes
   calcOutput("LanduseInitialisation", nclasses = "nine",
              aggregate = FALSE, cellular = TRUE, cells = cells,
              input_magpie = TRUE, selectyears = magYearsPastLong,
-             round = 6, file = "avl_land_full_t_0.5.mz")
+             round = roundArea, file = "avl_land_full_t_0.5.mz")
   calcOutput("LanduseInitialisation", nclasses = "nine",
              aggregate = "cluster", cellular = TRUE, cells = cells,
              input_magpie = TRUE, selectyears = magYearsPastLong,
-             round = 6, file = paste0("avl_land_full_t_", ctype, ".mz"))
+             round = roundArea, file = paste0("avl_land_full_t_", ctype, ".mz"))
   calcOutput("LanduseInitialisation", nclasses = "nine",
              aggregate = FALSE, cellular = FALSE, cells = cells,
              input_magpie = TRUE, selectyears = magYearsPastLong,
-             round = 6, file = paste0("avl_land_full_t_iso.cs3"))
+             round = roundArea, file = paste0("avl_land_full_t_iso.cs3"))
 
   calcOutput("AvlLandSi", cells = cells, aggregate = FALSE,
-             round = 6, file = "avl_land_si_0.5.mz")
+             round = roundArea, file = "avl_land_si_0.5.mz")
   calcOutput("AvlLandSi", cells = cells, aggregate = "cluster",
-             round = 6, file = paste0("avl_land_si_", ctype, ".mz"))
+             round = roundArea, file = paste0("avl_land_si_", ctype, ".mz"))
 
   # 22 land conservation
   calcOutput("ProtectedAreaBaseline", nclasses = "seven",
              cells = cells, magpie_input = TRUE,
-             aggregate = FALSE, round = 6, file = "wdpa_baseline_0.5.mz")
+             aggregate = FALSE, round = roundArea, file = "wdpa_baseline_0.5.mz")
   calcOutput("ProtectedAreaBaseline", nclasses = "seven",
              cells = cells, magpie_input = TRUE,
-             aggregate = "cluster", round = 6, file = paste0("wdpa_baseline_", ctype, ".mz"))
+             aggregate = "cluster", round = roundArea, 
+             file = paste0("wdpa_baseline_", ctype, ".mz"))
 
   if (rev < 4.82) {
     calcOutput("Brooks2005OldConservationPrios", nclasses = "seven", cells = "magpiecell",
-               aggregate = FALSE, round = 6, file = "consv_prio_areas_0.5.mz")
+               aggregate = FALSE, round = roundArea, file = "consv_prio_areas_0.5.mz")
     calcOutput("Brooks2005OldConservationPrios", nclasses = "seven", cells = "magpiecell",
-               aggregate = "cluster", round = 6, file = paste0("consv_prio_areas_", ctype, ".mz"))
+               aggregate = "cluster", round = roundArea, file = paste0("consv_prio_areas_", ctype, ".mz"))
   } else {
     calcOutput("ConservationPriorities", nclasses = "seven", cells = cells,
-               aggregate = FALSE, round = 6, file = "consv_prio_areas_0.5.mz")
+               aggregate = FALSE, round = roundArea, file = "consv_prio_areas_0.5.mz")
     calcOutput("ConservationPriorities", nclasses = "seven", cells = cells,
-               aggregate = "cluster", round = 6, file = paste0("consv_prio_areas_", ctype, ".mz"))
+               aggregate = "cluster", round = roundArea, file = paste0("consv_prio_areas_", ctype, ".mz"))
   }
 
   calcOutput("ProtectArea", bhifl = ifelse(rev > 4.66, TRUE, FALSE),
-             cells = cells, aggregate = "cluster", round = 6,
+             cells = cells, aggregate = "cluster", round = roundArea,
              file = paste0("protect_area_", ctype, ".mz"))
 
   # 30 crop
   calcOutput("Croparea", sectoral = "kcr", physical = TRUE,
-             cellular = TRUE, cells = cells, irrigation = FALSE, round = 6,
+             cellular = TRUE, cells = cells, irrigation = FALSE, round = roundArea,
              aggregate = "cluster", file = paste0("f30_croparea_initialisation_", ctype, ".mz"))
   calcOutput("Croparea", sectoral = "kcr", physical = TRUE,
-             cellular = TRUE, cells = cells, irrigation = TRUE, round = 6,
+             cellular = TRUE, cells = cells, irrigation = TRUE, round = roundArea,
              aggregate = "cluster", file = paste0("f30_croparea_w_initialisation_", ctype, ".mz"))
 
   calcOutput("AvlCropland", marginal_land = "magpie", cell_upper_bound = 0.9,
              aggregate = FALSE, cells = cells,
-             round = 6, file = "avl_cropland_0.5.mz")
+             round = roundArea, file = "avl_cropland_0.5.mz")
   calcOutput("AvlCropland", marginal_land = "magpie", cell_upper_bound = 0.9,
              aggregate = "cluster", cells = cells,
-             round = 6, file = paste0("avl_cropland_", ctype, ".mz"))
+             round = roundArea, file = paste0("avl_cropland_", ctype, ".mz"))
   calcOutput("AvlCropland", marginal_land = "magpie", cell_upper_bound = 0.9,
-             aggregate = FALSE, cells = cells,
-             country_level = TRUE, round = 6, file = paste0("avl_cropland_iso.cs3"))
+             aggregate = FALSE, cells = cells, country_level = TRUE,
+             round = roundArea, file = paste0("avl_cropland_iso.cs3"))
 
   # 31 past
   # Note: all pasture functions still need adjustment to 67k cells
@@ -304,17 +306,17 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
              file = paste0("cell_country_fraction_", ctype, ".mz"))
 
   # 32 forestry
-  calcOutput("AfforestationMask", subtype = "noboreal", cells = cells, aggregate = "cluster", round = 6,
+  calcOutput("AfforestationMask", subtype = "noboreal", cells = cells, aggregate = "cluster", round = roundArea,
              file = paste0("aff_noboreal_", ctype, ".mz"))
-  calcOutput("AfforestationMask", subtype = "onlytropical", cells = cells, aggregate = "cluster", round = 6,
+  calcOutput("AfforestationMask", subtype = "onlytropical", cells = cells, aggregate = "cluster", round = roundArea,
              file = paste0("aff_onlytropical_", ctype, ".mz"))
-  calcOutput("AfforestationMask", subtype = "unrestricted", cells = cells, aggregate = "cluster", round = 6,
+  calcOutput("AfforestationMask", subtype = "unrestricted", cells = cells, aggregate = "cluster", round = roundArea,
              file = paste0("aff_unrestricted_", ctype, ".mz"))
 
   calcOutput("NpiNdcAdAolcPol", aggregate = "cluster", cells = cells,
-             round = 6, file = paste0("npi_ndc_ad_aolc_pol_", ctype, ".mz"))
+             round = roundArea, file = paste0("npi_ndc_ad_aolc_pol_", ctype, ".mz"))
   calcOutput("NpiNdcAffPol",    aggregate = "cluster", cells = cells,
-             round = 6, file = paste0("npi_ndc_aff_pol_", ctype, ".mz"))
+             round = roundArea, file = paste0("npi_ndc_aff_pol_", ctype, ".mz"))
 
   calcOutput("BphEffect", aggregate = "cluster", cells = cells,
              file = paste0("f32_bph_effect_noTCRE_", ctype, ".mz"))
@@ -328,21 +330,21 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
 
     calcOutput("UrbanLandFuture", subtype = "Gao",
                aggregate = FALSE, cells = cells,
-               round = 6, years = shortYears,
+               round = roundArea, years = shortYears,
                file = "f34_urbanland_0.5.mz")
     calcOutput("UrbanLandFuture", subtype = "Gao",
                aggregate = "cluster", cells = cells,
-               round = 6, years = shortYears,
+               round = roundArea, years = shortYears,
                file = paste0("f34_urbanland_", ctype, ".mz"))
   } else {
 
     calcOutput("UrbanLandFuture", subtype = "LUH2v2",
                aggregate = FALSE, cells = cells,
-               round = 6, years = shortYears,
+               round = roundArea, years = shortYears,
                file = "f34_urbanland_0.5.mz")
     calcOutput("UrbanLandFuture", subtype = "LUH2v2",
                aggregate = "cluster", cells = cells,
-               round = 6, years = shortYears,
+               round = roundArea, years = shortYears,
                file = paste0("f34_urbanland_", ctype, ".mz"))
   }
 
@@ -367,7 +369,7 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
   # 41 area equipped for irrigation
   calcOutput("AreaEquippedForIrrigation", cells = cells,
              aggregate = "cluster", cellular = TRUE,
-             selectyears = magYearsPastLong, round = 6,
+             selectyears = magYearsPastLong, round = roundArea,
              file = paste0("avl_irrig_", ctype, ".mz"))
 
   # 42 water demand
@@ -413,11 +415,11 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
   }
 
   # 44 biodiversity
-  calcOutput("BiomeType", aggregate = "cluster", cells = cells, round = 6,
+  calcOutput("BiomeType", aggregate = "cluster", cells = cells, round = roundArea,
              file = paste0("biorealm_biome_", ctype, ".mz"))
-  calcOutput("Luh2SideLayers", aggregate = "cluster", round = 6, file = paste0("luh2_side_layers_", ctype, ".mz"))
-  calcOutput("Luh2SideLayers", aggregate = FALSE, round = 6, file = "luh2_side_layers_0.5.mz")
-  calcOutput("RRLayer", aggregate = "cluster", round = 6, file = paste0("rr_layer_", ctype, ".mz"))
+  calcOutput("Luh2SideLayers", aggregate = "cluster", round = roundArea, file = paste0("luh2_side_layers_", ctype, ".mz"))
+  calcOutput("Luh2SideLayers", aggregate = FALSE, round = roundArea, file = "luh2_side_layers_0.5.mz")
+  calcOutput("RRLayer", aggregate = "cluster", round = roundArea, file = paste0("rr_layer_", ctype, ".mz"))
 
   # 50 nitrogen
   calcOutput("AtmosphericDepositionRates", cellular = TRUE, aggregate = FALSE, round = 6, cells = cells,
@@ -442,16 +444,17 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
 
   # 58 peatland
   calcOutput("Peatland", subtype = "degraded", cells = cells, aggregate = FALSE,
-             round = 6, file = "f58_peatland_degrad_0.5.mz")
+             round = roundArea, file = "f58_peatland_degrad_0.5.mz")
   calcOutput("Peatland", subtype = "intact",   cells = cells, aggregate = FALSE,
-             round = 6, file = "f58_peatland_intact_0.5.mz")
-  calcOutput("Peatland", subtype = "degraded", cells = cells, aggregate = "cluster", round = 6,
+             round = roundArea, file = "f58_peatland_intact_0.5.mz")
+  calcOutput("Peatland", subtype = "degraded", cells = cells, aggregate = "cluster", round = roundArea,
              file = paste0("f58_peatland_degrad_", ctype, ".mz"))
-  calcOutput("Peatland", subtype = "intact",   cells = cells, aggregate = "cluster", round = 6,
+  calcOutput("Peatland", subtype = "intact",   cells = cells, aggregate = "cluster", round = roundArea,
              file = paste0("f58_peatland_intact_", ctype, ".mz"))
 
-  calcOutput("Peatland2", aggregate = FALSE, cells = cells, round = 6, file = "f58_peatland_area_0.5.mz")
-  calcOutput("Peatland2", aggregate = "cluster", cells = "magpiecell", round = 6,
+  calcOutput("Peatland2", aggregate = FALSE, cells = cells, round = roundArea, 
+             file = "f58_peatland_area_0.5.mz")
+  calcOutput("Peatland2", aggregate = "cluster", cells = "magpiecell", round = roundArea,
              file = paste0("f58_peatland_area_", ctype, ".mz"))
 
   # 59 som
