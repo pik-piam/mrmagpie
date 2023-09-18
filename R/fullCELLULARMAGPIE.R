@@ -121,7 +121,7 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
 
   # check whether there are clusters that are in 67420, but not in 59199
   if (length(sort(unique(map$cluster))) != length(sort(unique(map2$cluster)))) {
-    warning(paste0("The following clusters are missing in the case of 59199 cells ",
+    vcat(2, paste0("The following clusters are missing in the case of 59199 cells ",
                    setdiff(sort(unique(map$cluster)), sort(unique(map2$cluster)))))
   }
 
@@ -232,7 +232,7 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
              aggregate = FALSE, round = roundArea, file = "wdpa_baseline_0.5.mz")
   calcOutput("ProtectedAreaBaseline", nclasses = "seven",
              cells = cells, magpie_input = TRUE,
-             aggregate = "cluster", round = roundArea, 
+             aggregate = "cluster", round = roundArea,
              file = paste0("wdpa_baseline_", ctype, ".mz"))
 
   if (rev < 4.82) {
@@ -452,7 +452,7 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
   calcOutput("Peatland", subtype = "intact",   cells = cells, aggregate = "cluster", round = roundArea,
              file = paste0("f58_peatland_intact_", ctype, ".mz"))
 
-  calcOutput("Peatland2", aggregate = FALSE, cells = cells, round = roundArea, 
+  calcOutput("Peatland2", aggregate = FALSE, cells = cells, round = roundArea,
              file = "f58_peatland_area_0.5.mz")
   calcOutput("Peatland2", aggregate = "cluster", cells = "magpiecell", round = roundArea,
              file = paste0("f58_peatland_area_", ctype, ".mz"))
