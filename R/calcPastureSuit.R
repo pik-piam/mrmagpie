@@ -106,7 +106,7 @@ calcPastureSuit <- function(climatetype = "MRI-ESM2-0:ssp126",
 
   # Reduce number of grid cells to 59199
   if (cells == "magpiecell") {
-    x <- toolCoord2Isocell(x, cells = cells)
+    pastureSuitArea <- toolCoord2Isocell(pastureSuitArea, cells = cells)
   }
 
   return(list(x            = pastureSuitArea,
