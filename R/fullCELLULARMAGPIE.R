@@ -417,9 +417,12 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
   # 44 biodiversity
   calcOutput("BiomeType", aggregate = "cluster", cells = cells, round = roundArea,
              file = paste0("biorealm_biome_", ctype, ".mz"))
-  calcOutput("Luh2SideLayers", aggregate = "cluster", round = roundArea, file = paste0("luh2_side_layers_", ctype, ".mz"))
-  calcOutput("Luh2SideLayers", aggregate = FALSE, round = roundArea, file = "luh2_side_layers_0.5.mz")
-  calcOutput("RRLayer", aggregate = "cluster", round = roundArea, file = paste0("rr_layer_", ctype, ".mz"))
+  calcOutput("Luh2SideLayers", aggregate = "cluster", cells = cells,
+             round = roundArea, file = paste0("luh2_side_layers_", ctype, ".mz"))
+  calcOutput("Luh2SideLayers", aggregate = FALSE, cells = cells,
+             round = roundArea, file = "luh2_side_layers_0.5.mz")
+  calcOutput("RRLayer", aggregate = "cluster", cells = cells,
+             round = roundArea, file = paste0("rr_layer_", ctype, ".mz"))
 
   # 50 nitrogen
   calcOutput("AtmosphericDepositionRates", cellular = TRUE, aggregate = FALSE, round = 6, cells = cells,
