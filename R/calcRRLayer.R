@@ -19,17 +19,8 @@ calcRRLayer <- function(cells = "lpjcell") {
   x <- readSource("BendingTheCurve", subtype = "rr_layer", convert = "onlycorrect")
 
   if (cells == "magpiecell") {
-
-      out <- toolCoord2Isocell(x)
-
-  } else if (cells == "lpjcell") {
-
-      out <- x
-
-  } else {
-      stop("Please specify cells argument")
+      x <- toolCoord2Isocell(x)
   }
-
   weight <- calcOutput("LandArea", cells = cells, aggregate = FALSE)
 
 return(list(
