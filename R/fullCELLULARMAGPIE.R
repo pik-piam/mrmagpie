@@ -137,8 +137,60 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
   ggsave(sub(".rds", ".pdf", sub("clustermap", "spamplot", clustermapname)),
          p, height = 6, width = 10, scale = 1)
 
-  # 14 yields
 
+  # distinguish between region and superregion if mapping provides this distinction
+  mapReg      <- toolGetMapping(getConfig("regionmapping"), type = "regional", where = "mappingfolder")
+  superregion <- ifelse("superregion" %in% colnames(mapReg), "superregion", "region")
+
+  # 09 drivers
+  calcOutput("GridPop", source = "Gao", subtype = "all", harmonize_until = 2015, urban = FALSE,
+             cellular = TRUE, cells = cells, aggregate = "cluster",
+             years = magYears, round = 6, file = "f09_pop_grid.cs3")
+
+  calcOutput("GridPop", source = "Gao", subtype = "all", harmonize_until = 2015, urban = TRUE,
+             cellular = TRUE, cells = cells, aggregate = "cluster",
+             years = magYears, round = 6, file = "f09_urbanpop_grid.cs3")
+
+  # 10 land
+  ## seven land classes
+  calcOutput("LanduseInitialisation", nclasses = "seven",
+             aggregate = FALSE, cellular = TRUE, cells = cells,
+             input_magpie = TRUE, selectyears = magYearsPastLong,
+             round = roundArea, file = "avl_land_t_0.5.mz")
+  calcOutput("LanduseInitialisation", nclasses = "seven",
+             aggregate = "cluster", cellular = TRUE, cells = cells,
+             input_magpie = TRUE, selectyears = magYearsPastLong,
+             round = roundArea, file = paste0("avl_land_t_", ctype, ".mz"))
+  calcOutput("LanduseInitialisation", nclasses = "seven",
+             aggregate = FALSE, cellular = FALSE, cells = cells,
+             input_magpie = TRUE, selectyears = magYearsPastLong,
+             round = roundArea, file = paste0("avl_land_t_iso.cs3"))
+
+  ## nine land classes
+  calcOutput("LanduseInitialisation", nclasses = "nine",
+             aggregate = FALSE, cellular = TRUE, cells = cells,
+             input_magpie = TRUE, selectyears = magYearsPastLong,
+             round = roundArea, file = "avl_land_full_t_0.5.mz")
+  calcOutput("LanduseInitialisation", nclasses = "nine",
+             aggregate = "cluster", cellular = TRUE, cells = cells,
+             input_magpie = TRUE, selectyears = magYearsPastLong,
+             round = roundArea, file = paste0("avl_land_full_t_", ctype, ".mz"))
+  calcOutput("LanduseInitialisation", nclasses = "nine",
+             aggregate = FALSE, cellular = FALSE, cells = cells,
+             input_magpie = TRUE, selectyears = magYearsPastLong,
+             round = roundArea, file = paste0("avl_land_full_t_iso.cs3"))
+
+  calcOutput("AvlLandSi", cells = cells, aggregate = FALSE,
+             round = roundArea, file = "avl_land_si_0.5.mz")
+  calcOutput("AvlLandSi", cells = cells, aggregate = "cluster",
+             round = roundArea, file = paste0("avl_land_si_", ctype, ".mz"))
+
+  # 13 TC
+  calcOutput("PastrTauHist", round = 2, past_mngmt = "mdef",
+             file = "f13_pastr_tau_hist.csv",
+             cells = cells, aggregate = superregion)
+
+  # 14 yields
   if (dev == "+calibYield") {
 
     calcOutput("YieldsCalibrated", aggregate = "cluster", cells = cells,
@@ -173,60 +225,9 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
 
   }
 
-  calcOutput("DegradationYieldReduction", aggregate = "cluster", round = 6,
+  calcOutput("DegradationYieldReduction", aggregate = "cluster", round = 6, cells = cells,
              file = paste0("f14_degradation_yld_reduc_", ctype, ".mz"))
 
-  # distinguish between region and superregion if mapping provides this distinction
-  mapReg      <- toolGetMapping(getConfig("regionmapping"), type = "regional", where = "mappingfolder")
-  superregion <- ifelse("superregion" %in% colnames(mapReg), "superregion", "region")
-
-  # 13 TC
-  calcOutput("PastrTauHist", round = 2, past_mngmt = "mdef",
-             file = "f13_pastr_tau_hist.csv",
-             cells = cells, aggregate = superregion)
-
-  # 09 drivers
-  calcOutput("GridPop", source = "Gao", subtype = "all", harmonize_until = 2015, urban = FALSE,
-             cellular = TRUE, cells = cells, aggregate = "cluster",
-             years = magYears, round = 6, file = "f09_pop_grid.cs3")
-
-  calcOutput("GridPop", source = "Gao", subtype = "all", harmonize_until = 2015, urban = TRUE,
-             cellular = TRUE, cells = cells, aggregate = "cluster",
-             years = magYears, round = 6, file = "f09_urbanpop_grid.cs3")
-
-  # 10 land
-  # seven land classes
-  calcOutput("LanduseInitialisation", nclasses = "seven",
-             aggregate = FALSE, cellular = TRUE, cells = cells,
-             input_magpie = TRUE, selectyears = magYearsPastLong,
-             round = roundArea, file = "avl_land_t_0.5.mz")
-  calcOutput("LanduseInitialisation", nclasses = "seven",
-             aggregate = "cluster", cellular = TRUE, cells = cells,
-             input_magpie = TRUE, selectyears = magYearsPastLong,
-             round = roundArea, file = paste0("avl_land_t_", ctype, ".mz"))
-  calcOutput("LanduseInitialisation", nclasses = "seven",
-             aggregate = FALSE, cellular = FALSE, cells = cells,
-             input_magpie = TRUE, selectyears = magYearsPastLong,
-             round = roundArea, file = paste0("avl_land_t_iso.cs3"))
-
-  # nine land classes
-  calcOutput("LanduseInitialisation", nclasses = "nine",
-             aggregate = FALSE, cellular = TRUE, cells = cells,
-             input_magpie = TRUE, selectyears = magYearsPastLong,
-             round = roundArea, file = "avl_land_full_t_0.5.mz")
-  calcOutput("LanduseInitialisation", nclasses = "nine",
-             aggregate = "cluster", cellular = TRUE, cells = cells,
-             input_magpie = TRUE, selectyears = magYearsPastLong,
-             round = roundArea, file = paste0("avl_land_full_t_", ctype, ".mz"))
-  calcOutput("LanduseInitialisation", nclasses = "nine",
-             aggregate = FALSE, cellular = FALSE, cells = cells,
-             input_magpie = TRUE, selectyears = magYearsPastLong,
-             round = roundArea, file = paste0("avl_land_full_t_iso.cs3"))
-
-  calcOutput("AvlLandSi", cells = cells, aggregate = FALSE,
-             round = roundArea, file = "avl_land_si_0.5.mz")
-  calcOutput("AvlLandSi", cells = cells, aggregate = "cluster",
-             round = roundArea, file = paste0("avl_land_si_", ctype, ".mz"))
 
   # 22 land conservation
   calcOutput("ProtectedAreaBaseline", nclasses = "seven",
@@ -253,6 +254,7 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
              cells = cells, aggregate = "cluster", round = roundArea,
              file = paste0("protect_area_", ctype, ".mz"))
 
+
   # 30 crop
   calcOutput("Croparea", sectoral = "kcr", physical = TRUE,
              cellular = TRUE, cells = cells, irrigation = FALSE, round = roundArea,
@@ -272,7 +274,6 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
              round = roundArea, file = paste0("avl_cropland_iso.cs3"))
 
   # 31 past
-  # Note: all pasture functions still need adjustment to 67k cells
   calcOutput("GrasslandBiomass",  round = 3, file = "f31_grass_bio_hist.cs3",
              cells = cells, aggregate = "region")
   calcOutput("LUH2v2", aggregate = "cluster", landuse_types = "LUH2v2",
