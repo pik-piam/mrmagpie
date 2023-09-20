@@ -357,10 +357,10 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
              file = paste0("forestageclasses_", ctype, ".mz"))
 
   # 37 labour prod
-  calcOutput("LabourProdImpactEmu", aggregate = "cluster", round = 6, subtype = "impact",
-             file = paste0("f37_labourprodimpact_", ctype, ".mz"))
-  calcOutput("LabourProdImpactEmu", aggregate = "cluster", round = 6, subtype = "relief",
-             file = paste0("f37_labourprodrelief_", ctype, ".mz"))
+  calcOutput("LabourProdImpactEmu", aggregate = "cluster", cells = cells, subtype = "impact",
+             round = 6, file = paste0("f37_labourprodimpact_", ctype, ".mz"))
+  calcOutput("LabourProdImpactEmu", aggregate = "cluster", cells = cells, subtype = "relief",
+             round = 6, file = paste0("f37_labourprodrelief_", ctype, ".mz"))
 
   # 40
   calcOutput("TransportTime", aggregate = "cluster", cells = cells,
@@ -430,7 +430,7 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
   # 50 nitrogen
   calcOutput("AtmosphericDepositionRates", cellular = TRUE, aggregate = FALSE, round = 6, cells = cells,
              file = "f50_AtmosphericDepositionRates_0.5.mz")
-  calcOutput("NitrogenFixationRateNatural", aggregate = FALSE, round = 6,
+  calcOutput("NitrogenFixationRateNatural", aggregate = FALSE, round = 6, cells = cells,
              file = "f50_NitrogenFixationRateNatural_0.5.mz")
 
   calcOutput("AtmosphericDepositionRates", cellular = TRUE, aggregate = "cluster", round = 6, cells = cells,
@@ -460,7 +460,7 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
 
   calcOutput("Peatland2", aggregate = FALSE, cells = cells, round = roundArea,
              file = "f58_peatland_area_0.5.mz")
-  calcOutput("Peatland2", aggregate = "cluster", cells = "magpiecell", round = roundArea,
+  calcOutput("Peatland2", aggregate = "cluster", cells = cells, round = roundArea,
              file = paste0("f58_peatland_area_", ctype, ".mz"))
 
   # 59 som

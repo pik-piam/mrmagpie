@@ -17,7 +17,7 @@ calcDegradationYieldReduction <- function(cells = "lpjcell") {
 
   # create a dummy data set, which is later used to define yield impacts of land degradation
   coordMapping <- mrcommons::toolGetMappingCoord2Country()
-  cellnames    <- paste(coord2country$coords, coord2country$iso, sep = ".")
+  cellnames    <- paste(coordMapping$coords, coordMapping$iso, sep = ".")
   x <- new.magpie(cells_and_regions = cellnames,
                   years = seq(1995, 2150, 5),
                   names = c("soil_loss", "poll_loss"),
