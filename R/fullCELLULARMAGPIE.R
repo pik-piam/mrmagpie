@@ -173,6 +173,8 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
 
   }
 
+  calcOutput("DegradationYieldReduction", aggregate = "cluster", round = 6,
+             file = paste0("f14_degradation_yld_reduc_", ctype, ".mz"))
 
   # distinguish between region and superregion if mapping provides this distinction
   mapReg      <- toolGetMapping(getConfig("regionmapping"), type = "regional", where = "mappingfolder")
