@@ -105,7 +105,6 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
 
   # Assigning clusters to 59199 cells (necessary until transition to 67420 is complete)
   map67420to59199 <- toolGetMapping("map67420to59199.rds", where = "mrmagpie")
-  #map67420to59199 <- readRDS("inst/extdata/map67420to59199.rds")
   map67420to59199 <- merge(map, map67420to59199)
   map67420to59199 <- map67420to59199[map67420to59199$is59199, ]
   map67420to59199$cellnumber <- as.numeric(gsub(".*\\.", "", map67420to59199$celliso))
@@ -113,10 +112,10 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
 
   cluster59199num <- as.integer(substring(unique(map67420to59199$cluster), 5, 7))
   cluster59199    <- unique(map67420to59199$cluster)[order(cluster59199num)]
-  cluster59199new <- paste0(substring(cluster59199, 1, 4), 1:length(cluster59199))
+  cluster59199new <- paste0(substring(cluster59199, 1, 4), seq_along(cluster59199))
   mapCluster2ClusterRed <- data.frame(cluster59199, cluster59199new)
   colnames(mapCluster2ClusterRed) <- c("cluster", "clusterSort")
-  map67420to59199 <- merge(map67420to59199, mapCluster2ClusterRed, by= "cluster")
+  map67420to59199 <- merge(map67420to59199, mapCluster2ClusterRed, by = "cluster")
   map2 <- data.frame(cell = map67420to59199$celliso,
                      cluster = map67420to59199$clusterSort,
                      region = map67420to59199$region,

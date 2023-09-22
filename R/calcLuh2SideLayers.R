@@ -24,11 +24,10 @@ calcLuh2SideLayers <- function(cells = "lpjcell") {
 
   weight <- calcOutput("LandArea", cells = cells, aggregate = FALSE)
 
-  return(list(
-    x = x,
-    weight = weight,
-    unit = "boolean",
-    description = paste0("Data from LUH2 provided by David Leclere from IIASA, ",
-                         "Bending the curve on biodiversity loss"),
-    isocountries = FALSE))
+  return(list(x = x,
+              weight = weight,
+              unit = "boolean",
+              description = paste0("Data from LUH2 provided by David Leclere from IIASA, ",
+                                   "Bending the curve on biodiversity loss"),
+              isocountries = FALSE))
 }

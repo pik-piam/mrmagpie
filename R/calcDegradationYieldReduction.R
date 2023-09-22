@@ -14,7 +14,6 @@
 #'
 
 calcDegradationYieldReduction <- function(cells = "lpjcell") {
-
   # create a dummy data set, which is later used to define yield impacts of land degradation
   coordMapping <- mrcommons::toolGetMappingCoord2Country()
   cellnames    <- paste(coordMapping$coords, coordMapping$iso, sep = ".")
@@ -28,10 +27,9 @@ calcDegradationYieldReduction <- function(cells = "lpjcell") {
     x <- mrcommons::toolCoord2Isocell(x, cells = cells)
   }
 
-  return(list(
-    x = x,
-    weight = NULL,
-    unit = "dummy (none)",
-    description = "Dummy file for yield reduction coefficients to represent land degradation",
-    isocountries = FALSE))
+  return(list(x = x,
+              weight = NULL,
+              unit = "dummy (none)",
+              description = "Dummy file for yield reduction coefficients to represent land degradation",
+              isocountries = FALSE))
 }

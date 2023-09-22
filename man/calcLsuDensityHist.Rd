@@ -4,10 +4,12 @@
 \alias{calcLsuDensityHist}
 \title{calcLsuDensityHist}
 \usage{
-calcLsuDensityHist(disagg_type = "grassland")
+calcLsuDensityHist(disagg_type = "grassland", cells = "lpjcell")
 }
 \arguments{
 \item{disagg_type}{select the disaggregaton weights for biomass production (can be either grassland or livestock)}
+
+\item{cells}{"magpiecell" for 59199 cells or "lpjcell" for 67420 cells}
 }
 \value{
 List of magpie object with results on cluster level

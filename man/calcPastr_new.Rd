@@ -7,8 +7,8 @@
 calcPastr_new(
   past_mngmt = "me2",
   lpjml = "lpjml5p2_pasture",
-  climatetype = "IPSL_CM6A_LR",
-  scenario = "ssp126_co2_limN",
+  climatetype = "MRI-ESM2-0:ssp370",
+  scenario = "/co2/Nreturn0p5/limN",
   cells = "lpjcell"
 )
 }

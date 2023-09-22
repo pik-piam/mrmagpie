@@ -6,10 +6,11 @@
 \usage{
 calcRangelandsMaxNew(
   lsuLevels = c(seq(0, 2.2, 0.2), 2.5),
-  lpjml = "lpjml5.2_pasture",
-  climatetype = "IPSL_CM6A_LR",
-  scenario = "ssp126_co2_limN",
-  report = "harvest"
+  lpjml = "lpjml5p2_pasture",
+  climatetype = "MRI-ESM2-0:ssp370",
+  scenario = "/co2/Nreturn0p5/limN",
+  report = "harvest",
+  cells = "lpjcell"
 )
 }
 \arguments{
@@ -22,6 +23,8 @@ calcRangelandsMaxNew(
 \item{scenario}{specify ssp scenario}
 
 \item{report}{Either 'harvest' or 'lsu/ha' controlling what values are output by the function.}
+
+\item{cells}{"magpiecell" for 59199 cells or "lpjcell" for 67420 cells}
 }
 \value{
 magpie object in cellular resolution

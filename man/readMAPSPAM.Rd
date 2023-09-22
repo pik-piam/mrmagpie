@@ -19,11 +19,10 @@ Reads the MAP-SPAM crop data per year (mapping each year different)
 \dontrun{
 a <- readSource("MAPSPAM")
 }
-
 }
 \seealso{
 [readSource()]
 }
 \author{
-Edna J. Molina Bacca
+Edna J. Molina Bacca, Felicitas Beier
 }
