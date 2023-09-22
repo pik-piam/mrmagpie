@@ -140,6 +140,7 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
   # c) transform every function where 67k cells possible & preprocessing & magpie run
 
   # plot map with regions and clusters
+  clustermapname <- switch(cells, "lpjcell" = clustermapname, "magpiecell" = clustermapname2)
   clustermap <- readRDS(clustermapname) # nolint
   p <- plotregionscluster(clustermap, cells = "lpjcell") # nolint
   ggsave(sub(".rds", ".pdf", sub("clustermap", "spamplot", clustermapname)),
