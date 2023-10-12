@@ -57,7 +57,7 @@ calcPastrTauHist <- function(past_mngmt = "2me") { # nolint
   t <- collapseNames(t)
 
   # replacing unrealistic high tau values by regional averages
-  regMap <- toolGetMapping("regionmappingH12.csv", type = "cell")
+  regMap <- toolGetMapping("regionmappingH12.csv", type = "cell", where = "madrat")
   tReg <- toolAggregate(t, rel = regMap, weight = area, from = "CountryCode", to = "RegionCode")
   regions <- regMap$RegionCode
   names(regions) <- regMap[, "CountryCode"]

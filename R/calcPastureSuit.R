@@ -90,7 +90,7 @@ calcPastureSuit <- function(climatetype = "MRI-ESM2-0:ssp126", lpjml =  "LPJmL4_
   pastLy <- pastLy[length(pastLy)] # past last year
   future <- setdiff(getYears(pastureSuitArea), pastAll)
 
-  map <- toolGetMapping("CountryToCellMapping.csv", type = "cell")
+  map <- toolGetMapping("CountryToCellMapping.csv", type = "cell", where = "mappingfolder")
   pastureSuitAreaReg <- toolAggregate(pastureSuitArea, rel = map, from = "celliso", to = "iso")
   histPastrReg <- toolAggregate(histPastr, rel = map, from = "celliso", to = "iso")
   calibReg <- histPastrReg[, pastLy, ] / pastureSuitAreaReg[, pastLy, ]
