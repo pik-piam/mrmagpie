@@ -19,7 +19,7 @@ calcPastrTauHist <- function(past_mngmt = "mdef", cells = "lpjcell") { # nolint
   past <- findset("past")
   # Production
   prod <- calcOutput("GrasslandBiomass", cells = cells,
-                      aggregate = FALSE)[, past, "pastr"]
+                     aggregate = FALSE)[, past, "pastr"]
   prod <- toolCountryFill(prod, fill = 0)
 
   # pasture areas
@@ -41,7 +41,8 @@ calcPastrTauHist <- function(past_mngmt = "mdef", cells = "lpjcell") { # nolint
 
   # reference yields
   yref <- calcOutput("GrasslandsYields", cells = cells,
-    lpjml = "lpjml5p2_pasture", climatetype = "MRI-ESM2-0:ssp245", subtype = "/co2/Nreturn0p5",
+    lpjml = "lpjml5p2_pasture", climatetype = "MRI-ESM2-0:ssp245",
+    subtype = "/co2/Nreturn0p5", # nolint: absolute_path_linter.
     lsu_levels = c(seq(0, 2.2, 0.2), 2.5), past_mngmt = pastMngmt, # nolint
     aggregate = FALSE
   )[, past, "pastr.rainfed"]
@@ -49,23 +50,23 @@ calcPastrTauHist <- function(past_mngmt = "mdef", cells = "lpjcell") { # nolint
   yref <- collapseNames(yref)
 
   yrefWeights <- calcOutput("LUH2v2", landuse_types = "LUH2v2",
-                            cellular = TRUE, cells = cells, 
+                            cellular = TRUE, cells = cells,
                             aggregate = FALSE)[, past, "pastr"]
 
   if (cells == "magpiecell") {
-    # mapping 
+    # mapping
     cell2reg <- toolGetMapping("CountryToCellMapping.csv",
-                                type = "cell", where = "mappingfolder")
-    yref <- toolAggregate(yref, rel = cell2reg, weight = yrefWeights, 
+                               type = "cell", where = "mappingfolder")
+    yref <- toolAggregate(yref, rel = cell2reg, weight = yrefWeights,
                           from = "celliso", to = "iso")
   } else if (cells == "lpjcell") {
     # coordinate-to-cell mapping
     coord2iso <- toolGetMappingCoord2Country()
-    # collapse iso dimension for mapping 
+    # collapse iso dimension for mapping
     yref        <- collapseDim(yref, dim = 1.3)
     yrefWeights <- collapseDim(yrefWeights, dim = 1.3)
     # country-level grassland yields
-    yref <- toolAggregate(yref, rel = coord2iso, weight = yrefWeights, 
+    yref <- toolAggregate(yref, rel = coord2iso, weight = yrefWeights,
                           from = "coords", to = "iso")
   } else {
     stop("Please select cells magpiecell or lpjcell")
@@ -78,9 +79,8 @@ calcPastrTauHist <- function(past_mngmt = "mdef", cells = "lpjcell") { # nolint
   t <- collapseNames(t)
 
   # replacing unrealistic high tau values by regional averages
-  regMap <- toolGetMapping("regionmappingH12.csv", type = "cell")
-  tReg   <- toolAggregate(t, rel = regMap, weight = area,
-                          from = "CountryCode", to = "RegionCode")
+  regMap <- toolGetMapping("regionmappingH12.csv", type = "cell", where = "madrat")
+  tReg <- toolAggregate(t, rel = regMap, weight = area, from = "CountryCode", to = "RegionCode")
   regions <- regMap$RegionCode
   names(regions) <- regMap[, "CountryCode"]
 
@@ -101,6 +101,6 @@ calcPastrTauHist <- function(past_mngmt = "mdef", cells = "lpjcell") { # nolint
     min = 0,
     max = 10,
     description = paste0("Historical trends in managed pastures ",
-    "land use intensity (Tau) based on FAO yield trends")
+                         "land use intensity (Tau) based on FAO yield trends")
   ))
 }
