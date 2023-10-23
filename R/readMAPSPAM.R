@@ -85,14 +85,14 @@ readMAPSPAM <- function(subtype = "harvested") {
         # load raster
         dataAscT <- rast(rasterAscT)
         # aggregate to 0.5 resolution
-        dataAscT <- aggregate(dataAscT, fact = factor, fun = sum)
+        dataAscT <- terra::aggregate(dataAscT, fact = factor, fun = sum, na.rm = TRUE)
 
         # extract values from raster
         valuesAscT <- values(dataAscT, mat = FALSE, dataframe = TRUE)
         valuesAscT[is.na(valuesAscT)] <- 0
         # extract coordinate information from rster
         coorAscT <- round(crds(dataAscT, na.rm = FALSE), 2)
-        
+
         # combine coordinate info and values in data frame
         rasDataAsc <- as.data.frame(cbind(coorAscT, valuesAscT))
         colnames(rasDataAsc) <- c("lon", "lat", "Value")
@@ -102,7 +102,7 @@ readMAPSPAM <- function(subtype = "harvested") {
         # transform to magpie object
         historicalT <- historicalT[, c("coords", "Value")]
         historicalT <- as.magpie(historicalT, spatial = 1)
-        
+
         # add dimension names
         getItems(historicalT, dim = 2) <- year
         getItems(historicalT, dim = 3) <- paste0(cropsSpam[i])
@@ -111,7 +111,7 @@ readMAPSPAM <- function(subtype = "harvested") {
         getItems(historicalT, dim = 1, raw = TRUE) <- gsub("_", ".", getItems(historicalT, dim = 1))
         historicalT <- historicalT[mapping$coords, , ]
         getItems(historicalT, dim = 1, raw = TRUE) <- paste(mapping$coords, mapping$iso, sep = ".")
-        
+
         # rename sets
         getSets(historicalT) <- c("x", "y", "iso", "year", "Value")
 

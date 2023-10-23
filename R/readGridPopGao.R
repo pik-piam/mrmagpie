@@ -37,7 +37,7 @@ readGridPopGao <- function(subtype = "future") {
 
           # aggregate and reproject
           r <- suppressWarnings(raster(res = 0.5))
-          t <- aggregate(t, fact = 4, fun = sum)
+          t <- aggregate(t, fact = 4, fun = sum, na.rm = TRUE)
           t <- suppressWarnings(projectRaster(t, r, over = TRUE))
 
           # transform to magpie object
