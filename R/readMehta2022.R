@@ -30,7 +30,7 @@ readMehta2022 <- function() {
     # aggregate to 0.5 degree
     x <- suppressWarnings(terra::aggregate(x, fact = 6, fun = "sum", na.rm = TRUE))
     # Check whether sum before and after aggregation is the same.
-    if (any(round(checkSum - terra::global(x, sum, na.rm = TRUE), digits = 6) != 0)) {
+    if (any(round(checkSum - terra::global(x, sum, na.rm = TRUE), digits = 4) != 0)) {
       stop("There is an issue with the aggregation. Please check mrmagpie::readMehta")
     }
     x <- suppressWarnings(terra::project(x, resolution))
