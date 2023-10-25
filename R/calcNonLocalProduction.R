@@ -8,7 +8,6 @@
 #' \dontrun{
 #' calcOutput("NonLocalTransport")
 #' }
-
 calcNonLocalProduction <- function() {
 
   productionPri <- calcOutput("Production", aggregate = FALSE,
@@ -16,23 +15,19 @@ calcNonLocalProduction <- function() {
   productionLi <- calcOutput("Production", aggregate = FALSE,
                              cellular = TRUE, products = "kli")
   productionPast <- calcOutput("Production", aggregate = FALSE,
-                             cellular = TRUE, products = "pasture")
-  productionPast <- add_dimension(productionPast,   dim = 3.1, add = "Item", nm = "pasture" )
-  production <- collapseNames(mbind(productionPri, productionLi)[,,"dm"])
-  production <- mbind(production, collapseNames(productionPast[,,"dm"], collapsedim  = 2 ))
+                               cellular = TRUE, products = "pasture")
+  productionPast <- add_dimension(productionPast,   dim = 3.1, add = "Item", nm = "pasture")
+  production <- collapseNames(mbind(productionPri, productionLi)[, , "dm"])
+  production <- mbind(production, collapseNames(productionPast[, , "dm"], collapsedim  = 2))
 
-  foodDisaggUrb <- calcOutput("FoodDemandGridded", feed = TRUE, aggregate = FALSE) #note this also includes feed demand!
+  foodDisaggUrb <- calcOutput("FoodDemandGridded", feed = TRUE, aggregate = FALSE)
+  # note this also includes feed demand!
 
-  foodDemPrim <- collapseNames(foodDisaggUrb[,,getItems(production, dim = 3)])
-
-  #Calculate how much food is not consumed rurally and locally (both incur transport costs)
-  ruralCons <- ifelse(production > foodDemPrim[,, "rural"],
-                      collapseNames(foodDemPrim[,, "rural"]),
-                      production)
+  foodDemPrim <- collapseNames(foodDisaggUrb[, , getItems(production, dim = 3)])
 
   transpRurToUrb <-  ifelse(production > dimSums(foodDemPrim, dim = 3.2),
-                            collapseNames(foodDemPrim[,, "urban"]),
-                            collapseNames(production - foodDemPrim[,, "rural"]))
+                            collapseNames(foodDemPrim[, , "urban"]),
+                            collapseNames(production - foodDemPrim[, , "rural"]))
   transpRurToUrb[which(transpRurToUrb < 0)] <- 0
   transpRurToUrb <- add_dimension(transpRurToUrb, dim = 3.2, nm = "RurToUrb")
 
@@ -44,8 +39,8 @@ calcNonLocalProduction <- function() {
 
   out <- mbind(transpRurToUrb, transpExp)
 
-  #all secondary products need to be transported, but we don't know where they are produced.
-  
+  # all secondary products need to be transported, but we don't know where they are produced.
+
 
   return(list(x = out,
               weight = NULL,

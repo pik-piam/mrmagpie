@@ -18,26 +18,26 @@ calcTransportCosts <- function(transport = "all") { # nolint
   # load distance (travel time), production, and gtap transport costs
   distance <- calcOutput("TransportTime", subtype = "cities50", cells = "magpiecell",  aggregate = FALSE)
 
- if (transport == "all") {
+  if (transport == "all") {
 
-  production <- calcOutput("Production", cellular = TRUE,
-                           irrigation = FALSE, aggregate = FALSE)[, 2005, "dm"] * 10^6
-  productionLi <- calcOutput("Production", cellular = TRUE,
-                              irrigation = FALSE, aggregate = FALSE,
-                              products = "kli")[, 2005, "dm"] * 10^6
-  production <- mbind(production, productionLi)
+    production <- calcOutput("Production", cellular = TRUE,
+                             irrigation = FALSE, aggregate = FALSE)[, 2005, "dm"] * 10^6
+    productionLi <- calcOutput("Production", cellular = TRUE,
+                               irrigation = FALSE, aggregate = FALSE,
+                               products = "kli")[, 2005, "dm"] * 10^6
+    production <- mbind(production, productionLi)
 
- } else if (transport == "nonlocal") {
-   production <- calcOutput("NonLocalProduction", aggregate = FALSE)[, 2005, ] * 10^6
- } else {
-   stop("only all or nonlocal production available for subtype")
-   }
+  } else if (transport == "nonlocal") {
+    production <- calcOutput("NonLocalProduction", aggregate = FALSE)[, 2005, ] * 10^6
+  } else {
+    stop("only all or nonlocal production available for subtype")
+  }
 
   transportGtap <- calcOutput("GTAPTotalTransportCosts", aggregate = FALSE)[, 2004, ] * 10^6
   # transform 10^6 USD -> USD
   # this is  in 2004 and 2007 current USD, and we don't have same year for travel time, and pretend GTAP is 2005
   # some processed products available in GTAP are neglected for the moment neglected here, as we don't have cellular
-  #production data for them. These are  "pfb" (fibres) "sgr" ("sugar") "vol" ("oils") "b_t" ("alcohol")  "fst" "wood"
+  # production data for them. These are  "pfb" (fibres) "sgr" ("sugar") "vol" ("oils") "b_t" ("alcohol")  "fst" "wood"
 
   # map gtap cfts to MAgPIE cfts
   cftRel <- list()
@@ -52,16 +52,16 @@ calcTransportCosts <- function(transport = "all") { # nolint
   cftRel[["ctl"]] <- c("livst_rum")
   cftRel[["oap"]] <- c("livst_chick", "livst_egg", "livst_pig")
 
-   #add processed rice, cattle meat, dairy products, and other meats to their raw eq's, and remove 
-   transportGtap[, , "pdr"] <- transportGtap[, , "pdr"] + setNames(transportGtap[, , "pcr"], NULL)
-   transportGtap[, , "ctl"] <- transportGtap[, , "ctl"] + setNames(transportGtap[, , "cmt"], NULL) 
-   transportGtap[, , "rmk"] <- transportGtap[, , "rmk"] + setNames(transportGtap[, , "mil"], NULL)
-   transportGtap[, , "oap"] <- transportGtap[, , "oap"] + setNames(transportGtap[, , "omt"], NULL)
+  # add processed rice, cattle meat, dairy products, and other meats to their raw eq's, and remove
+  transportGtap[, , "pdr"] <- transportGtap[, , "pdr"] + setNames(transportGtap[, , "pcr"], NULL)
+  transportGtap[, , "ctl"] <- transportGtap[, , "ctl"] + setNames(transportGtap[, , "cmt"], NULL)
+  transportGtap[, , "rmk"] <- transportGtap[, , "rmk"] + setNames(transportGtap[, , "mil"], NULL)
+  transportGtap[, , "oap"] <- transportGtap[, , "oap"] + setNames(transportGtap[, , "omt"], NULL)
 
-   rm <- c("pcr", "mil", "cmt", "omt")
-  
-  transportGtap <- transportGtap[, , rm, invert = TRUE] 
-  
+  rm <- c("pcr", "mil", "cmt", "omt")
+
+  transportGtap <- transportGtap[, , rm, invert = TRUE]
+
   # calculate transport power (amount * distance) &
   # create average transport costs per ton per distance dummy
   # calculate transport power (amount * distance)
@@ -80,12 +80,11 @@ calcTransportCosts <- function(transport = "all") { # nolint
 
   # sum up distances across gtap crops and aggregate to iso level, divide costs by distance
   for (i in seq_along(cftRel)) {
+    # should also include rural consumers, and farms
+    tmpPower[, , names(cftRel)[i]] <- dimSums(production[, , cftRel[[i]]], dim = 3) * distance
 
-      #should also include rural consumers, and farms 
-      tmpPower[, , names(cftRel)[i]] <- dimSums(production[, , cftRel[[i]]], dim = 3) * distance
-
-     transportPower[, , names(cftRel)[i]] <- toolAggregate(x = tmpPower[, , names(cftRel)[i]],
-                                                        rel = mapping, from = "celliso", to = "iso")
+    transportPower[, , names(cftRel)[i]] <- toolAggregate(x = tmpPower[, , names(cftRel)[i]],
+                                                          rel = mapping, from = "celliso", to = "iso")
 
     tpFilled <- toolCountryFill(transportPower, fill = 0) # need to fill first to divide
     transportPerTonPerDistance <- mbind(transportPerTonPerDistance,
@@ -99,44 +98,42 @@ calcTransportCosts <- function(transport = "all") { # nolint
   magpieComms <- unlist(cftRel)
 
   transportMagpie <- transportPowerMagpie <- new.magpie(0,
-                                                         cells_and_regions = getItems(transportPerTonPerDistance,
-                                                                                      dim = 1),
-                                                         years = "y2005",
-                                                         names = magpieComms)
+                                                        cells_and_regions = getItems(transportPerTonPerDistance,
+                                                                                     dim = 1),
+                                                        years = "y2005",
+                                                        names = magpieComms)
 
   for (i in getNames(transportMagpie)) {
     transportMagpie[, , i] <- toolFillWithRegionAvg(transportPerTonPerDistance[, , names(cftRel)[grep(i, cftRel)]],
-                                                   valueToReplace = Inf, warningThreshold = 0.99)
-                                                  # warning threshold is so high as there is a lack of foddr in SSA
+                                                    valueToReplace = Inf, warningThreshold = 0.99)
+    # warning threshold is so high as there is a lack of foddr in SSA
     transportPowerMagpie[, , i] <- transportPower[, , names(cftRel)[grep(i, cftRel)]]
   }
 
 
- # add wood and woodfuel with foddr costs and pasture with 0 costs (not transported)
- transportMagpie <- add_columns(transportMagpie, addnm = c("pasture", "wood", "woodfuel"),
-                                dim = 3.1, fill = 0)
- transportMagpie[, , c("wood", "woodfuel")] <- transportMagpie[, , "foddr"]
+  # add wood and woodfuel with foddr costs and pasture with 0 costs (not transported)
+  transportMagpie <- add_columns(transportMagpie, addnm = c("pasture", "wood", "woodfuel"),
+                                 dim = 3.1, fill = 0)
+  transportMagpie[, , c("wood", "woodfuel")] <- transportMagpie[, , "foddr"]
 
- # what weight to add for these?
- transportPowerMagpie <- add_columns(transportPowerMagpie, addnm = c("pasture", "wood", "woodfuel"),
-                                dim = 3.1, fill = 0)
- transportPowerMagpie[, , c("wood", "woodfuel")] <- transportPowerMagpie[, , "foddr"]
+  # what weight to add for these?
+  transportPowerMagpie <- add_columns(transportPowerMagpie, addnm = c("pasture", "wood", "woodfuel"),
+                                      dim = 3.1, fill = 0)
+  transportPowerMagpie[, , c("wood", "woodfuel")] <- transportPowerMagpie[, , "foddr"]
 
-getYears(transportMagpie) <- NULL
+  getYears(transportMagpie) <- NULL
 
-# in 'local' case, NA values for JPN where there is costs but basically no nonlocal consumption. 
-# set this to global average -  for globally aggregated transport costs, the weight is 0 anyways
- if (any(is.na(transportMagpie))) {
- mean(transportMagpie, na.rm = TRUE)
-  crops <-  where(is.na(transportMagpie))$true$data
-  avg <- mean(transportMagpie[,,crops], na.rm = TRUE)
-  transportMagpie[is.na(transportMagpie)] <- avg
- }
-
+  # in 'local' case, NA values for JPN where there is costs but basically no nonlocal consumption.
+  # set this to global average -  for globally aggregated transport costs, the weight is 0 anyways
+  if (any(is.na(transportMagpie))) {
+    mean(transportMagpie, na.rm = TRUE)
+    crops <-  where(is.na(transportMagpie))$true$data
+    avg <- mean(transportMagpie[, , crops], na.rm = TRUE)
+    transportMagpie[is.na(transportMagpie)] <- avg
+  }
   return(list(x = transportMagpie,
               weight = transportPowerMagpie,
               unit = "USD05",
               description = "Transport costs in USD per t dm per minute by country and product",
               isocountries = TRUE))
-
 }

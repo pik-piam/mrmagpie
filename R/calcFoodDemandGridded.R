@@ -2,6 +2,7 @@
 #' @description Calculates grid-level food demand, note also includes food and feed
 #' @return Gridded magpie object of food demand disaggregated by rural urban pop
 #' @param attribute dm or calories ("ge") or other massbalance attribute
+#' @param feed whether to include feed demand in the gridded demand
 #' @author David M Chen
 #' @examples
 #' \dontrun{
@@ -10,34 +11,40 @@
 #'
 calcFoodDemandGridded <- function(attribute = "dm", feed = TRUE) {
 
-foodDemand <- calcOutput("FAOmassbalance", aggregate = FALSE)
-if (feed) {
+  foodDemand <- calcOutput("FAOmassbalance", aggregate = FALSE)
+  if (feed) {
     prods <- c("food", "feed", "flour1")
-     } else { prods <- c("food", "flour1") }
+  } else {
+    prods <- c("food", "flour1")
+  }
 
-foodDemand <- dimSums(foodDemand[, , prods],
-                      dim = 3.2)[, , attribute]
-hist <- getYears(foodDemand)
-
-
-gridPop <- collapseNames(calcOutput("GridPop", aggregate = FALSE,
-                                    source = "Gao", urban = TRUE)[, hist, "SSP2"])
-
-mapping <- toolGetMapping("CountryToCellMapping.csv", type = "cell", where = "mappingfolder")
-popAgg <- toolAggregate(gridPop, rel = mapping, from = "celliso", to = "iso") # not all countries
-
-share <- (gridPop / dimSums(popAgg, dim = 3))
-countries <- getItems(share, dim = 1.1)
-
-foodDisagg <- toolAggregate(foodDemand[countries, , ], rel = mapping,
-                            from = "iso", to = "celliso")
-
-foodDisaggUrb <- foodDisagg * share
+  foodDemand <- foodDemand[, , prods][, , attribute]
+  hist <- getYears(foodDemand)
 
 
-return(list(x = foodDisaggUrb,
-            weight = NULL,
-            unit = "Mt",
-            description = "Food demand in by grid cell",
-            isocountries = FALSE))
+  gridPop <- collapseNames(calcOutput("GridPop", aggregate = FALSE,
+                                      source = "Gao", urban = TRUE)[, hist, "SSP2"])
+
+  mapping <- toolGetMapping("CountryToCellMapping.csv", type = "cell", where = "mappingfolder")
+  popAgg <- toolAggregate(gridPop, rel = mapping, from = "celliso", to = "iso") # not all countries
+
+  share <- (gridPop / dimSums(popAgg, dim = 3))
+  countries <- getItems(share, dim = 1.1)
+
+
+  foodDisagg <- toolAggregate(foodDemand[countries, , ], rel = mapping,
+                              from = "iso", to = "celliso")
+
+  foodDisaggUrb <- foodDisagg * share
+
+  #give all feed demand to rural
+  foodDisaggUrb[, , "feed"][, , "rural"] <- foodDisaggUrb[, , "rural"][, , "feed"] +
+    foodDisaggUrb[, , "urban"][, , "feed"]
+  foodDisaggUrb[, , "urban"][, , "feed"] <- 0
+
+  return(list(x = foodDisaggUrb,
+              weight = NULL,
+              unit = "Mt",
+              description = "Food demand in by grid cell",
+              isocountries = FALSE))
 }
