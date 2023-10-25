@@ -13,7 +13,9 @@ magpie object in cellular resolution
 Function creates dummy NPI/NDC policies
 }
 \examples{
-\dontrun{ calcOutput("NpiNdcAdAolcPol", aggregate = FALSE) }
+\dontrun{
+calcOutput("NpiNdcAdAolcPol", aggregate = FALSE)
+}
 }
 \author{
 Patrick v. Jeetze, Michael Windisch

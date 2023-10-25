@@ -5,9 +5,8 @@
 #' @seealso
 #' \code{\link{readSoilClassification}},
 #' @examples
-#'
 #' \dontrun{
-#'   readSource("SoilClassification", subtype="HWSD.soil", convert="onlycorrect")
+#' readSource("SoilClassification", subtype = "HWSD.soil", convert = "onlycorrect")
 #' }
 #'
 #' @import madrat
@@ -18,7 +17,6 @@
 #'
 
 calcSoilCharacteristics <- function() {
-
   # Creating aggregation weights for the physical variables
   # #Future implementation
   # map <- mrcommons:::toolGetMappingCoord2Country()
@@ -31,25 +29,25 @@ calcSoilCharacteristics <- function() {
   # raster::plot(cell_size)
   #
 
-  landcoords <- as.data.frame(toolGetMapping("magpie_coord.rda", type = "cell"))
-  landcoords <- cbind(landcoords, rep(1,nrow(landcoords)))
+  landcoords <- as.data.frame(toolGetMapping("magpie_coord.rda", type = "cell", where = "mappingfolder"))
+  landcoords <- cbind(landcoords, rep(1, nrow(landcoords)))
   landcoords <- raster::rasterFromXYZ(landcoords)
   crs(landcoords) <- "+proj=longlat"
   cell_size <- raster::area(landcoords)
-  weight <- cell_size*landcoords
+  weight <- cell_size * landcoords
   weight <- as.magpie(weight)
-  weight <- toolOrderCells(collapseDim(addLocation(weight),dim=c("x","y")))
+  weight <- toolOrderCells(collapseDim(addLocation(weight), dim = c("x", "y")))
 
-  x  <- readSource("SoilClassification", subtype = "HWSD.soil", convert="onlycorrect")
+  x  <- readSource("SoilClassification", subtype = "HWSD.soil", convert = "onlycorrect")
   years <- seq(1900, 2150, 1)
   z <- array(NA, dim = c(dim(x)[1], length(years), 1),
              dimnames = list(1:dim(x)[1], years, "soil"))
   for (i in 1:length(years)) {
-    z[, i, ] <- x@.Data[, 1,1]
+    z[, i, ] <- x@.Data[, 1, 1]
   }
 
-  soil_char <- toolGetMapping(name = "mappingSoil.csv", type = "sectoral")
-  w = array(NA, dim = c(dim(x)[1], length(years), dim(soil_char[, -1])[2]),
+  soil_char <- toolGetMapping(name = "mappingSoil.csv", type = "sectoral", where = "mappingfolder")
+  w <- array(NA, dim = c(dim(x)[1], length(years), dim(soil_char[, -1])[2]),
             dimnames = list(1:dim(x)[1], years, dimnames(soil_char[, -1])[[2]]))
 
   for (i in 1:length(years)) {
@@ -64,9 +62,9 @@ calcSoilCharacteristics <- function() {
   x <- toolCell2isoCell(w)
 
   return(list(
-    x=x,
-    weight=weight,
-    unit=
+    x = x,
+    weight = weight,
+    unit =
 "Ks: mm/h, Sf: mm ,
  w_pwp: % ,
  w_fc: % ,
@@ -89,5 +87,5 @@ calcSoilCharacteristics <- function() {
  cond_pwp: thermal conductivity (W/m^2/K) at wilting point following Lawrence and Slater (2008) ,
  cond_100: thermal conductivity (W/m^2/K) at saturation (all water) following Lawrence and Slater (2008) ,
  cond_100_ice: thermal conductivity (W/m^2/K) at saturation (all ice) Lawrence and Slater (2008)",
-    isocountries=FALSE))
+    isocountries = FALSE))
 }

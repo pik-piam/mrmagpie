@@ -19,12 +19,8 @@ calcPastrTauHist <- function(past_mngmt = "2me") { # nolint
   prod <- calcOutput("GrasslandBiomass", aggregate = FALSE)[, past, "pastr"]
   prod <- toolCountryFill(prod, fill = 0)
 
-  # areas
-  pastr_weight <- calcOutput("PastureSuit", # nolint
-    subtype = paste("ISIMIP3bv2", "MRI-ESM2-0", "1850_2100", sep = ":"), aggregate = FALSE
-  )[, past, 1] # Please Check this variable is not used in the code so far
   # regional mapping
-  cell2reg <- toolGetMapping("CountryToCellMapping.csv", type = "cell")
+  cell2reg <- toolGetMapping("CountryToCellMapping.csv", type = "cell", where = "mappingfolder")
 
   # pasture areas
   area <- calcOutput("LUH2v2", landuse_types = "LUH2v2", cellular = FALSE, aggregate = FALSE)[, past, "pastr"]
@@ -61,7 +57,7 @@ calcPastrTauHist <- function(past_mngmt = "2me") { # nolint
   t <- collapseNames(t)
 
   # replacing unrealistic high tau values by regional averages
-  regMap <- toolGetMapping("regionmappingH12.csv", type = "cell")
+  regMap <- toolGetMapping("regionmappingH12.csv", type = "cell", where = "madrat")
   tReg <- toolAggregate(t, rel = regMap, weight = area, from = "CountryCode", to = "RegionCode")
   regions <- regMap$RegionCode
   names(regions) <- regMap[, "CountryCode"]

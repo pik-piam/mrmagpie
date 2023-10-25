@@ -18,7 +18,9 @@ The function takes degraded and intact peatland area from the Global Peatland Da
 The GPD has been provided by Alexandra Barthelmes. The potential peatland area has been provided by Leifeld_2018 (DOI 10.1038/s41467-018-03406-6).
 }
 \examples{
-\dontrun{ calcOutput("Peatland", aggregate = FALSE) }
+\dontrun{
+calcOutput("Peatland", aggregate = FALSE)
+}
 
 }
 \author{
