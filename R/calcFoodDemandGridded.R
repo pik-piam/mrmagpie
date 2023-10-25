@@ -1,5 +1,5 @@
 #' @title calcFoodDemandGridded
-#' @description Calculates grid-level food demand
+#' @description Calculates grid-level food demand, note also includes food and feed
 #' @return Gridded magpie object of food demand disaggregated by rural urban pop
 #' @param attribute dm or calories ("ge") or other massbalance attribute
 #' @author David M Chen
@@ -8,10 +8,14 @@
 #' calcOutput("FoodDemandGridded")
 #' }
 #'
-calcFoodDemandGridded <- function(attribute = "dm") {
+calcFoodDemandGridded <- function(attribute = "dm", feed = TRUE) {
 
 foodDemand <- calcOutput("FAOmassbalance", aggregate = FALSE)
-foodDemand <- dimSums(foodDemand[, , c("food", "feed", "flour1")],
+if (feed) {
+    prods <- c("food", "feed", "flour1")
+     } else { prods <- c("food", "flour1") }
+
+foodDemand <- dimSums(foodDemand[, , prods],
                       dim = 3.2)[, , attribute]
 hist <- getYears(foodDemand)
 
