@@ -3,13 +3,16 @@
 #' @return Gridded magpie object of food demand disaggregated by rural urban pop
 #' @param attribute dm or calories ("ge") or other massbalance attribute
 #' @param feed whether to include feed demand in the gridded demand
+#' @param prod for memory reasons
 #' @author David M Chen
+#' @importFrom withr local_options
+#' @importFrom magpiesets findset
 #' @examples
 #' \dontrun{
 #' calcOutput("FoodDemandGridded")
 #' }
 #'
-calcFoodDemandGridded <- function(attribute = "dm", feed = TRUE) {
+calcFoodDemandGridded <- function(attribute = "dm", prod = "k", feed = TRUE) {
 
   foodDemand <- calcOutput("FAOmassbalance", aggregate = FALSE)
   if (feed) {
@@ -18,7 +21,7 @@ calcFoodDemandGridded <- function(attribute = "dm", feed = TRUE) {
     prods <- c("food", "flour1")
   }
 
-  foodDemand <- foodDemand[, , prods][, , attribute]
+  foodDemand <- collapseNames(foodDemand[, , prods][, , attribute])
   hist <- getYears(foodDemand)
 
 
@@ -41,6 +44,12 @@ calcFoodDemandGridded <- function(attribute = "dm", feed = TRUE) {
   foodDisaggUrb[, , "feed"][, , "rural"] <- foodDisaggUrb[, , "rural"][, , "feed"] +
     foodDisaggUrb[, , "urban"][, , "feed"]
   foodDisaggUrb[, , "urban"][, , "feed"] <- 0
+
+  local_options(magclass_sizeLimit = 1e+12)
+
+  prods <- findset(prod)
+  #sum up demand dimension
+  foodDisaggUrb <- dimSums(foodDisaggUrb[, , prods], dim = 3.2)
 
   return(list(x = foodDisaggUrb,
               weight = NULL,

@@ -4,10 +4,12 @@
 \alias{calcFoodDemandGridded}
 \title{calcFoodDemandGridded}
 \usage{
-calcFoodDemandGridded(attribute = "dm", feed = TRUE)
+calcFoodDemandGridded(attribute = "dm", prod = "k", feed = TRUE)
 }
 \arguments{
 \item{attribute}{dm or calories ("ge") or other massbalance attribute}
+
+\item{prod}{for memory reasons}
 
 \item{feed}{whether to include feed demand in the gridded demand}
 }
