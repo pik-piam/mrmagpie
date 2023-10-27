@@ -17,7 +17,8 @@ calcNonLocalProduction <- function() {
   productionLi <- calcOutput("Production", products = "kli",
                              cellular = TRUE, cells = "lpjcell",
                              aggregate = FALSE)
- productionPast <- calcOutput("Production", products = "pasture", cellular = TRUE, cells = "lpj-cell", aggregate = FALSE)
+  productionPast <- calcOutput("Production", products = "pasture", cellular = TRUE,
+                               cells = "lpjcell", aggregate = FALSE)
   production <- collapseNames(mbind(productionPri, productionLi)[, , "dm"])
   production <- mbind(production, collapseNames(productionPast[, , "dm"], collapsedim  = 2))
 

@@ -20,12 +20,12 @@ calcTransportCosts <- function(transport = "all") { # nolint
 
   if (transport == "all") {
 
-  production <- calcOutput("Production", cellular = TRUE, cells = "lpjcell",
-                           irrigation = FALSE, aggregate = FALSE)[, 2005, "dm"] * 10^6
-  productionLi <- calcOutput("Production", cellular = TRUE, cells = "lpjcell",
-                              irrigation = FALSE, aggregate = FALSE,
-                              products = "kli")[, 2005, "dm"] * 10^6
-  production <- mbind(production, productionLi)
+    production <- calcOutput("Production", cellular = TRUE, cells = "lpjcell",
+                             irrigation = FALSE, aggregate = FALSE)[, 2005, "dm"] * 10^6
+    productionLi <- calcOutput("Production", cellular = TRUE, cells = "lpjcell",
+                               irrigation = FALSE, aggregate = FALSE,
+                               products = "kli")[, 2005, "dm"] * 10^6
+    production <- mbind(production, productionLi)
 
   } else if (transport == "nonlocal") {
     production <- calcOutput("NonLocalProduction", aggregate = FALSE)[, 2005, ] * 10^6
@@ -85,8 +85,8 @@ calcTransportCosts <- function(transport = "all") { # nolint
     # should also include rural consumers, and farms
     tmpPower[, , names(cftRel)[i]] <- dimSums(production[, , cftRel[[i]]], dim = 3) * distance
 
-     transportPower[, , names(cftRel)[i]] <- dimSums(x = tmpPower[, , names(cftRel)[i]],
-                                                     dim = c("x", "y"))
+    transportPower[, , names(cftRel)[i]] <- dimSums(x = tmpPower[, , names(cftRel)[i]],
+                                                    dim = c("x", "y"))
 
     tpFilled <- toolCountryFill(transportPower, fill = 0) # need to fill first to divide
     transportPerTonPerDistance <- mbind(transportPerTonPerDistance,
@@ -101,14 +101,14 @@ calcTransportCosts <- function(transport = "all") { # nolint
 
   transportMagpie <- transportPowerMagpie <- new.magpie(fill = 0,
                                                         cells_and_regions = getItems(transportPerTonPerDistance,
-                                                                                      dim = 1),
+                                                                                     dim = 1),
                                                         years = "y2005",
                                                         names = magpieComms)
 
   for (i in getNames(transportMagpie)) {
     transportMagpie[, , i] <- toolFillWithRegionAvg(transportPerTonPerDistance[, , names(cftRel)[grep(i, cftRel)]],
-                                                   valueToReplace = Inf, warningThreshold = 0.99)
-                                                  # warning threshold is so high as there is a lack of foddr in SSA
+                                                    valueToReplace = Inf, warningThreshold = 0.99)
+    # warning threshold is so high as there is a lack of foddr in SSA
     transportPowerMagpie[, , i] <- transportPower[, , names(cftRel)[grep(i, cftRel)]]
   }
 
