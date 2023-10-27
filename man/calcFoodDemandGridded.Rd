@@ -4,16 +4,20 @@
 \alias{calcFoodDemandGridded}
 \title{calcFoodDemandGridded}
 \usage{
-calcFoodDemandGridded(attribute = "dm")
+calcFoodDemandGridded(attribute = "dm", prod = "k", feed = TRUE)
 }
 \arguments{
 \item{attribute}{dm or calories ("ge") or other massbalance attribute}
+
+\item{prod}{for memory reasons}
+
+\item{feed}{whether to include feed demand in the gridded demand}
 }
 \value{
 Gridded magpie object of food demand disaggregated by rural urban pop
 }
 \description{
-Calculates grid-level food demand
+Calculates grid-level food demand, note also includes food and feed
 }
 \examples{
 \dontrun{
