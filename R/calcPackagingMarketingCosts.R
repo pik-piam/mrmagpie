@@ -6,8 +6,8 @@
 #' @author David M Chen
 
 calcPackagingMarketingCosts <- function() {
-  
-  packaged <- calcOutput("NonLocalTransport", aggregate = FALSE)[,,"Exported"]
+
+  packaged <- calcOutput("NonLocalProduction", aggregate = FALSE)[,   , "Exported"]
 
   out <- 50 * packaged
 
@@ -16,4 +16,4 @@ calcPackagingMarketingCosts <- function() {
               unit = "million USD05",
               description = "Packaging costs in USD per t dm by country and product",
               isocountries = FALSE))
-  }
+}
