@@ -56,16 +56,9 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
   withr::local_options(magclass_sizeLimit = 1e+12)
 
   ### Version settings ###
-  if (rev < 4.86) stop("mrmagpie(>= 1.35.2) does not support revision below 4.86 anymore.
+  if (rev < 4.94) stop("mrmagpie(>= 1.35.2) does not support revision below 4.94 anymore.
                        Please use an older snapshot/version of the library, if you need older revisions.")
-
-  # Development flag while switching to 67420 cells is still in progress
-  if (grepl("67k", dev)) {
-    cells <- "lpjcell"
-  } else {
-    cells <- "magpiecell"
-  }
-
+  cells       <- "lpjcell"
   climatescen <- str_split(climatetype, ":")[[1]][2]
 
   message(paste0("Start preprocessing for \n climatescenario: ", climatetype,
@@ -103,48 +96,11 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
                                weightID, "_", getConfig("regionmapping")))
   addMapping(clustermapname, map)
 
-  # Assigning clusters to 59199 cells (necessary until transition to 67420 is complete)
-  map67420to59199 <- toolGetMapping("map67420to59199.rds", where = "mrmagpie")
-  map67420to59199 <- merge(map, map67420to59199)
-  map67420to59199 <- map67420to59199[map67420to59199$is59199, ]
-  map67420to59199$cellnumber <- as.numeric(gsub(".*\\.", "", map67420to59199$celliso))
-  map67420to59199 <- map67420to59199[order(map67420to59199$cellnumber), ]
-
-  cluster59199num <- as.integer(substring(unique(map67420to59199$cluster), 5, 7))
-  cluster59199    <- unique(map67420to59199$cluster)[order(cluster59199num)]
-  cluster59199new <- paste0(substring(cluster59199, 1, 4), seq_along(cluster59199))
-  mapCluster2ClusterRed <- data.frame(cluster59199, cluster59199new)
-  colnames(mapCluster2ClusterRed) <- c("cluster", "clusterSort")
-  map67420to59199 <- merge(map67420to59199, mapCluster2ClusterRed, by = "cluster")
-  map2 <- data.frame(cell = map67420to59199$celliso,
-                     cluster = map67420to59199$clusterSort,
-                     region = map67420to59199$region,
-                     country = map67420to59199$country,
-                     global = map67420to59199$global)
-  clustermapname2 <- sub("\\.[^.]*$", ".rds",
-                         paste0("clustermap_rev", rev, dev, "_", ctype,
-                                weightID, "_", getConfig("regionmapping")))
-  addMapping(clustermapname2, map2)
-
-  # check whether there are clusters that are in 67420, but not in 59199
-  if (length(sort(unique(map$cluster))) != length(sort(unique(map67420to59199$cluster)))) {
-    vcat(2, paste0("The following clusters are missing in the case of 59199 cells ",
-                   setdiff(sort(unique(map$cluster)), sort(unique(map2$cluster)))))
-  }
-
-  # What would be the most basic test?
-  # 0) check clusters (c200, c1000)
-  # a) Reference: current default with current clustering
-  # b) still use magpie cells, but with new clustering mapping & preprocessing & magpie run
-  # c) transform every function where 67k cells possible & preprocessing & magpie run
-
   # plot map with regions and clusters
-  clustermapname <- switch(cells, "lpjcell" = clustermapname, "magpiecell" = clustermapname2)
   clustermap <- readRDS(clustermapname) # nolint
   p <- plotregionscluster(clustermap, cells = "lpjcell") # nolint
   ggsave(sub(".rds", ".pdf", sub("clustermap", "spamplot", clustermapname)),
          p, height = 6, width = 10, scale = 1)
-
 
   # distinguish between region and superregion if mapping provides this distinction
   mapReg      <- toolGetMapping(getConfig("regionmapping"), type = "regional", where = "mappingfolder")
@@ -246,19 +202,12 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
              aggregate = "cluster", round = roundArea,
              file = paste0("wdpa_baseline_", ctype, ".mz"))
 
-  if (rev < 4.82) {
-    calcOutput("Brooks2005OldConservationPrios", nclasses = "seven", cells = "magpiecell",
-               aggregate = FALSE, round = roundArea, file = "consv_prio_areas_0.5.mz")
-    calcOutput("Brooks2005OldConservationPrios", nclasses = "seven", cells = "magpiecell",
-               aggregate = "cluster", round = roundArea, file = paste0("consv_prio_areas_", ctype, ".mz"))
-  } else {
-    calcOutput("ConservationPriorities", nclasses = "seven", cells = cells,
-               aggregate = FALSE, round = roundArea, file = "consv_prio_areas_0.5.mz")
-    calcOutput("ConservationPriorities", nclasses = "seven", cells = cells,
-               aggregate = "cluster", round = roundArea, file = paste0("consv_prio_areas_", ctype, ".mz"))
-  }
+  calcOutput("ConservationPriorities", nclasses = "seven", cells = cells,
+             aggregate = FALSE, round = roundArea, file = "consv_prio_areas_0.5.mz")
+  calcOutput("ConservationPriorities", nclasses = "seven", cells = cells,
+             aggregate = "cluster", round = roundArea, file = paste0("consv_prio_areas_", ctype, ".mz"))
 
-  calcOutput("ProtectArea", bhifl = ifelse(rev > 4.66, TRUE, FALSE),
+  calcOutput("ProtectArea", bhifl = TRUE,
              cells = cells, aggregate = "cluster", round = roundArea,
              file = paste0("protect_area_", ctype, ".mz"))
 
@@ -413,17 +362,11 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
              round = 6, seasonality = "total",
              file = paste0("lpj_envflow_total_", ctype, ".mz"))
 
-  if (rev < 4.67) {
-    calcOutput("WaterUseNonAg", datasource = "WATCH_ISIMIP_WATERGAP", years = lpjYears, seasonality = "grper",
-               lpjml = lpjml, climatetype = climatetype,
-               aggregate = "cluster", cells = cells,
-               file = paste0("watdem_nonagr_grper_", ctype, ".mz"))
-  } else {
-    calcOutput("WaterUseNonAg", datasource = "WATERGAP_ISIMIP", usetype = "all:withdrawal",
-               selectyears = lpjYears, seasonality = "grper", lpjml = lpjml, climatetype = climatetype,
-               aggregate = "cluster", cells = cells,
-               file = paste0("watdem_nonagr_grper_", ctype, ".mz"))
-  }
+  calcOutput("WaterUseNonAg", datasource = "WATERGAP_ISIMIP", usetype = "all:withdrawal",
+             selectyears = lpjYears, seasonality = "grper", lpjml = lpjml, climatetype = climatetype,
+             aggregate = "cluster", cells = cells,
+             file = paste0("watdem_nonagr_grper_", ctype, ".mz"))
+
 
   # 44 biodiversity
   calcOutput("BiomeType", aggregate = "cluster", cells = cells, round = roundArea,
