@@ -48,10 +48,16 @@ calcFoodDemandGridded <- function(attribute = "dm", prod = "k", feed = TRUE) {
 
   local_options(magclass_sizeLimit = 1e+12)
   prods         <- findset(prod)
+  foodDisaggUrb <- foodDisaggUrb[, , prods]
+  
+  # Sum up demand dimension, this uses a lot of memory so split again
+  pr1 <- prods[c(1:(length(prods)/2))]
+  pr2 <- prods[c((length(prods)/2 + 1):(length(prods) + 0.5))] #0.5 to ensure if odd numbers
 
-  # Sum up demand dimension
-  foodDisaggUrb <- dimSums(foodDisaggUrb[, , prods], dim = 3.2)
-
+  foodDisaggUrb1 <- dimSums(foodDisaggUrb[, , pr1], dim = 3.2)
+  foodDisaggUrb2 <- dimSums(foodDisaggUrb[, , pr2], dim = 3.2)
+  foodDisaggUrb <- mbind(foodDisaggUrb1, foodDisaggUrb2)
+ 
   return(list(x = foodDisaggUrb,
               weight = NULL,
               unit = "Mt",
