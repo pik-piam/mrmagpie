@@ -34,8 +34,8 @@ calcNonLocalProduction <- function() {
   transpRurToUrb <- add_dimension(transpRurToUrb, dim = 3.2, nm = "RurToUrb")
 
 
-  transpExp <- ifelse(production > dimSums(foodDisaggUrb, dim = 3.2),
-                      collapseNames(production - dimSums(foodDisaggUrb, dim = 3.2)),
+  transpExp <- ifelse(production > dimSums(foodDemPrim, dim = 3.2),
+                      collapseNames(production - dimSums(foodDemPrim, dim = 3.2)),
                       0)
   transpExp <- add_dimension(transpExp, dim = 3.2, nm = "Exported")
 
