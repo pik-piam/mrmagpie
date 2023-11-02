@@ -17,6 +17,17 @@ calcSOMinitialsiationPools <- function(cells = "lpjcell") {
   past <- findset("past")
   som  <- calcOutput("SOM", cells = cells, aggregate = FALSE)
   som  <- collapseNames(som[, past, c("soilc")])
+  
+  # check for for negatives and NAs
+  if (any(is.na(som))) {
+    stop("calcSOMinitialisationPools produced NA values")
+  }
+  if (any(round(som, digits = 6) < 0)) {
+    warning("calcSOMinitialisationPools produced negative values")
+  }
+  
+  # set negatives caused for numerical reasons to 0
+  som[som < 0] <- 0
 
   return(list(
     x = som,
