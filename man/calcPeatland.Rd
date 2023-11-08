@@ -4,10 +4,12 @@
 \alias{calcPeatland}
 \title{calcPeatland}
 \usage{
-calcPeatland(subtype = "degraded")
+calcPeatland(subtype = "degraded", cells = "lpjcell")
 }
 \arguments{
 \item{subtype}{degraded (default) or intact}
+
+\item{cells}{"magpiecell" or "lpjcell"}
 }
 \value{
 magpie object in cellular resolution

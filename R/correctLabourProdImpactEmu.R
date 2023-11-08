@@ -16,7 +16,6 @@
 correctLabourProdImpactEmu <- function(x){
 
   x <- toolConditionalReplace(x, conditions = c("is.na()"), replaceby = 0)
-  x <- toolCell2isoCell(x)
 
   return(x)
 }

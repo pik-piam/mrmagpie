@@ -4,7 +4,7 @@
 \alias{calcTransportTime}
 \title{calcTransportTime}
 \usage{
-calcTransportTime(subtype = "cities50", cells = "magpiecell")
+calcTransportTime(subtype = "cities50", cells = "lpjcell")
 }
 \arguments{
 \item{subtype}{currently only cities of 5, 20, or 50 thousand people ("cities5", "cities20", "cities50") or

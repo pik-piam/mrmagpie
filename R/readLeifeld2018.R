@@ -7,23 +7,23 @@
 #' \dontrun{
 #'   readSource("Leifeld2018", convert="onlycorrect")
 #' }
-#' @importFrom raster raster projectRaster area writeRaster
-#' @importFrom magclass read.magpie
+#' @importFrom magclass as.magpie
 
 readLeifeld2018 <- function(){
 
-  file_name <- "Potential_Peatland_Area_0.5_Leifeld_et_al_2018.nc"
-
-  if(!file.exists(file_name)){
-    x <- raster("Degradation_raster_homolosine_hires_rev4.tif",crs="+proj=igh")
-    #crs(x) <- "+proj=igh"
-    r <- raster(res=0.5)
-    rp2 <- suppressWarnings(projectRaster(x,r,over=TRUE)) #re-project to regular grid
-    aa <- area(rp2,na.rm=TRUE) #get area
-    writeRaster(aa/10000,"Potential_Peatland_Area_0.5_Leifeld_et_al_2018.nc",overwrite=TRUE,varname="PotentialPeatlandArea", varunit="Mha",longname="Potential Peatland Area in 0.5-degree resolution based on Leifeld_et_al_2018")
-  }
-
-  x <- read.magpie(file_name)[,,"PotentialPeatlandArea"]
+  x <- terra::rast("Degradation_raster_homolosine_hires_rev4.tif")  #"+proj=igh"
+  #re-project to regular grid
+  r <- terra::rast(res=0.5)
+  rp2 <- suppressWarnings(terra::project(x,r))
+  #get cell area
+  a <- terra::cellSize(rp2[[1]], unit="ha", mask = TRUE) * 1e-6
+  # get spatial mapping
+  map <- mrcommons::toolGetMappingCoord2Country(pretty = TRUE)
+  # transform raster to magpie object
+  x <- as.magpie(terra::extract(a, map[c("lon", "lat")])[, -1], spatial = 1)
+  # set dimension names
+  #dimnames(x) <- list("x.y.iso" = paste(map$coords, map$iso, sep = "."), "t" = NULL, "data" = NULL)
+  dimnames(x) <- list("coords" = map$coords, "t" = NULL, "d3" = NULL)
 
   return(x)
 }

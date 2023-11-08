@@ -2,9 +2,12 @@
 % Please edit documentation in R/calcGrasslandBiomass.R
 \name{calcGrasslandBiomass}
 \alias{calcGrasslandBiomass}
-\title{Calculate grassland biomass split between rangelands and pasture demand.}
+\title{calcGrasslandBiomass}
 \usage{
-calcGrasslandBiomass()
+calcGrasslandBiomass(cells = "lpjcell")
+}
+\arguments{
+\item{cells}{"magpiecell" for 59199 cells or "lpjcell" for 67420 cells}
 }
 \value{
 Regional biomass demand
@@ -16,7 +19,6 @@ Calculates pasture biomass demand for the historical period split between rangel
 \dontrun{
 calcOutput("GrasslandBiomass")
 }
-
 }
 \seealso{
 \code{\link{calcOutput}}, \code{\link{calcFAOmassbalance}},

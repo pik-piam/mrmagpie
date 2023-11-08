@@ -1,26 +1,48 @@
 #' @title calcAfforestationMask
 #' @description Afforestation mask for where afforestation possible
 #' @param subtype afforestation mask sub type
+#' @param cells "magpiecell" or "lpjcell"
 #' @return magpie object in cellular resolution
-#' @author David Chen
+#' @author David Chen, Florian Humpenoeder
 #'
 #' @examples
 #' \dontrun{
 #' calcOutput("AfforestationMask", subtype = "noboreal", aggregate = FALSE)
 #' }
 #'
-#' @importFrom magpiesets findset
-#' @importFrom madrat readSource
+#' @importFrom magclass as.magpie
 
-calcAfforestationMask <- function(subtype) {
+calcAfforestationMask <- function(subtype, cells = "lpjcell") {
 
-  x      <- readSource("AfforestationMask", subtype = subtype, convert = "onlycorrect")
-  weight <- calcOutput("CellArea", aggregate = FALSE)
+  if (subtype == "unrestricted") {
+    r <- terra::rast(res = 0.5, vals = 1)
+  } else if (subtype == "noboreal") { #Exclude boreal regions > 50deg N
+    r <- terra::rast(res = 0.5, vals = 1)
+    lat <- terra::init(r, "y") |> terra::mask(r)
+    r <- terra::mask(r, lat>50, maskvalue=TRUE, updatevalue=0)
+  } else if (subtype == "onlytropical") { #only tropical areas between 20deg S and 20deg N
+    r <- terra::rast(res = 0.5, vals = 1)
+    lat <- terra::init(r, "y") |> terra::mask(r)
+    r <- terra::mask(r, lat > 20, maskvalue=TRUE, updatevalue=0)
+    r <- terra::mask(r, lat < -20, maskvalue=TRUE, updatevalue=0)
+  }
 
-  return(list(
-    x = x,
-    weight = weight,
-    unit = "binary",
-    description = "",
-    isocountries = FALSE))
+
+  # get spatial mapping
+  map <- mrcommons::toolGetMappingCoord2Country(pretty = TRUE)
+  # transform raster to magpie object
+  x <- as.magpie(terra::extract(r, map[c("lon", "lat")])[, -1], spatial = 1)
+  dimnames(x) <- list("x.y.iso" = paste(map$coords, map$iso, sep = "."), "t" = NULL, "d3" = NULL)
+
+  if (cells == "magpiecell") {
+    x <- mrcommons::toolCoord2Isocell(x, cells = cells)
+  }
+
+  weight <- calcOutput("LandArea", aggregate = FALSE, cells = cells)
+
+  return(list(x = x,
+              weight = weight,
+              unit = "binary",
+              description = "",
+              isocountries = FALSE))
 }

@@ -10,12 +10,14 @@
 #' }
 calcNonLocalProduction <- function() {
 
-  productionPri <- calcOutput("Production", aggregate = FALSE,
-                              cellular = TRUE, products = "kcr")
-  productionLi <- calcOutput("Production", aggregate = FALSE,
-                             cellular = TRUE, products = "kli")
-  productionPast <- calcOutput("Production", aggregate = FALSE,
-                               cellular = TRUE, products = "pasture")
+  productionPri  <- calcOutput("Production",  products = "kcr",
+                               cellular = TRUE, cells = "lpjcell",
+                               aggregate = FALSE)
+  productionLi   <- calcOutput("Production", products = "kli",
+                               cellular = TRUE, cells = "lpjcell",
+                               aggregate = FALSE)
+  productionPast <- calcOutput("Production", products = "pasture", cellular = TRUE,
+                               cells = "lpjcell", aggregate = FALSE)
   productionPast <- add_dimension(productionPast,   dim = 3.1, add = "Item", nm = "pasture")
   production <- collapseNames(mbind(productionPri, productionLi)[, , "dm"])
   production <- mbind(production, collapseNames(productionPast[, , "dm"], collapsedim  = 2))
@@ -38,9 +40,7 @@ calcNonLocalProduction <- function() {
   transpExp <- add_dimension(transpExp, dim = 3.2, nm = "Exported")
 
   out <- mbind(transpRurToUrb, transpExp)
-
   # all secondary products need to be transported, but we don't know where they are produced.
-
 
   return(list(x = out,
               weight = NULL,

@@ -1,5 +1,6 @@
 #' @title calcLivestockDistribution
 #' @description Disaggregate Livestock estimates based on the GLW3 dataset.
+#' @param cells       "magpiecell" for 59199 cells or "lpjcell" for 67420 cells
 #' @return MAgPIE objects with livestock numbers on a cellular level.
 #' @author Marcos Alves
 #' @examples
@@ -10,7 +11,8 @@
 #' @importFrom tidyr pivot_wider
 #' @export
 #'
-calcLivestockDistribution <- function() {
+calcLivestockDistribution <- function(cells = "lpjcell") {
+
   past <- findset("past")
   past <- past[7:length(past)]
 
@@ -18,8 +20,10 @@ calcLivestockDistribution <- function() {
   ### Disaggregation weights###
   #############################
 
-  mapping <- toolGetMapping(name = "CountryToCellMapping.csv", type = "cell", where = "mappingfolder")
+  mapping <- toolGetMappingCoord2Country()
   glw3    <- readSource("GLW3", subtype = "Da", convert = "onlycorrect")
+  glw3    <- glw3[paste(mapping$coords, mapping$iso, sep = "."), , ]
+  getItems(glw3, dim = 1, raw = TRUE) <- mapping$coords
 
   #############################
   ### FAO livestock Numbers ###
@@ -45,15 +49,24 @@ calcLivestockDistribution <- function() {
   # https://docs.google.com/spreadsheets/d/1SZAAVl1SLwrrK6j329tq5zo1VZhfFtxUHTmsGQKYCCk/edit#gid=0
   conversionRateLSU            <- c(0.7, 0.1)
   conversionRateLSU            <- as.magpie(conversionRateLSU)
-  dimnames(conversionRateLSU)  <- list("region", "year", c("large", "small"))
+  dimnames(conversionRateLSU)  <- list("GLO", "year", c("large", "small"))
 
   livestockFAOscaled           <- livestockFAO * conversionRateLSU * fbaskPastureFraction
   livestockFAOscaled           <- dimSums(livestockFAOscaled[, , c(1, 4)])
-  getYears(livestockFAOscaled) <- past
-  livestockFAOscaled           <- livestockFAOscaled[unique(mapping$iso)]
-  livestockCell                <- toolAggregate(livestockFAOscaled, rel = mapping,
-                                                from = "iso", to = "celliso", weight = glw3)
+  getItems(livestockFAOscaled, dim = 2) <- past
+  getSets(livestockFAOscaled)  <- c("iso", "year", "data")
+  livestockFAOscaled           <- livestockFAOscaled[intersect(getItems(livestockFAOscaled, dim = 1), 
+                                                               unique(mapping$iso)), , ]
+  livestockCell <- toolAggregate(livestockFAOscaled, rel = mapping,
+                                 from = "iso", to = "coords",
+                                 weight = glw3)[mapping$coords, , ]
+  getItems(livestockCell, dim = 1, raw = TRUE) <- paste(mapping$coords, mapping$iso, sep = ".")
+
   livestockCell                <- livestockCell / 1e6
+
+  if (cells == "magpiecell") {
+    livestockCell <- toolCoord2Isocell(livestockCell)
+  }
 
   return(list(x = livestockCell,
               weight = NULL,

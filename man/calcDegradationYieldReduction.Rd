@@ -4,7 +4,11 @@
 \alias{calcDegradationYieldReduction}
 \title{calcDegradationYieldReduction}
 \usage{
-calcDegradationYieldReduction()
+calcDegradationYieldReduction(cells = "lpjcell")
+}
+\arguments{
+\item{cells}{number of halfdegree grid cells to be returned.
+Options: "magpiecell" (59199), "lpjcell" (67420)}
 }
 \value{
 magpie object in cellular resolution

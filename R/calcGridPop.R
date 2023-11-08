@@ -33,7 +33,7 @@
 #' }
 #' @export
 calcGridPop <- function(source = "ISIMIP", subtype = "all", # nolint
-                        cellular = TRUE, cells = "magpiecell",
+                        cellular = TRUE, cells = "lpjcell",
                         FiveYear = TRUE, scale = TRUE, # nolint
                         harmonize_until = 2015, urban = FALSE) { # nolint
 

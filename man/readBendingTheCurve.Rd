@@ -23,5 +23,5 @@ Read bending the curve data
 
 }
 \author{
-Patrick v. Jeetze, Michael Windisch
+Patrick v. Jeetze
 }

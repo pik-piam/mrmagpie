@@ -4,11 +4,13 @@
 #' @param timestep 5-year or yearly
 #' @param cellular cellular is true
 #' @param subtype impact for rcp based laborprod decrease, relief for LCLM based relief of impact
+#' @param cells "magpiecell" or "lpjcell"
 #' @return List of magpie object of gridded (0.5) labour productivity as percentage of full labour prod 1
 #' @author Michael Windisch, Florian Humpenöder
 #' @importFrom magclass dimSums mbind
 
-calcLabourProdImpactEmu <- function(timestep = "5year", cellular = TRUE, subtype = "impact") {
+calcLabourProdImpactEmu <- function(timestep = "5year", cellular = TRUE,
+                                    subtype = "impact", cells = "lpjcell") {
 
   out <- readSource("LabourProdImpactEmu", convert = "onlycorrect")
 
@@ -47,11 +49,14 @@ calcLabourProdImpactEmu <- function(timestep = "5year", cellular = TRUE, subtype
 
   out <- mbind(lower, middle, upper)
 
-  avlCropAreaWeight <- calcOutput("AvlCropland", cells = "magpiecell",
+  avlCropAreaWeight <- calcOutput("AvlCropland", cells = cells,
                                   marginal_land = "all_marginal:rainfed_and_irrigated",
                                   country_level = FALSE, aggregate = FALSE)
   avlCropAreaWeight[avlCropAreaWeight == 0] <- 10^-10
 
+  if (cells == "magpiecell") {
+    out <- mrcommons::toolCoord2Isocell(out, cells = cells, fillMissing = 1)
+  }
 
   return(list(x            = out,
               weight       = avlCropAreaWeight,

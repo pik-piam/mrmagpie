@@ -26,7 +26,7 @@
 #' @export
 
 calcAreaEquippedForIrrigation <- function(cellular = FALSE,
-                                          cells = "magpiecell",
+                                          cells = "lpjcell",
                                           selectyears = "past") {
 
   selectyears <- sort(findset(selectyears, noset = "original"))

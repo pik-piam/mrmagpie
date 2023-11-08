@@ -1,14 +1,15 @@
-#' Cluster per Region set manually
+#' @title toolClusterPerRegionManual
 #'
-#' This function translates weights into number of clusters per region as it
-#' is needed for ClusterKMeans. Weights have to sum up to total number of clusters.
+#' @description This function translates weights into number of clusters
+#'              per region as it is needed for ClusterKMeans.
+#'              Weights have to sum up to total number of clusters.
 #'
-#' @param cells spatial names as returned by \code{getCells}
-#' @param ncluster The desired total number of clusters.
+#' @param cells        spatial names as returned by \code{getCells}
+#' @param ncluster     The desired total number of clusters.
 #' @param ncluster2reg named vector with numbers per region
 #'
-#' @return A matrix with regions in rows and number of cells and clusters in
-#' columns
+#' @return A matrix with regions in rows and number of cells
+#'         and clusters in columns
 #' @author Kristine Karstens
 #' @seealso \code{\link{calcClusterKMeans}}, \code{\link{calcClusterBase}}
 

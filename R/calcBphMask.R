@@ -2,6 +2,7 @@
 #' @description Mask of Datapoints of biogeophysical temperature change of afforestation (degree C)
 #'              to be used as weight.
 #'              File is based on observation datasets of Bright et al. 2017 and Duveiller et al. 2018
+#' @param cells lpjcell for 67420 cells or magpiecell for 59199 cells
 #' @return magpie object in cellular resolution
 #' @author Michael Windisch, Felicitas Beier
 #'
@@ -12,18 +13,23 @@
 #'
 #' @importFrom madrat readSource
 
-calcBphMask <- function() {
+calcBphMask <- function(cells = "lpjcell") {
 
   # load BphMask data
   x <- readSource("Windisch2021", subtype = "refordefor_dT_ANN_nonzeromask_05",
                   convert = "onlycorrect")
 
-  weight <- calcOutput("CellArea", aggregate = FALSE)
+  # weight for clustering
+  weight <- calcOutput("LandArea", cells = cells, aggregate = FALSE)
 
-  return(list(
-    x = x,
-    weight = weight,
-    unit = "none",
-    description = "Nonan Mask of BPH Effect Dataset",
-    isocountries = FALSE))
+  # reduce number of cells
+  if (cells == "magpiecell") {
+    x      <- toolCoord2Isocell(x, cells = cells)
+  }
+
+  return(list(x = x,
+              weight = weight,
+              unit = "none",
+              description = "Nonan Mask of BPH Effect Dataset",
+              isocountries = FALSE))
 }

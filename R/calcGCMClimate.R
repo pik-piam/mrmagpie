@@ -23,7 +23,7 @@
 
 calcGCMClimate <- function(subtype = "ISIMIP3bv2:IPSL-CM6A-LR:ssp126:1850-2100:tas:annual_mean",
                                smooth = 0,
-                               cells = "magpiecell") {
+                               cells = "lpjcell") {
   ###### CONFIG ######
   splittingYear  <- 2014
   histName       <- "historical"

@@ -1,8 +1,10 @@
 #' @title calcLuh2SideLayers
 #' @description Function extracts biodiversity data for LUH2 land cover types
 #'
+#' @param cells  number of cells to be returned: magpiecell (59199), lpjcell (67420)
+#'
 #' @return magpie object in cellular resolution
-#' @author Michael Windisch
+#' @author Patrick v. Jeetze
 #'
 #' @examples
 #' \dontrun{
@@ -12,15 +14,20 @@
 #' @importFrom magpiesets findset
 #'
 
-calcLuh2SideLayers <- function() {
+calcLuh2SideLayers <- function(cells = "lpjcell") {
 
-  x      <- readSource("BendingTheCurve", subtype = "luh2_side_layers", convert = "onlycorrect")
-  weight <- calcOutput("CellArea", aggregate = FALSE)
+  x  <- readSource("BendingTheCurve", subtype = "luh2_side_layers", convert = "onlycorrect")
 
-return(list(
-  x = x,
-  weight = weight,
-  unit = "boolean",
-  description = "Data from LUH2 provided by David Leclere from IIASA, Bending the curve on biodiversity loss",
-  isocountries = FALSE))
+  if (cells == "magpiecell") {
+    x <- toolCoord2Isocell(x, cells = cells)
+  }
+
+  weight <- calcOutput("LandArea", cells = cells, aggregate = FALSE)
+
+  return(list(x = x,
+              weight = weight,
+              unit = "boolean",
+              description = paste0("Data from LUH2 provided by David Leclere from IIASA, ",
+                                   "Bending the curve on biodiversity loss"),
+              isocountries = FALSE))
 }

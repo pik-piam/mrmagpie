@@ -1,20 +1,24 @@
-#' Cluster per Region
+#' @title toolClusterPerRegion
 #'
-#' This function calculates an appropriate number of clusters per region as it
-#' is needed for ClusterKMeans
+#' @description This function calculates an appropriate number of clusters
+#'              per region as it is needed for ClusterKMeans
 #'
-#' @param cells spatial names as returned by \code{getCells}
+#' @param cells    spatial names as returned by \code{getCells}
 #' @param ncluster The desired total number of clusters.
-#' @param weight named vector with weighting factors for each region for the cluster distribution
-#' ,e.g. weight=c(AFR=3,EUR=0.5). weight > 1 will grant more cluster to a region and
-#' weight < 1 less cluster than by default.
-#' @return A matrix with regions in rows and number of cells and clusters in
-#' columns
+#' @param weight   named vector with weighting factors for each region
+#'                 for the cluster distribution,
+#'                 e.g. weight=c(AFR=3,EUR=0.5).
+#'                 weight > 1 will grant more cluster to a region and
+#'                 weight < 1 less cluster than by default.
+#' @return A matrix with regions in rows and number of cells
+#'         and clusters in columns
 #' @author Jan Philipp Dietrich
 #' @seealso \code{\link{calcClusterKMeans}}, \code{\link{calcClusterBase}}
 
 toolClusterPerRegion <- function(cells, ncluster, weight = NULL) {
+
   regions <- unique(sub("\\..*$", "", cells))
+
   if (length(regions) > ncluster) stop("More regions than cluster. Clustering stopped!")
   calcw <- function(weight, regions) {
     w <- rep(1, length(regions))

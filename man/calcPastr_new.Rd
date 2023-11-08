@@ -7,8 +7,9 @@
 calcPastr_new(
   past_mngmt = "me2",
   lpjml = "lpjml5p2_pasture",
-  climatetype = "IPSL_CM6A_LR",
-  scenario = "ssp126_co2_limN"
+  climatetype = "MRI-ESM2-0:ssp370",
+  scenario = "/co2/Nreturn0p5/limN",
+  cells = "lpjcell"
 )
 }
 \arguments{
@@ -19,6 +20,8 @@ calcPastr_new(
 \item{climatetype}{Switch between different climate scenarios (default: "CRU_4")}
 
 \item{scenario}{specify ssp scenario}
+
+\item{cells}{"magpiecell" for 59199 cells or "lpjcell" for 67420 cells}
 }
 \value{
 magpie object in cellular resolution

@@ -1,8 +1,10 @@
 #' @title calcPastrTauHist
 #' @description Calculates managed pastures Tau based on FAO yield trends for 1995.
 #' @param past_mngmt Pasture management reference yield
+#' @param cells      "magpiecell" for 59199 cells or "lpjcell" for 67420 cells
 #' @return List of magpie objects with results on country level, weight on country level, unit and description.
 #' @author Marcos Alves
+#' @importFrom magpiesets findset
 #' @examples
 #' \dontrun{
 #' calcOutput("PastrTauHist", past_mngmt)
@@ -10,20 +12,19 @@
 #'
 #' @importFrom magclass where
 
-calcPastrTauHist <- function(past_mngmt = "2me") { # nolint
+calcPastrTauHist <- function(past_mngmt = "mdef", cells = "lpjcell") { # nolint
 
   pastMngmt <- past_mngmt # nolint
 
   past <- findset("past")
   # Production
-  prod <- calcOutput("GrasslandBiomass", aggregate = FALSE)[, past, "pastr"]
+  prod <- calcOutput("GrasslandBiomass", cells = cells,
+                     aggregate = FALSE)[, past, "pastr"]
   prod <- toolCountryFill(prod, fill = 0)
 
-  # regional mapping
-  cell2reg <- toolGetMapping("CountryToCellMapping.csv", type = "cell", where = "mappingfolder")
-
   # pasture areas
-  area <- calcOutput("LUH2v2", landuse_types = "LUH2v2", cellular = FALSE, aggregate = FALSE)[, past, "pastr"]
+  area <- calcOutput("LUH2v2", landuse_types = "LUH2v2",
+                     cellular = FALSE, aggregate = FALSE)[, past, "pastr"]
   area <- toolCountryFill(area, fill = 0)
 
   # Adding 'otherland' as an extra source of grass biomass comparable
@@ -39,16 +40,37 @@ calcPastrTauHist <- function(past_mngmt = "2me") { # nolint
   yact[is.nan(yact) | is.infinite(yact)] <- 0
 
   # reference yields
-  yref <- calcOutput("GrasslandsYields",
-    lpjml = "lpjml5p2_pasture", climatetype = "MRI-ESM2-0:ssp245", subtype = "/co2/Nreturn0p5", # nolint
-    lsu_levels = c(seq(0, 2.2, 0.2), 2.5), past_mngmt = pastMngmt,
+  yref <- calcOutput("GrasslandsYields", cells = cells,
+    lpjml = "lpjml5p2_pasture", climatetype = "MRI-ESM2-0:ssp245",
+    subtype = "/co2/Nreturn0p5", # nolint: absolute_path_linter.
+    lsu_levels = c(seq(0, 2.2, 0.2), 2.5), past_mngmt = pastMngmt, # nolint
     aggregate = FALSE
   )[, past, "pastr.rainfed"]
 
   yref <- collapseNames(yref)
 
-  yrefWeights <- calcOutput("LUH2v2", landuse_types = "LUH2v2", cellular = TRUE, aggregate = FALSE)[, past, "pastr"]
-  yref <- toolAggregate(yref, rel = cell2reg, from = "celliso", to = "iso", weight = yrefWeights)
+  yrefWeights <- calcOutput("LUH2v2", landuse_types = "LUH2v2",
+                            cellular = TRUE, cells = cells,
+                            aggregate = FALSE)[, past, "pastr"]
+
+  if (cells == "magpiecell") {
+    # mapping
+    cell2reg <- toolGetMapping("CountryToCellMapping.csv",
+                               type = "cell", where = "mappingfolder")
+    yref <- toolAggregate(yref, rel = cell2reg, weight = yrefWeights,
+                          from = "celliso", to = "iso")
+  } else if (cells == "lpjcell") {
+    # coordinate-to-cell mapping
+    coord2iso <- toolGetMappingCoord2Country()
+    # collapse iso dimension for mapping
+    yref        <- collapseDim(yref, dim = 1.3)
+    yrefWeights <- collapseDim(yrefWeights, dim = 1.3)
+    # country-level grassland yields
+    yref <- toolAggregate(yref, rel = coord2iso, weight = yrefWeights,
+                          from = "coords", to = "iso")
+  } else {
+    stop("Please select cells magpiecell or lpjcell")
+  }
   yref <- toolCountryFill(yref, fill = 0)
 
   # tau calculation
@@ -78,6 +100,7 @@ calcPastrTauHist <- function(past_mngmt = "2me") { # nolint
     unit = "1",
     min = 0,
     max = 10,
-    description = "Historical trends in managed pastures land use intensity (Tau) based on FAO yield trends"
+    description = paste0("Historical trends in managed pastures ",
+                         "land use intensity (Tau) based on FAO yield trends")
   ))
 }

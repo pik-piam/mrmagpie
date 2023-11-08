@@ -1,13 +1,20 @@
 #' @title calcCluster
 #' @description This function calculates the aggregation mapping for a given cluster methodology
-#' @param ctype aggregation clustering type, which is a combination of a single letter, indicating the cluster
-#' methodology, and a number, indicating the number of resulting clusters. Available methodologies are hierarchical
-#' clustering (h), normalized k-means clustering (n), combined hierarchical/normalized k-means clustering (c) and
-#' for manual setting for clusters per region (m). In the combined clustering hierarchical clustering is used to
-#' determine the cluster distribution among regions whereasit is manually set for the m type. Both use normalized
-#' k-means for the clustering within a region.
-#' @param regionscode regionscode of the regional mapping to be used. Must agree with the regionscode of the mapping
-#' mentioned in the madrat config! Can be retrieved via \code{regionscode()}.
+#' @param ctype aggregation clustering type, which is a combination of
+#'              a single letter, indicating the cluster methodology, and
+#'              a number, indicating the number of resulting clusters.
+#'              Available methodologies are hierarchical clustering (h),
+#'              normalized k-means clustering (n),
+#'              combined hierarchical/normalized k-means clustering (c) and
+#'              manual setting for clusters per region (m).
+#'              In the combined clustering hierarchical clustering is used to
+#'              determine the cluster distribution among regions whereasit is
+#'              manually set for the m type. Both use normalized
+#'              k-means for the clustering within a region.
+#' @param regionscode regionscode of the regional mapping to be used.
+#'                    Must agree with the regionscode of the mapping
+#'                    mentioned in the madrat config!
+#'                    Can be retrieved via \code{regionscode()}.
 #' @param seed Seed for Random Number Generation. If set to NULL it is chosen automatically, if set to an integer it
 #' will always return the same pseudo-random numbers (useful to get identical clusters under identical inputs for
 #' n and c clustering)
@@ -22,7 +29,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' calcOutput("Cluster", type = "c200", aggregate = FALSE)
+#' calcOutput("Cluster", ctype = "c200", aggregate = FALSE)
 #' }
 #' @importFrom madrat calcOutput
 
@@ -35,7 +42,7 @@ calcCluster <- function(ctype, regionscode = madrat::regionscode(), seed = 42, w
   if (mode == "n") {
     mapping <- calcOutput("ClusterKMeans", regionscode = regionscode, ncluster = ncluster, weight = weight,
                           seed = seed, lpjml = lpjml, clusterdata = clusterdata, aggregate = FALSE)
-  } else if (mode == "h" | mode == "w" | mode == "s") {
+  } else if (mode == "h" || mode == "w" || mode == "s") {
     mapping <- calcOutput("ClusterHierarchical", regionscode = regionscode, ncluster = ncluster,
                           mode = mode, weight = weight, lpjml = lpjml, clusterdata = clusterdata, aggregate = FALSE)
   } else if (mode == "c") {
@@ -69,12 +76,15 @@ calcCluster <- function(ctype, regionscode = madrat::regionscode(), seed = 42, w
                         country = sub(pattern, "\\1", getCells(mapping)),
                         global  = "GLO")
 
-  return(list(
-    x = mapping,
-    weight = NULL,
-    unit = "1",
-    class = "data.frame",
-    description = "Mapping between cells and cluster",
-    isocountries = FALSE,
-    putInPUC = FALSE))
+  # Add coordinates to cell (x.y.iso)
+  coord2country <- toolGetMappingCoord2Country()
+  mapping$cell  <- paste(coord2country$coords, coord2country$iso, sep = ".")
+
+  return(list(x = mapping,
+              weight = NULL,
+              unit = "1",
+              class = "data.frame",
+              description = "Mapping between cells and cluster",
+              isocountries = FALSE,
+              putInPUC = FALSE))
 }

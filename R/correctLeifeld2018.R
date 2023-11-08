@@ -8,17 +8,10 @@
 #' \dontrun{
 #'   readSource("Leifeld2018", convert="onlycorrect")
 #' }
-#' @importFrom mrcommons toolCell2isoCell
 #' @importFrom magclass getYears getNames
 
 
 correctLeifeld2018 <- function(x) {
-
-  if (hasCoords(x)) {
-    x <- toolCoord2Isocell(x, fillMissing = 0)
-  } else {
-    x <- toolCell2isoCell(x)
-  }
 
   getYears(x) <- NULL
   getNames(x) <- NULL

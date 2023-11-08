@@ -9,56 +9,43 @@
 #' }
 #' @importFrom raster brick subset as.matrix t
 #' @importFrom ncdf4 nc_open ncvar_get
-#' @importFrom madrat toolGetMapping
+#' @importFrom mrcommons toolGetMappingCoord2Country
 #' @importFrom magclass clean_magpie add_dimension setYears getSets
 #' @export
 
 readGFAD <- function() {
-  poulterData <- "GFAD_V1-1.nc"
 
-  gfad <- nc_open(poulterData)
+  poulterData   <- "GFAD_V1-1.nc"
+  gfad          <- nc_open(poulterData)
 
-  mapping   <- toolGetMapping(type = "cell", name = "CountryToCellMapping.csv", where = "mappingfolder")
+  mapping       <- toolGetMappingCoord2Country()
 
-  lon <- ncvar_get(gfad, "lon")
-  lat <- ncvar_get(gfad, "lat")
-
-  ageClass <- paste0("X", 1:15)
+  ageClass      <- paste0("X", 1:15)
   forestPoulter <- c("NEEV", "NEDE", "BREV", "BRDC")
 
   temp <- NULL
 
   for (forestType in seq_along(forestPoulter)) {
     for (i in ageClass) {
+
       b <- suppressWarnings(brick(poulterData, level = forestType))
       b <- subset(b, i)
 
-      cellNames <- mapping$celliso
+      mag <- as.magpie(b)
+      mag <- mag[mapping$coords, , ]
+      getItems(mag, dim = 2) <- "y2010"
+      getItems(mag, dim = 3) <- i
 
-      # Change longitude and latitude
-      matrix <- t(as.matrix(b))
+      getSets(mag) <- c("x", "y", "t", "ac")
+      mag <- add_dimension(x = mag, dim = 3.1,
+                           add = "type",
+                           nm = forestPoulter[forestType])
 
-      # Create array for 59199 isocells, 1 year and 1 data dimension
-      mag   <- array(NA, dim = c(59199, 1, 1), dimnames = list(cellNames, "y2010", i))
-
-      # Fill array with data from raster object (note magpie_coord are
-
-      for (j in 1:59199) {
-        mag[j, , ] <- matrix[which(magpie_coord[j, 1] == lon),
-                           which(magpie_coord[j, 2] == lat)]
-      }
-
-      # Convert array to magpie object and rename set
-      x          <- clean_magpie(as.magpie(mag))
-      getSets(x) <- c("cell", "t", "ac")
-      x <- add_dimension(x = x, dim = 3.1, add = "type", nm = forestPoulter[forestType])
-
-      temp <- mbind(temp, x)
+      temp <- mbind(temp, mag)
     }
   }
 
   out <- setYears(temp, NULL)
-
 
   return(out)
 }
