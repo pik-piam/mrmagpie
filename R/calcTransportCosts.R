@@ -107,8 +107,10 @@ calcTransportCosts <- function(transport = "all") { # nolint
 
   for (i in getNames(transportMagpie)) {
     transportMagpie[, , i] <- toolFillWithRegionAvg(transportPerTonPerDistance[, , names(cftRel)[grep(i, cftRel)]],
-                                                    valueToReplace = Inf, warningThreshold = 0.99)
-    # warning threshold is so high as there is a lack of foddr in SSA
+                                                    valueToReplace = Inf,
+                                                    verbose = FALSE,
+                                                    warningThreshold = 1.1)
+    # warning threshold is so high as there is a lack of foddr in SSA, and JPN gets replcaced completely
     transportPowerMagpie[, , i] <- transportPower[, , names(cftRel)[grep(i, cftRel)]]
   }
 
