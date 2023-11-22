@@ -30,9 +30,9 @@ authors:
 - family-names: Humpenoeder
   given-names: Florian
   email: humpenoeder@pik-potsdam.de
-- family-names: Führlich
+- family-names: Sauer
   given-names: Pascal
-  email: pascal.fuehrlich@pik-potsdam.de
+  email: pascal.sauer@pik-potsdam.de
 license: LGPL-3.0
 repository-code: https://github.com/pik-piam/mrmagpie
 doi: 10.5281/zenodo.4319612

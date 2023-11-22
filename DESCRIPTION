@@ -13,7 +13,7 @@ Authors@R: c(
     person("Patrick", "v. Jeetze", , "vjeetze@pik-potsdam.de", role = "aut"),
     person("Abhijeet", "Mishra", , "mishra@pik-potsdam.de", role = "aut"),
     person("Florian", "Humpenoeder", , "humpenoeder@pik-potsdam.de", role = "aut"),
-    person("Pascal", "Führlich", , "pascal.fuehrlich@pik-potsdam.de", role = "aut")
+    person("Pascal", "Sauer", , "pascal.sauer@pik-potsdam.de", role = "aut")
   )
 Description: Provides functions for MAgPIE country and cellular input data
     generation.
