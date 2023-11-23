@@ -1,6 +1,7 @@
 #' @title calcAgeClassDistribution
 #' @description This function calculates the share of each age class in secondary forests in each
 #'              MAgPIE simulation cluster based on Global Forest Age Dataset from Poulter et al. 2019
+#' @param cells lpjcell for 67420 cells or magpiecell for 59199 cells
 #'
 #' @return magpie object in cluster resolution
 #' @author Abhijeet Mishra, Felicitas Beier
@@ -12,49 +13,46 @@
 #'
 #' @importFrom magclass where
 
-calcAgeClassDistribution <- function() {
+calcAgeClassDistribution <- function(cells = "lpjcell") {
 
-  poulterDataset <- readSource("GFAD", convert = "onlycorrect")  ## Poulter data is fraction of each cell
+  # Cell fraction from poulter data set
+  poulterDataset <- readSource("GFAD", convert = "onlycorrect")
 
-  # Area of cells
-  mapping   <- toolGetMapping(type = "cell", name = "CountryToCellMapping.csv", where = "mappingfolder")
-
-  ## magpie_coord is loaded automatically with package -- not when running line by line
-  cb <- as.data.frame(magpie_coord)
-  cellArea  <- (111e3 * 0.5) * (111e3 * 0.5) * cos(cb$lat / 180 * pi)
-
-  cellArea        <- as.data.frame(cellArea)
-  cellArea$cell   <- mapping$celliso
-  cellAreaMagpie <- as.magpie(cellArea[, c(2, 1)], filter = FALSE)
-  getNames(cellAreaMagpie) <- NULL
+  # Calculate cellarea
+  mapping <- toolGetMappingCoord2Country()
+  cb <- toolGetMapping("LPJ_CellBelongingsToCountries.csv",
+                      type = "cell", where = "mrcommons")
+  cellArea <- (111e3 * 0.5) * (111e3 * 0.5) * cos(cb$lat / 180 * pi)
+  cellArea <- as.magpie(cellArea, spatial = 1)
+  getItems(cellArea, dim = 1, raw = TRUE) <- paste(mapping$coords, mapping$iso, sep = ".")
+  getSets(cellArea) <- c("x", "y", "iso", "year", "data")
 
   ######################
-
-  getCells(poulterDataset) <- mapping$celliso
-
-  forestArea <- poulterDataset * cellAreaMagpie
+  forestArea <- poulterDataset * cellArea
 
   forestArea <- dimSums(forestArea, dim = 3.1)
 
-  getNames(forestArea) <- gsub(pattern = "X", replacement = "class", x = getNames(forestArea))
-
-  zeroForestArea <- dimSums(forestArea, dim = 3)
-
-  acDistribution <- forestArea / dimSums(forestArea, dim = 3)
+  getNames(forestArea) <- gsub(pattern = "X",
+                               replacement = "class",
+                               x = getNames(forestArea))
 
   ## Set age classes to 0 where forest does not exist
   ## Only checking where zero forest area exists
+  zeroForestArea <- dimSums(forestArea, dim = 3)
+  acDistribution <- forestArea / zeroForestArea
   acDistribution[magclass::where((setYears(zeroForestArea, "y2000")) == 0)$true$regions, , ] <- 0
 
   out <- acDistribution
 
-  names(dimnames(out))[1] <- "ISO.cell"
+  if (cells == "magpiecell") {
+    out      <- toolCoord2Isocell(out, cells = cells)
+    cellArea <- toolCoord2Isocell(cellArea, cells = cells)
+  }
 
-  return(list(
-    x = out,
-    weight = cellAreaMagpie,
-    unit = "1",
-    description = "Fraction of each age class in secondary forest from each spatially
-                   explicit cell as described in Poulter age classes",
-    isocountries = FALSE))
+  return(list(x = out,
+              weight = cellArea,
+              unit = "1",
+              description = "Fraction of each age class in secondary forest from each spatially
+                             explicit cell as described in Poulter age classes",
+              isocountries = FALSE))
 }

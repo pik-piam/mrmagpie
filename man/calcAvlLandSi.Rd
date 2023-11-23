@@ -4,7 +4,7 @@
 \alias{calcAvlLandSi}
 \title{calcAvlLandSi}
 \usage{
-calcAvlLandSi(cells = "magpiecell")
+calcAvlLandSi(cells = "lpjcell")
 }
 \arguments{
 \item{cells}{magpiecell (59199 cells) or lpjcell (67420 cells)}
@@ -16,7 +16,9 @@ magpie object in cellular resolution
 Extracts si0 and nsi0 areas based on Ramankutty dataset
 }
 \examples{
-\dontrun{ calcOutput("AvlLandSi", aggregate = FALSE) }
+\dontrun{
+calcOutput("AvlLandSi", aggregate = FALSE)
+}
 
 }
 \author{

@@ -4,7 +4,10 @@
 \alias{calcLivestockDistribution}
 \title{calcLivestockDistribution}
 \usage{
-calcLivestockDistribution()
+calcLivestockDistribution(cells = "lpjcell")
+}
+\arguments{
+\item{cells}{"magpiecell" for 59199 cells or "lpjcell" for 67420 cells}
 }
 \value{
 MAgPIE objects with livestock numbers on a cellular level.

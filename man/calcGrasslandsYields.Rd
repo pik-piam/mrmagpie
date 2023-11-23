@@ -5,17 +5,20 @@
 \title{calcGrasslandsYields}
 \usage{
 calcGrasslandsYields(
-  lpjml = lpjml[["grass"]],
-  climatetype = climatetype,
+  lpjml = "lpjml5p2_pasture",
+  climatetype = "MRI-ESM2-0:ssp370",
+  cells = "lpjcell",
   subtype = "/co2/Nreturn0p5",
   lsu_levels = c(seq(0, 2, 0.2), 2.5),
-  past_mngmt = "me2"
+  past_mngmt = "mdef"
 )
 }
 \arguments{
 \item{lpjml}{Defines LPJmL version for crop/grass and natveg specific inputs}
 
 \item{climatetype}{Global Circulation Model to be used}
+
+\item{cells}{"magpiecell" for 59199 cells or "lpjcell" for 67420 cells}
 
 \item{subtype}{Switch between different climate scenarios}
 

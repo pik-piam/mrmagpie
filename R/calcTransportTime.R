@@ -11,7 +11,7 @@
 #' calcOutput("TransportTime", aggregate = FALSE)
 #' }
 #'
-calcTransportTime <- function(subtype = "cities50", cells = "magpiecell") {
+calcTransportTime <- function(subtype = "cities50", cells = "lpjcell") {
 
   x <- readSource("TravelTimeNelson2019", subtype = subtype, convert = FALSE)
 
@@ -19,15 +19,14 @@ calcTransportTime <- function(subtype = "cities50", cells = "magpiecell") {
     x <- toolCoord2Isocell(x)
   }
 
-  weight <- calcOutput("CellArea", cells = cells, aggregate = FALSE)
+  weight <- calcOutput("LandArea", cells = cells, aggregate = FALSE)
 
- getYears(x) <- NULL
- getNames(x) <- NULL
+  getYears(x) <- NULL
+  getNames(x) <- NULL
 
-  return(list(
-    x = x,
-    weight = weight,
-    unit = "Travel Time (minutes)",
-    description = "Travel time to major cities or ports",
-    isocountries = FALSE))
+  return(list(x = x,
+              weight = weight,
+              unit = "Travel Time (minutes)",
+              description = "Travel time to major cities or ports",
+              isocountries = FALSE))
 }

@@ -8,7 +8,7 @@ calcGridPop(
   source = "ISIMIP",
   subtype = "all",
   cellular = TRUE,
-  cells = "magpiecell",
+  cells = "lpjcell",
   FiveYear = TRUE,
   scale = TRUE,
   harmonize_until = 2015,

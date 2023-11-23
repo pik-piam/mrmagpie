@@ -29,7 +29,7 @@ readTravelTimeNelson2019 <- function(subtype = "cities50") {
 
   x <- rast(file)
   x <- terra::classify(x, cbind(65534, 65536, NA), right = FALSE)
-  x <- aggregate(x, fact = 60, fun = "mean")
+  x <- terra::aggregate(x, fact = 60, fun = "mean", na.rm = TRUE)
   x <- terra::project(x, r)
 
 # fill NAs with focal function (neighbour mean)

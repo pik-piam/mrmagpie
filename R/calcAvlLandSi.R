@@ -7,7 +7,9 @@
 #' @author Felicitas Beier
 #'
 #' @examples
-#' \dontrun{ calcOutput("AvlLandSi", aggregate = FALSE) }
+#' \dontrun{
+#' calcOutput("AvlLandSi", aggregate = FALSE)
+#' }
 #'
 #' @importFrom madrat readSource calcOutput
 #' @importFrom magclass dimSums getCells getYears getNames mbind collapseDim
@@ -15,55 +17,59 @@
 #' @importFrom magpiesets addLocation
 #'
 
-calcAvlLandSi <-function(cells="magpiecell") {
-
+calcAvlLandSi <- function(cells = "lpjcell") {
   # input data (Ramankutty)
-  x        <- readSource("Ramankutty", convert="onlycorrect")
+  x        <- readSource("Ramankutty", convert = "onlycorrect")
 
   # land area according to LUH in initialization year (1995) [note: landarea is constant, so the year does not matter]
-  landarea <- calcOutput("LUH2v2", landuse_types="magpie", aggregate=FALSE, cellular=TRUE, cells="lpjcell", irrigation=FALSE, years="y1995")
-  landarea <- collapseDim(addLocation(landarea), dim=c("N","cell"))
-  croparea <- landarea[,,"crop"]
-  landarea <- dimSums(landarea, dim=3)
+  landarea <- calcOutput("LUH2v2", landuse_types = "magpie", aggregate = FALSE,
+                         cellular = TRUE, cells = "lpjcell", irrigation = FALSE, years = "y1995")
+  croparea <- landarea[, , "crop"]
+  landarea <- dimSums(landarea, dim = 3)
 
   # add missing cells to Ramankutty data (fill with 0)
-  tmp <- new.magpie(cells_and_regions = getCells(landarea)[getCells(landarea) %in% getCells(x)==FALSE], years = getYears(x), names = getNames(x), fill = 0)
-  x   <- mbind(x, tmp)
+  coords67420 <- paste(getItems(landarea, dim = "x", full = TRUE),
+                       getItems(landarea, dim = "y", full = TRUE),
+                       sep = ".")
+  coordsRamankutty <-  getItems(x, dim = 1)
+  tmp <- new.magpie(cells_and_regions = setdiff(coords67420, coordsRamankutty),
+                    years = getYears(x),
+                    names = getNames(x),
+                    fill = 0)
+  x <- mbind(x, tmp)
+  x <- x[coords67420, , ]
+  getItems(x, dim = 1, raw = TRUE) <- getItems(landarea, dim = 1)
 
   #### Calculations
   # cell is either suitable or not suitable for cropland
-  si0_binary                    <- x
-  si0_binary[si0_binary > 0.1]  <- 1
-  si0_binary[si0_binary <= 0.1] <- 0
-  getNames(si0_binary) <- NULL
+  isSI0               <- x
+  isSI0[isSI0 > 0.1]  <- 1
+  isSI0[isSI0 <= 0.1] <- 0
+  getItems(isSI0, dim = 3) <- NULL
+  getItems(isSI0, dim = 2) <- NULL
 
   # suitable
-  si0  <- landarea * si0_binary[getCells(landarea),,]
+  si0  <- landarea * isSI0
   # correction of suitable land to LUH croparea (land is declared as suitable where LUH reports cropland)
   si0  <- pmax(croparea, si0)
   # not suitable for cropland
   nsi0 <- landarea - si0
 
-  out  <- mbind(setNames(si0,"si0"), setNames(nsi0,"nsi0"))
+  out  <- mbind(setNames(si0, "si0"), setNames(nsi0, "nsi0"))
 
-  # rename dimensions and names to standard x.y.iso
-  map                     <- toolGetMappingCoord2Country()
-  out                     <- out[map$coords,,]
-  getCells(out)           <- paste(map$coords, map$iso, sep=".")
-  names(dimnames(out))[1] <- "x.y.iso"
-
-  if (cells=="magpiecell") {
+  if (cells == "magpiecell") {
     out <- toolCoord2Isocell(out)
-  } else if (cells=="lpjcell") {
+  } else if (cells == "lpjcell") {
     out <- out
   } else {
     stop("Please specify cells argument")
   }
 
-  return(list(
-    x=out,
-    weight=NULL,
-    unit="Mha",
-    description="si and nsi0 areas based on Ramankutty suitability information and LUH area information from initialization year",
-    isocountries=FALSE))
+  return(list(x = out,
+              weight = NULL,
+              unit = "Mha",
+              description = paste0("si and nsi0 areas based on Ramankutty",
+                                  "suitability information and LUH area",
+                                  "information from initialization year"),
+              isocountries = FALSE))
 }

@@ -10,12 +10,13 @@ toolApplyRegionNames(cdata, regionscode)
 \item{cdata}{a cluster data file as produced by cluster_base}
 
 \item{regionscode}{regionscode of the regional mapping to be used.
-Must agree with the regionscode of the mapping mentioned in the madrat
-config! Can be retrieved via \code{regionscode()}.}
+Must agree with the regionscode of the mapping mentioned
+in the madrat config!
+Can be retrieved via \code{regionscode()}.}
 }
 \value{
 the cluster data file with region names in spatial dimension
-rather than country names
+        rather than country names
 }
 \description{
 This tool function replaces country names with region names
@@ -30,5 +31,5 @@ the data.
 \code{\link{calcClusterKMeans}}, \code{\link{calcClusterBase}}
 }
 \author{
-Jan Philipp Dietrich
+Jan Philipp Dietrich, Felicitas Beier
 }

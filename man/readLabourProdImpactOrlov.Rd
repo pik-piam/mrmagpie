@@ -15,7 +15,10 @@ readLabourProdImpactOrlov(
 magpie object of gridded productivity as share of 1 (full productivity)
 }
 \description{
-read in labour productivity impacts from climate change from Orlov (see Orlov et al. 2019. Economic Losses of Heat-Induced Reductions in Outdoor Worker Productivity: a Case Study of Europe. Economics of Disasters and Climate Change, 3(3), 191-211.)
+read in labour productivity impacts from climate change from Orlov
+             (see Orlov et al. 2019. Economic Losses of Heat-Induced Reductions 
+             in Outdoor Worker Productivity: a Case Study of Europe.
+             Economics of Disasters and Climate Change, 3(3), 191-211.)
 }
 \seealso{
 \code{\link{readSource}}

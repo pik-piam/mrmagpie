@@ -7,7 +7,8 @@
 calcPastrMngtLevels(
   climatetype = "MRI-ESM2-0:ssp370",
   options = c("brazil_1", "brazil_2", "brazil_4"),
-  cost_level = c(1, 2, 3)
+  cost_level = c(1, 2, 3),
+  cells = "lpjcell"
 )
 }
 \arguments{
@@ -16,6 +17,8 @@ calcPastrMngtLevels(
 \item{options}{Management options simulated by LPJml}
 
 \item{cost_level}{level cost for different past management options}
+
+\item{cells}{"magpiecell" for 59199 cells or "lpjcell" for 67420 cells}
 }
 \value{
 magpie object in 0.5 degree resolution

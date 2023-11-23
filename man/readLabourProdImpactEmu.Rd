@@ -18,5 +18,5 @@ based on method of Orlov et al. 2019. Economics of Disasters and Climate Change,
 \code{\link{readSource}}
 }
 \author{
-Michael Windisch, Florian Humpenöder
+Michael Windisch, Florian Humpenöder, Felicitas Beier
 }

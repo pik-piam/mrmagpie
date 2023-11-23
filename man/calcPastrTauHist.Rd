@@ -4,10 +4,12 @@
 \alias{calcPastrTauHist}
 \title{calcPastrTauHist}
 \usage{
-calcPastrTauHist(past_mngmt = "2me")
+calcPastrTauHist(past_mngmt = "mdef", cells = "lpjcell")
 }
 \arguments{
 \item{past_mngmt}{Pasture management reference yield}
+
+\item{cells}{"magpiecell" for 59199 cells or "lpjcell" for 67420 cells}
 }
 \value{
 List of magpie objects with results on country level, weight on country level, unit and description.

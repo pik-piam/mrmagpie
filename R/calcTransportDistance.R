@@ -15,7 +15,7 @@
 calcTransportDistance <- function() {
 
   x      <- readSource("TransportDistance", convert = "onlycorrect")
-  weight <- calcOutput("CellArea", aggregate = FALSE)
+  weight <- calcOutput("LandArea", aggregate = FALSE)
 
   return(list(
     x = x,

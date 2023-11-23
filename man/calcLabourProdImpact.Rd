@@ -4,7 +4,12 @@
 \alias{calcLabourProdImpact}
 \title{calcLabourProdImpact}
 \usage{
-calcLabourProdImpact(timestep = "5year", subtype = "Orlov", cellular = TRUE)
+calcLabourProdImpact(
+  timestep = "5year",
+  subtype = "Orlov",
+  cellular = TRUE,
+  cells = "lpjcell"
+)
 }
 \arguments{
 \item{timestep}{5year or yearly}
@@ -12,6 +17,8 @@ calcLabourProdImpact(timestep = "5year", subtype = "Orlov", cellular = TRUE)
 \item{subtype}{data source comes from}
 
 \item{cellular}{cellular is true}
+
+\item{cells}{"magpiecell" or "lpjcell"}
 }
 \value{
 List of magpie objects with results on 0.5deg grid level, weights based on production value, unit (ratio) and description.

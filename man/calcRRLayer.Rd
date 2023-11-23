@@ -4,7 +4,10 @@
 \alias{calcRRLayer}
 \title{calcRRLayer}
 \usage{
-calcRRLayer()
+calcRRLayer(cells = "lpjcell")
+}
+\arguments{
+\item{cells}{number of cells to be returned: magpiecell (59199), lpjcell (67420)}
 }
 \value{
 magpie object in cellular resolution
@@ -19,5 +22,5 @@ calcOutput("RRLayer", aggregate = FALSE)
 
 }
 \author{
-Michael Windisch, Patrick v. Jeetze
+Patrick v. Jeetze
 }

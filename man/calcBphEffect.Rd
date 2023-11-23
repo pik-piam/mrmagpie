@@ -4,14 +4,18 @@
 \alias{calcBphEffect}
 \title{calcBphEffect}
 \usage{
-calcBphEffect()
+calcBphEffect(cells = "lpjcell")
+}
+\arguments{
+\item{cells}{lpjcell for 67420 cells or magpiecell for 59199 cells}
 }
 \value{
 magpie object in cellular resolution
 }
 \description{
-Biogeophysical temperature change of afforestation (degree C). File is based on observation datasets
-of Bright et al. 2017 and Duveiller et al. 2018
+Biogeophysical temperature change of afforestation (degree C).
+             File is based on observation datasets of Bright et al. 2017
+             and Duveiller et al. 2018
 }
 \examples{
 \dontrun{
