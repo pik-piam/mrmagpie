@@ -8,7 +8,7 @@
 #'              Options: "magpiecell" (59199), "lpjcell" (67420)
 #'
 #' @return List of magpie object with results on cluster level
-#' @author Marcos Alves, Kristine Karstens
+#' @author Marcos Alves, Kristine Karstens, Alexandre Köberle
 #' @examples
 #' \dontrun{
 #' calcOutput("PastureSuit")
@@ -102,7 +102,6 @@ calcPastureSuit <- function(climatetype = "MRI-ESM2-0:ssp126",
   pastureSuitArea <- collapseNames(pastureSuitArea)
   pastureSuitArea[, pastAll, ] <- histPastr[, pastAll, ]
   #maybe change to: pastureSuitArea[, pastAll, ] <- max(histPastr[, pastAll, ], pastureSuitArea[, pastAll, ]) #nolint
-  pastureSuitArea <- setNames(pastureSuitArea, "yields")
 
   # Reduce number of grid cells to 59199
   if (cells == "magpiecell") {
