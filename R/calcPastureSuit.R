@@ -8,7 +8,7 @@
 #'              Options: "magpiecell" (59199), "lpjcell" (67420)
 #'
 #' @return List of magpie object with results on cluster level
-#' @author Marcos Alves, Kristine Karstens
+#' @author Marcos Alves, Kristine Karstens, Alexandre Köberle
 #' @examples
 #' \dontrun{
 #' calcOutput("PastureSuit")

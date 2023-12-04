@@ -31,5 +31,5 @@ calcOutput("PastureSuit")
 }
 }
 \author{
-Marcos Alves, Kristine Karstens
+Marcos Alves, Kristine Karstens, Alexandre Köberle
 }
