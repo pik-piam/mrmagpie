@@ -1,6 +1,6 @@
 # madrat based MAgPIE Input Data Library
 
-R package **mrmagpie**, version **1.39.1**
+R package **mrmagpie**, version **1.39.2**
 
 [![CRAN status](https://www.r-pkg.org/badges/version/mrmagpie)](https://cran.r-project.org/package=mrmagpie) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4319612.svg)](https://doi.org/10.5281/zenodo.4319612) [![R build status](https://github.com/pik-piam/mrmagpie/workflows/check/badge.svg)](https://github.com/pik-piam/mrmagpie/actions) [![codecov](https://codecov.io/gh/pik-piam/mrmagpie/branch/master/graph/badge.svg)](https://app.codecov.io/gh/pik-piam/mrmagpie) [![r-universe](https://pik-piam.r-universe.dev/badges/mrmagpie)](https://pik-piam.r-universe.dev/builds)
 
@@ -39,16 +39,16 @@ In case of questions / problems please contact Kristine Karstens <karstens@pik-p
 
 To cite package **mrmagpie** in publications use:
 
-Karstens K, Dietrich J, Chen D, Windisch M, Alves M, Beier F, Koeberle A, v. Jeetze P, Mishra A, Humpenoeder F, Sauer P (2023). _mrmagpie: madrat based MAgPIE Input Data Library_. doi: 10.5281/zenodo.4319612 (URL: https://doi.org/10.5281/zenodo.4319612), R package version 1.39.1, <URL: https://github.com/pik-piam/mrmagpie>.
+Karstens K, Dietrich J, Chen D, Windisch M, Alves M, Beier F, Köberle A, v. Jeetze P, Mishra A, Humpenoeder F, Sauer P (2023). _mrmagpie: madrat based MAgPIE Input Data Library_. doi: 10.5281/zenodo.4319612 (URL: https://doi.org/10.5281/zenodo.4319612), R package version 1.39.2, <URL: https://github.com/pik-piam/mrmagpie>.
 
 A BibTeX entry for LaTeX users is
 
  ```latex
 @Manual{,
   title = {mrmagpie: madrat based MAgPIE Input Data Library},
-  author = {Kristine Karstens and Jan Philipp Dietrich and David Chen and Michael Windisch and Marcos Alves and Felicitas Beier and Alexandre Koeberle and Patrick {v. Jeetze} and Abhijeet Mishra and Florian Humpenoeder and Pascal Sauer},
+  author = {Kristine Karstens and Jan Philipp Dietrich and David Chen and Michael Windisch and Marcos Alves and Felicitas Beier and Alexandre Köberle and Patrick {v. Jeetze} and Abhijeet Mishra and Florian Humpenoeder and Pascal Sauer},
   year = {2023},
-  note = {R package version 1.39.1},
+  note = {R package version 1.39.2},
   doi = {10.5281/zenodo.4319612},
   url = {https://github.com/pik-piam/mrmagpie},
 }

@@ -27,6 +27,7 @@ Authors:
   \item Michael Windisch
   \item Marcos Alves
   \item Felicitas Beier \email{beier@pik-potsdam.de}
+  \item Alexandre Köberle \email{alexkob@pik-potsdam.de}
   \item Patrick v. Jeetze \email{vjeetze@pik-potsdam.de}
   \item Abhijeet Mishra \email{mishra@pik-potsdam.de}
   \item Florian Humpenoeder \email{humpenoeder@pik-potsdam.de}

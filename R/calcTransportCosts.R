@@ -3,6 +3,7 @@
 #' transport costs, cellular production, and cellular travel time
 #' @param transport "all" or "nonlocal". "all" means all production incurs transport costs,
 #' while "nonlocal" sees only production greater than local rural consumption with transport costs
+#' @param gtapVersion "9" or "81"
 #' @return List of magpie objects with results on country level, weight on country level, unit and description.
 #' @author David M Chen
 #' @seealso
@@ -10,32 +11,46 @@
 #' [calcGTAPTotalTransportCosts()]
 #' @examples
 #' \dontrun{
-#' calcOutput("TransportCosts")
+#' calcOutput("TransportCosts_new")
 #' }
 #'
-calcTransportCosts <- function(transport = "all") { # nolint
+calcTransportCosts <- function(transport = "all", gtapVersion = "9") { # nolint
 
   # load distance (travel time), production, and gtap transport costs
-  distance <- calcOutput("TransportTime", subtype = "cities50", cells = "lpjcell",  aggregate = FALSE)
+  distance <- calcOutput("TransportTime", subtype = "cities50", cells = "magpiecell",  aggregate = FALSE)
+
+  if (gtapVersion == "9") {
+    yr <- 2011
+  } else {
+    yr <- 2004
+  }
 
   if (transport == "all") {
 
-    production <- calcOutput("Production", cellular = TRUE, cells = "lpjcell",
-                             irrigation = FALSE, aggregate = FALSE)[, 2005, "dm"] * 10^6
-    productionLi <- calcOutput("Production", cellular = TRUE, cells = "lpjcell",
+    production <- calcOutput("Production", cellular = TRUE,
+                             irrigation = FALSE, aggregate = FALSE)[, , "dm"] * 10^6
+    productionLi <- calcOutput("Production", cellular = TRUE,
                                irrigation = FALSE, aggregate = FALSE,
-                               products = "kli")[, 2005, "dm"] * 10^6
+                               products = "kli")[, , "dm"] * 10^6
     production <- mbind(production, productionLi)
-
+    production <- time_interpolate(production, interpolated_year = c(2004:2011),
+                                   integrate_interpolated_years = TRUE)
+    production[production < 0] <- 0
+    production <- production[, yr, ]
   } else if (transport == "nonlocal") {
     production <- calcOutput("NonLocalProduction", aggregate = FALSE)[, 2005, ] * 10^6
+    production <- time_interpolate(production, interpolated_year = c(2004:2011),
+                                   integrate_interpolated_years = TRUE)
+    production[production < 0] <- 0
+    production <- production[, yr, ]
+
   } else {
     stop("only all or nonlocal production available for subtype")
   }
 
-  transportGtap <- calcOutput("GTAPTotalTransportCosts", aggregate = FALSE)[, 2004, ] * 10^6
+  transportGtap <- calcOutput("GTAPTotalTransportCosts", version = gtapVersion,
+                              aggregate = FALSE)[, yr, ] * 10^6
   # transform 10^6 USD -> USD
-  # this is  in 2004 and 2007 current USD, and we don't have same year for travel time, and pretend GTAP is 2005
   # some processed products available in GTAP are neglected for the moment neglected here, as we don't have cellular
   # production data for them. These are  "pfb" (fibres) "sgr" ("sugar") "vol" ("oils") "b_t" ("alcohol")  "fst" "wood"
 
@@ -65,17 +80,15 @@ calcTransportCosts <- function(transport = "all") { # nolint
   # calculate transport power (amount * distance) &
   # create average transport costs per ton per distance dummy
   # calculate transport power (amount * distance)
-  tmpPower <- new.magpie(cells_and_regions = getItems(distance, dim = 1),
-                         years = "y2005",
-                         names = names(cftRel),
-                         fill = 0,
-                         sets = c("x", "y", "iso", "year", "data"))
+  mapping <- toolGetMapping(type = "cell", name = "CountryToCellMapping.csv", where = "mappingfolder")
 
-  transportPower <- new.magpie(cells_and_regions = getItems(distance, dim = "iso"),
-                               years = "y2005",
-                               names = names(cftRel),
-                               fill = 0,
-                               sets = c("iso", "year", "data"))
+  tmpPower <- new.magpie(0, cells_and_regions = getItems(distance, dim = 1),
+                         years = yr,
+                         names = names(cftRel))
+
+  transportPower <- new.magpie(0, cells_and_regions = unique(mapping$iso),
+                               years = yr,
+                               names = names(cftRel))
 
   # create average transport costs per ton per distance dummy
   transportPerTonPerDistance <- NULL
@@ -85,8 +98,8 @@ calcTransportCosts <- function(transport = "all") { # nolint
     # should also include rural consumers, and farms
     tmpPower[, , names(cftRel)[i]] <- dimSums(production[, , cftRel[[i]]], dim = 3) * distance
 
-    transportPower[, , names(cftRel)[i]] <- dimSums(x = tmpPower[, , names(cftRel)[i]],
-                                                    dim = c("x", "y"))
+    transportPower[, , names(cftRel)[i]] <- toolAggregate(x = tmpPower[, , names(cftRel)[i]],
+                                                          rel = mapping, from = "celliso", to = "iso")
 
     tpFilled <- toolCountryFill(transportPower, fill = 0) # need to fill first to divide
     transportPerTonPerDistance <- mbind(transportPerTonPerDistance,
@@ -99,10 +112,10 @@ calcTransportCosts <- function(transport = "all") { # nolint
   # Rename GTAP to MAgPIE commodities
   magpieComms <- unlist(cftRel)
 
-  transportMagpie <- transportPowerMagpie <- new.magpie(fill = 0,
+  transportMagpie <- transportPowerMagpie <- new.magpie(0,
                                                         cells_and_regions = getItems(transportPerTonPerDistance,
                                                                                      dim = 1),
-                                                        years = "y2005",
+                                                        years = yr,
                                                         names = magpieComms)
 
   for (i in getNames(transportMagpie)) {
@@ -120,7 +133,6 @@ calcTransportCosts <- function(transport = "all") { # nolint
                                  dim = 3.1, fill = 0)
   transportMagpie[, , c("wood", "woodfuel")] <- transportMagpie[, , "foddr"]
 
-  # what weight to add for these?
   transportPowerMagpie <- add_columns(transportPowerMagpie, addnm = c("pasture", "wood", "woodfuel"),
                                       dim = 3.1, fill = 0)
   transportPowerMagpie[, , c("wood", "woodfuel")] <- transportPowerMagpie[, , "foddr"]

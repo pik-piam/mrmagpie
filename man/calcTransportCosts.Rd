@@ -4,11 +4,13 @@
 \alias{calcTransportCosts}
 \title{calcTransportCosts}
 \usage{
-calcTransportCosts(transport = "all")
+calcTransportCosts(transport = "all", gtapVersion = "9")
 }
 \arguments{
 \item{transport}{"all" or "nonlocal". "all" means all production incurs transport costs,
 while "nonlocal" sees only production greater than local rural consumption with transport costs}
+
+\item{gtapVersion}{"9" or "81"}
 }
 \value{
 List of magpie objects with results on country level, weight on country level, unit and description.
@@ -19,7 +21,7 @@ transport costs, cellular production, and cellular travel time
 }
 \examples{
 \dontrun{
-calcOutput("TransportCosts")
+calcOutput("TransportCosts_new")
 }
 
 }
