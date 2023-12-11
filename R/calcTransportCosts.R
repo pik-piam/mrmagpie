@@ -27,9 +27,9 @@ calcTransportCosts <- function(transport = "all", gtapVersion = "9") { # nolint
 
   if (transport == "all") {
 
-    production <- calcOutput("Production", cellular = TRUE,
+    production <- calcOutput("Production", cellular = TRUE, cells = "magpiecell",
                              irrigation = FALSE, aggregate = FALSE)[, , "dm"] * 10^6
-    productionLi <- calcOutput("Production", cellular = TRUE,
+    productionLi <- calcOutput("Production", cellular = TRUE, cells = "magpiecell",
                                irrigation = FALSE, aggregate = FALSE,
                                products = "kli")[, , "dm"] * 10^6
     production <- mbind(production, productionLi)
