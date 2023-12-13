@@ -38,7 +38,8 @@ calcTransportCosts <- function(transport = "all", gtapVersion = "9") { # nolint
     production[production < 0] <- 0
     production <- production[, yr, ]
   } else if (transport == "nonlocal") {
-    production <- calcOutput("NonLocalProduction", aggregate = FALSE)[, 2005, ] * 10^6
+    production <- calcOutput("NonLocalProduction", cells = "magpiecell",
+                             aggregate = FALSE) * 10^6
     production <- time_interpolate(production, interpolated_year = c(2004:2011),
                                    integrate_interpolated_years = TRUE)
     production[production < 0] <- 0

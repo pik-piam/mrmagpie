@@ -4,7 +4,12 @@
 \alias{calcFoodDemandGridded}
 \title{calcFoodDemandGridded}
 \usage{
-calcFoodDemandGridded(attribute = "dm", prod = "k", feed = TRUE)
+calcFoodDemandGridded(
+  attribute = "dm",
+  prod = "k",
+  feed = TRUE,
+  cells = "lpjcell"
+)
 }
 \arguments{
 \item{attribute}{dm or calories ("ge") or other massbalance attribute}
@@ -12,6 +17,8 @@ calcFoodDemandGridded(attribute = "dm", prod = "k", feed = TRUE)
 \item{prod}{for memory reasons}
 
 \item{feed}{whether to include feed demand in the gridded demand}
+
+\item{cells}{magpiecell or lpjcell (default)}
 }
 \value{
 Gridded magpie object of food demand disaggregated by rural urban pop
