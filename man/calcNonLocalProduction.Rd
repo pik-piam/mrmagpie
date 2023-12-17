@@ -4,7 +4,10 @@
 \alias{calcNonLocalProduction}
 \title{calcNonLocalProduction}
 \usage{
-calcNonLocalProduction()
+calcNonLocalProduction(cells = "lpjcell")
+}
+\arguments{
+\item{cells}{magpiecell or lpjcell (default)}
 }
 \description{
 Calculates grid-level amount of food that would need to be transported,
