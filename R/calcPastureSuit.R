@@ -100,15 +100,8 @@ calcPastureSuit <- function(climatetype = "MRI-ESM2-0:ssp126",
 
   pastureSuitArea <- (pastureSuit * landArea * 100) / 1e6 # (from km2 (x100) to mha (/1e6))
 
-  # New part: Calculating changing year after year
-
-  #pastureSuitAreaChanges <- pastureSuitArea
-  #for (i in 1:(length(getYears(pastureSuitArea)) - 1)) {
-  #  pastureSuitAreaChanges[, i + 1, ] <- (pastureSuitArea[, i + 1, ] - pastureSuitArea[, i, ])
-  #}
-
-  #pastureSuitAreaChanges[, 1, ] <- 0
   pastureSuitArea <- toolHoldConstantBeyondEnd(pastureSuitArea)
+  getItems(pastureSuitArea, dim = 3)  <- NULL
 
   return(list(
     x = pastureSuitArea,
