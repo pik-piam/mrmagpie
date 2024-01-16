@@ -13,7 +13,7 @@
 #' @importFrom raster rasterFromXYZ
 #' @importFrom raster area
 #' @importFrom dplyr left_join
-#' @importFrom raster "crs<-"
+#' @importFrom raster crs<-
 #'
 
 calcSoilCharacteristics <- function() {

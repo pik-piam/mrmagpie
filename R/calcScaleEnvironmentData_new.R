@@ -17,7 +17,7 @@
 #' @import mstools
 #' @importFrom raster rasterFromXYZ
 #' @importFrom raster area
-#' @importFrom raster "crs<-"
+#' @importFrom raster crs<-
 #' @importFrom magpiesets findset
 #' @importFrom stats sd
 #'

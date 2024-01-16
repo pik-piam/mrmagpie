@@ -17,7 +17,7 @@
 #' @import mstools
 #' @importFrom raster rasterFromXYZ
 #' @importFrom raster area
-#' @importFrom raster "crs<-"
+#' @importFrom raster crs<-
 #' @importFrom magpiesets findset
 #'
 
@@ -63,7 +63,7 @@ calcCollectEnvironmentData_new <- function(subtype = "ISIMIP3b:IPSL-CM6A-LR:ssp1
                     subtype = paste(x$version, x$scenario, sep = ":"),
                     co2Evolution = "rising")[, (syear - sar / 2):fyear, ]
   co2 <- toolHoldConstant(co2,  seq((max(getYears(co2, as.integer = TRUE)) + 1), 2150, 5))
-  soil <- calcOutput("SoilCharacteristics", aggregate = FALSE)[, getYears(co2), ]          ### To Do (Alex K., Marcos, Kristine, Feli): adjust to 67k 
+  soil <- calcOutput("SoilCharacteristics", aggregate = FALSE)[, getYears(co2), ]          ### To Do (Alex K., Marcos, Kristine, Feli): adjust to 67k
 
   constants <- mbind(co2, soil)
   constants <- constants[, getYears(variables), ]

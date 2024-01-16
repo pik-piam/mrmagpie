@@ -422,6 +422,22 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
   calcOutput("SOCLossShare", aggregate = "cluster", rate = "loss", round = 6, cells = cells,
              file = paste0("cshare_released_", ctype, ".mz"))
 
+  if (dev == "+newSOC") {
+
+    calcOutput("CarbonInputMultiplier", aggregate = "region",
+               round = 6, file = "f59_cinput_multiplier.cs3")
+    calcOutput("CarbonLitter", aggregate = "region", years = lpjYears,
+               lpjmlNatveg = lpjml[["natveg"]], climatetype = climatetype,
+               mode = "magpieInput", fixFpc = TRUE,
+               round = 6, file = "f59_litter_recycling.cs3")
+    calcOutput("DecayFuture", aggregate = "region", years = lpjYears,
+               lpjmlNatveg = lpjml[["natveg"]], climatetype = climatetype,
+               round = 6, file = "f59_topsoilc_decay.cs3")
+    calcOutput("SoilCarbon", aggregate = "region", years = "y1995",
+               lpjmlNatveg = lpjml[["natveg"]], climatetype = climatetype,
+               round = 6, file = "f59_topsoilc_actualstate.cs3")
+  }
+
   ##### AGGREGATION ######
 
   # create info file
