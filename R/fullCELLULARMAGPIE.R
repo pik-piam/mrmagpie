@@ -40,7 +40,6 @@
 #' @importFrom luplot plotregionscluster
 #' @importFrom ggplot2 ggsave
 #' @importFrom withr local_options
-#' @import mrsoil
 
 fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
                                ctype = "c200",
