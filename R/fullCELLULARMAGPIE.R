@@ -434,8 +434,8 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
                lpjmlNatveg = lpjml[["natveg"]], climatetype = climatetype,
                round = 6, file = "f59_topsoilc_decay.cs3")
     calcOutput("SoilCarbon", aggregate = "region", years = "y1995",
-               lpjmlNatveg = lpjml[["natveg"]], climatetype = climatetype,
-               round = 6, file = "f59_topsoilc_actualstate.cs3")
+               lpjmlNatveg = lpjml[["natveg"]], round = 6,
+               file = "f59_topsoilc_actualstate.cs3")
   }
 
   ##### AGGREGATION ######
