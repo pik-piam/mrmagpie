@@ -426,10 +426,9 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
 
     calcOutput("CarbonInputMultiplier", aggregate = "region",
                round = 6, file = "f59_cinput_multiplier.cs3")
-    calcOutput("CarbonLitter", aggregate = "region", years = lpjYears,
+    calcOutput("LitterSoilinput", aggregate = "region", years = lpjYears,
                lpjmlNatveg = lpjml[["natveg"]], climatetype = climatetype,
-               mode = "magpieInput", fixFpc = TRUE,
-               round = 6, file = "f59_litter_recycling.cs3")
+               fixFpc = TRUE, round = 6, file = "f59_litter_input.cs3")
     calcOutput("DecayFuture", aggregate = "region", years = lpjYears,
                lpjmlNatveg = lpjml[["natveg"]], climatetype = climatetype,
                round = 6, file = "f59_topsoilc_decay.cs3")
