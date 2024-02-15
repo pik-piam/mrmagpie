@@ -5,7 +5,7 @@
 \title{fullCELLULARMAGPIE}
 \usage{
 fullCELLULARMAGPIE(
-  rev = 0.1,
+  rev = numeric_version("0.1"),
   dev = "",
   ctype = "c200",
   climatetype = "MRI-ESM2-0:ssp370",
@@ -17,7 +17,7 @@ fullCELLULARMAGPIE(
 )
 }
 \arguments{
-\item{rev}{data revision which should be used as input (positive numeric).}
+\item{rev}{data revision which should be used as input (numeric_version).}
 
 \item{dev}{development suffix to distinguish development versions for the same data revision.
 This can be useful to distinguish parallel lines of development.}
@@ -54,7 +54,8 @@ Function that produces the complete cellular data set required
 }
 \examples{
 \dontrun{
-retrieveData("CELLULARMAGPIE", revision = 12, mainfolder = "pathtowhereallfilesarestored")
+retrieveData("CELLULARMAGPIE", rev = numeric_version("12"),
+             mainfolder = "pathtowhereallfilesarestored")
 }
 }
 \seealso{
