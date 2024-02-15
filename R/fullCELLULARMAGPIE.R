@@ -2,7 +2,7 @@
 #' @description Function that produces the complete cellular data set required
 #'              for running the MAgPIE model.
 #'
-#' @param rev data revision which should be used as input (positive numeric).
+#' @param rev data revision which should be used as input (numeric_version).
 #' @param ctype aggregation clustering type, which is a combination of a single letter,
 #'              indicating the cluster methodology, and a number, indicating the number
 #'              of resulting clusters. Available methodologies are
@@ -31,7 +31,8 @@
 #' \code{\link{readSource}},\code{\link{getCalculations}},\code{\link{calcOutput}},\code{\link{setConfig}}
 #' @examples
 #' \dontrun{
-#' retrieveData("CELLULARMAGPIE", revision = 12, mainfolder = "pathtowhereallfilesarestored")
+#' retrieveData("CELLULARMAGPIE", rev = numeric_version("12"),
+#'              mainfolder = "pathtowhereallfilesarestored")
 #' }
 #' @importFrom madrat setConfig getConfig
 #' @importFrom magpiesets findset
@@ -41,7 +42,7 @@
 #' @importFrom ggplot2 ggsave
 #' @importFrom withr local_options
 
-fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
+fullCELLULARMAGPIE <- function(rev = numeric_version("0.1"), dev = "",
                                ctype = "c200",
                                climatetype = "MRI-ESM2-0:ssp370",
                                lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de",
@@ -56,8 +57,10 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
   withr::local_options(magclass_sizeLimit = 1e+12)
 
   ### Version settings ###
-  if (rev < 4.94) stop("mrmagpie(>= 1.35.2) does not support revision below 4.94 anymore.
-                       Please use an older snapshot/version of the library, if you need older revisions.")
+  if (rev < numeric_version("4.94")) {
+    stop("mrmagpie(>= 1.35.2) does not support revision below 4.94 anymore. ",
+         "Please use an older snapshot/version of the library, if you need older revisions.")
+  }
   cells       <- "lpjcell"
   climatescen <- str_split(climatetype, ":")[[1]][2]
 
