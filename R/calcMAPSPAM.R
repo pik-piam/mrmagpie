@@ -13,6 +13,7 @@
 calcMAPSPAM <- function(subtype = "physical") {
 
   x <- readSource(type = "MAPSPAM", subtype = subtype) / 1e6 # to convert to mio. of hectares
+  x[!is.finite(x)] <- 0
 
 
   return(list(
