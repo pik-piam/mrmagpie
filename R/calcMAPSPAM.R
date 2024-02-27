@@ -1,5 +1,6 @@
 #' @title calcMAPSPAM
-#' @description MAPSPAM data 
+#' @description MAPSPAM data
+#' @param subtype it can be either "physical" or "harvested" area
 #' @return magpie object in cellular resolution
 #' @author Edna J. Molina Bacca
 #' @examples
@@ -9,16 +10,16 @@
 #'
 #' @importFrom magclass as.magpie
 
-calcMAPSPAM <- function(subtype) {
-   
-    x <- readSource(type = "MAPSPAM", subtype = subtype) / 1e6 # to convert to mio. of hectares
+calcMAPSPAM <- function(subtype = "physical") {
+
+  x <- readSource(type = "MAPSPAM", subtype = subtype) / 1e6 # to convert to mio. of hectares
 
 
-    return(list(
-        x = x,
-        weight = NULL,
-        unit = "mio. ha",
-        description = "MAPSPAM cropland area",
-        isocountries = FALSE
-    ))
+  return(list(
+    x = x,
+    weight = NULL,
+    unit = "mio. ha",
+    description = "MAPSPAM cropland area",
+    isocountries = FALSE
+  ))
 }
