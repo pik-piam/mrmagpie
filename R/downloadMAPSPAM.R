@@ -47,6 +47,7 @@ downloadMAPSPAM <- function() {
               release_date  = "2000=Jan 22, 2020, 2005=Dec 5, 2017, 2010=Jul 15, 2020",
               description   = "Grid data of physical and harvested croparea",
               license       = "CC BY 4.0",
-              reference     = NULL))
+              reference     = NULL,
+              unit          = "ha"))
 
 }
