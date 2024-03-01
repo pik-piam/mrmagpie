@@ -28,7 +28,7 @@ calcClusterKMeans <- function(regionscode, ncluster, weight = NULL, cpr = NULL, 
                               lpjml = c(natveg = "LPJmL4", crop = "LPJmL5"), clusterdata = "yield_airrig") {
   # read in clustering base data
   cdata <- toolApplyRegionNames(cdata = calcOutput("ClusterBase", aggregate = FALSE,
-                                                    lpjml = lpjml, clusterdata = clusterdata),
+                                                   lpjml = lpjml, clusterdata = clusterdata),
                                 regionscode = regionscode)
 
   if (is.null(cpr)) {

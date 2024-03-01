@@ -35,7 +35,7 @@ toolApplyRegionNames <- function(cdata, regionscode) {
   isocountries <- getItems(cdata, dim = 1.3, full = TRUE)
   isoMap       <- data.frame(CountryCode = isocountries)
   map          <- base::merge(isoMap, map, by = "CountryCode",
-                        all.x = TRUE, sort = FALSE, no.dups = TRUE)
+                              all.x = TRUE, sort = FALSE, no.dups = TRUE)
   # correct cell order
   map          <- map[match(isocountries, map$CountryCode), ]
 
