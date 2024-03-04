@@ -245,9 +245,6 @@ fullCELLULARMAGPIE <- function(rev = numeric_version("0.1"), dev = "",
   calcOutput("CroplandTreecover",
              aggregate = "cluster", cells = cells,
              round = roundArea, file = paste0("CroplandTreecover_", ctype, ".mz"))
-  calcOutput("CroplandTreecover",
-             aggregate = FALSE, cells = cells, country_level = TRUE,
-             round = roundArea, file = paste0("CroplandTreecover_iso.cs3"))
 
   calcOutput("SNVTargetCropland",
              aggregate = FALSE, cells = cells,
@@ -255,9 +252,6 @@ fullCELLULARMAGPIE <- function(rev = numeric_version("0.1"), dev = "",
   calcOutput("SNVTargetCropland",
              aggregate = "cluster", cells = cells,
              round = roundArea, file = paste0("SNVTargetCropland_", ctype, ".mz"))
-  calcOutput("SNVTargetCropland",
-             aggregate = FALSE, cells = cells, country_level = TRUE,
-             round = roundArea, file = paste0("SNVTargetCropland_iso.cs3"))
 
   # 31 past
   calcOutput("GrasslandBiomass",  round = 3, file = "f31_grass_bio_hist.cs3",
