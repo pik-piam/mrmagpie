@@ -225,7 +225,7 @@ fullCELLULARMAGPIE <- function(rev = numeric_version("0.1"), dev = "",
   ## For cellular comparison
   calcOutput("MAPSPAM", subtype = "physical",  aggregate = FALSE,
              file = paste0("MAPSPAM_croparea_0.5.mz"))
-  calcOutput("Croparea", sectoral = "kcr", physical = TRUE,
+  calcOutput("Croparea", sectoral = "kcr", physical = TRUE, cellular = TRUE,
              cells = cells, irrigation = TRUE, round = roundArea,
              aggregate = FALSE, file = paste0("LUH2_croparea_0.5.mz"))
 
