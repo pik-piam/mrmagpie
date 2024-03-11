@@ -102,8 +102,8 @@ fullCELLULARMAGPIE <- function(rev = numeric_version("0.1"), dev = "",
   # plot map with regions and clusters
   clustermap <- readRDS(clustermapname) # nolint
   p <- plotregionscluster(clustermap, cells = "lpjcell") # nolint
-  ggsave(sub(".rds", ".pdf", sub("clustermap", "spamplot", clustermapname)),
-         p, height = 6, width = 10, scale = 1)
+  suppressWarnings(ggsave(sub(".rds", ".pdf", sub("clustermap", "spamplot", clustermapname)),
+                          p, height = 6, width = 10, scale = 1))
 
   # distinguish between region and superregion if mapping provides this distinction
   mapReg      <- toolGetMapping(getConfig("regionmapping"), type = "regional", where = "mappingfolder")
