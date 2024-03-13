@@ -389,11 +389,11 @@ fullCELLULARMAGPIE <- function(rev = numeric_version("0.1"), dev = "",
 
   if (dev == "EFRtest") {
     calcOutput("EnvmtlFlow", lpjml = lpjml, years = lpjYears, climatetype = climatetype,
-               aggregate = "cluster", cells = cells,
+               aggregate = "cluster",
                round = 6, seasonality = "grper",
                file = paste0("envflow_grper_", ctype, ".cs3"))
     calcOutput("EnvmtlFlow", lpjml = lpjml, years = lpjYears, climatetype = climatetype,
-               aggregate = "cluster", cells = cells,
+               aggregate = "cluster",
                round = 6, seasonality = "total",
                file = paste0("envflow_total_", ctype, ".cs3"))
   }

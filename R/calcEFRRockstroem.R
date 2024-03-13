@@ -128,7 +128,7 @@ calcEFRRockstroem <- function(lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de",
     # Load baseline and climate EFR:
     baseline <- calcOutput("EFRRockstroem", lpjml = lpjmlBaseline, climatetype = cfgNatveg$baseline_hist,
                            seasonality = seasonality, stage = "smoothed",
-                           aggregate = FALSE, cells = "lpjcell")
+                           aggregate = FALSE)
 
     if (climatetype == cfgNatveg$baseline_hist) {
 
@@ -138,7 +138,7 @@ calcEFRRockstroem <- function(lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de",
 
       x   <- calcOutput("EFRRockstroem", lpjml = lpjmlReadin, climatetype = climatetype,
                         seasonality = seasonality, stage = "smoothed",
-                        aggregate = FALSE, cells = "lpjcell")
+                        aggregate = FALSE)
       # Harmonize to baseline
       out <- toolHarmonize2Baseline(x = x, base = baseline, ref_year = cfgNatveg$ref_year_hist)
     }
@@ -147,7 +147,7 @@ calcEFRRockstroem <- function(lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de",
 
     baseline2020 <- calcOutput("EFRRockstroem", lpjml = lpjmlBaseline, climatetype = cfgNatveg$baseline_gcm,
                                seasonality = seasonality, stage = "harmonized",
-                               aggregate = FALSE, cells = "lpjcell")
+                               aggregate = FALSE)
 
     if (climatetype == cfgNatveg$baseline_gcm) {
 
@@ -157,7 +157,7 @@ calcEFRRockstroem <- function(lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de",
 
       x        <- calcOutput("EFRRockstroem", lpjml = lpjmlReadin, climatetype = climatetype,
                              seasonality = seasonality, stage = "smoothed",
-                             aggregate = FALSE, cells = "lpjcell")
+                             aggregate = FALSE)
       out      <- toolHarmonize2Baseline(x, baseline2020, ref_year = cfgNatveg$ref_year_gcm)
     }
 
