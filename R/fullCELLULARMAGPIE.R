@@ -378,14 +378,25 @@ fullCELLULARMAGPIE <- function(rev = numeric_version("0.1"), dev = "",
              aggregate = "cluster", cells = cells,
              round = 6, file = paste0("lpj_watavail_total_", ctype, ".mz"))
 
-  calcOutput("EnvmtlFlow", lpjml = lpjml, years = lpjYears, climatetype = climatetype,
+  calcOutput("EFRSmakthin", lpjml = lpjml, years = lpjYears, climatetype = climatetype,
              aggregate = "cluster", cells = cells,
              round = 6, seasonality = "grper",
              file = paste0("lpj_envflow_grper_", ctype, ".mz"))
-  calcOutput("EnvmtlFlow", lpjml = lpjml, years = lpjYears, climatetype = climatetype,
+  calcOutput("EFRSmakthin", lpjml = lpjml, years = lpjYears, climatetype = climatetype,
              aggregate = "cluster", cells = cells,
              round = 6, seasonality = "total",
              file = paste0("lpj_envflow_total_", ctype, ".mz"))
+
+  if (dev == "EFRtest") {
+    calcOutput("EnvmtlFlow", lpjml = lpjml, years = lpjYears, climatetype = climatetype,
+               aggregate = "cluster", cells = cells,
+               round = 6, seasonality = "grper",
+               file = paste0("envflow_grper_", ctype, ".cs3"))
+    calcOutput("EnvmtlFlow", lpjml = lpjml, years = lpjYears, climatetype = climatetype,
+               aggregate = "cluster", cells = cells,
+               round = 6, seasonality = "total",
+               file = paste0("envflow_total_", ctype, ".cs3"))
+  }
 
   calcOutput("WaterUseNonAg", datasource = "WATERGAP_ISIMIP", usetype = "all:withdrawal",
              selectyears = lpjYears, seasonality = "grper", lpjml = lpjml, climatetype = climatetype,

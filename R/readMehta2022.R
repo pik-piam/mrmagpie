@@ -7,10 +7,9 @@
 #'
 #' \dontrun{ a <- readSource("Mehta2022")
 #' }
-
-#' @importFrom raster brick
-#' @importFrom terra aggregate project rast
+#' @importFrom terra aggregate project rast global
 #' @importFrom magclass as.magpie
+#' @importFrom mrcommons toolGetMappingCoord2Country
 
 readMehta2022 <- function() {
 
@@ -34,7 +33,6 @@ readMehta2022 <- function() {
       stop("There is an issue with the aggregation. Please check mrmagpie::readMehta")
     }
     x <- suppressWarnings(terra::project(x, resolution))
-    x <- suppressWarnings(raster::brick(x))
     x <- as.magpie(x)
 
     return(x)
