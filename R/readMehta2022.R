@@ -30,6 +30,13 @@ readMehta2022 <- function() {
     x <- suppressWarnings(terra::aggregate(x, fact = 6, fun = "sum", na.rm = TRUE))
     # Check whether sum before and after aggregation is the same.
     if (any(round(checkSum - terra::global(x, sum, na.rm = TRUE), digits = 4) != 0)) {
+      warning(paste0("The sum before and after aggregation differ: ",
+                     "Min. deviation is: ",
+                     min(round(checkSum - terra::global(x, sum, na.rm = TRUE), digits = 4)),
+                     "Max. deviation is: ",
+                     max(round(checkSum - terra::global(x, sum, na.rm = TRUE), digits = 4))))
+      saveRDS(x, file = "readMehta2022_x.rds")
+      saveRDS(checkSum, file = "readMehta2022_checkSum.rds")
       stop("There is an issue with the aggregation. Please check mrmagpie::readMehta")
     }
     x <- suppressWarnings(terra::project(x, resolution))
