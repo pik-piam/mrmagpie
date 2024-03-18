@@ -33,10 +33,10 @@ readMehta2022 <- function() {
       warning(paste0("The sum before and after aggregation differ: ",
                      "Min. deviation is: ",
                      min(round(checkSum - terra::global(x, sum, na.rm = TRUE), digits = 4)),
-                     "Max. deviation is: ",
+                     ". Max. deviation is: ",
                      max(round(checkSum - terra::global(x, sum, na.rm = TRUE), digits = 4))))
-      saveRDS(x, file = "readMehta2022_x.rds")
-      saveRDS(checkSum, file = "readMehta2022_checkSum.rds")
+      saveRDS(x, file = "/p/projects/magpie/readMehta2022_x.rds") # ToDo: remove once this issue is solved! #nolint
+      saveRDS(checkSum, file = "/p/projects/magpie/readMehta2022_checkSum.rds") # ToDo: remove once this issue is solved! #nolint
       stop("There is an issue with the aggregation. Please check mrmagpie::readMehta")
     }
     x <- suppressWarnings(terra::project(x, resolution))
@@ -50,6 +50,7 @@ readMehta2022 <- function() {
   for (file in files) {
 
     aei <- terra::rast(file)
+    print(paste0("Read in ", file))
     aei <- .transformObject(x = aei)
 
     getItems(aei, dim = 2) <- gsub("G_AEI_", "y", getItems(aei, dim = 3))
