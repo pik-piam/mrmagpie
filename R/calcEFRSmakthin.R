@@ -227,6 +227,9 @@ calcEFRSmakthin <- function(lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de",
     # Load baseline and climate EFR:
     baseline <- calcOutput("EFRSmakthin", lpjml = lpjmlBaseline, climatetype = cfgNatveg$baseline_hist,
                            seasonality = seasonality, stage = "smoothed",
+                           LFR_val = LFR_val,
+                           HFR_LFR_less10 = HFR_LFR_less10, HFR_LFR_10_20 = HFR_LFR_10_20,
+                           HFR_LFR_20_30 = HFR_LFR_20_30, HFR_LFR_more30 = HFR_LFR_more30,
                            aggregate = FALSE, cells = "lpjcell")
 
     if (climatetype == cfgNatveg$baseline_hist) {
@@ -237,6 +240,9 @@ calcEFRSmakthin <- function(lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de",
 
       x   <- calcOutput("EFRSmakthin", lpjml = lpjmlReadin, climatetype = climatetype,
                         seasonality = seasonality, stage = "smoothed",
+                        LFR_val = LFR_val,
+                        HFR_LFR_less10 = HFR_LFR_less10, HFR_LFR_10_20 = HFR_LFR_10_20,
+                        HFR_LFR_20_30 = HFR_LFR_20_30, HFR_LFR_more30 = HFR_LFR_more30,
                         aggregate = FALSE, cells = "lpjcell")
       # Harmonize to baseline
       out <- toolHarmonize2Baseline(x = x, base = baseline, ref_year = cfgNatveg$ref_year_hist)
@@ -246,6 +252,9 @@ calcEFRSmakthin <- function(lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de",
 
     baseline2020 <- calcOutput("EFRSmakthin", lpjml = lpjmlBaseline, climatetype = cfgNatveg$baseline_gcm,
                                seasonality = seasonality, stage = "harmonized",
+                               LFR_val = LFR_val,
+                               HFR_LFR_less10 = HFR_LFR_less10, HFR_LFR_10_20 = HFR_LFR_10_20,
+                               HFR_LFR_20_30 = HFR_LFR_20_30, HFR_LFR_more30 = HFR_LFR_more30,
                                aggregate = FALSE, cells = "lpjcell")
 
     if (climatetype == cfgNatveg$baseline_gcm) {
@@ -256,6 +265,9 @@ calcEFRSmakthin <- function(lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de",
 
       x        <- calcOutput("EFRSmakthin", lpjml = lpjmlReadin, climatetype = climatetype,
                              seasonality = seasonality, stage = "smoothed",
+                             LFR_val = LFR_val,
+                             HFR_LFR_less10 = HFR_LFR_less10, HFR_LFR_10_20 = HFR_LFR_10_20,
+                             HFR_LFR_20_30 = HFR_LFR_20_30, HFR_LFR_more30 = HFR_LFR_more30,
                              aggregate = FALSE, cells = "lpjcell")
       out      <- toolHarmonize2Baseline(x, baseline2020, ref_year = cfgNatveg$ref_year_gcm)
     }
