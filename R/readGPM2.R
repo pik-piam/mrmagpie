@@ -9,6 +9,9 @@
 #' @importFrom magclass as.magpie
 
 readGPM2 <- function() {
+  terra::terraOptions(tempdir = withr::local_tempdir(tmpdir = getConfig("tmpfolder")),
+                      todisk = FALSE, memfrac = 0.5)
+  withr::defer(terra::terraOptions(tempdir = tempdir()))
 
   # read-in file
   r <- terra::rast("peatMAY22_1x1_mw_RUS30.tif")
