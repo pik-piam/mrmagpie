@@ -59,26 +59,30 @@ calcPastureSuit <- function(climatetype = "MRI-ESM2-0:ssp126",
   cellPet <- dimSums(cellPet[, years, ], dim = 3)
 
   # Cell area calculation
+  land <- calcOutput("LanduseInitialisation", input_magpie = TRUE,
+                   aggregate = FALSE, cellular = TRUE, cells = cells,
+                   years = "y1995", round = 6)
+  landArea <- setYears(dimSums(land, dim = 3), NULL)
 
-  landcoords <- cellPet[, 1, 1]
-  landcoords[] <- 1
-  landcoords <- as.RasterBrick(landcoords)
+#  landcoords <- cellPet[, 1, 1]
+#  landcoords[] <- 1
+#  landcoords <- as.RasterBrick(landcoords)
 
-  cellSize <- raster::area(landcoords)
-  cellSize <- cellSize * landcoords
-  cellSize <- as.magpie(cellSize)
-  landArea <- cellSize
+#  cellSize <- raster::area(landcoords)
+#  cellSize <- cellSize * landcoords
+#  cellSize <- as.magpie(cellSize)
+#  landArea <- cellSize
 
   cellorder <- population
-  dimnames(cellorder)$x.y.iso <- gsub("\\.\\w+$", "", dimnames(cellorder)$x.y.iso)
-  cellorder <- match(dimnames(cellorder)$x.y.iso, dimnames(landArea)$x.y)
+  # dimnames(cellorder)$x.y.iso <- gsub("\\.\\w+$", "", dimnames(cellorder)$x.y.iso)
+  cellorder <- match(dimnames(cellorder)$x.y.iso, dimnames(landArea)$x.y.iso)
 
   # Reorder the dimensions of landArea to match Population
   landArea <- landArea[cellorder, , ]
   getCells(landArea) <- getCells(population)
 
   # population density
-  popDensity <- (population * 1e6) / landArea # population density in number of people per km2
+  popDensity <- (population *1e6) / landArea * 10000 # population density in number of people per km2
   popDensity[is.infinite(popDensity)] <- 0
   popDensity[is.nan(popDensity)] <- 0
 
