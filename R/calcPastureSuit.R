@@ -106,11 +106,3 @@ calcPastureSuit <- function(climatetype = "MRI-ESM2-0:ssp126",
     isocountries = FALSE
   ))
 }
-library(lucode2)
-buildLibrary(
-  lib = "/p/projects/landuse/users/pedrosa/piam/mrmagpie",
-  cran = F,
-  updateType = NULL,
-  updateLucode2 = TRUE,
-  autoCheckRepoUpToDate = TRUE
-)
