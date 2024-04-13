@@ -13,9 +13,8 @@ List of magpie objects with results on cellular level, weight, unit and descript
 read potential peatland area from Leifeld2018
 }
 \examples{
-
 \dontrun{
-  readSource("Leifeld2018", convert="onlycorrect")
+readSource("Leifeld2018", convert = "onlycorrect")
 }
 }
 \author{

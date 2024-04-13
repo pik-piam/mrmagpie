@@ -7,10 +7,9 @@
 #'
 #' \dontrun{ a <- readSource("Mehta2022")
 #' }
-
-#' @importFrom raster brick
-#' @importFrom terra aggregate project rast
+#' @importFrom terra aggregate project rast global
 #' @importFrom magclass as.magpie
+#' @importFrom mrcommons toolGetMappingCoord2Country
 
 readMehta2022 <- function() {
 
@@ -31,10 +30,16 @@ readMehta2022 <- function() {
     x <- suppressWarnings(terra::aggregate(x, fact = 6, fun = "sum", na.rm = TRUE))
     # Check whether sum before and after aggregation is the same.
     if (any(round(checkSum - terra::global(x, sum, na.rm = TRUE), digits = 4) != 0)) {
+      warning(paste0("The sum before and after aggregation differ: ",
+                     "Min. deviation is: ",
+                     min(round(checkSum - terra::global(x, sum, na.rm = TRUE), digits = 4)),
+                     ". Max. deviation is: ",
+                     max(round(checkSum - terra::global(x, sum, na.rm = TRUE), digits = 4))))
+      saveRDS(x, file = "/p/projects/magpie/readMehta2022_x.rds") # ToDo: remove once this issue is solved! #nolint
+      saveRDS(checkSum, file = "/p/projects/magpie/readMehta2022_checkSum.rds") # ToDo: remove once this issue is solved! #nolint
       stop("There is an issue with the aggregation. Please check mrmagpie::readMehta")
     }
     x <- suppressWarnings(terra::project(x, resolution))
-    x <- suppressWarnings(raster::brick(x))
     x <- as.magpie(x)
 
     return(x)
@@ -45,6 +50,7 @@ readMehta2022 <- function() {
   for (file in files) {
 
     aei <- terra::rast(file)
+    print(paste0("Read in ", file))
     aei <- .transformObject(x = aei)
 
     getItems(aei, dim = 2) <- gsub("G_AEI_", "y", getItems(aei, dim = 3))

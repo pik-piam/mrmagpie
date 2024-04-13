@@ -1,8 +1,8 @@
 Type: Package
 Package: mrmagpie
 Title: madrat based MAgPIE Input Data Library
-Version: 1.39.6
-Date: 2023-12-17
+Version: 1.44.15
+Date: 2024-04-09
 Authors@R: c(
     person("Kristine", "Karstens", , "karstens@pik-potsdam.de", role = c("aut", "cre")),
     person("Jan Philipp", "Dietrich", , "dietrich@pik-potsdam.de", role = "aut"),
@@ -27,6 +27,7 @@ Depends:
     magclass (>= 3.17),
     mrcommons (>= 1.37.0),
     mrland (>= 0.51.0),
+    mrsoil (>= 2.0.0),
     mrwater (>= 1.11.0),
     R (>= 3.5.0)
 Imports:
@@ -58,4 +59,4 @@ VignetteBuilder:
     knitr
 Encoding: UTF-8
 LazyData: no
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.1

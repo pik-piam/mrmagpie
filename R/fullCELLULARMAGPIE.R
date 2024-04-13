@@ -2,7 +2,7 @@
 #' @description Function that produces the complete cellular data set required
 #'              for running the MAgPIE model.
 #'
-#' @param rev data revision which should be used as input (positive numeric).
+#' @param rev data revision which should be used as input (numeric_version).
 #' @param ctype aggregation clustering type, which is a combination of a single letter,
 #'              indicating the cluster methodology, and a number, indicating the number
 #'              of resulting clusters. Available methodologies are
@@ -31,7 +31,8 @@
 #' \code{\link{readSource}},\code{\link{getCalculations}},\code{\link{calcOutput}},\code{\link{setConfig}}
 #' @examples
 #' \dontrun{
-#' retrieveData("CELLULARMAGPIE", revision = 12, mainfolder = "pathtowhereallfilesarestored")
+#' retrieveData("CELLULARMAGPIE", rev = numeric_version("12"),
+#'              mainfolder = "pathtowhereallfilesarestored")
 #' }
 #' @importFrom madrat setConfig getConfig
 #' @importFrom magpiesets findset
@@ -41,7 +42,7 @@
 #' @importFrom ggplot2 ggsave
 #' @importFrom withr local_options
 
-fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
+fullCELLULARMAGPIE <- function(rev = numeric_version("0.1"), dev = "",
                                ctype = "c200",
                                climatetype = "MRI-ESM2-0:ssp370",
                                lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de",
@@ -56,8 +57,10 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
   withr::local_options(magclass_sizeLimit = 1e+12)
 
   ### Version settings ###
-  if (rev < 4.94) stop("mrmagpie(>= 1.35.2) does not support revision below 4.94 anymore.
-                       Please use an older snapshot/version of the library, if you need older revisions.")
+  if (rev < numeric_version("4.94")) {
+    stop("mrmagpie(>= 1.35.2) does not support revision below 4.94 anymore. ",
+         "Please use an older snapshot/version of the library, if you need older revisions.")
+  }
   cells       <- "lpjcell"
   climatescen <- str_split(climatetype, ":")[[1]][2]
 
@@ -99,8 +102,8 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
   # plot map with regions and clusters
   clustermap <- readRDS(clustermapname) # nolint
   p <- plotregionscluster(clustermap, cells = "lpjcell") # nolint
-  ggsave(sub(".rds", ".pdf", sub("clustermap", "spamplot", clustermapname)),
-         p, height = 6, width = 10, scale = 1)
+  suppressWarnings(ggsave(sub(".rds", ".pdf", sub("clustermap", "spamplot", clustermapname)),
+                          p, height = 6, width = 10, scale = 1))
 
   # distinguish between region and superregion if mapping provides this distinction
   mapReg      <- toolGetMapping(getConfig("regionmapping"), type = "regional", where = "mappingfolder")
@@ -219,6 +222,12 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
   calcOutput("Croparea", sectoral = "kcr", physical = TRUE,
              cellular = TRUE, cells = cells, irrigation = TRUE, round = roundArea,
              aggregate = "cluster", file = paste0("f30_croparea_w_initialisation_", ctype, ".mz"))
+  ## For cellular comparison
+  calcOutput("MAPSPAM", subtype = "physical",  aggregate = FALSE,
+             file = paste0("MAPSPAM_croparea_0.5.mz"))
+  calcOutput("Croparea", sectoral = "kcr", physical = TRUE, cellular = TRUE,
+             cells = cells, irrigation = TRUE, round = roundArea,
+             aggregate = FALSE, file = paste0("LUH2_croparea_0.5.mz"))
 
   calcOutput("AvlCropland", marginal_land = "magpie", cell_upper_bound = 0.9,
              aggregate = FALSE, cells = cells,
@@ -229,6 +238,20 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
   calcOutput("AvlCropland", marginal_land = "magpie", cell_upper_bound = 0.9,
              aggregate = FALSE, cells = cells, country_level = TRUE,
              round = roundArea, file = paste0("avl_cropland_iso.cs3"))
+
+  calcOutput("CroplandTreecover",
+             aggregate = FALSE, cells = cells,
+             round = roundArea, file = "CroplandTreecover_0.5.mz")
+  calcOutput("CroplandTreecover",
+             aggregate = "cluster", cells = cells,
+             round = roundArea, file = paste0("CroplandTreecover_", ctype, ".mz"))
+
+  calcOutput("SNVTargetCropland",
+             aggregate = FALSE, cells = cells,
+             round = roundArea, file = "SNVTargetCropland_0.5.mz")
+  calcOutput("SNVTargetCropland",
+             aggregate = "cluster", cells = cells,
+             round = roundArea, file = paste0("SNVTargetCropland_", ctype, ".mz"))
 
   # 31 past
   calcOutput("GrasslandBiomass",  round = 3, file = "f31_grass_bio_hist.cs3",
@@ -355,14 +378,25 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
              aggregate = "cluster", cells = cells,
              round = 6, file = paste0("lpj_watavail_total_", ctype, ".mz"))
 
-  calcOutput("EnvmtlFlow", lpjml = lpjml, years = lpjYears, climatetype = climatetype,
+  calcOutput("EFRSmakthin", lpjml = lpjml, years = lpjYears, climatetype = climatetype,
              aggregate = "cluster", cells = cells,
              round = 6, seasonality = "grper",
              file = paste0("lpj_envflow_grper_", ctype, ".mz"))
-  calcOutput("EnvmtlFlow", lpjml = lpjml, years = lpjYears, climatetype = climatetype,
+  calcOutput("EFRSmakthin", lpjml = lpjml, years = lpjYears, climatetype = climatetype,
              aggregate = "cluster", cells = cells,
              round = 6, seasonality = "total",
              file = paste0("lpj_envflow_total_", ctype, ".mz"))
+
+  if (dev == "EFRtest") {
+    calcOutput("EnvmtlFlow", lpjml = lpjml, years = lpjYears, climatetype = climatetype,
+               aggregate = "cluster",
+               round = 6, seasonality = "grper",
+               file = paste0("envflow_grper_", ctype, ".cs3"))
+    calcOutput("EnvmtlFlow", lpjml = lpjml, years = lpjYears, climatetype = climatetype,
+               aggregate = "cluster",
+               round = 6, seasonality = "total",
+               file = paste0("envflow_total_", ctype, ".cs3"))
+  }
 
   calcOutput("WaterUseNonAg", datasource = "WATERGAP_ISIMIP", usetype = "all:withdrawal",
              selectyears = lpjYears, seasonality = "grper", lpjml = lpjml, climatetype = climatetype,
@@ -421,6 +455,25 @@ fullCELLULARMAGPIE <- function(rev = 0.1, dev = "",
              file = paste0("f59_som_initialisation_pools_", ctype, ".mz"))
   calcOutput("SOCLossShare", aggregate = "cluster", rate = "loss", round = 6, cells = cells,
              file = paste0("cshare_released_", ctype, ".mz"))
+
+  if (dev == "+newSOC") {
+
+    calcOutput("CarbonInputMultiplier", aggregate = "region",
+               round = 6, file = "f59_cinput_multiplier.cs3")
+    calcOutput("CarbonInputMultiplier", inputType = "kcr", aggregate = "region",
+               round = 6, file = "f59_cinput_multiplier_residue.cs3")
+    calcOutput("CarbonInputMultiplier", inputType = "kli", aggregate = "region",
+               round = 6, file = "f59_cinput_multiplier_manure.cs3")
+    calcOutput("LitterSoilinput", aggregate = "region", years = lpjYears,
+               lpjmlNatveg = lpjml[["natveg"]], climatetype = climatetype,
+               fixFpc = TRUE, round = 6, file = "f59_litter_input.cs3")
+    calcOutput("DecayFuture", aggregate = "region", years = lpjYears,
+               lpjmlNatveg = lpjml[["natveg"]], climatetype = climatetype,
+               round = 6, file = "f59_topsoilc_decay.cs3")
+    calcOutput("SoilCarbon", aggregate = "region", years = "y1995",
+               lpjmlNatveg = lpjml[["natveg"]], round = 6,
+               file = "f59_topsoilc_actualstate.cs3")
+  }
 
   ##### AGGREGATION ######
 

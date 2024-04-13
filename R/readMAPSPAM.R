@@ -13,7 +13,6 @@
 #' \dontrun{
 #' a <- readSource("MAPSPAM")
 #' }
-
 readMAPSPAM <- function(subtype = "harvested") {
 
   type    <- subtype
@@ -37,9 +36,9 @@ readMAPSPAM <- function(subtype = "harvested") {
     cropsSpam <- spam2Magpie[, "SPAM"]
 
     if (type == "harvested") {
-      ty <- "HA"
+      ty <- "harv_area"
     } else if (type == "physical") {
-      ty <- "PA"
+      ty <- "phys_area"
     } else {
       stop("Not a valid type")
     }
@@ -52,36 +51,34 @@ readMAPSPAM <- function(subtype = "harvested") {
     for (i in seq_len(length(cropsSpam))) {
 
       if (year == 2000) {
-
         # Reads raster data from SPAM
-        tyArea <- if (ty == "HA") "harvested-area" else if (ty == "PA") "physical-area"
-        rasterAscT <- paste0("spam2000v3r7_global_", ty, "_geotiff/spam2000v3r7_", tyArea, "_", cropsSpam[i], ".tif")
-        rasterAscI <- paste0("spam2000v3r7_global_", ty, "_geotiff/spam2000v3r7_", tyArea, "_", cropsSpam[i], "_I.tif")
+        tyArea <- if (ty == "harv_area") "H" else if (ty == "phys_area") "P"
+        rasterAscT <- paste0("spam2000v3r7_global_", ty, ".geotiff/spam2000V3r107_global_", tyArea, "_",
+                             cropsSpam[i], "_A.tif")
+        rasterAscI <- paste0("spam2000v3r7_global_", ty, ".geotiff/spam2000V3r107_global_", tyArea, "_",
+                             cropsSpam[i], "_I.tif")
 
       } else if (year == 2005) {
-
         # Reads raster data from SPAM
-        tyArea <- if (ty == "HA") "H" else if (ty == "PA") "A"
-        tyArea1 <- if (ty == "HA") "harv_area" else if (ty == "PA") "phys_area"
+        tyArea <- if (ty == "harv_area") "H" else if (ty == "phys_area") "A"
 
-        rasterAscT <- paste0("spam2005v3r2_global_", ty, "_geotiff/geotiff_global_", tyArea1, "/SPAM2005V3r2_global_",
+        rasterAscT <- paste0("spam2005v3r2_global_", ty, ".geotiff/geotiff_global_", ty, "/SPAM2005V3r2_global_",
                              tyArea, "_TA_", cropsSpam[i], "_A.tif")
-        rasterAscI <- paste0("spam2005v3r2_global_", ty, "_geotiff/geotiff_global_", tyArea1, "/SPAM2005V3r2_global_",
+        rasterAscI <- paste0("spam2005v3r2_global_", ty, ".geotiff/geotiff_global_", ty, "/SPAM2005V3r2_global_",
                              tyArea, "_TI_", cropsSpam[i], "_I.tif")
 
       } else if (year == 2010) {
 
-        tyArea <- if (ty == "HA") "H" else if (ty == "PA") "A"
+        tyArea <- if (ty == "harv_area") "H" else if (ty == "phys_area") "A"
 
-        rasterAscT <- paste0("spam2010v2r0_global_", ty, "_geotiff/spam2010V2r0_global_", tyArea, "_",
+        rasterAscT <- paste0("spam2010v2r0_global_", ty, ".geotiff/spam2010V2r0_global_", tyArea, "_",
                              cropsSpam[i], "_A.tif")
-        rasterAscI <- paste0("spam2010v2r0_global_", ty, "_geotiff/spam2010V2r0_global_", tyArea, "_",
+        rasterAscI <- paste0("spam2010v2r0_global_", ty, ".geotiff/spam2010V2r0_global_", tyArea, "_",
                              cropsSpam[i], "_I.tif")
 
       }
 
       .valuesExtract <- function(rasterAscT) {
-
         # load raster
         dataAscT <- rast(rasterAscT)
         # aggregate to 0.5 resolution
@@ -144,8 +141,8 @@ readMAPSPAM <- function(subtype = "harvested") {
                         setNames(magObjSPAMR, paste0(getNames(magObjSPAMR), ".rainfed")))
 
     out[, intersect(getYears(out), getYears(magObjSPAM)),
-          intersect(getNames(out), getNames(magObjSPAM))] <- magObjSPAM[, intersect(getYears(out), getYears(magObjSPAM)),
-                                                                          intersect(getNames(out), getNames(magObjSPAM))]
+        intersect(getNames(out), getNames(magObjSPAM))] <- magObjSPAM[, intersect(getYears(out), getYears(magObjSPAM)),
+                                                                      intersect(getNames(out), getNames(magObjSPAM))]
   }
 
   return(out)

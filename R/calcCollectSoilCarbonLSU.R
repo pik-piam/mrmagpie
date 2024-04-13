@@ -17,7 +17,7 @@
 #' @import magclass
 #' @importFrom raster rasterFromXYZ
 #' @importFrom raster area
-#' @importFrom raster "crs<-"
+#' @importFrom raster crs<-
 #' @importFrom tidyr pivot_longer
 #' @importFrom dplyr mutate select
 #'

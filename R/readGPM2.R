@@ -10,7 +10,7 @@
 
 readGPM2 <- function() {
   terra::terraOptions(tempdir = withr::local_tempdir(tmpdir = getConfig("tmpfolder")),
-                      todisk = TRUE, memfrac = 0.5)
+                      todisk = FALSE, memfrac = 0.5)
   withr::defer(terra::terraOptions(tempdir = tempdir()))
 
   # read-in file
@@ -24,7 +24,8 @@ readGPM2 <- function() {
   r2 <- terra::project(r1, "+proj=longlat +datum=WGS84", method = "near")
 
   # get cell area
-  a <- terra::cellSize(r2, unit = "ha", mask = TRUE) * 1e-6
+  a <- terra::cellSize(r2, unit = "ha", mask = TRUE)
+  a <- a * 1e-6
 
   # project or aggregate to 0.5 degree
   # use terra::aggregate because terra::project(a, terra::rast(res = 0.5), method = "sum") is not working
