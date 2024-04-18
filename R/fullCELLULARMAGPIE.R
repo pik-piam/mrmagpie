@@ -336,6 +336,16 @@ fullCELLULARMAGPIE <- function(rev = numeric_version("0.1"), dev = "",
              aggregate = "cluster", cells = cells,
              file = paste0("forestageclasses_", ctype, ".mz"))
 
+  calcOutput("PotentialForestArea",
+    refData = "lpj", cells = cells, lpjml = lpjml, climatetype = climatetype,
+    aggregate = FALSE, round = roundArea, file = "pot_forest_area_0.5.mz"
+  )
+
+  calcOutput("PotentialForestArea",
+    refData = "lpj", cells = cells, lpjml = lpjml, climatetype = climatetype,
+    aggregate = "cluster", round = roundArea, file = paste0("pot_forest_area_", ctype, ".mz")
+  )
+
   # 37 labour prod
   calcOutput("LabourProdImpactEmu", aggregate = "cluster", cells = cells, subtype = "impact",
              round = 6, file = paste0("f37_labourprodimpact_", ctype, ".mz"))
