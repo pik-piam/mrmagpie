@@ -31,5 +31,5 @@ calcOutput("Carbon", aggregate = FALSE)
 
 }
 \author{
-Kristine Karstens
+Kristine Karstens, Patrick v. Jeetze
 }
