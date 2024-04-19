@@ -337,12 +337,12 @@ fullCELLULARMAGPIE <- function(rev = numeric_version("0.1"), dev = "",
              file = paste0("forestageclasses_", ctype, ".mz"))
 
   calcOutput("PotentialForestArea",
-    refData = "lpj", cells = cells, lpjml = lpjml, climatetype = climatetype,
+    refData = "lpj", cells = cells, lpjml = lpjml, climatetype = climatetype, years = "y2100",
     aggregate = FALSE, round = roundArea, file = "pot_forest_area_0.5.mz"
   )
 
   calcOutput("PotentialForestArea",
-    refData = "lpj", cells = cells, lpjml = lpjml, climatetype = climatetype,
+    refData = "lpj", cells = cells, lpjml = lpjml, climatetype = climatetype, years = "y2100",
     aggregate = "cluster", round = roundArea, file = paste0("pot_forest_area_", ctype, ".mz")
   )
 

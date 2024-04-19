@@ -42,14 +42,10 @@ calcPotentialForestArea <- function(refData = "lpj", countryLevel = FALSE, cells
       aggregate = FALSE, cellular = TRUE, nclasses = "seven",
       input_magpie = TRUE, cells = "lpjcell", years = "y1995", round = 6
     )
-    forestIni <- dimSums(landIni[, , c("primforest", "secdforest")], dim = 3)
     landArea <- dimSums(landIni, dim = 3)
 
     potForestArea <- potForest * landArea
 
-    for (yr in getYears(potForestArea)) {
-      potForestArea[, yr, ] <- pmax(potForestArea[, yr, ], forestIni)
-    }
   }
 
   getNames(potForestArea) <- "potForestArea"
