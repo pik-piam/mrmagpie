@@ -114,9 +114,8 @@ calcCarbon <- function(lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de", crop = "
   # calculate aggregation weight based on the potential forest area
   ####################################################################
   potForestArea <- calcOutput("PotentialForestArea",
-    refData = "lpj", cells = cells, lpjml = lpjml,
-    climatetype = climatetype, aggregate = FALSE, cellular = TRUE
-  )
+                              refData = "lpj", cells = cells, lpjml = lpjml,
+                              climatetype = climatetype, aggregate = FALSE)
 
   weight <- new.magpie(
     cells_and_regions = getCells(carbonStocks),
