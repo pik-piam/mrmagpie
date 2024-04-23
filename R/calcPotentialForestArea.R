@@ -48,7 +48,7 @@ calcPotentialForestArea <- function(refData = "lpj", countryLevel = FALSE, cells
 
   }
 
-  getNames(potForestArea) <- "potForestArea"
+  getNames(potForestArea) <- NULL
 
   if (countryLevel) {
     out <- toolCountryFill(dimSums(potForestArea, dim = c("x", "y")), fill = 0)
