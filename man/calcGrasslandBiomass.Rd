@@ -13,7 +13,8 @@ calcGrasslandBiomass(cells = "lpjcell")
 Regional biomass demand
 }
 \description{
-Calculates pasture biomass demand for the historical period split between rangelands and managed pastures.
+Calculates pasture biomass demand for the historical period split
+between rangelands andmanaged pastures.
 }
 \examples{
 \dontrun{

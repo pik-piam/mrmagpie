@@ -21,7 +21,8 @@ calcLabourProdImpact(
 \item{cells}{"magpiecell" or "lpjcell"}
 }
 \value{
-List of magpie objects with results on 0.5deg grid level, weights based on production value, unit (ratio) and description.
+List of magpie objects with results on 0.5deg grid level, weights
+based on production value, unit (ratio) and description.
 }
 \description{
 Labour productivity impacts

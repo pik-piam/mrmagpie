@@ -16,9 +16,8 @@ List of magpie objects with results on cellular level, weight, unit and descript
 Read transport distance file
 }
 \examples{
-
 \dontrun{
-  readSource("TransportDistance", convert="onlycorrect")
+readSource("TransportDistance", convert = "onlycorrect")
 }
 
 }
