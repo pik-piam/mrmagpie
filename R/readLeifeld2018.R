@@ -18,7 +18,7 @@ readLeifeld2018 <- function() {
   a <- terra::cellSize(rp2[[1]], unit = "ha", mask = TRUE)
   a <- a * 1e-6
   # get spatial mapping
-  map <- mrcommons::toolGetMappingCoord2Country(pretty = TRUE)
+  map <- mstools::toolGetMappingCoord2Country(pretty = TRUE)
   # transform raster to magpie object
   x <- as.magpie(terra::extract(a, map[c("lon", "lat")])[, -1], spatial = 1)
   # set dimension names

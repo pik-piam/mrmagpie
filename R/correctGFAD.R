@@ -12,7 +12,7 @@
 #' }
 #'
 #' @importFrom madrat toolConditionalReplace
-#' @importFrom mrcommons toolCoord2Isocoord
+#' @importFrom mstools toolCoord2Isocoord
 
 correctGFAD <- function(x) {
 

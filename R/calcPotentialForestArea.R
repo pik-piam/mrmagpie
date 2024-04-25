@@ -23,7 +23,7 @@
 #'
 #' @importFrom madrat readSource calcOutput toolCountryFill
 #' @importFrom magclass dimSums getYears
-#' @importFrom mrcommons toolCoord2Isocell
+#' @importFrom mstools toolCoord2Isocell
 
 calcPotentialForestArea <- function(refData = "lpj", countryLevel = FALSE, cells = "lpjcell",
                                     lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de"),

@@ -9,7 +9,7 @@
 #' }
 #' @importFrom terra aggregate project rast global
 #' @importFrom magclass as.magpie
-#' @importFrom mrcommons toolGetMappingCoord2Country
+#' @importFrom mstools toolGetMappingCoord2Country
 
 readMehta2022 <- function() {
 

@@ -22,6 +22,7 @@
 #' calcOutput("AreaEquippedForIrrigation", source = "LUH2v2", cellular = TRUE, aggregate = FALSE)
 #' }
 #' @importFrom magpiesets findset
+#' @importFrom mstools toolCoord2Isocell
 #'
 #' @export
 

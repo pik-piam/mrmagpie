@@ -12,7 +12,7 @@
 #' @import magclass
 #' @importFrom raster extent brick
 #' @importFrom magpiesets findset
-#' @importFrom mrcommons toolGetMappingCoord2Country
+#' @importFrom mstools toolGetMappingCoord2Country
 #'
 #' @export
 

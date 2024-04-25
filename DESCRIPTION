@@ -25,10 +25,10 @@ BugReports: https://github.com/pik-piam/mrmagpie/issues
 Depends:
     madrat (>= 2.8.0),
     magclass (>= 3.17),
-    mrcommons (>= 1.37.0),
+    mrcommons (>= 1.40.7),
     mrland (>= 0.51.0),
     mrsoil (>= 2.0.0),
-    mrwater (>= 1.11.0),
+    mrwater (>= 1.12.0),
     R (>= 3.5.0)
 Imports:
     abind,
@@ -40,7 +40,7 @@ Imports:
     luplot (>= 3.56.0),
     luscale,
     magpiesets,
-    mstools,
+    mstools (>= 0.5.1),
     ncdf4,
     pbapply,
     raster,

@@ -1,5 +1,6 @@
 #' @title calcGrasslandBiomass
-#' @description Calculates pasture biomass demand for the historical period split between rangelands and managed pastures.
+#' @description Calculates pasture biomass demand for the historical period split
+#' between rangelands andmanaged pastures.
 #' @param cells "magpiecell" for 59199 cells or "lpjcell" for 67420 cells
 #' @return Regional biomass demand
 #' @author Marcos Alves
@@ -9,11 +10,10 @@
 #' \dontrun{
 #' calcOutput("GrasslandBiomass")
 #' }
-#' @importFrom mrcommons toolCoord2Isocell
+#' @importFrom mstools toolCoord2Isocell
 #' @importFrom magpiesets findset
 
 calcGrasslandBiomass <- function(cells = "lpjcell") {
-
   # select years
   magYearsPast <- findset("past")
 
@@ -33,17 +33,11 @@ calcGrasslandBiomass <- function(cells = "lpjcell") {
   # "other land" that is assumed to be used for grazing in those three countries.
 
   grasslLand["IND", , "pastr"] <- grasslLand["IND", , "pastr"] +
-                                    setNames(dimSums(land["IND", , c("primother", "secdother")],
-                                                    dim = 3),
-                                             "pastr")
+    setNames(dimSums(land["IND", , c("primother", "secdother")], dim = 3), "pastr")
   grasslLand["BGD", , "pastr"] <- grasslLand["BGD", , "pastr"] +
-                                    setNames(dimSums(land["BGD", , c("primother", "secdother")],
-                                                     dim = 3),
-                                              "pastr")
+    setNames(dimSums(land["BGD", , c("primother", "secdother")], dim = 3), "pastr")
   grasslLand["PAK", , "pastr"] <- grasslLand["PAK", , "pastr"] +
-                                    setNames(dimSums(land["PAK", , c("primother", "secdother")],
-                                                     dim = 3),
-                                              "pastr")
+    setNames(dimSums(land["PAK", , c("primother", "secdother")], dim = 3), "pastr")
 
   grassYld <- calcOutput("GrasslandsYields",
                          lpjml = "lpjml5p2_pasture",
@@ -66,7 +60,7 @@ calcGrasslandBiomass <- function(cells = "lpjcell") {
   livestock <- setNames(readSource("GLW3", subtype = "Aw"),
                         "liv_numb")
   if (cells == "magpiecell") {
-       livestock <- toolCoord2Isocell(livestock)
+    livestock <- toolCoord2Isocell(livestock)
   }
   livestock[livestock < 1] <- 0
 
@@ -80,11 +74,11 @@ calcGrasslandBiomass <- function(cells = "lpjcell") {
   livstSplit <- livestock * potBioMassShare
   livstSplit <- collapseNames(livstSplit)
   if (cells == "lpjcell") {
-       livstSplitCtry <- dimSums(livstSplit, dim = c("x", "y"))
+    livstSplitCtry <- dimSums(livstSplit, dim = c("x", "y"))
   } else if (cells == "magpiecell") {
-       livstSplitCtry <- dimSums(livstSplit, dim = 1.2)
+    livstSplitCtry <- dimSums(livstSplit, dim = 1.2)
   } else {
-       stop("Please select cells argument in calcGrasslandBiomass")
+    stop("Please select cells argument in calcGrasslandBiomass")
   }
   livstShareCtry <- livstSplitCtry[, , "pastr"] / dimSums(livstSplitCtry, dim = 3)
   livstShareCtry[is.nan(livstShareCtry) | is.infinite(livstShareCtry)] <- 0
@@ -96,7 +90,7 @@ calcGrasslandBiomass <- function(cells = "lpjcell") {
   # with the production of grass in pastures and rangelands in a country. That can be
   # derived by the fact that the feedbaskets assume the same feed ingredients shares
   # within a country.
-  commonCtrs <- intersect(getItems(biomass, dim = 1), 
+  commonCtrs <- intersect(getItems(biomass, dim = 1),
                           unique(getItems(livstShareCtry, dim = 1)))
   biomassSplit <- biomass[commonCtrs, , ] * livstShareCtry[commonCtrs, , ]
   biomassSplit <- toolCountryFill(biomassSplit, fill = 0)

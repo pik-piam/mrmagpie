@@ -33,7 +33,7 @@ readGPM2 <- function() {
   r3 <- terra::aggregate(a, fact = 48, fun = "sum", na.rm = TRUE)
 
   # get spatial mapping
-  map <- mrcommons::toolGetMappingCoord2Country(pretty = TRUE)
+  map <- mstools::toolGetMappingCoord2Country(pretty = TRUE)
 
   # transform raster to magpie object
   x <- as.magpie(terra::extract(r3, map[c("lon", "lat")])[, -1], spatial = 1)

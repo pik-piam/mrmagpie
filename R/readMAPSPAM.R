@@ -5,7 +5,7 @@
 #' @param subtype It can be either "harvested" or "physical" area
 #' @importFrom terra rast values crds aggregate
 #' @importFrom luscale speed_aggregate
-#' @importFrom mrcommons toolGetMappingCoord2Country
+#' @importFrom mstools toolGetMappingCoord2Country
 #' @importFrom magpiesets findset
 #' @importFrom magclass new.magpie
 #' @seealso [readSource()]

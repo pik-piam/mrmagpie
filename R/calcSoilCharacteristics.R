@@ -23,7 +23,7 @@ calcSoilCharacteristics <- function() {
   # THIS FUNCTION NEEDS A MAJOR REWRITE
   # Creating aggregation weights for the physical variables
   # #Future implementation
-  # map <- mrcommons:::toolGetMappingCoord2Country()
+  # map <- mstools:::toolGetMappingCoord2Country()
   # x <- new.magpie(cells_and_regions=map$coords)
   # getSets(x)[c(1,2)] <- c("x", "y")
   # x[,,1] <- 1

@@ -23,22 +23,21 @@ calcPeatland2 <- function(cells = "magpiecell") {
   gpm2 <- readSource("GPM2", convert = "onlycorrect")
 
   # Dissag. GPD2022 from country to cell with GPM2 as weight
-  map <- mrcommons::toolGetMappingCoord2Country(pretty = TRUE)
-  outCell   <- toolAggregate(x = mrcommons::toolIso2CellCountries(gpd2022, cells = "lpjcell"), rel = map,
+  map <- mstools::toolGetMappingCoord2Country(pretty = TRUE)
+  outCell   <- toolAggregate(x = mstools::toolIso2CellCountries(gpd2022, cells = "lpjcell"), rel = map,
                              weight = gpm2, dim = 1, from = "iso", to = "coords")
   names(dimnames(outCell)) <- c("coords", "t", "d3")
   dimnames(outCell) <- list("x.y.iso" = paste(map$coords, map$iso, sep = "."), "t" = NULL, "d3" = getNames(outCell))
 
   if (cells == "magpiecell") {
-    outCell <- mrcommons::toolCoord2Isocell(outCell)
+    outCell <- mstools::toolCoord2Isocell(outCell)
   }
 
   description <- "Intact and degraded peatland area (Mha) by land-use type, based GPD 2022 and GPM2.0"
 
-  return(list(
-    x = outCell,
-    weight = NULL,
-    unit = "Mha",
-    description = description,
-    isocountries = FALSE))
+  return(list(x = outCell,
+              weight = NULL,
+              unit = "Mha",
+              description = description,
+              isocountries = FALSE))
 }
