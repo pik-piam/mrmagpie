@@ -30,7 +30,7 @@ calcAreaEquippedForIrrigation <- function(cellular = FALSE,
                                           cells = "lpjcell",
                                           selectyears = "past") {
 
-  selectyears <- sort(findset(selectyears, noset = "original"))
+  selectyears <- sort(magpiesets::findset(selectyears, noset = "original"))
 
   ##########################################
   ### Read in LUH2v2 irrigated area data ###
@@ -71,12 +71,19 @@ calcAreaEquippedForIrrigation <- function(cellular = FALSE,
   getItems(luh, dim = 3) <- "LUH2v2"
 
   ########################################
-  ### Read in Mehta et al. (2022) data ###
+  ### Read in Mehta et al. (2024) data ###
   ########################################
-  mehta <- readSource("Mehta2022", convert = "onlycorrect")
-  years <- intersect(getItems(mehta, dim = 2), selectyears)
-  mehta <- mehta[, years, ]
-  getItems(mehta, dim = 3) <- "Mehta2022"
+  mehta1 <- readSource("Mehta2024", subtype = "GMIA", convert = "onlycorrect")
+  years <- intersect(getItems(mehta1, dim = 2), selectyears)
+  mehta1 <- mehta1[, years, ]
+  getItems(mehta1, dim = 3) <- "Mehta2024_Siebert2013"
+
+  mehta2 <- readSource("Mehta2024", subtype = "Meier2018", convert = "onlycorrect")
+  years <- intersect(getItems(mehta2, dim = 2), selectyears)
+  mehta2 <- mehta2[, years, ]
+  getItems(mehta2, dim = 3) <- "Mehta2024_Meier2018"
+
+  mehta <- mbind(mehta1, mehta2)
 
   #########################
   ### Combine data sets ###

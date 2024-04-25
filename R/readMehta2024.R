@@ -1,43 +1,54 @@
-#' @title readMehta2022
+#' @title readMehta2024
 #' @description reads in Global Area Equipped for Irrigation for years 1900-2015 from Mehta et al. (2022)
 #'
-#' @author  Felicitas Beier
-#' @seealso [correctMehta2022()]
-#' @examples
+#' @param subtype data subtype to be downloaded.
+#'                Subtypes available:
+#'                'GMIA': gridded base map for downscaling from Stefan et al. (2013).
+#'                        Global Map of Irrigation Areas version 5.
+#'                'Meier2018': gridded base map for downscaling from Meier, et al. (2018).
+#'                             Global Irrigated Areas.
 #'
-#' \dontrun{ a <- readSource("Mehta2022")
+#' @author  Felicitas Beier
+#' @seealso [correctMehta2024()]
+#' @examples
+#' \dontrun{
+#' a <- readSource("Mehta2024")
 #' }
 #' @importFrom terra aggregate project rast global
 #' @importFrom magclass as.magpie
 #' @importFrom mstools toolGetMappingCoord2Country
 
-readMehta2022 <- function() {
+readMehta2024 <- function(subtype = "GMIA") {
+
+  if (subtype == "GMIA") {
+    dataname <- "G_AEI_"
+    itemname <- "AEI_Mehta2024_Siebert2013"
+  } else if (subtype == "Meier2018") {
+    dataname <- "MEIER_G_AEI_"
+    itemname <- "AEI_Mehta2024_Meier2018"
+  } else {
+    stop("The selected subtype is not available for downloadMehta2024. Please select 'GMIA' or 'Meier2018'.")
+  }
 
   years  <- c(seq(1900, 1970, by = 10),
               seq(1980, 2015, by = 5))
-  years1 <- years[years < 2000]
-  years2 <- years[years >= 2000]
 
-  files  <- c(paste0("G_AEI_", years1, ".ASC"),
-              paste0("G_AEI_", years2, ".asc"))
+  files <- c(paste0(dataname, years, ".ASC"))
 
   .transformObject <- function(x) {
 
     resolution <- terra::rast(res = 0.5)
 
+    # global sum of AEI (in ha)
     checkSum <- terra::global(x, sum, na.rm = TRUE)
     # aggregate to 0.5 degree
     x <- suppressWarnings(terra::aggregate(x, fact = 6, fun = "sum", na.rm = TRUE))
     # Check whether sum before and after aggregation is the same.
-    if (any(round(checkSum - terra::global(x, sum, na.rm = TRUE), digits = 4) != 0)) {
-      warning(paste0("The sum before and after aggregation differ: ",
-                     "Min. deviation is: ",
-                     min(round(checkSum - terra::global(x, sum, na.rm = TRUE), digits = 4)),
-                     ". Max. deviation is: ",
-                     max(round(checkSum - terra::global(x, sum, na.rm = TRUE), digits = 4))))
-      saveRDS(x, file = "/p/projects/magpie/readMehta2022_x.rds") # ToDo: remove once this issue is solved! #nolint
-      saveRDS(checkSum, file = "/p/projects/magpie/readMehta2022_checkSum.rds") # ToDo: remove once this issue is solved! #nolint
-      stop("There is an issue with the aggregation. Please check mrmagpie::readMehta")
+    if (any(round(checkSum - terra::global(x, sum, na.rm = TRUE), digits = 0) != 0)) {
+      warning(paste0("The global sum of AEI before and after aggregation differ: ",
+                     "Deviation is: ",
+                     round(checkSum - terra::global(x, sum, na.rm = TRUE), digits = 4)))
+      stop("There is an issue with the aggregation. Please check mrmagpie::readMehta2024")
     }
     x <- suppressWarnings(terra::project(x, resolution))
     x <- as.magpie(x)
@@ -53,8 +64,8 @@ readMehta2022 <- function() {
     print(paste0("Read in ", file))
     aei <- .transformObject(x = aei)
 
-    getItems(aei, dim = 2) <- gsub("G_AEI_", "y", getItems(aei, dim = 3))
-    getItems(aei, dim = 3) <- "AEI"
+    getItems(aei, dim = 2) <- gsub(dataname, "y", getItems(aei, dim = 3))
+    getItems(aei, dim = 3) <- itemname
 
     out <- mbind(out, aei)
   }
