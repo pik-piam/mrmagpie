@@ -38,7 +38,6 @@ Imports:
     ggplot2,
     lpjclass,
     luplot (>= 3.56.0),
-    luscale,
     magpiesets,
     mstools,
     ncdf4,
