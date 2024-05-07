@@ -38,10 +38,6 @@ A spam relation matrix
 \description{
 calculates hierarchical clustering tree
 }
-\seealso{
-\code{\link{cluster_per_region}}, \code{\link{mag_kmeans}},
-\code{\link{clusterspam}}
-}
 \author{
 Jan Philipp Dietrich
 }

@@ -27,7 +27,7 @@ for the cluster distribution, e.g. weight=c(AFR=3,EUR=0.5).
 weight > 1 will grant more cluster to a region and
 weight < 1 less cluster than by default.}
 
-\item{cpr}{cells-per-region information as returned by cluster_per_region.
+\item{cpr}{cells-per-region information as returned by toolClusterPerRegionManual.
 Weight and ncluster are ignored in case that cpr is provided!}
 
 \item{seed}{a single value, interpreted as an integer, or NULL, to define seed for random calculations}
@@ -45,7 +45,7 @@ Performs MAgPIE kmeans clustering and
              calculates corresponding spam relation matrix
 }
 \seealso{
-\code{\link{toolClusterPerRegion}}, \code{\link{calcClusterHierarchical}}
+\code{\link{toolClusterPerRegionManual}}, \code{\link{calcClusterHierarchical}}
 }
 \author{
 Jan Philipp Dietrich
