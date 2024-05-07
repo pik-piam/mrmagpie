@@ -4,7 +4,6 @@
 #' @author Edna J. Molina Bacca, Felicitas Beier
 #' @param subtype It can be either "harvested" or "physical" area
 #' @importFrom terra rast values crds aggregate
-#' @importFrom luscale speed_aggregate
 #' @importFrom mrcommons toolGetMappingCoord2Country
 #' @importFrom magpiesets findset
 #' @importFrom magclass new.magpie
@@ -128,8 +127,7 @@ readMAPSPAM <- function(subtype = "harvested") {
 
     .convertMag <- function(x) {
       spam2Magpie <- spam2Magpie[spam2Magpie$SPAM %in% getNames(x), ]
-      x           <- luscale::speed_aggregate(x, rel = spam2Magpie,
-                                              from = "SPAM", to = "Magpie", dim = 3)
+      x           <- toolAggregate(x, rel = spam2Magpie, from = "SPAM", to = "Magpie", dim = 3)
       return(x)
     }
 
