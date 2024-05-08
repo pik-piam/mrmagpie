@@ -15,12 +15,12 @@ readLeifeld2018 <- function() {
   r <- terra::rast(res = 0.5)
   rp2 <- suppressWarnings(terra::project(x, r))
   # get cell area
-  a <- terra::cellSize(rp2[[1]], unit = "ha", mask = TRUE)
-  a <- a * 1e-6
+  cellArea <- terra::cellSize(rp2[[1]], unit = "ha", mask = FALSE) * 1e-6
+  cellArea <- terra::mask(cellArea, rp2[[1]])
   # get spatial mapping
   map <- mrcommons::toolGetMappingCoord2Country(pretty = TRUE)
   # transform raster to magpie object
-  x <- as.magpie(terra::extract(a, map[c("lon", "lat")])[, -1], spatial = 1)
+  x <- as.magpie(terra::extract(cellArea, map[c("lon", "lat")])[, -1], spatial = 1)
   # set dimension names
   dimnames(x) <- list("coords" = map$coords, "t" = NULL, "d3" = NULL)
 
