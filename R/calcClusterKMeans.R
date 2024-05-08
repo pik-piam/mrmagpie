@@ -12,7 +12,7 @@
 #'                    for the cluster distribution, e.g. weight=c(AFR=3,EUR=0.5).
 #'                    weight > 1 will grant more cluster to a region and
 #'                    weight < 1 less cluster than by default.
-#' @param cpr         cells-per-region information as returned by cluster_per_region.
+#' @param cpr         cells-per-region information as returned by toolClusterPerRegionManual.
 #'                    Weight and ncluster are ignored in case that cpr is provided!
 #' @param seed        a single value, interpreted as an integer, or NULL, to define seed for random calculations
 #' @param clusterdata similarity data to be used to determine clusters: yield_airrig (current default)
@@ -21,7 +21,7 @@
 #' @return A mapping between regions and clusters
 #' @author Jan Philipp Dietrich
 #' @importFrom stats kmeans
-#' @seealso \code{\link{toolClusterPerRegion}}, \code{\link{calcClusterHierarchical}}
+#' @seealso \code{\link{toolClusterPerRegionManual}}, \code{\link{calcClusterHierarchical}}
 #' @export
 
 calcClusterKMeans <- function(regionscode, ncluster, weight = NULL, cpr = NULL, seed = 42,
