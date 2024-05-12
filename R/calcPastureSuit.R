@@ -51,7 +51,6 @@ calcPastureSuit <- function(climatetype = "MRI-ESM2-0:ssp126",
     aggregate = FALSE
   )
 
-
   yearsCellPet <- intersect(getYears(cellPet), findset("time"))
   yearsCellPrep <- intersect(findset("time"), getYears(cellPrep))
   years <- intersect(yearsCellPet, yearsCellPrep)
@@ -64,34 +63,35 @@ calcPastureSuit <- function(climatetype = "MRI-ESM2-0:ssp126",
                      years = "y1995", round = 6)
   landArea <- setYears(dimSums(land, dim = 3), NULL)
 
-  cellorder <- population
-  cellorder <- match(dimnames(cellorder)$x.y.iso, dimnames(landArea)$x.y.iso)
-
-  # Reorder the dimensions of landArea to match Population
-  landArea <- landArea[cellorder, , ]
-  getCells(landArea) <- getCells(population)
-
-  # population density
-  popDensity <- (population * 1e6) / landArea * 10000 # population density in number of people per km2
+  # Calculate population density in people per km2: (Million people / Mha) = (1e6 / 10000)
+  popDensity <- population / landArea * 1e6 / 10000
   popDensity[is.infinite(popDensity)] <- 0
   popDensity[is.nan(popDensity)] <- 0
 
   years <- intersect(getYears(popDensity), getYears(cellPrep))
 
+  # Following the methodology presented in HYDE3.2
+  # (https://essd.copernicus.org/articles/9/927/2017/essd-9-927-2017.pdf),
+  # to distinguish between these types of grasslands in a simple and transparent
+  # way, also historically, a population density and an aridity index are applied,
+  # based on expert judgement. Low animal densities can be related to either low
+  # population density or to low productivity of the natural vegetation, which is
+  # approximated via the aridity index. When the aridity index (defined as annual
+  # precipitation divided by annual evapotranspiration) of a grid cell is greater than 0.5,
+  # and population density is greater than 5 inhabitants km^2, then it is defined
+  # as suitable for managed pastures, otherwise rangelands.
+
   aridity <- cellPrep[, years, ] / cellPet[, years, ]
   aridity[is.infinite(aridity) | is.nan(aridity)] <- 0
 
-  # 0.5 aridity threshold for managed pastures. Same from HYDE 3.2.
   aridity[aridity < 0.5] <- 0
   aridity[aridity >= 0.5] <- 1
 
-  # pasture suitability check
   pastureSuit <- aridity
   popDensity <- popDensity[, getYears(pastureSuit), ]
 
-  cellorder <- match(dimnames(pastureSuit)$x.y.iso, dimnames(popDensity)$x.y.iso)
-  popDensity <- popDensity[cellorder]
-  pastureSuit[popDensity < 5] <- 0 # 5 hab km2 population threshold for managed pastures. Same from HYDE 3.2.
+  popDensity <- popDensity > 5
+  pastureSuit <- pastureSuit * popDensity
 
   pastureSuitArea <- (pastureSuit * landArea * 100) / 1e6 # (from km2 (x100) to mha (/1e6))
 
