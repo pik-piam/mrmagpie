@@ -20,16 +20,13 @@
 #' @author Jan Philipp Dietrich
 #' @importFrom magclass getCells ncells getRegions getItems
 #' @importFrom stats hclust cutree
-#' @seealso \code{\link{cluster_per_region}}, \code{\link{mag_kmeans}},
-#' \code{\link{clusterspam}}
 #' @export
-
 calcClusterTreeHierarchical <- function(regionscode, mode = "h", weight = NULL,
                                         lpjml = c(natveg = "LPJmL4", crop = "LPJmL5"), clusterdata = "yield_airrig") {
 
   # read in cluster base data
   cdata <- toolApplyRegionNames(cdata = calcOutput("ClusterBase", lpjml = lpjml,
-                                                  clusterdata = clusterdata, aggregate = FALSE),
+                                                   clusterdata = clusterdata, aggregate = FALSE),
                                 regionscode = regionscode)
   # transform to array
   cdata <- as.array(cdata)[, , ]

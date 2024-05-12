@@ -1,6 +1,6 @@
-#' @title correctMehta2022
-#' @description correct lobal Area Equipped for Irrigation Dataset 1900-2015
-#'              from Mehta et al., 2022
+#' @title correctMehta2024
+#' @description correct Global Area Equipped for Irrigation Dataset 1900-2015
+#'              from Mehta et al., 2024
 #'
 #' @param x magpie object provided by the read function
 #'
@@ -10,10 +10,10 @@
 #' @examples
 #'
 #' \dontrun{
-#'   readSource("Mehta2022", convert="onlycorrect")
+#'   readSource("Mehta2024", convert="onlycorrect")
 #' }
 
-correctMehta2022 <- function(x) {
+correctMehta2024 <- function(x) {
 
   x <- toolConditionalReplace(x,
                               conditions = c("is.na()", "<0"),
