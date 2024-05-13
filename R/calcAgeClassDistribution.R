@@ -12,16 +12,16 @@
 #' }
 #'
 #' @importFrom magclass where
+#' @importFrom mstools toolCoord2Isocell
 
 calcAgeClassDistribution <- function(cells = "lpjcell") {
-
   # Cell fraction from poulter data set
   poulterDataset <- readSource("GFAD", convert = "onlycorrect")
 
   # Calculate cellarea
   mapping <- toolGetMappingCoord2Country()
   cb <- toolGetMapping("LPJ_CellBelongingsToCountries.csv",
-                      type = "cell", where = "mrcommons")
+                       type = "cell", where = "mrcommons")
   cellArea <- (111e3 * 0.5) * (111e3 * 0.5) * cos(cb$lat / 180 * pi)
   cellArea <- as.magpie(cellArea, spatial = 1)
   getItems(cellArea, dim = 1, raw = TRUE) <- paste(mapping$coords, mapping$iso, sep = ".")

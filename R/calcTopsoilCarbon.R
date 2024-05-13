@@ -15,7 +15,7 @@
 #' }
 #'
 #' @importFrom magpiesets findset
-#' @importFrom mrcommons toolCoord2Isocell
+#' @importFrom mstools toolCoord2Isocell
 
 calcTopsoilCarbon <- function(cells = "lpjcell",
                               lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de", crop = "ggcmi_phase3_nchecks_9ca735cb"),

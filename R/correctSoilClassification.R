@@ -6,18 +6,17 @@
 #' @seealso
 #' \code{\link{readSoilClassification}},
 #' @examples
-#'
 #' \dontrun{
-#'   readSource("SoilClassification", subtype="HWSD.soil", convert="onlycorrect")
+#' readSource("SoilClassification", subtype = "HWSD.soil", convert = "onlycorrect")
 #' }
 #'
 #' @import magclass
 #' @importFrom madrat toolConditionalReplace
-#' @importFrom mrcommons toolCell2isoCell
+#' @importFrom mstools toolCell2isoCell
 
-correctSoilClassification <- function(x){
+correctSoilClassification <- function(x) {
 
-  x <- toolConditionalReplace(x, conditions = c("<1",">13", "!is.integer()"), replaceby = 0)
+  x <- toolConditionalReplace(x, conditions = c("<1", ">13", "!is.integer()"), replaceby = 0)
   x <- toolCell2isoCell(x)
 
   return(x)

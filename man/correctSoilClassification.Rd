@@ -16,9 +16,8 @@ List of magpie objects with results on cellular level, weight, unit and descript
 Correct soil classification
 }
 \examples{
-
 \dontrun{
-  readSource("SoilClassification", subtype="HWSD.soil", convert="onlycorrect")
+readSource("SoilClassification", subtype = "HWSD.soil", convert = "onlycorrect")
 }
 
 }

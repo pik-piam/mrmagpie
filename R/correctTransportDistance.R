@@ -6,17 +6,16 @@
 #' @seealso
 #'   \code{\link{readTransportDistance}}
 #' @examples
-#'
 #' \dontrun{
-#'   readSource("TransportDistance", convert="onlycorrect")
+#' readSource("TransportDistance", convert = "onlycorrect")
 #' }
 #'
 #' @importFrom madrat toolConditionalReplace
-#' @importFrom mrcommons toolCell2isoCell
+#' @importFrom mstools toolCell2isoCell
 
-correctTransportDistance <- function(x){
+correctTransportDistance <- function(x) {
 
-  x <- toolConditionalReplace(x, conditions = c("is.na()","<0"), replaceby = 0)
+  x <- toolConditionalReplace(x, conditions = c("is.na()", "<0"), replaceby = 0)
   x <- toolCell2isoCell(x)
 
   return(x)

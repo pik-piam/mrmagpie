@@ -7,7 +7,7 @@
 #' readSource("GPM2", convert = "onlycorrect")
 #' }
 #' @importFrom magclass as.magpie
-
+#' @importFrom mstools toolGetMappingCoord2Country
 readGPM2 <- function() {
   previousOptions <- terra::terraOptions(print = FALSE)
   terra::terraOptions(tempdir = withr::local_tempdir(tmpdir = getConfig("tmpfolder")),
@@ -34,7 +34,7 @@ readGPM2 <- function() {
   r3 <- terra::aggregate(a, fact = 48, fun = "sum", na.rm = TRUE)
 
   # get spatial mapping
-  map <- mrcommons::toolGetMappingCoord2Country(pretty = TRUE)
+  map <- toolGetMappingCoord2Country(pretty = TRUE)
 
   # transform raster to magpie object
   x <- as.magpie(terra::extract(r3, map[c("lon", "lat")])[, -1], spatial = 1)

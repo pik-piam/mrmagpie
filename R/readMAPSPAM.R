@@ -4,7 +4,7 @@
 #' @author Edna J. Molina Bacca, Felicitas Beier
 #' @param subtype It can be either "harvested" or "physical" area
 #' @importFrom terra rast values crds aggregate
-#' @importFrom mrcommons toolGetMappingCoord2Country
+#' @importFrom mstools toolGetMappingCoord2Country
 #' @importFrom magpiesets findset
 #' @importFrom magclass new.magpie
 #' @seealso [readSource()]

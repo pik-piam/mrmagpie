@@ -14,7 +14,7 @@
 #' }
 #'
 #' @importFrom madrat toolAggregate
-
+#' @importFrom mstools toolGetMappingCoord2Country toolIso2CellCountries toolCoord2Isocell
 calcPeatland2 <- function(cells = "magpiecell") {
   # Country-level data on intact and degraded peatland from Global Peatland Database for 2022 (GPD2022)
   gpd2022 <- readSource("GPD2022", convert = TRUE)
@@ -23,22 +23,21 @@ calcPeatland2 <- function(cells = "magpiecell") {
   gpm2 <- readSource("GPM2", convert = "onlycorrect")
 
   # Dissag. GPD2022 from country to cell with GPM2 as weight
-  map <- mrcommons::toolGetMappingCoord2Country(pretty = TRUE)
-  outCell   <- toolAggregate(x = mrcommons::toolIso2CellCountries(gpd2022, cells = "lpjcell"), rel = map,
+  map <- toolGetMappingCoord2Country(pretty = TRUE)
+  outCell   <- toolAggregate(x = toolIso2CellCountries(gpd2022, cells = "lpjcell"), rel = map,
                              weight = gpm2, dim = 1, from = "iso", to = "coords")
   names(dimnames(outCell)) <- c("coords", "t", "d3")
   dimnames(outCell) <- list("x.y.iso" = paste(map$coords, map$iso, sep = "."), "t" = NULL, "d3" = getNames(outCell))
 
   if (cells == "magpiecell") {
-    outCell <- mrcommons::toolCoord2Isocell(outCell)
+    outCell <- toolCoord2Isocell(outCell)
   }
 
   description <- "Intact and degraded peatland area (Mha) by land-use type, based GPD 2022 and GPM2.0"
 
-  return(list(
-    x = outCell,
-    weight = NULL,
-    unit = "Mha",
-    description = description,
-    isocountries = FALSE))
+  return(list(x = outCell,
+              weight = NULL,
+              unit = "Mha",
+              description = description,
+              isocountries = FALSE))
 }

@@ -9,14 +9,13 @@
 #' }
 #' @importFrom raster brick subset as.matrix t
 #' @importFrom ncdf4 nc_open ncvar_get
-#' @importFrom mrcommons toolGetMappingCoord2Country
+#' @importFrom mstools toolGetMappingCoord2Country
 #' @importFrom magclass clean_magpie add_dimension setYears getSets
 #' @export
 
 readGFAD <- function() {
 
   poulterData   <- "GFAD_V1-1.nc"
-  gfad          <- nc_open(poulterData)
 
   mapping       <- toolGetMappingCoord2Country()
 

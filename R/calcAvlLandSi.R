@@ -13,7 +13,7 @@
 #'
 #' @importFrom madrat readSource calcOutput
 #' @importFrom magclass dimSums getCells getYears getNames mbind collapseDim
-#' @importFrom mrcommons toolCoord2Isocell toolGetMappingCoord2Country
+#' @importFrom mstools toolCoord2Isocell toolGetMappingCoord2Country
 #' @importFrom magpiesets addLocation
 #'
 
@@ -69,7 +69,7 @@ calcAvlLandSi <- function(cells = "lpjcell") {
               weight = NULL,
               unit = "Mha",
               description = paste0("si and nsi0 areas based on Ramankutty",
-                                  "suitability information and LUH area",
-                                  "information from initialization year"),
+                                   "suitability information and LUH area",
+                                   "information from initialization year"),
               isocountries = FALSE))
 }

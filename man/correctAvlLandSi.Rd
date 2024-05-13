@@ -16,9 +16,8 @@ List of magpie objects with results on cellular level, weight, unit and descript
 Read Available Land Si
 }
 \examples{
-
 \dontrun{
-  readSource("AvlLandSi", convert="onlycorrect")
+readSource("AvlLandSi", convert = "onlycorrect")
 }
 
 }

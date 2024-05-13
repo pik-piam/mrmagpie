@@ -7,7 +7,7 @@
 #' readSource("Leifeld2018", convert = "onlycorrect")
 #' }
 #' @importFrom magclass as.magpie
-
+#' @importFrom mstools toolGetMappingCoord2Country
 readLeifeld2018 <- function() {
   # projection is +proj=igh
   x <- terra::rast("Degradation_raster_homolosine_hires_rev4.tif")
@@ -18,7 +18,7 @@ readLeifeld2018 <- function() {
   cellArea <- terra::cellSize(rp2[[1]], unit = "ha", mask = FALSE) * 1e-6
   cellArea <- terra::mask(cellArea, rp2[[1]])
   # get spatial mapping
-  map <- mrcommons::toolGetMappingCoord2Country(pretty = TRUE)
+  map <- toolGetMappingCoord2Country(pretty = TRUE)
   # transform raster to magpie object
   x <- as.magpie(terra::extract(cellArea, map[c("lon", "lat")])[, -1], spatial = 1)
   # set dimension names

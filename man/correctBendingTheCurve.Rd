@@ -16,9 +16,8 @@ List of magpie objects with results on cellular level, weight, unit and descript
 Read bending the curve data
 }
 \examples{
-
 \dontrun{
-  readSource("BendingTheCurve", subtype="rr_layer", convert="onlycorrect")
+readSource("BendingTheCurve", subtype = "rr_layer", convert = "onlycorrect")
 }
 
 }

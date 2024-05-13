@@ -18,7 +18,8 @@
 #' }
 #'
 #' @importFrom magpiesets findset
-#' @importFrom mrcommons toolLPJmLVersion toolGetMappingCoord2Country toolCoord2Isocell
+#' @importFrom mrlandcore toolLPJmLVersion
+#' @importFrom mstools toolGetMappingCoord2Country toolCoord2Isocell
 #' @importFrom madrat toolGetMapping calcOutput toolAggregate
 #' @importFrom magclass dimSums getItems getSets collapseNames
 #' @importFrom withr local_options
@@ -59,16 +60,16 @@ calcIrrigation <- function(lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de", crop
 
   # Clustering weight:
   totalCropland <- dimSums(calcOutput("Croparea", sectoral = "kcr", physical = TRUE,
-                                       cellular = TRUE, cells = "lpjcell",
-                                       years = "y1995", round = 6,
-                                       irrigation = TRUE, aggregate = FALSE),
-                            dim = 3.2)
+                                      cellular = TRUE, cells = "lpjcell",
+                                      years = "y1995", round = 6,
+                                      irrigation = TRUE, aggregate = FALSE),
+                           dim = 3.2)
   map <- toolGetMappingCoord2Country()
   getItems(totalCropland, dim = 1, raw = TRUE) <- paste(map$coords, map$iso, sep = ".")
   getSets(totalCropland) <- c("x", "y", "iso", "year", "irrigation")
 
   weightCropArea <- collapseNames(totalCropland[, , "irrigated"]) +
-                                  rainfedweight * collapseNames(totalCropland[, , "rainfed"])
+    rainfedweight * collapseNames(totalCropland[, , "rainfed"])
 
   # Reduce to 59199 cells
   if (cells == "magpiecell") {

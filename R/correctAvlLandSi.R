@@ -6,17 +6,16 @@
 #' @seealso
 #'   \code{\link{readAvlLandSi}}
 #' @examples
-#'
 #' \dontrun{
-#'   readSource("AvlLandSi", convert="onlycorrect")
+#' readSource("AvlLandSi", convert = "onlycorrect")
 #' }
 #'
 #' @importFrom madrat toolConditionalReplace
-#' @importFrom mrcommons toolCell2isoCell
+#' @importFrom mstools toolCell2isoCell
 
-correctAvlLandSi <- function(x){
+correctAvlLandSi <- function(x) {
 
-  x <- toolConditionalReplace(x, conditions = c("is.na()","<0"), replaceby = 0)
+  x <- toolConditionalReplace(x, conditions = c("is.na()", "<0"), replaceby = 0)
   x <- toolCell2isoCell(x)
 
   return(x)

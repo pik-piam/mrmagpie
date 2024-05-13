@@ -8,7 +8,7 @@
 #' @return List of magpie object of gridded (0.5) labour productivity as percentage of full labour prod 1
 #' @author Michael Windisch, Florian Humpenöder
 #' @importFrom magclass dimSums mbind
-
+#' @importFrom mstools toolCoord2Isocell
 calcLabourProdImpactEmu <- function(timestep = "5year", cellular = TRUE,
                                     subtype = "impact", cells = "lpjcell") {
 
@@ -55,14 +55,15 @@ calcLabourProdImpactEmu <- function(timestep = "5year", cellular = TRUE,
   avlCropAreaWeight[avlCropAreaWeight == 0] <- 10^-10
 
   if (cells == "magpiecell") {
-    out <- mrcommons::toolCoord2Isocell(out, cells = cells, fillMissing = 1)
+    out <- toolCoord2Isocell(out, cells = cells, fillMissing = 1)
   }
 
   return(list(x            = out,
               weight       = avlCropAreaWeight,
               unit         = "Percentage of total labour productivity (1)",
-              description  = "Remaining labour productivity as percentage of full labour productivity after accounting for
-                             climate change impacts on labour productivity",
+              description  = "Remaining labour productivity as percentage of full labour
+                              productivity after accounting for climate change impacts on
+                              labour productivity",
               isocountries = FALSE))
 
 }
