@@ -14,6 +14,7 @@
 #' @importFrom raster area
 #' @importFrom dplyr left_join
 #' @importFrom raster crs<-
+#' @importFrom mstools toolGetMappingCoord2Country
 #'
 
 calcSoilCharacteristics <- function() {
@@ -23,7 +24,7 @@ calcSoilCharacteristics <- function() {
   # THIS FUNCTION NEEDS A MAJOR REWRITE
   # Creating aggregation weights for the physical variables
   # #Future implementation
-  # map <- mstools:::toolGetMappingCoord2Country()
+  # map <- toolGetMappingCoord2Country()
   # x <- new.magpie(cells_and_regions=map$coords)
   # getSets(x)[c(1,2)] <- c("x", "y")
   # x[,,1] <- 1

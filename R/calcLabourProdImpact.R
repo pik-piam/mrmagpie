@@ -10,8 +10,7 @@
 #' @importFrom magpiesets findset
 #' @importFrom mstools toolHoldConstant
 #' @importFrom magclass collapseNames
-
-
+#' @importFrom mstools toolCoord2Isocell
 calcLabourProdImpact <- function(timestep = "5year", subtype = "Orlov", cellular = TRUE, cells = "lpjcell") {
 
   if (subtype == "Orlov") {
@@ -52,7 +51,7 @@ calcLabourProdImpact <- function(timestep = "5year", subtype = "Orlov", cellular
   }
 
   if (cells == "magpiecell") {
-    x <- mstools::toolCoord2Isocell(x, cells = cells)
+    x <- toolCoord2Isocell(x, cells = cells)
   }
 
   return(list(x = out,

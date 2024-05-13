@@ -18,7 +18,7 @@
 #'
 #' @importFrom magclass clean_magpie
 #' @importFrom madrat toolGetMapping toolAggregate
-#' @importFrom mstools toolIso2CellCountries
+#' @importFrom mstools toolIso2CellCountries toolCoord2Isocell
 
 calcPeatland <- function(subtype = "degraded", cells = "lpjcell") {
 
@@ -59,7 +59,7 @@ calcPeatland <- function(subtype = "degraded", cells = "lpjcell") {
   }
 
   if (cells == "magpiecell") {
-    x <- mstools::toolCoord2Isocell(x, cells = cells)
+    x <- toolCoord2Isocell(x, cells = cells)
   }
 
   return(list(x = x,

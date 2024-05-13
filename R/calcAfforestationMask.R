@@ -11,6 +11,7 @@
 #' }
 #'
 #' @importFrom magclass as.magpie
+#' @importFrom mstools toolGetMappingCoord2Country toolCoord2Isocell
 
 calcAfforestationMask <- function(subtype, cells = "lpjcell") {
 
@@ -29,13 +30,13 @@ calcAfforestationMask <- function(subtype, cells = "lpjcell") {
 
 
   # get spatial mapping
-  map <- mstools::toolGetMappingCoord2Country(pretty = TRUE)
+  map <- toolGetMappingCoord2Country(pretty = TRUE)
   # transform raster to magpie object
   x <- as.magpie(terra::extract(r, map[c("lon", "lat")])[, -1], spatial = 1)
   dimnames(x) <- list("x.y.iso" = paste(map$coords, map$iso, sep = "."), "t" = NULL, "d3" = NULL)
 
   if (cells == "magpiecell") {
-    x <- mstools::toolCoord2Isocell(x, cells = cells)
+    x <- toolCoord2Isocell(x, cells = cells)
   }
 
   weight <- calcOutput("LandArea", aggregate = FALSE, cells = cells)

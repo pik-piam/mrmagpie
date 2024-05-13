@@ -11,11 +11,11 @@
 #' calcOutput("DegradationYieldReduction", aggregate = FALSE)
 #' }
 #' @importFrom magpiesets findset
-#'
+#' @importFrom mstools toolGetMappingCoord2Country toolCoord2Isocell
 
 calcDegradationYieldReduction <- function(cells = "lpjcell") {
   # create a dummy data set, which is later used to define yield impacts of land degradation
-  coordMapping <- mstools::toolGetMappingCoord2Country()
+  coordMapping <- toolGetMappingCoord2Country()
   cellnames    <- paste(coordMapping$coords, coordMapping$iso, sep = ".")
   x <- new.magpie(cells_and_regions = cellnames,
                   years = seq(1995, 2150, 5),
@@ -24,7 +24,7 @@ calcDegradationYieldReduction <- function(cells = "lpjcell") {
                   fill = 0)
 
   if (cells == "magpiecell") {
-    x <- mstools::toolCoord2Isocell(x, cells = cells)
+    x <- toolCoord2Isocell(x, cells = cells)
   }
 
   return(list(x = x,
