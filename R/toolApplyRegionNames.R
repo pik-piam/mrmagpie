@@ -33,15 +33,18 @@ toolApplyRegionNames <- function(cdata, regionscode) {
 
   # Get countries from magpie object and extend mapping
   isocountries <- getItems(cdata, dim = 1.3, full = TRUE)
-  isoMap       <- data.frame(CountryCode = isocountries)
-  map          <- base::merge(isoMap, map, by = "CountryCode",
+  isoMap       <- data.frame(country = isocountries)
+  # rename column names from old to new convention, if necessary
+  if ("CountryCode" %in% names(map)) names(map)[names(map) == "CountryCode"] <- "country"
+  if ("RegionCode" %in% names(map)) names(map)[names(map) == "RegionCode"] <- "region"
+  map          <- base::merge(isoMap, map, by = "country",
                               all.x = TRUE, sort = FALSE, no.dups = TRUE)
   # correct cell order
-  map          <- map[match(isocountries, map$CountryCode), ]
+  map          <- map[match(isocountries, map$country), ]
 
   # Add regional information to magpie object
   getItems(cdata, dim = 1, raw = TRUE) <- paste(gsub(".*\\.", "", getItems(cdata, dim = 1)),
-                                                map$RegionCode,
+                                                map$region,
                                                 as.character(seq_along(isocountries)),
                                                 sep = ".")
   getSets(cdata, fulldim = FALSE)[1] <- "country.region.cell"
