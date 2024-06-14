@@ -5,6 +5,8 @@
 #' from the Global Peatland Map 2.0 (GPM2)
 #' The data has been provided by Alexandra Barthelmes.
 #' @param cells number of cells to be returned: magpiecell (59199), lpjcell (67420)
+#' @param countryLevel    Whether output shall be at country level.
+#'                         Requires aggregate=FALSE in calcOutput.
 #' @return magpie object in cellular resolution
 #' @author Florian Humpenoeder
 #'
@@ -15,7 +17,7 @@
 #'
 #' @importFrom madrat toolAggregate
 #' @importFrom mstools toolGetMappingCoord2Country toolIso2CellCountries toolCoord2Isocell
-calcPeatland2 <- function(cells = "magpiecell") {
+calcPeatland2 <- function(cells = "magpiecell", countryLevel = FALSE) {
   # Country-level data on intact and degraded peatland from Global Peatland Database for 2022 (GPD2022)
   gpd2022 <- readSource("GPD2022", convert = TRUE)
 
@@ -31,6 +33,10 @@ calcPeatland2 <- function(cells = "magpiecell") {
 
   if (cells == "magpiecell") {
     outCell <- toolCoord2Isocell(outCell)
+  }
+
+  if (countryLevel) {
+    outCell <- toolCountryFill(dimSums(outCell, dim = c("x", "y")), fill = 0)
   }
 
   description <- "Intact and degraded peatland area (Mha) by land-use type, based GPD 2022 and GPM2.0"
