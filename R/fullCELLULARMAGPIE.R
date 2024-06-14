@@ -246,7 +246,7 @@ fullCELLULARMAGPIE <- function(rev = numeric_version("0.1"), dev = "",
              aggregate = "cluster", cells = cells,
              round = roundArea, file = paste0("CroplandTreecover_", ctype, ".mz"))
   calcOutput("CroplandTreecover",
-             aggregate = FALSE, cells = cells, country_level = TRUE,
+             aggregate = FALSE, cells = cells, countryLevel = TRUE,
              round = roundArea, file = "CroplandTreecover_iso.cs2")
 
   calcOutput("SNVTargetCropland",
@@ -463,7 +463,7 @@ fullCELLULARMAGPIE <- function(rev = numeric_version("0.1"), dev = "",
   calcOutput("Peatland2", aggregate = "cluster", cells = cells, round = roundArea,
              file = paste0("f58_peatland_area_", ctype, ".mz"))
   calcOutput("Peatland2", aggregate = FALSE, cells = cells, round = roundArea,
-             country_level = TRUE, file = "f58_peatland_area_iso.cs3")
+             countryLevel = TRUE, file = "f58_peatland_area_iso.cs3")
 
   # 59 som
   calcOutput("SOMinitialsiationPools", aggregate = "cluster", round = 6, cells = cells,

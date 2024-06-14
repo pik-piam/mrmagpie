@@ -36,7 +36,7 @@ calcPeatland2 <- function(cells = "magpiecell", countryLevel = FALSE) {
   }
 
   if (countryLevel) {
-    outCell <- toolCountryFill(dimSums(outCell, dim = c("x", "y")), fill = 0)
+    outCell <- toolCountryFill(dimSums(outCell, dim = 1.2), fill = 0)
   }
 
   description <- "Intact and degraded peatland area (Mha) by land-use type, based GPD 2022 and GPM2.0"
