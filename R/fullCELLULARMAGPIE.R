@@ -473,6 +473,8 @@ fullCELLULARMAGPIE <- function(rev = numeric_version("0.1"), dev = "",
 
   if (dev == "+newSOC") {
 
+    histClimatetype <- toolLPJmLVersion(version     = lpjml[["natveg"]],
+                                        climatetype = climatetype)$baseline_hist
     calcOutput("CarbonInputMultiplier", aggregate = "region",
                round = 6, file = "f59_cinput_multiplier.cs3")
     calcOutput("CarbonInputMultiplier", inputType = "kcr", aggregate = "region",
@@ -485,9 +487,9 @@ fullCELLULARMAGPIE <- function(rev = numeric_version("0.1"), dev = "",
     calcOutput("DecayFuture", aggregate = "region", years = lpjYears,
                lpjmlNatveg = lpjml[["natveg"]], climatetype = climatetype,
                round = 6, file = "f59_topsoilc_decay.cs3")
-    calcOutput("SoilCarbon", aggregate = "region", years = "y1995",
-               lpjmlNatveg = lpjml[["natveg"]], round = 6,
-               file = "f59_topsoilc_actualstate.cs3")
+    calcOutput("SoilCarbon", aggregate = "region", years = "y1995", output = "actualstate",
+               lpjmlNatveg = lpjml[["natveg"]], climatetype = histClimatetype,
+               round = 6, file = "f59_topsoilc_actualstate.cs3")
   }
 
   ##### AGGREGATION ######
