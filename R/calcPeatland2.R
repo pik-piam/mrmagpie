@@ -31,12 +31,24 @@ calcPeatland2 <- function(cells = "magpiecell", countryLevel = FALSE) {
   names(dimnames(outCell)) <- c("coords", "t", "d3")
   dimnames(outCell) <- list("x.y.iso" = paste(map$coords, map$iso, sep = "."), "t" = NULL, "d3" = getNames(outCell))
 
-  if (cells == "magpiecell") {
-    outCell <- toolCoord2Isocell(outCell)
-  }
 
   if (countryLevel) {
-    outCell <- toolCountryFill(dimSums(outCell, dim = 1.2), fill = 0)
+
+    outCell <- toolCountryFill(dimSums(outCell, dim = c("x", "y")), fill = 0)
+
+  } else {
+
+    if (cells == "magpiecell") {
+
+      outCell <- toolCoord2Isocell(outCell)
+
+    } else if (cells == "lpjcell") {
+
+      outCell <- outCell
+
+    } else {
+      stop("Please specify cells argument")
+    }
   }
 
   description <- "Intact and degraded peatland area (Mha) by land-use type, based GPD 2022 and GPM2.0"
