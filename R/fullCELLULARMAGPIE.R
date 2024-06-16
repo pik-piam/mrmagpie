@@ -471,7 +471,7 @@ fullCELLULARMAGPIE <- function(rev = numeric_version("0.1"), dev = "",
   calcOutput("SOCLossShare", aggregate = "cluster", rate = "loss", round = 6, cells = cells,
              file = paste0("cshare_released_", ctype, ".mz"))
 
-  if (dev == "+newSOC") {
+  if (grepl("newSOC", dev)) {
 
     histClimatetype <- toolLPJmLVersion(version     = lpjml[["natveg"]],
                                         climatetype = climatetype)$baseline_hist
