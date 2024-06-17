@@ -416,6 +416,10 @@ fullCELLULARMAGPIE <- function(rev = numeric_version("0.1"), dev = "",
              aggregate = "cluster", cells = cells,
              file = paste0("watdem_nonagr_grper_", ctype, ".mz"))
 
+  calcOutput("WaterUseNonAg", datasource = "WATERGAP_ISIMIP", usetype = "all:withdrawal",
+             selectyears = lpjYears, seasonality = "total", lpjml = lpjml, climatetype = climatetype,
+             aggregate = "cluster", cells = cells,
+             file = paste0("watdem_nonagr_total_", ctype, ".mz"))
 
   # 44 biodiversity
   calcOutput("BiomeType", aggregate = "cluster", cells = cells, round = roundArea,
