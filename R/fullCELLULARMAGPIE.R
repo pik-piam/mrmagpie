@@ -273,10 +273,10 @@ fullCELLULARMAGPIE <- function(rev = numeric_version("0.1"), dev = "",
              lsu_levels = c(seq(0, 2.2, 0.2), 2.5), past_mngmt = "mdef",
              file = paste0("f31_grassl_yld.mz"), years = magYears,
              cells = cells, aggregate = FALSE)
-  calcOutput("PastureSuit", climatetype = climatetype, lpjml =  lpjml[["natveg"]], cells = cells,
-             file = paste0("f31_pastr_suitability_", ctype, ".mz"), years = magYears, aggregate = "cluster")
-  calcOutput("PastureSuit", climatetype = climatetype, lpjml =  lpjml[["natveg"]], cells = cells,
-             file = "f31_pastr_suitability.mz", years = magYears, aggregate = FALSE)
+  calcOutput("MaxPastureSuit", climatetype = climatetype, lpjml =  lpjml[["natveg"]], cells = cells,
+             file = paste0("f31_max_managed_pasture_", ctype, ".mz"), years = magYears, aggregate = "cluster")
+  calcOutput("MaxPastureSuit", climatetype = climatetype, lpjml =  lpjml[["natveg"]], cells = cells,
+             file = "f31_max_managed_pasture.mz", years = magYears, aggregate = FALSE)
 
   if (grepl("+PastrMngtLevels", dev)) {
     calcOutput("PastrMngtLevels", climatetype = paste0("MRI-ESM2-0", ":", climatescen),

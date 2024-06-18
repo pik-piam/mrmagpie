@@ -1,5 +1,5 @@
-#' @title calcPastureSuit
-#' @description Calculate glassland suitable for pasture management based
+#' @title calcMaxPastureSuit
+#' @description Calculate maximum glassland suitable for pasture management based
 #' on population and aridity criteria.
 #'
 #' @param lpjml Defines LPJmL version for crop/grass and natveg specific inputs
@@ -11,14 +11,14 @@
 #' @author Marcos Alves, Kristine Karstens, Alexandre Köberle
 #' @examples
 #' \dontrun{
-#' calcOutput("PastureSuit")
+#' calcOutput("MaxPastureSuit")
 #' }
 #' @importFrom raster area rasterFromXYZ
 
 
-calcPastureSuit <- function(climatetype = "MRI-ESM2-0:ssp126",
-                            lpjml = "LPJmL4_for_MAgPIE_44ac93de",
-                            cells = "lpjcell") {
+calcMaxPastureSuit <- function(climatetype = "MRI-ESM2-0:ssp126",
+                               lpjml = "LPJmL4_for_MAgPIE_44ac93de",
+                               cells = "lpjcell") {
   x <- toolSplitSubtype(climatetype, list(climatemodel = NULL, scenario = NULL))
 
   # Extract stage argument information
