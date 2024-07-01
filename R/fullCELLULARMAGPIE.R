@@ -411,12 +411,12 @@ fullCELLULARMAGPIE <- function(rev = numeric_version("0.1"), dev = "",
                file = paste0("envflow_total_", ctype, ".cs3"))
   }
 
-  calcOutput("WaterUseNonAg", datasource = "WATERGAP_ISIMIP", usetype = "all:withdrawal",
+  calcOutput("WaterUseNonAg", datasource = "WATERGAP_ISIMIP", usetype = "all:all",
              selectyears = lpjYears, seasonality = "grper", lpjml = lpjml, climatetype = climatetype,
              aggregate = "cluster", cells = cells,
              file = paste0("watdem_nonagr_grper_", ctype, ".mz"))
 
-  calcOutput("WaterUseNonAg", datasource = "WATERGAP_ISIMIP", usetype = "all:withdrawal",
+  calcOutput("WaterUseNonAg", datasource = "WATERGAP_ISIMIP", usetype = "all:all",
              selectyears = lpjYears, seasonality = "total", lpjml = lpjml, climatetype = climatetype,
              aggregate = "cluster", cells = cells,
              file = paste0("watdem_nonagr_total_", ctype, ".mz"))
