@@ -22,7 +22,7 @@ calcPeatland2 <- function(cells = "magpiecell", countryLevel = FALSE) {
   gpd2022 <- readSource("GPD2022", convert = TRUE)
 
   # Global Peatland Map 2.0; peatland location and extent; but no information on status peatlands (intact / degraded)
-  gpm2 <- readSource("GPM2", convert = "onlycorrect")
+  gpm2 <- readSource("GPM2", convert = "onlycorrect") + 10^-10
 
   # Dissag. GPD2022 from country to cell with GPM2 as weight
   map <- toolGetMappingCoord2Country(pretty = TRUE)
