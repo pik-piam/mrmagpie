@@ -4,7 +4,10 @@
 \alias{readGPM2}
 \title{readGPM2}
 \usage{
-readGPM2()
+readGPM2(type = "1km")
+}
+\arguments{
+\item{type}{resolution ("1km" or "500m")}
 }
 \value{
 List of magpie objects with results on cellular level, weight, unit and description.
