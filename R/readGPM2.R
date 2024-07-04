@@ -1,6 +1,6 @@
 #' @title readGPM2
 #' @description read peatland area from GPM2
-#' @param type resolution ("1km" or "500m")
+#' @param subtype resolution ("1km" or "500m")
 #' @return List of magpie objects with results on cellular level, weight, unit and description.
 #' @author Florian Humpenoeder
 #' @examples
@@ -9,13 +9,13 @@
 #' }
 #' @importFrom magclass as.magpie
 #' @importFrom mstools toolGetMappingCoord2Country
-readGPM2 <- function(type = "1km") {
+readGPM2 <- function(subtype = "1km") {
   previousOptions <- terra::terraOptions(print = FALSE)
   terra::terraOptions(tempdir = withr::local_tempdir(tmpdir = getConfig("tmpfolder")),
                       todisk = FALSE, memfrac = 0.5)
   withr::defer(do.call(terra::terraOptions, previousOptions))
 
-  if (type == "1km") {
+  if (subtype == "1km") {
     # read-in file
     r <- terra::rast("peatMAY22_1x1_mw_RUS30.tif")
 
@@ -35,7 +35,7 @@ readGPM2 <- function(type = "1km") {
     # on the cluster (method = "sum" is the problem)
     r3 <- terra::aggregate(a, fact = 48, fun = "sum", na.rm = TRUE)
 
-  } else if (type == "500m") {
+  } else if (subtype == "500m") {
     # read-in file
     r <- terra::vrt(list.files("500m", full.names = TRUE, pattern = ".tif$"), "500m/GPM2.0_500m.vrt", overwrite = TRUE)
     crs(r) <- "+proj=moll"
