@@ -23,7 +23,7 @@
 calcPeatland <- function(subtype = "degraded", cells = "lpjcell") {
 
   gpd         <- readSource("GPD", convert = TRUE)
-  potPeatArea <- readSource("Leifeld2018", convert = "onlycorrect")
+  potPeatArea <- readSource("Leifeld2018", convert = "onlycorrect") + 10^-10
 
   # Total and drained peatland area
   peatAreaTotal   <- collapseNames(gpd[, , "PeatAreaTotal"])

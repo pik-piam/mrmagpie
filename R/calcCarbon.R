@@ -130,7 +130,7 @@ calcCarbon <- function(lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de", crop = "
 
   return(list(
     x = carbonStocks,
-    weight = weight,
+    weight = weight + 10^-10,
     unit = "t per ha",
     description = "Carbon in tons per hectar for different land use types.",
     note = ifelse(grasssoil, "Pasture soil carbon stocks are based on allcrop run.",
