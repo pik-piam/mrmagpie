@@ -147,7 +147,7 @@ calcTransportCosts <- function(transport = "all", gtapVersion = "9") { # nolint
     transportMagpie[is.na(transportMagpie)] <- avg
   }
   return(list(x = transportMagpie,
-              weight = transportPowerMagpie,
+              weight = transportPowerMagpie + 10^-10,
               unit = "USD05",
               description = "Transport costs in USD per t dm per minute by country and product",
               isocountries = TRUE))
