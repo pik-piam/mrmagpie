@@ -69,7 +69,7 @@ calcIrrigation <- function(lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de", crop
   getSets(totalCropland) <- c("x", "y", "iso", "year", "irrigation")
 
   weightCropArea <- collapseNames(totalCropland[, , "irrigated"]) +
-    rainfedweight * collapseNames(totalCropland[, , "rainfed"])
+    rainfedweight * collapseNames(totalCropland[, , "rainfed"]) + 10e-10
 
   # Reduce to 59199 cells
   if (cells == "magpiecell") {
