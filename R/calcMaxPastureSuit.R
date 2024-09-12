@@ -34,7 +34,7 @@ calcMaxPastureSuit <- function(climatetype = "MRI-ESM2-0:ssp126",
     aggregate = FALSE
   )[, , toupper(substring(x$scenario, first = 0, last = 4))]
 
-  cellPrep <- calcOutput("LPJmLClimateInput",
+  cellPrep <- calcOutput("LPJmLClimateInput_new",
     climatetype = climatetype,
     variable = "precipitation:monthlySum",
     stage = stage,
