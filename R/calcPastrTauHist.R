@@ -57,7 +57,7 @@ calcPastrTauHist <- function(past_mngmt = "mdef", cells = "lpjcell") { # nolint
     # mapping
     cell2reg <- toolGetMapping("CountryToCellMapping.csv",
                                type = "cell", where = "mappingfolder")
-    yref <- toolAggregate(yref, rel = cell2reg, weight = yrefWeights,
+    yref <- toolAggregate(yref, rel = cell2reg, weight = yrefWeights + 10^-10,
                           from = "celliso", to = "iso")
   } else if (cells == "lpjcell") {
     # coordinate-to-cell mapping
@@ -66,7 +66,7 @@ calcPastrTauHist <- function(past_mngmt = "mdef", cells = "lpjcell") { # nolint
     yref        <- collapseDim(yref, dim = 1.3)
     yrefWeights <- collapseDim(yrefWeights, dim = 1.3)
     # country-level grassland yields
-    yref <- toolAggregate(yref, rel = coord2iso, weight = yrefWeights,
+    yref <- toolAggregate(yref, rel = coord2iso, weight = yrefWeights + 10^-10,
                           from = "coords", to = "iso")
   } else {
     stop("Please select cells magpiecell or lpjcell")
@@ -80,7 +80,7 @@ calcPastrTauHist <- function(past_mngmt = "mdef", cells = "lpjcell") { # nolint
 
   # replacing unrealistic high tau values by regional averages
   regMap <- toolGetMapping("regionmappingH12.csv", type = "cell", where = "madrat")
-  tReg <- toolAggregate(t, rel = regMap, weight = area, from = "CountryCode", to = "RegionCode")
+  tReg <- toolAggregate(t, rel = regMap, weight = area + 10^-10, from = "CountryCode", to = "RegionCode")
   regions <- regMap$RegionCode
   names(regions) <- regMap[, "CountryCode"]
 
