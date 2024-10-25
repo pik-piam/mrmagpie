@@ -189,8 +189,13 @@ fullCELLULARMAGPIE <- function(rev = numeric_version("0.1"), dev = "",
                source = c(lpjml = lpjml[["crop"]], isimip = isimip),
                climatetype = climatetype, round = 2, years = lpjYears, file = paste0("lpj_yields_", ctype, ".mz"),
                weighting = ifelse(grepl("YieldWeights_", dev), gsub("YieldWeights_", "", dev), "totalCrop"))
-
   }
+
+  calcOutput("OzoneYieldShock", aggregate = "cluster",
+    weighting = "cropSpecific",
+    years = lpjYears,
+    file = paste0("lpj_yields_ozone_", ctype, ".cs3")
+  )
 
   calcOutput("DegradationYieldReduction", aggregate = "cluster", round = 6, cells = cells,
              file = paste0("f14_degradation_yld_reduc_", ctype, ".mz"))
