@@ -42,7 +42,7 @@ calcAgeClassDistribution <- function(cells = "lpjcell") {
   }
 
   return(list(x = out,
-              weight = cellArea,
+              weight = NULL,
               unit = "Mha",
               description = "Forest area in 15 age classes based the Global Forest Age
                 Dataset (GFAD) from Poulter et al. 2019",
