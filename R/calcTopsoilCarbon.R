@@ -27,8 +27,13 @@ calcTopsoilCarbon <- function(cells = "lpjcell",
     stage <- "harmonized2020"
   }
 
-  soilcLayerNatveg <- calcOutput("LPJmL_new", version = lpjml["natveg"], climatetype = climatetype,
+  soilcLayerShare  <- calcOutput("LPJmL_new", version = lpjml["natveg"], climatetype = climatetype,
                                  subtype = "soilc_layer", stage = stage, aggregate = FALSE)
+  soilcLayerShare  <- soilcLayerShare / dimSums(soilcLayerShare, dim = 3) # calculating a share per layer
+  soilcLayerShare  <- toolConditionalReplace(soilcLayerShare, conditions = c("is.na()"), replaceby = 0)
+  soilcLayerNatveg <- calcOutput("LPJmL_new", version = lpjml["natveg"], climatetype = climatetype,
+                                 subtype = "soilc", stage = stage, aggregate = FALSE) * soilcLayerShare
+
   topsoilc           <- soilcLayerNatveg[, , 1] + 1 / 3 * soilcLayerNatveg[, , 2]
   getNames(topsoilc) <- "topsoilc"
 
