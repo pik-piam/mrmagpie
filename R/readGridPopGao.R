@@ -36,7 +36,7 @@ readGridPopGao <- function(subtype = "future") {
           }
 
           # aggregate and reproject
-          r <- terra::raster(resolution =  0.5)
+          r <- raster::raster(resolution =  0.5)
           t <- aggregate(t, fact = 4, fun = sum, na.rm = TRUE)
           t <- suppressWarnings(projectRaster(t, r, over = TRUE))
 
