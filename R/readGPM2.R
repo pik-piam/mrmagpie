@@ -31,7 +31,7 @@ readGPM2 <- function(subtype = "1km") {
     a <- a * 1e-6
 
     # project or aggregate to 0.5 degree
-    # use terra::aggregate because terra::project(a, terra::rast(res = 0.5), method = "sum") is not working
+    # use terra::aggregate because terra::project(a, terra::rast(resolution = 0.5), method = "sum") is not working
     # on the cluster (method = "sum" is the problem)
     r3 <- terra::aggregate(a, fact = 48, fun = "sum", na.rm = TRUE)
 
@@ -52,7 +52,7 @@ readGPM2 <- function(subtype = "1km") {
     a <- a * 1e-6
 
     # project or aggregate to 0.5 degree
-    # use terra::aggregate because terra::project(a, terra::rast(res = 0.5), method = "sum") is not working
+    # use terra::aggregate because terra::project(a, terra::rast(resolution = 0.5), method = "sum") is not working
     # on the cluster (method = "sum" is the problem)
     r3 <- terra::aggregate(a, fact = 96, fun = "sum", na.rm = TRUE)
 
