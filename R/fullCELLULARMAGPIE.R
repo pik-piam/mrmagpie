@@ -483,25 +483,25 @@ fullCELLULARMAGPIE <- function(rev = numeric_version("0.1"), dev = "",
     histClimatetype <- toolLPJmLVersion(version     = lpjml[["natveg"]],
                                         climatetype = climatetype)$baseline_hist
     calcOutput("LanduseInitialisation", nclasses = "seven",
-               aggregate = "region", cellular = FALSE, cells = cells,
+               aggregate = "cluster", cellular = FALSE, cells = cells,
                input_magpie = TRUE, selectyears = "y1990",
                round = roundArea, file = "f59_land_y1990.cs3")
-    calcOutput("CarbonInputMultiplier", aggregate = "region",
+    calcOutput("CarbonInputMultiplier", aggregate = "cluster",
                round = 6, file = "f59_cinput_multiplier.cs3")
-    calcOutput("CarbonInputMultiplier", inputType = "kcr", aggregate = "region",
+    calcOutput("CarbonInputMultiplier", inputType = "kcr", aggregate = "cluster",
                round = 6, file = "f59_cinput_multiplier_residue.cs3")
-    calcOutput("CarbonInputMultiplier", inputType = "kli", aggregate = "region",
+    calcOutput("CarbonInputMultiplier", inputType = "kli", aggregate = "cluster",
                round = 6, file = "f59_cinput_multiplier_manure.cs3")
-    calcOutput("LitterSoilinput", aggregate = "region", years = lpjYears,
+    calcOutput("LitterSoilinput", aggregate = "cluster", years = lpjYears,
                lpjmlNatveg = lpjml[["natveg"]], climatetype = climatetype,
                fixFpc = TRUE, round = 6, file = "f59_litter_input.cs3")
-    calcOutput("DecayFuture", aggregate = "region", years = lpjYears,
+    calcOutput("DecayFuture", aggregate = "cluster", years = lpjYears,
                lpjmlNatveg = lpjml[["natveg"]], climatetype = climatetype,
                round = 6, file = "f59_topsoilc_decay.cs3")
-    calcOutput("SoilCarbon", aggregate = "region", years = "y1990", output = "actualstate",
+    calcOutput("SoilCarbon", aggregate = "cluster", years = "y1990", output = "actualstate",
                lpjmlNatveg = lpjml[["natveg"]], climatetype = histClimatetype,
                round = 6, file = "f59_topsoilc_actualstate.cs3")
-    calcOutput("SoilCarbon", aggregate = "region", years = "y1990", output = "naturalstate",
+    calcOutput("SoilCarbon", aggregate = "cluster", years = "y1990", output = "naturalstate",
                lpjmlNatveg = lpjml[["natveg"]], climatetype = histClimatetype,
                round = 6, file = "f59_topsoilc_naturalstate.cs3")
   }
