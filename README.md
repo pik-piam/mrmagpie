@@ -1,6 +1,6 @@
 # madrat based MAgPIE Input Data Library
 
-R package **mrmagpie**, version **1.56.1**
+R package **mrmagpie**, version **1.56.2**
 
 [![CRAN status](https://www.r-pkg.org/badges/version/mrmagpie)](https://cran.r-project.org/package=mrmagpie) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4319612.svg)](https://doi.org/10.5281/zenodo.4319612) [![R build status](https://github.com/pik-piam/mrmagpie/workflows/check/badge.svg)](https://github.com/pik-piam/mrmagpie/actions) [![codecov](https://codecov.io/gh/pik-piam/mrmagpie/branch/master/graph/badge.svg)](https://app.codecov.io/gh/pik-piam/mrmagpie) [![r-universe](https://pik-piam.r-universe.dev/badges/mrmagpie)](https://pik-piam.r-universe.dev/builds)
 
@@ -39,7 +39,7 @@ In case of questions / problems please contact Kristine Karstens <karstens@pik-p
 
 To cite package **mrmagpie** in publications use:
 
-Karstens K, Dietrich J, Chen D, Windisch M, Alves M, Beier F, Köberle A, v. Jeetze P, Mishra A, Humpenoeder F, Sauer P (2025). "mrmagpie: madrat based MAgPIE Input Data Library." doi:10.5281/zenodo.4319612 <https://doi.org/10.5281/zenodo.4319612>, Version: 1.56.1, <https://github.com/pik-piam/mrmagpie>.
+Karstens K, Dietrich J, Chen D, Windisch M, Alves M, Beier F, Köberle A, v. Jeetze P, Mishra A, Humpenoeder F, Sauer P (2025). "mrmagpie: madrat based MAgPIE Input Data Library." doi:10.5281/zenodo.4319612 <https://doi.org/10.5281/zenodo.4319612>, Version: 1.56.2, <https://github.com/pik-piam/mrmagpie>.
 
 A BibTeX entry for LaTeX users is
 
@@ -51,6 +51,6 @@ A BibTeX entry for LaTeX users is
   date = {2025-04-08},
   year = {2025},
   url = {https://github.com/pik-piam/mrmagpie},
-  note = {Version: 1.56.1},
+  note = {Version: 1.56.2},
 }
 ```
