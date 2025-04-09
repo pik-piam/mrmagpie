@@ -483,7 +483,7 @@ fullCELLULARMAGPIE <- function(rev = numeric_version("0.1"), dev = "",
     histClimatetype <- toolLPJmLVersion(version     = lpjml[["natveg"]],
                                         climatetype = climatetype)$baseline_hist
     calcOutput("LanduseInitialisation", nclasses = "seven",
-               aggregate = "cluster", cellular = FALSE, cells = cells,
+               aggregate = "cluster", cellular = TRUE, cells = cells,
                input_magpie = TRUE, selectyears = "y1990",
                round = roundArea, file = "f59_land_y1990.cs3")
     calcOutput("CarbonInputMultiplier", aggregate = "cluster",
