@@ -361,8 +361,6 @@ fullCELLULARMAGPIE <- function(rev = numeric_version("0.1"), dev = "",
   calcOutput("TransportTime", aggregate = FALSE, cells = cells,
              round = 6, file = "transport_distance.mz")
   calcOutput("TransportCosts", aggregate = "GLO", round = 4, file = "f40_transport_costs.csv")
-  calcOutput("TransportCosts", transport = "nonlocal", aggregate = "GLO", round = 4,
-             file = "f40_transport_costs_nonlocal.csv")
 
   # 41 area equipped for irrigation
   calcOutput("AreaEquippedForIrrigation", cells = cells,
