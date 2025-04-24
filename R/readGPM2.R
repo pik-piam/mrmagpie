@@ -11,17 +11,19 @@
 #' @importFrom mstools toolGetMappingCoord2Country
 readGPM2 <- function(subtype = "1km") {
   previousOptions <- terra::terraOptions(print = FALSE)
+  previousOptions$metadata <- NULL # prevent unknown options warning when resetting
   terra::terraOptions(tempdir = withr::local_tempdir(tmpdir = getConfig("tmpfolder")),
                       todisk = FALSE, memfrac = 0.5)
   withr::defer(do.call(terra::terraOptions, previousOptions))
 
   if (subtype == "1km") {
     # read-in file
-    r <- terra::rast("peatMAY22_1x1_mw_RUS30.tif")
+    r <- terra::rast("peatGPA22WGS_2cl.tif")
 
-    # choose only 1st layer
+    # choose both layers
+    # 1 = peat dominated, 2 = peat in soil mosaic
     r1 <- terra::segregate(r, other = NA)
-    r1 <- r1[[1]]
+    r1 <- r1[[c(1, 2)]]
 
     # project r to lon/lat
     r2 <- terra::project(r1, "+proj=longlat +datum=WGS84", method = "near")
@@ -30,10 +32,8 @@ readGPM2 <- function(subtype = "1km") {
     a <- terra::cellSize(r2, unit = "ha", mask = TRUE)
     a <- a * 1e-6
 
-    # project or aggregate to 0.5 degree
-    # use terra::aggregate because terra::project(a, terra::rast(res = 0.5), method = "sum") is not working
-    # on the cluster (method = "sum" is the problem)
-    r3 <- terra::aggregate(a, fact = 48, fun = "sum", na.rm = TRUE)
+    # aggregate to 0.5 degree
+    r3 <- terra::project(a, terra::rast(resolution = 0.5), method = "sum")
 
   } else if (subtype == "500m") {
     # read-in file
@@ -52,7 +52,7 @@ readGPM2 <- function(subtype = "1km") {
     a <- a * 1e-6
 
     # project or aggregate to 0.5 degree
-    # use terra::aggregate because terra::project(a, terra::rast(res = 0.5), method = "sum") is not working
+    # use terra::aggregate because terra::project(a, terra::rast(resolution = 0.5), method = "sum") is not working
     # on the cluster (method = "sum" is the problem)
     r3 <- terra::aggregate(a, fact = 96, fun = "sum", na.rm = TRUE)
 
