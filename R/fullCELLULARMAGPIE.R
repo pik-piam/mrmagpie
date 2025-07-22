@@ -24,11 +24,11 @@
 #'                      a higher level of detail for region LAM if set to NULL
 #'                      all weights will be assumed to be 1. Examples:
 #'                      c(LAM=1.5,SSA=1.5,OAS=1.5) or c(LAM=2,SSA=2,OAS=2)
-#' \code{\link{setConfig}} (e.g. for setting the mainfolder if not already set properly).
+#' \code{\link[madrat]{setConfig}} (e.g. for setting the mainfolder if not already set properly).
 #'
 #' @author Kristine Karstens, Jan Philipp Dietrich
 #' @seealso
-#' \code{\link{readSource}},\code{\link{getCalculations}},\code{\link{calcOutput}},\code{\link{setConfig}}
+#' \code{\link[madrat]{readSource}},\code{\link[madrat]{getCalculations}},\code{\link[madrat]{calcOutput}},\code{\link[madrat]{setConfig}}
 #' @examples
 #' \dontrun{
 #' retrieveData("CELLULARMAGPIE", rev = numeric_version("12"),
