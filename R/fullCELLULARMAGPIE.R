@@ -28,7 +28,8 @@
 #'
 #' @author Kristine Karstens, Jan Philipp Dietrich
 #' @seealso
-#' \code{\link[madrat]{readSource}},\code{\link[madrat]{getCalculations}},\code{\link[madrat]{calcOutput}},\code{\link[madrat]{setConfig}}
+#' \code{\link[madrat]{readSource}},\code{\link[madrat]{getCalculations}},\code{\link[madrat]{calcOutput}},
+#' \code{\link[madrat]{setConfig}}
 #' @examples
 #' \dontrun{
 #' retrieveData("CELLULARMAGPIE", rev = numeric_version("12"),
