@@ -47,7 +47,9 @@ calcClusterKMeans <- function(regionscode, ncluster, weight = NULL, cpr = NULL, 
   set.seed(seed)
   for (r in dimnames(cpr)[[1]]) {
     cells <- grep(paste0(".", r, "."), dimnames(cdata)[[1]], fixed = TRUE)
-    fit <- kmeans(cdata[cells, ], cpr[r, "clusters"], iter.max = 10000)
+    # We use the MacQueen algorithm as the HartiganWong algorithm does not converge reliably, as some
+    # points in cdata are very close.
+    fit <- kmeans(cdata[cells, ], cpr[r, "clusters"], iter.max = 50000, algorithm = "MacQueen")
     getCells(out)[cells] <- paste(getCells(out)[cells], fit$cluster + ccount, sep = ".")
     ccount <- ccount + cpr[r, "clusters"]
   }
