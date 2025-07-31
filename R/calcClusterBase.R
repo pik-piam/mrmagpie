@@ -52,7 +52,7 @@ calcClusterBase <- function(clusterdata = "yield_airrig",
     # Ensure all datasets have 1995 as the year (they should have been selected for that)
     m <- setYears(m, "y1995")
     getSets(m, fulldim = FALSE)[3] <- "data"
-    m
+    return(m)
   })
 
   # Combine into one object
@@ -60,7 +60,7 @@ calcClusterBase <- function(clusterdata = "yield_airrig",
   cdata <- cdata[, , dimSums(cdata, dim = c(1, 2)) != 0]
   cdata <- wrap(cdata, list(1, c(2, 3)))
 
-  cdata <- scale(cdata) # We leave magpie land
+  cdata <- scale(cdata) # Scale converts the magpie object to a matrix
   colnames(cdata) <- paste0("i", seq_len(ncol(cdata)))
 
   # Transform to magpie object
