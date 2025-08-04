@@ -24,11 +24,12 @@
 #'                      a higher level of detail for region LAM if set to NULL
 #'                      all weights will be assumed to be 1. Examples:
 #'                      c(LAM=1.5,SSA=1.5,OAS=1.5) or c(LAM=2,SSA=2,OAS=2)
-#' \code{\link{setConfig}} (e.g. for setting the mainfolder if not already set properly).
+#' \code{\link[madrat]{setConfig}} (e.g. for setting the mainfolder if not already set properly).
 #'
 #' @author Kristine Karstens, Jan Philipp Dietrich
 #' @seealso
-#' \code{\link{readSource}},\code{\link{getCalculations}},\code{\link{calcOutput}},\code{\link{setConfig}}
+#' \code{\link[madrat]{readSource}},\code{\link[madrat]{getCalculations}},\code{\link[madrat]{calcOutput}},
+#' \code{\link[madrat]{setConfig}}
 #' @examples
 #' \dontrun{
 #' retrieveData("CELLULARMAGPIE", rev = numeric_version("12"),
@@ -89,6 +90,7 @@ fullCELLULARMAGPIE <- function(rev = numeric_version("0.1"), dev = "",
   shortYears       <- findset("t_all")
   lpjYears         <- seq(1995, 2100, by = 5)
   roundArea        <- 5
+  stats            <- c("summary", "sum")
 
   # Clustering based on 67420 cells
   map      <- calcOutput("Cluster", ctype = ctype, weight = clusterweight, lpjml = lpjml,
@@ -112,49 +114,49 @@ fullCELLULARMAGPIE <- function(rev = numeric_version("0.1"), dev = "",
   # 09 drivers
   calcOutput("GridPop", source = "Gao", subtype = "all", harmonize_until = 2015, urban = FALSE,
              cellular = TRUE, cells = cells, aggregate = "cluster",
-             years = magYears, round = 6, file = "f09_pop_grid.cs3")
+             years = magYears, round = 6, outputStatistics = stats, file = "f09_pop_grid.cs3")
 
   calcOutput("GridPop", source = "Gao", subtype = "all", harmonize_until = 2015, urban = TRUE,
              cellular = TRUE, cells = cells, aggregate = "cluster",
-             years = magYears, round = 6, file = "f09_urbanpop_grid.cs3")
+             years = magYears, round = 6, outputStatistics = stats, file = "f09_urbanpop_grid.cs3")
 
   # 10 land
   ## seven land classes
   calcOutput("LanduseInitialisation", nclasses = "seven",
              aggregate = FALSE, cellular = TRUE, cells = cells,
              input_magpie = TRUE, selectyears = magYearsPastLong,
-             round = roundArea, file = "avl_land_t_0.5.mz")
+             round = roundArea, outputStatistics = stats, file = "avl_land_t_0.5.mz")
   calcOutput("LanduseInitialisation", nclasses = "seven",
              aggregate = "cluster", cellular = TRUE, cells = cells,
              input_magpie = TRUE, selectyears = magYearsPastLong,
-             round = roundArea, file = paste0("avl_land_t_", ctype, ".mz"))
+             round = roundArea, outputStatistics = stats, file = paste0("avl_land_t_", ctype, ".mz"))
   calcOutput("LanduseInitialisation", nclasses = "seven",
              aggregate = FALSE, cellular = FALSE, cells = cells,
              input_magpie = TRUE, selectyears = magYearsPastLong,
-             round = roundArea, file = paste0("avl_land_t_iso.cs3"))
+             round = roundArea, outputStatistics = stats, file = paste0("avl_land_t_iso.cs3"))
 
   ## nine land classes
   calcOutput("LanduseInitialisation", nclasses = "nine",
              aggregate = FALSE, cellular = TRUE, cells = cells,
              input_magpie = TRUE, selectyears = magYearsPastLong,
-             round = roundArea, file = "avl_land_full_t_0.5.mz")
+             round = roundArea, outputStatistics = stats, file = "avl_land_full_t_0.5.mz")
   calcOutput("LanduseInitialisation", nclasses = "nine",
              aggregate = "cluster", cellular = TRUE, cells = cells,
              input_magpie = TRUE, selectyears = magYearsPastLong,
-             round = roundArea, file = paste0("avl_land_full_t_", ctype, ".mz"))
+             round = roundArea, outputStatistics = stats, file = paste0("avl_land_full_t_", ctype, ".mz"))
   calcOutput("LanduseInitialisation", nclasses = "nine",
              aggregate = FALSE, cellular = FALSE, cells = cells,
              input_magpie = TRUE, selectyears = magYearsPastLong,
-             round = roundArea, file = paste0("avl_land_full_t_iso.cs3"))
+             round = roundArea, outputStatistics = stats, file = paste0("avl_land_full_t_iso.cs3"))
 
   calcOutput("AvlLandSi", cells = cells, aggregate = FALSE,
-             round = roundArea, file = "avl_land_si_0.5.mz")
+             round = roundArea, outputStatistics = stats, file = "avl_land_si_0.5.mz")
   calcOutput("AvlLandSi", cells = cells, aggregate = "cluster",
-             round = roundArea, file = paste0("avl_land_si_", ctype, ".mz"))
+             round = roundArea, outputStatistics = stats, file = paste0("avl_land_si_", ctype, ".mz"))
 
   # 13 TC
   calcOutput("PastrTauHist", round = 2, past_mngmt = "mdef",
-             file = "f13_pastr_tau_hist.csv",
+             outputStatistics = stats, file = "f13_pastr_tau_hist.csv",
              cells = cells, aggregate = superregion)
 
   # 14 yields
@@ -163,155 +165,164 @@ fullCELLULARMAGPIE <- function(rev = numeric_version("0.1"), dev = "",
     calcOutput("YieldsCalibrated", aggregate = "cluster", cells = cells,
                source = c(lpjml = lpjml[["crop"]], isimip = isimip),
                climatetype = climatetype, round = 2, years = lpjYears,
-               file = paste0("lpj_yields_", ctype, ".mz"))
+               outputStatistics = stats, file = paste0("lpj_yields_", ctype, ".mz"))
 
   } else if (grepl("india", dev)) {
 
     calcOutput("Yields", source = c(lpjml = lpjml[["crop"]], isimip = isimip),
                cells = cells, aggregate = FALSE,
-               climatetype = climatetype, round = 2, years = lpjYears, file = paste0("lpj_yields_0.5.mz"),
+               climatetype = climatetype, round = 2, years = lpjYears,
+               outputStatistics = stats, file = paste0("lpj_yields_0.5.mz"),
                weighting = "crop+irrigSpecific", indiaYields = TRUE, scaleFactor = 0.5)
 
 
     calcOutput("Yields", aggregate = "cluster", cells = cells,
                source = c(lpjml = lpjml[["crop"]], isimip = isimip),
-               climatetype = climatetype, round = 2, years = lpjYears, file = paste0("lpj_yields_", ctype, ".mz"),
+               climatetype = climatetype, round = 2, years = lpjYears,
+               outputStatistics = stats, file = paste0("lpj_yields_", ctype, ".mz"),
                weighting = "crop+irrigSpecific", indiaYields = TRUE, scaleFactor = 0.5)
 
   } else {
 
     calcOutput("Yields", source = c(lpjml = lpjml[["crop"]], isimip = isimip),
                aggregate = FALSE, cells = cells,
-               climatetype = climatetype, round = 2, years = lpjYears, file = paste0("lpj_yields_0.5.mz"),
+               climatetype = climatetype, round = 2, years = lpjYears,
+               outputStatistics = stats, file = paste0("lpj_yields_0.5.mz"),
                weighting = ifelse(grepl("YieldWeights_", dev), gsub("YieldWeights_", "", dev), "totalCrop"))
 
     calcOutput("Yields", aggregate = "cluster", cells = cells,
                source = c(lpjml = lpjml[["crop"]], isimip = isimip),
-               climatetype = climatetype, round = 2, years = lpjYears, file = paste0("lpj_yields_", ctype, ".mz"),
+               climatetype = climatetype, round = 2, years = lpjYears,
+               outputStatistics = stats, file = paste0("lpj_yields_", ctype, ".mz"),
                weighting = ifelse(grepl("YieldWeights_", dev), gsub("YieldWeights_", "", dev), "totalCrop"))
 
   }
 
   calcOutput("DegradationYieldReduction", aggregate = "cluster", round = 6, cells = cells,
-             file = paste0("f14_degradation_yld_reduc_", ctype, ".mz"))
+             outputStatistics = stats, file = paste0("f14_degradation_yld_reduc_", ctype, ".mz"))
 
 
   # 22 land conservation
   calcOutput("ProtectedAreaBaseline", nclasses = "seven",
              cells = cells, magpie_input = TRUE,
-             aggregate = FALSE, round = roundArea, file = "wdpa_baseline_0.5.mz")
+             aggregate = FALSE, round = roundArea, outputStatistics = stats, file = "wdpa_baseline_0.5.mz")
   calcOutput("ProtectedAreaBaseline", nclasses = "seven",
              cells = cells, magpie_input = TRUE,
              aggregate = "cluster", round = roundArea,
-             file = paste0("wdpa_baseline_", ctype, ".mz"))
+             outputStatistics = stats, file = paste0("wdpa_baseline_", ctype, ".mz"))
 
   calcOutput("ConservationPriorities", nclasses = "seven", cells = cells,
-             aggregate = FALSE, round = roundArea, file = "consv_prio_areas_0.5.mz")
+             aggregate = FALSE, round = roundArea, outputStatistics = stats, file = "consv_prio_areas_0.5.mz")
   calcOutput("ConservationPriorities", nclasses = "seven", cells = cells,
-             aggregate = "cluster", round = roundArea, file = paste0("consv_prio_areas_", ctype, ".mz"))
+             aggregate = "cluster", round = roundArea,
+             outputStatistics = stats, file = paste0("consv_prio_areas_", ctype, ".mz"))
 
   calcOutput("ProtectArea", bhifl = TRUE,
              cells = cells, aggregate = "cluster", round = roundArea,
-             file = paste0("protect_area_", ctype, ".mz"))
+             outputStatistics = stats, file = paste0("protect_area_", ctype, ".mz"))
 
 
   # 30 crop
   calcOutput("Croparea", sectoral = "kcr", physical = TRUE,
              cellular = TRUE, cells = cells, irrigation = FALSE, round = roundArea,
-             aggregate = "cluster", file = paste0("f30_croparea_initialisation_", ctype, ".mz"))
+             aggregate = "cluster", outputStatistics = stats,
+             file = paste0("f30_croparea_initialisation_", ctype, ".mz"))
   calcOutput("Croparea", sectoral = "kcr", physical = TRUE,
              cellular = TRUE, cells = cells, irrigation = TRUE, round = roundArea,
-             aggregate = "cluster", file = paste0("f30_croparea_w_initialisation_", ctype, ".mz"))
+             aggregate = "cluster", outputStatistics = stats,
+             file = paste0("f30_croparea_w_initialisation_", ctype, ".mz"))
   ## For cellular comparison
   calcOutput("MAPSPAM", subtype = "physical",  aggregate = FALSE,
-             file = paste0("MAPSPAM_croparea_0.5.mz"))
+             outputStatistics = stats, file = paste0("MAPSPAM_croparea_0.5.mz"))
   calcOutput("Croparea", sectoral = "kcr", physical = TRUE, cellular = TRUE,
              cells = cells, irrigation = TRUE, round = roundArea,
-             aggregate = FALSE, file = paste0("LUH2_croparea_0.5.mz"))
+             aggregate = FALSE, outputStatistics = stats, file = paste0("LUH2_croparea_0.5.mz"))
 
   calcOutput("AvlCropland", marginal_land = "magpie", cell_upper_bound = 0.9,
              aggregate = FALSE, cells = cells,
-             round = roundArea, file = "avl_cropland_0.5.mz")
+             round = roundArea, outputStatistics = stats, file = "avl_cropland_0.5.mz")
   calcOutput("AvlCropland", marginal_land = "magpie", cell_upper_bound = 0.9,
              aggregate = "cluster", cells = cells,
-             round = roundArea, file = paste0("avl_cropland_", ctype, ".mz"))
+             round = roundArea, outputStatistics = stats, file = paste0("avl_cropland_", ctype, ".mz"))
   calcOutput("AvlCropland", marginal_land = "magpie", cell_upper_bound = 0.9,
              aggregate = FALSE, cells = cells, country_level = TRUE,
-             round = roundArea, file = paste0("avl_cropland_iso.cs3"))
+             round = roundArea, outputStatistics = stats, file = paste0("avl_cropland_iso.cs3"))
 
   calcOutput("CroplandTreecover",
              aggregate = FALSE, cells = cells,
-             round = roundArea, file = "CroplandTreecover_0.5.mz")
+             round = roundArea, outputStatistics = stats, file = "CroplandTreecover_0.5.mz")
   calcOutput("CroplandTreecover",
              aggregate = "cluster", cells = cells,
-             round = roundArea, file = paste0("CroplandTreecover_", ctype, ".mz"))
+             round = roundArea, outputStatistics = stats, file = paste0("CroplandTreecover_", ctype, ".mz"))
   calcOutput("CroplandTreecover",
              aggregate = FALSE, cells = cells, countryLevel = TRUE,
-             round = roundArea, file = "CroplandTreecover_iso.cs2")
+             round = roundArea, outputStatistics = stats, file = "CroplandTreecover_iso.cs2")
 
   calcOutput("SNVTargetCropland",
              aggregate = FALSE, cells = cells,
-             round = roundArea, file = "SNVTargetCropland_0.5.mz")
+             round = roundArea, outputStatistics = stats, file = "SNVTargetCropland_0.5.mz")
   calcOutput("SNVTargetCropland",
              aggregate = "cluster", cells = cells,
-             round = roundArea, file = paste0("SNVTargetCropland_", ctype, ".mz"))
+             round = roundArea, outputStatistics = stats, file = paste0("SNVTargetCropland_", ctype, ".mz"))
 
   # 31 past
   if (grepl("+grasslandRealization", dev)) {
-    calcOutput("GrasslandBiomass",  round = 3, file = "f31_grass_bio_hist.cs3",
+    calcOutput("GrasslandBiomass",  round = 3, outputStatistics = stats, file = "f31_grass_bio_hist.cs3",
                cells = cells, aggregate = "region")
     calcOutput("LUH2v2", aggregate = "cluster", landuse_types = "LUH2v2",
                cellular = TRUE, cells = cells,
-               file = paste0("f31_LUH2v2_", ctype, ".mz"))
+               outputStatistics = stats, file = paste0("f31_LUH2v2_", ctype, ".mz"))
     # hard coded climate scenario for harmonization of data
     calcOutput("GrasslandsYields", lpjml = lpjml[["grass"]], climatetype = "MRI-ESM2-0:ssp126",
                subtype = "/co2/Nreturn0p5", # nolint
                lsu_levels = c(seq(0, 2.2, 0.2), 2.5), past_mngmt = "mdef",
-               file = paste0("f31_grassl_yld_", ctype, ".mz"), years = magYears,
+               outputStatistics = stats, file = paste0("f31_grassl_yld_", ctype, ".mz"), years = magYears,
                cells = cells, aggregate = "cluster")
     calcOutput("GrasslandsYields", lpjml = lpjml[["grass"]], climatetype = "MRI-ESM2-0:ssp126",
                subtype = "/co2/Nreturn0p5", # nolint
                lsu_levels = c(seq(0, 2.2, 0.2), 2.5), past_mngmt = "mdef",
-               file = paste0("f31_grassl_yld.mz"), years = magYears,
+               outputStatistics = stats, file = paste0("f31_grassl_yld.mz"), years = magYears,
                cells = cells, aggregate = FALSE)
     calcOutput("MaxPastureSuit", climatetype = climatetype, lpjml =  lpjml[["natveg"]], cells = cells,
-               file = paste0("f31_max_managed_pasture_", ctype, ".mz"), years = magYears, aggregate = "cluster")
+               outputStatistics = stats, file = paste0("f31_max_managed_pasture_", ctype, ".mz"),
+               years = magYears, aggregate = "cluster")
     calcOutput("MaxPastureSuit", climatetype = climatetype, lpjml =  lpjml[["natveg"]], cells = cells,
-               file = "f31_max_managed_pasture.mz", years = magYears, aggregate = FALSE)
+               outputStatistics = stats, file = "f31_max_managed_pasture.mz", years = magYears, aggregate = FALSE)
   }
 
   if (grepl("+PastrMngtLevels", dev)) {
     calcOutput("PastrMngtLevels", climatetype = paste0("MRI-ESM2-0", ":", climatescen),
                options = c("brazil_1", "brazil_2", "brazil_4"), cost_level = c(1, 2, 3),
-               file = "PastrMngtLevels.mz", aggregate = FALSE)
+               outputStatistics = stats, file = "PastrMngtLevels.mz", aggregate = FALSE)
   }
 
-  calcOutput("ClimateClass", aggregate = "cluster", datasource = "koeppen", cells = cells, years = "y2001",
-             file = paste0("koeppen_geiger_", ctype, ".mz"))          # years available: 1951, 1976, 2001
+  calcOutput("ClimateClass", aggregate = "cluster", datasource = "koeppen", cells = cells,
+             years = "y2001", outputStatistics = stats,
+             file = paste0("koeppen_geiger_", ctype, ".mz"))  # years available: 1951, 1976, 2001
   calcOutput("ClimateClass", aggregate = "cluster", datasource = "ipcc", cells = cells,
-             file = paste0("ipcc_climate_zones_", ctype, ".mz"))
+             outputStatistics = stats, file = paste0("ipcc_climate_zones_", ctype, ".mz"))
   calcOutput("CellCountryFraction", aggregate = "cluster", cells = cells,
-             file = paste0("cell_country_fraction_", ctype, ".mz"))
+             outputStatistics = stats, file = paste0("cell_country_fraction_", ctype, ".mz"))
 
   # 32 forestry
   calcOutput("AfforestationMask", subtype = "noboreal", cells = cells, aggregate = "cluster", round = roundArea,
-             file = paste0("aff_noboreal_", ctype, ".mz"))
+             outputStatistics = stats, file = paste0("aff_noboreal_", ctype, ".mz"))
   calcOutput("AfforestationMask", subtype = "onlytropical", cells = cells, aggregate = "cluster", round = roundArea,
-             file = paste0("aff_onlytropical_", ctype, ".mz"))
+             outputStatistics = stats, file = paste0("aff_onlytropical_", ctype, ".mz"))
   calcOutput("AfforestationMask", subtype = "unrestricted", cells = cells, aggregate = "cluster", round = roundArea,
-             file = paste0("aff_unrestricted_", ctype, ".mz"))
+             outputStatistics = stats, file = paste0("aff_unrestricted_", ctype, ".mz"))
 
   calcOutput("NpiNdcAdAolcPol", aggregate = "cluster", cells = cells,
-             round = roundArea, file = paste0("npi_ndc_ad_aolc_pol_", ctype, ".mz"))
+             round = roundArea, outputStatistics = stats, file = paste0("npi_ndc_ad_aolc_pol_", ctype, ".mz"))
   calcOutput("NpiNdcAffPol",    aggregate = "cluster", cells = cells,
-             round = roundArea, file = paste0("npi_ndc_aff_pol_", ctype, ".mz"))
+             round = roundArea, outputStatistics = stats, file = paste0("npi_ndc_aff_pol_", ctype, ".mz"))
 
   calcOutput("BphEffect", aggregate = "cluster", cells = cells,
-             file = paste0("f32_bph_effect_noTCRE_", ctype, ".mz"))
+             outputStatistics = stats, file = paste0("f32_bph_effect_noTCRE_", ctype, ".mz"))
   calcOutput("BphTCRE",   aggregate = "cluster", cells = cells,
-             file = paste0("f32_localTCRE_", ctype, ".mz"))
+             outputStatistics = stats, file = paste0("f32_localTCRE_", ctype, ".mz"))
   calcOutput("BphMask",   aggregate = "cluster", cells = cells,
-             file = paste0("f32_bph_mask_", ctype, ".mz"))
+             outputStatistics = stats, file = paste0("f32_bph_mask_", ctype, ".mz"))
 
   # 34 urban land
   if (dev == "+GaoUrbanLand") {
@@ -319,162 +330,163 @@ fullCELLULARMAGPIE <- function(rev = numeric_version("0.1"), dev = "",
     calcOutput("UrbanLandFuture", subtype = "Gao",
                aggregate = FALSE, cells = cells,
                round = roundArea, years = shortYears,
-               file = "f34_urbanland_0.5.mz")
+               outputStatistics = stats, file = "f34_urbanland_0.5.mz")
     calcOutput("UrbanLandFuture", subtype = "Gao",
                aggregate = "cluster", cells = cells,
                round = roundArea, years = shortYears,
-               file = paste0("f34_urbanland_", ctype, ".mz"))
+               outputStatistics = stats, file = paste0("f34_urbanland_", ctype, ".mz"))
   } else {
 
     calcOutput("UrbanLandFuture", subtype = "LUH2v2",
                aggregate = FALSE, cells = cells,
                round = roundArea, years = shortYears,
-               file = "f34_urbanland_0.5.mz")
+               outputStatistics = stats, file = "f34_urbanland_0.5.mz")
     calcOutput("UrbanLandFuture", subtype = "LUH2v2",
                aggregate = "cluster", cells = cells,
                round = roundArea, years = shortYears,
-               file = paste0("f34_urbanland_", ctype, ".mz"))
+               outputStatistics = stats, file = paste0("f34_urbanland_", ctype, ".mz"))
   }
 
   # 35 natveg
   calcOutput("AgeClassDistribution", round = 6,
              aggregate = "cluster", cells = cells,
-             file = paste0("forestageclasses_", ctype, ".mz"))
+             outputStatistics = stats, file = paste0("forestageclasses_", ctype, ".mz"))
 
   calcOutput("PotentialForestArea",
              refData = "lpj", cells = cells, lpjml = lpjml, climatetype = climatetype, years = lpjYears,
-             aggregate = FALSE, round = roundArea, file = "pot_forest_area_0.5.mz")
+             aggregate = FALSE, round = roundArea, outputStatistics = stats, file = "pot_forest_area_0.5.mz")
 
   calcOutput("PotentialForestArea",
              refData = "lpj", cells = cells, lpjml = lpjml, climatetype = climatetype, years = lpjYears,
-             aggregate = "cluster", round = roundArea, file = paste0("pot_forest_area_", ctype, ".mz"))
+             aggregate = "cluster", round = roundArea,
+             outputStatistics = stats, file = paste0("pot_forest_area_", ctype, ".mz"))
 
   # 37 labour prod
   calcOutput("LabourProdImpactEmu", aggregate = "cluster", cells = cells, subtype = "impact",
-             round = 6, file = paste0("f37_labourprodimpact_", ctype, ".mz"))
+             round = 6, outputStatistics = stats, file = paste0("f37_labourprodimpact_", ctype, ".mz"))
   calcOutput("LabourProdImpactEmu", aggregate = "cluster", cells = cells, subtype = "relief",
-             round = 6, file = paste0("f37_labourprodrelief_", ctype, ".mz"))
+             round = 6, outputStatistics = stats, file = paste0("f37_labourprodrelief_", ctype, ".mz"))
 
   # 40
   calcOutput("TransportTime", aggregate = "cluster", cells = cells,
-             round = 6, file = paste0("transport_distance_", ctype, ".mz"))
+             round = 6, outputStatistics = stats, file = paste0("transport_distance_", ctype, ".mz"))
   calcOutput("TransportTime", aggregate = FALSE, cells = cells,
-             round = 6, file = "transport_distance.mz")
-  calcOutput("TransportCosts", aggregate = "GLO", round = 4, file = "f40_transport_costs.csv")
+             round = 6, outputStatistics = stats, file = "transport_distance.mz")
+  calcOutput("TransportCosts", aggregate = "GLO", round = 4, outputStatistics = stats, file = "f40_transport_costs.csv")
 
   # 41 area equipped for irrigation
   calcOutput("AreaEquippedForIrrigation", cells = cells,
              aggregate = "cluster", cellular = TRUE,
              selectyears = magYearsPastLong, round = roundArea,
-             file = paste0("avl_irrig_", ctype, ".mz"))
+             outputStatistics = stats, file = paste0("avl_irrig_", ctype, ".mz"))
 
   # 42 water demand
   calcOutput("Irrigation", lpjml = lpjml, years = lpjYears, climatetype = climatetype,
              cells = cells, aggregate = "cluster", round = 6,
-             file = paste0("lpj_airrig_", ctype, ".mz"))
+             outputStatistics = stats, file = paste0("lpj_airrig_", ctype, ".mz"))
 
   # dummy Growing Period
   calcOutput("GrowingPeriod", lpjml = lpjml, years = lpjYears,
              climatetype = climatetype, yield_ratio = 0.1,
              aggregate = FALSE, cells = cells,
-             round = 2, file = "lpj_grper_0.5.mz")
+             round = 2, outputStatistics = stats, file = "lpj_grper_0.5.mz")
 
   # 43 water availability
   calcOutput("AvlWater", lpjml = lpjml, years = lpjYears,
              climatetype = climatetype, seasonality = "grper",
              aggregate = "cluster",  cells = cells,
-             round = 6, file = paste0("lpj_watavail_grper_", ctype, ".mz"))
+             round = 6, outputStatistics = stats, file = paste0("lpj_watavail_grper_", ctype, ".mz"))
   calcOutput("AvlWater", lpjml = lpjml, years = lpjYears,
              climatetype = climatetype, seasonality = "total",
              aggregate = "cluster", cells = cells,
-             round = 6, file = paste0("lpj_watavail_total_", ctype, ".mz"))
+             round = 6, outputStatistics = stats, file = paste0("lpj_watavail_total_", ctype, ".mz"))
 
   calcOutput("EFRSmakthin", lpjml = lpjml, years = lpjYears, climatetype = climatetype,
              aggregate = "cluster", cells = cells,
              round = 6, seasonality = "grper",
-             file = paste0("lpj_envflow_grper_", ctype, ".mz"))
+             outputStatistics = stats, file = paste0("lpj_envflow_grper_", ctype, ".mz"))
   calcOutput("EFRSmakthin", lpjml = lpjml, years = lpjYears, climatetype = climatetype,
              aggregate = "cluster", cells = cells,
              round = 6, seasonality = "total",
-             file = paste0("lpj_envflow_total_", ctype, ".mz"))
+             outputStatistics = stats, file = paste0("lpj_envflow_total_", ctype, ".mz"))
 
   if (dev == "EFRtest") {
     calcOutput("EnvmtlFlow", lpjml = lpjml, years = lpjYears, climatetype = climatetype,
                aggregate = "cluster",
                round = 6, seasonality = "grper",
-               file = paste0("envflow_grper_", ctype, ".cs3"))
+               outputStatistics = stats, file = paste0("envflow_grper_", ctype, ".cs3"))
     calcOutput("EnvmtlFlow", lpjml = lpjml, years = lpjYears, climatetype = climatetype,
                aggregate = "cluster",
                round = 6, seasonality = "total",
-               file = paste0("envflow_total_", ctype, ".cs3"))
+               outputStatistics = stats, file = paste0("envflow_total_", ctype, ".cs3"))
   }
 
   calcOutput("WaterUseNonAg", datasource = "WATERGAP_ISIMIP", usetype = "all:all",
              selectyears = lpjYears, seasonality = "grper", lpjml = lpjml, climatetype = climatetype,
              aggregate = "cluster", cells = cells,
-             file = paste0("watdem_nonagr_grper_", ctype, ".mz"))
+             outputStatistics = stats, file = paste0("watdem_nonagr_grper_", ctype, ".mz"))
 
   calcOutput("WaterUseNonAg", datasource = "WATERGAP_ISIMIP", usetype = "all:all",
              selectyears = lpjYears, seasonality = "total", lpjml = lpjml, climatetype = climatetype,
              aggregate = "cluster", cells = cells,
-             file = paste0("watdem_nonagr_total_", ctype, ".mz"))
+             outputStatistics = stats, file = paste0("watdem_nonagr_total_", ctype, ".mz"))
 
   # 44 biodiversity
   calcOutput("BiomeType", aggregate = "cluster", cells = cells, round = roundArea,
-             file = paste0("biorealm_biome_", ctype, ".mz"))
+             outputStatistics = stats, file = paste0("biorealm_biome_", ctype, ".mz"))
   calcOutput("Luh2SideLayers", aggregate = "cluster", cells = cells,
-             round = roundArea, file = paste0("luh2_side_layers_", ctype, ".mz"))
+             round = roundArea, outputStatistics = stats, file = paste0("luh2_side_layers_", ctype, ".mz"))
   calcOutput("Luh2SideLayers", aggregate = FALSE, cells = cells,
-             round = roundArea, file = "luh2_side_layers_0.5.mz")
+             round = roundArea, outputStatistics = stats, file = "luh2_side_layers_0.5.mz")
   calcOutput("RRLayer", aggregate = "cluster", cells = cells,
-             round = roundArea, file = paste0("rr_layer_", ctype, ".mz"))
+             round = roundArea, outputStatistics = stats, file = paste0("rr_layer_", ctype, ".mz"))
 
   # 50 nitrogen
   calcOutput("AtmosphericDepositionRates", cellular = TRUE, aggregate = FALSE, round = 6, cells = cells,
-             file = "f50_AtmosphericDepositionRates_0.5.mz")
+             outputStatistics = stats, file = "f50_AtmosphericDepositionRates_0.5.mz")
   calcOutput("NitrogenFixationRateNatural", aggregate = FALSE, round = 6, cells = cells,
-             file = "f50_NitrogenFixationRateNatural_0.5.mz")
+             outputStatistics = stats, file = "f50_NitrogenFixationRateNatural_0.5.mz")
 
   calcOutput("AtmosphericDepositionRates", cellular = TRUE, aggregate = "cluster", round = 6, cells = cells,
-             file = paste0("f50_AtmosphericDepositionRates_", ctype, ".mz"))
+             outputStatistics = stats, file = paste0("f50_AtmosphericDepositionRates_", ctype, ".mz"))
   calcOutput("NitrogenFixationRateNatural", cells = cells, aggregate = "cluster", round = 6,
-             file = paste0("f50_NitrogenFixationRateNatural_", ctype, ".mz"))
+             outputStatistics = stats, file = paste0("f50_NitrogenFixationRateNatural_", ctype, ".mz"))
 
-  calcOutput("SchulteUebbing", aggregate = FALSE, file = "criticalNitrogenSurplus_0.5.mz")
+  calcOutput("SchulteUebbing", aggregate = FALSE, outputStatistics = stats, file = "criticalNitrogenSurplus_0.5.mz")
 
   # 52 carbon
   calcOutput("Carbon", aggregate = FALSE, lpjml = lpjml, climatetype = climatetype, cells = cells,
-             round = 6, years = "y1995", file = "lpj_carbon_stocks_0.5.mz")
+             round = 6, years = "y1995", outputStatistics = stats, file = "lpj_carbon_stocks_0.5.mz")
   calcOutput("TopsoilCarbon", aggregate = FALSE, lpjml = lpjml, climatetype = climatetype, cells = cells,
-             round = 6, years = "y1995", file = "lpj_carbon_topsoil_0.5.mz")
+             round = 6, years = "y1995", outputStatistics = stats, file = "lpj_carbon_topsoil_0.5.mz")
 
   calcOutput("Carbon", aggregate = "cluster", lpjml = lpjml, climatetype = climatetype,  cells = cells,
-             round = 6, years = lpjYears, file = paste0("lpj_carbon_stocks_", ctype, ".mz"))
+             round = 6, years = lpjYears, outputStatistics = stats, file = paste0("lpj_carbon_stocks_", ctype, ".mz"))
   calcOutput("TopsoilCarbon", aggregate = "cluster", lpjml = lpjml, climatetype = climatetype, cells = cells,
-             round = 6, years = lpjYears, file = paste0("lpj_carbon_topsoil_", ctype, ".mz"))
+             round = 6, years = lpjYears, outputStatistics = stats, file = paste0("lpj_carbon_topsoil_", ctype, ".mz"))
 
   # 58 peatland
   calcOutput("Peatland", subtype = "degraded", cells = cells, aggregate = FALSE,
-             round = roundArea, file = "f58_peatland_degrad_0.5.mz")
+             round = roundArea, outputStatistics = stats, file = "f58_peatland_degrad_0.5.mz")
   calcOutput("Peatland", subtype = "intact",   cells = cells, aggregate = FALSE,
-             round = roundArea, file = "f58_peatland_intact_0.5.mz")
+             round = roundArea, outputStatistics = stats, file = "f58_peatland_intact_0.5.mz")
   calcOutput("Peatland", subtype = "degraded", cells = cells, aggregate = "cluster", round = roundArea,
-             file = paste0("f58_peatland_degrad_", ctype, ".mz"))
+             outputStatistics = stats, file = paste0("f58_peatland_degrad_", ctype, ".mz"))
   calcOutput("Peatland", subtype = "intact",   cells = cells, aggregate = "cluster", round = roundArea,
-             file = paste0("f58_peatland_intact_", ctype, ".mz"))
+             outputStatistics = stats, file = paste0("f58_peatland_intact_", ctype, ".mz"))
 
   calcOutput("Peatland2", aggregate = FALSE, cells = cells, round = roundArea,
-             file = "f58_peatland_area_0.5.mz")
+             outputStatistics = stats, file = "f58_peatland_area_0.5.mz")
   calcOutput("Peatland2", aggregate = "cluster", cells = cells, round = roundArea,
-             file = paste0("f58_peatland_area_", ctype, ".mz"))
+             outputStatistics = stats, file = paste0("f58_peatland_area_", ctype, ".mz"))
   calcOutput("Peatland2", aggregate = FALSE, cells = cells, round = roundArea,
-             countryLevel = TRUE, file = "f58_peatland_area_iso.cs3")
+             countryLevel = TRUE, outputStatistics = stats, file = "f58_peatland_area_iso.cs3")
 
   # 59 som
   calcOutput("SOMinitialsiationPools", aggregate = "cluster", round = 6, cells = cells,
-             file = paste0("f59_som_initialisation_pools_", ctype, ".mz"))
+             outputStatistics = stats, file = paste0("f59_som_initialisation_pools_", ctype, ".mz"))
   calcOutput("SOCLossShare", aggregate = "cluster", rate = "loss", round = 6, cells = cells,
-             file = paste0("cshare_released_", ctype, ".mz"))
+             outputStatistics = stats, file = paste0("cshare_released_", ctype, ".mz"))
 
   if (grepl("newSOC", dev)) {
 
@@ -492,25 +504,25 @@ fullCELLULARMAGPIE <- function(rev = numeric_version("0.1"), dev = "",
     calcOutput("LanduseInitialisation", nclasses = "seven",
                aggregate = aggregateLevel, cellular = cellular, cells = cells,
                input_magpie = TRUE, selectyears = "y1990",
-               round = roundArea, file = "f59_land_y1990.cs3")
+               round = roundArea, outputStatistics = stats, file = "f59_land_y1990.cs3")
     calcOutput("CarbonInputMultiplier", aggregate = aggregateLevel,
-               round = 6, file = "f59_cinput_multiplier.cs3")
+               round = 6, outputStatistics = stats, file = "f59_cinput_multiplier.cs3")
     calcOutput("CarbonInputMultiplier", inputType = "kcr", aggregate = aggregateLevel,
-               round = 6, file = "f59_cinput_multiplier_residue.cs3")
+               round = 6, outputStatistics = stats, file = "f59_cinput_multiplier_residue.cs3")
     calcOutput("CarbonInputMultiplier", inputType = "kli", aggregate = aggregateLevel,
-               round = 6, file = "f59_cinput_multiplier_manure.cs3")
+               round = 6, outputStatistics = stats, file = "f59_cinput_multiplier_manure.cs3")
     calcOutput("LitterSoilinput", aggregate = aggregateLevel, years = lpjYears,
                lpjmlNatveg = lpjml[["natveg"]], climatetype = climatetype,
-               fixFpc = TRUE, round = 6, file = "f59_litter_input.cs3")
+               fixFpc = TRUE, round = 6, outputStatistics = stats, file = "f59_litter_input.cs3")
     calcOutput("DecayFuture", aggregate = aggregateLevel, years = lpjYears,
                lpjmlNatveg = lpjml[["natveg"]], climatetype = climatetype,
-               round = 6, file = "f59_topsoilc_decay.cs3")
+               round = 6, outputStatistics = stats, file = "f59_topsoilc_decay.cs3")
     calcOutput("SoilCarbon", aggregate = aggregateLevel, years = "y1990", output = "actualstate",
                lpjmlNatveg = lpjml[["natveg"]], climatetype = histClimatetype,
-               round = 6, file = "f59_topsoilc_actualstate.cs3")
+               round = 6, outputStatistics = stats, file = "f59_topsoilc_actualstate.cs3")
     calcOutput("SoilCarbon", aggregate = aggregateLevel, years = "y1990", output = "naturalstate",
                lpjmlNatveg = lpjml[["natveg"]], climatetype = histClimatetype,
-               round = 6, file = "f59_topsoilc_naturalstate.cs3")
+               round = 6, outputStatistics = stats, file = "f59_topsoilc_naturalstate.cs3")
   }
 
   ##### AGGREGATION ######
@@ -545,6 +557,8 @@ fullCELLULARMAGPIE <- function(rev = numeric_version("0.1"), dev = "",
             resOut = ctype,
             rev = rev,
             cluster = nrClusterPerRegion)
+
+  mstools::toolWriteMadratLog()
 
   return(list(tag = versionTag,
               pucTag = sub("^[^_]*_", "", versionTag)))

@@ -158,7 +158,7 @@ calcGridPop <- function(source = "ISIMIP", subtype = "all", # nolint
       scF <- agg[commonCountries, , ] / pop[commonCountries, , ]
     }
 
-    x <- x[commonCountries, , ] / scF[commonCountries, , ]
+    x <- x / scF[commonCountries, , ]
 
     # Some countries have 0 population in grid, but the cells exist, so get filled.
     # even division of population across cells

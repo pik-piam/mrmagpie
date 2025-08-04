@@ -4,8 +4,8 @@
 #' @param cells "magpiecell" for 59199 cells or "lpjcell" for 67420 cells
 #' @return Regional biomass demand
 #' @author Marcos Alves
-#' @seealso \code{\link{calcOutput}}, \code{\link{calcFAOmassbalance}},
-#' \code{\link{readSource}}
+#' @seealso \code{\link[madrat]{calcOutput}}, \code{\link[mrcommons]{calcFAOmassbalance}},
+#' \code{\link[madrat]{readSource}}
 #' @examples
 #' \dontrun{
 #' calcOutput("GrasslandBiomass")
