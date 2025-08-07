@@ -234,7 +234,7 @@ fullCELLULARMAGPIE <- function(rev = numeric_version("0.1"), dev = "",
              outputStatistics = stats, file = paste0("MAPSPAM_croparea_0.5.mz"))
   calcOutput("Croparea", sectoral = "kcr", physical = TRUE, cellular = TRUE,
              cells = cells, irrigation = TRUE, round = roundArea,
-             aggregate = FALSE, outputStatistics = stats, file = paste0("LUH2_croparea_0.5.mz"))
+             aggregate = FALSE, outputStatistics = stats, file = paste0("LUH3_croparea_0.5.mz"))
 
   calcOutput("AvlCropland", marginal_land = "magpie", cell_upper_bound = 0.9,
              aggregate = FALSE, cells = cells,
@@ -267,9 +267,9 @@ fullCELLULARMAGPIE <- function(rev = numeric_version("0.1"), dev = "",
   if (grepl("+grasslandRealization", dev)) {
     calcOutput("GrasslandBiomass",  round = 3, outputStatistics = stats, file = "f31_grass_bio_hist.cs3",
                cells = cells, aggregate = "region")
-    calcOutput("LUH2v2", aggregate = "cluster", landuse_types = "LUH2v2",
+    calcOutput("LUH3", aggregate = "cluster", landuse_types = "LUH3",
                cellular = TRUE, cells = cells,
-               outputStatistics = stats, file = paste0("f31_LUH2v2_", ctype, ".mz"))
+               outputStatistics = stats, file = paste0("f31_LUH3_", ctype, ".mz"))
     # hard coded climate scenario for harmonization of data
     calcOutput("GrasslandsYields", lpjml = lpjml[["grass"]], climatetype = "MRI-ESM2-0:ssp126",
                subtype = "/co2/Nreturn0p5", # nolint
@@ -329,11 +329,11 @@ fullCELLULARMAGPIE <- function(rev = numeric_version("0.1"), dev = "",
                outputStatistics = stats, file = paste0("f34_urbanland_", ctype, ".mz"))
   } else {
 
-    calcOutput("UrbanLandFuture", subtype = "LUH2v2",
+    calcOutput("UrbanLandFuture", subtype = "LUH3",
                aggregate = FALSE, cells = cells,
                round = roundArea, years = shortYears,
                outputStatistics = stats, file = "f34_urbanland_0.5.mz")
-    calcOutput("UrbanLandFuture", subtype = "LUH2v2",
+    calcOutput("UrbanLandFuture", subtype = "LUH3",
                aggregate = "cluster", cells = cells,
                round = roundArea, years = shortYears,
                outputStatistics = stats, file = paste0("f34_urbanland_", ctype, ".mz"))
@@ -426,10 +426,10 @@ fullCELLULARMAGPIE <- function(rev = numeric_version("0.1"), dev = "",
   # 44 biodiversity
   calcOutput("BiomeType", aggregate = "cluster", cells = cells, round = roundArea,
              outputStatistics = stats, file = paste0("biorealm_biome_", ctype, ".mz"))
-  calcOutput("Luh2SideLayers", aggregate = "cluster", cells = cells,
-             round = roundArea, outputStatistics = stats, file = paste0("luh2_side_layers_", ctype, ".mz"))
-  calcOutput("Luh2SideLayers", aggregate = FALSE, cells = cells,
-             round = roundArea, outputStatistics = stats, file = "luh2_side_layers_0.5.mz")
+  calcOutput("LUH3SideLayers", aggregate = "cluster", cells = cells,
+             round = roundArea, outputStatistics = stats, file = paste0("LUH3_side_layers_", ctype, ".mz"))
+  calcOutput("LUH3SideLayers", aggregate = FALSE, cells = cells,
+             round = roundArea, outputStatistics = stats, file = "LUH3_side_layers_0.5.mz")
   calcOutput("RRLayer", aggregate = "cluster", cells = cells,
              round = roundArea, outputStatistics = stats, file = paste0("rr_layer_", ctype, ".mz"))
 

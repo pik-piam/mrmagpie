@@ -22,7 +22,7 @@ calcAvlLandSi <- function(cells = "lpjcell") {
   x        <- readSource("Ramankutty", convert = "onlycorrect")
 
   # land area according to LUH in initialization year (1995) [note: landarea is constant, so the year does not matter]
-  landarea <- calcOutput("LUH2v2", landuse_types = "magpie", aggregate = FALSE,
+  landarea <- calcOutput("LUH3", landuse_types = "magpie", aggregate = FALSE,
                          cellular = TRUE, cells = "lpjcell", irrigation = FALSE, years = "y1995")
   croparea <- landarea[, , "crop"]
   landarea <- dimSums(landarea, dim = 3)
