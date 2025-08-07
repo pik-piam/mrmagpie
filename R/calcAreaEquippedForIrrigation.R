@@ -35,10 +35,10 @@ calcAreaEquippedForIrrigation <- function(cellular = FALSE,
   yearsNeeded <- (yearsNeeded[1] - 20):lastYear
 
   x <- collapseNames(calcOutput("LUH3",
-                                landuse_types = "magpie",
+                                landuseTypes = "magpie",
                                 irrigation = TRUE,
-                                cellular = TRUE, cells = "lpjcell",
-                                selectyears = yearsNeeded,
+                                cellular = TRUE,
+                                yrs = yearsNeeded,
                                 aggregate = FALSE)[, , "irrigated"])
   x     <- dimSums(x, dim = 3)
   years <- as.numeric(substring(selectyears, 2))

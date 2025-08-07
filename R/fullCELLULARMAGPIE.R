@@ -267,8 +267,8 @@ fullCELLULARMAGPIE <- function(rev = numeric_version("0.1"), dev = "",
   if (grepl("+grasslandRealization", dev)) {
     calcOutput("GrasslandBiomass",  round = 3, outputStatistics = stats, file = "f31_grass_bio_hist.cs3",
                cells = cells, aggregate = "region")
-    calcOutput("LUH3", aggregate = "cluster", landuse_types = "LUH3",
-               cellular = TRUE, cells = cells,
+    calcOutput("LUH3", aggregate = "cluster", landuseTypes = "LUH3",
+               cellular = TRUE,
                outputStatistics = stats, file = paste0("f31_LUH3_", ctype, ".mz"))
     # hard coded climate scenario for harmonization of data
     calcOutput("GrasslandsYields", lpjml = lpjml[["grass"]], climatetype = "MRI-ESM2-0:ssp126",
@@ -426,10 +426,10 @@ fullCELLULARMAGPIE <- function(rev = numeric_version("0.1"), dev = "",
   # 44 biodiversity
   calcOutput("BiomeType", aggregate = "cluster", cells = cells, round = roundArea,
              outputStatistics = stats, file = paste0("biorealm_biome_", ctype, ".mz"))
-  calcOutput("LUH3SideLayers", aggregate = "cluster", cells = cells,
-             round = roundArea, outputStatistics = stats, file = paste0("LUH3_side_layers_", ctype, ".mz"))
-  calcOutput("LUH3SideLayers", aggregate = FALSE, cells = cells,
-             round = roundArea, outputStatistics = stats, file = "LUH3_side_layers_0.5.mz")
+  calcOutput("Luh2SideLayers", aggregate = "cluster", cells = cells,
+             round = roundArea, outputStatistics = stats, file = paste0("luh2_side_layers_", ctype, ".mz"))
+  calcOutput("Luh2SideLayers", aggregate = FALSE, cells = cells,
+             round = roundArea, outputStatistics = stats, file = "luh2_side_layers_0.5.mz")
   calcOutput("RRLayer", aggregate = "cluster", cells = cells,
              round = roundArea, outputStatistics = stats, file = paste0("rr_layer_", ctype, ".mz"))
 
