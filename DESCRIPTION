@@ -34,13 +34,10 @@ Depends:
     mrwater (>= 1.13.0),
     R (>= 3.5.0)
 Imports:
-    abind,
-    class,
     digest,
     dplyr,
     ggplot2,
     gstat,
-    lpjclass,
     luplot (>= 3.64.0),
     magpiesets,
     mstools (>= 0.6.0),
@@ -50,7 +47,6 @@ Imports:
     rlang,
     sp,
     stats,
-    stringr,
     terra (>= 1.7.18),
     tidyr,
     withr

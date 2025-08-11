@@ -19,8 +19,6 @@
 #'                    EFR throughout the year; monthly: monthly EFRs
 #' @param cells       lpjcell for 67420 cells or magpiecell for 59199 cells
 #'
-#' @import magclass
-#' @import madrat
 #' @importFrom stats quantile
 #' @importFrom mstools toolHarmonize2Baseline
 #' @importFrom mrlandcore toolLPJmLVersion
@@ -86,7 +84,7 @@ calcEFRSmakthin <- function(lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de",
     lfrQuant <- as.magpie(lfrQuant, spatial = 1)
     lfrQuant <- toolFillYears(lfrQuant, getYears(monthlyDischargeMagpie, as.integer = TRUE))
 
-    if (stage == "smoothed") lfrQuant <- toolSmooth(lfrQuant)
+    if (stage == "smoothed") lfrQuant <- mstools::toolSmooth(lfrQuant)
 
     # Raw monthly discharge no longer needed at this point
     rm(monthlyDischargeMagpie)

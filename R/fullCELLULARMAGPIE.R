@@ -38,7 +38,6 @@
 #' @importFrom madrat setConfig getConfig
 #' @importFrom magpiesets findset
 #' @importFrom digest digest
-#' @importFrom stringr str_split
 #' @importFrom luplot plotregionscluster
 #' @importFrom ggplot2 ggsave
 #' @importFrom withr local_options
