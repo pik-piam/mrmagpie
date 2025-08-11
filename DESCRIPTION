@@ -45,7 +45,6 @@ Imports:
     magpiesets,
     mstools (>= 0.6.0),
     ncdf4,
-    pbapply,
     raster,
     readxl,
     rlang,

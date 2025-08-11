@@ -36,7 +36,8 @@ calcAreaEquippedForIrrigation <- function(cellular = FALSE,
   ### Read in LUH2v2 irrigated area data ###
   ##########################################
   yearsNeeded <- as.integer(substring(selectyears, 2))
-  yearsNeeded <- (yearsNeeded[1] - 20):tail(yearsNeeded, 1)
+  lastYear <- utils::tail(yearsNeeded, 1)
+  yearsNeeded <- (yearsNeeded[1] - 20):lastYear
 
   x <- collapseNames(calcOutput("LUH2v2",
                                 landuse_types = "magpie",

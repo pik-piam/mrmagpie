@@ -13,9 +13,6 @@
 #' @importFrom raster extent brick
 #' @importFrom magpiesets findset
 #' @importFrom mstools toolGetMappingCoord2Country
-#'
-#' @export
-
 readGridPopIsimip <- function(subtype) {
 
   coordMapping <- toolGetMappingCoord2Country()

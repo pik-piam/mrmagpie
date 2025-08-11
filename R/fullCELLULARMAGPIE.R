@@ -63,7 +63,6 @@ fullCELLULARMAGPIE <- function(rev = numeric_version("0.1"), dev = "",
          "Please use an older snapshot/version of the library, if you need older revisions.")
   }
   cells       <- "lpjcell"
-  climatescen <- str_split(climatetype, ":")[[1]][2]
 
   message(paste0("Start preprocessing for \n climatescenario: ", climatetype,
                  "\n LPJmL-Versions: ", paste(names(lpjml), lpjml, sep = "->", collapse = ", "),
@@ -288,12 +287,6 @@ fullCELLULARMAGPIE <- function(rev = numeric_version("0.1"), dev = "",
                years = magYears, aggregate = "cluster")
     calcOutput("MaxPastureSuit", climatetype = climatetype, lpjml =  lpjml[["natveg"]], cells = cells,
                outputStatistics = stats, file = "f31_max_managed_pasture.mz", years = magYears, aggregate = FALSE)
-  }
-
-  if (grepl("+PastrMngtLevels", dev)) {
-    calcOutput("PastrMngtLevels", climatetype = paste0("MRI-ESM2-0", ":", climatescen),
-               options = c("brazil_1", "brazil_2", "brazil_4"), cost_level = c(1, 2, 3),
-               outputStatistics = stats, file = "PastrMngtLevels.mz", aggregate = FALSE)
   }
 
   calcOutput("ClimateClass", aggregate = "cluster", datasource = "koeppen", cells = cells,
