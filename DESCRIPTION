@@ -1,8 +1,8 @@
 Type: Package
 Package: mrmagpie
 Title: madrat based MAgPIE Input Data Library
-Version: 1.58.4
-Date: 2025-07-31
+Version: 1.59.0
+Date: 2025-08-11
 Authors@R: c(
     person("Kristine", "Karstens", , "karstens@pik-potsdam.de", role = c("aut", "cre")),
     person("Jan Philipp", "Dietrich", , "dietrich@pik-potsdam.de", role = "aut"),
@@ -34,24 +34,19 @@ Depends:
     mrwater (>= 1.13.0),
     R (>= 3.5.0)
 Imports:
-    abind,
-    class,
     digest,
     dplyr,
     ggplot2,
     gstat,
-    lpjclass,
     luplot (>= 3.64.0),
     magpiesets,
     mstools (>= 0.6.0),
     ncdf4,
-    pbapply,
     raster,
     readxl,
     rlang,
     sp,
     stats,
-    stringr,
     terra (>= 1.7.18),
     tidyr,
     withr
