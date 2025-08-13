@@ -60,7 +60,7 @@ calcIrrigation <- function(lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de", crop
 
   # Clustering weight:
   totalCropland <- dimSums(calcOutput("Croparea", sectoral = "kcr", physical = TRUE,
-                                      cellular = TRUE, cells = "lpjcell",
+                                      cellular = TRUE,
                                       years = "y1995", round = 6,
                                       irrigation = TRUE, aggregate = FALSE),
                            dim = 3.2)
