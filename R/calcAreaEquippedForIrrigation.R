@@ -21,11 +21,6 @@
 #' \dontrun{
 #' calcOutput("AreaEquippedForIrrigation", source = "LUH3", cellular = TRUE, aggregate = FALSE)
 #' }
-#' @importFrom magpiesets findset
-#' @importFrom mstools toolCoord2Isocell
-#'
-#' @export
-
 calcAreaEquippedForIrrigation <- function(cellular = FALSE,
                                           cells = "lpjcell",
                                           selectyears = "past") {
@@ -36,7 +31,8 @@ calcAreaEquippedForIrrigation <- function(cellular = FALSE,
   #### Read in LUH3 irrigated area data ####
   ##########################################
   yearsNeeded <- as.integer(substring(selectyears, 2))
-  yearsNeeded <- (yearsNeeded[1] - 20):tail(yearsNeeded, 1)
+  lastYear <- utils::tail(yearsNeeded, 1)
+  yearsNeeded <- (yearsNeeded[1] - 20):lastYear
 
   x <- collapseNames(calcOutput("LUH3",
                                 landuseTypes = "magpie",
@@ -96,7 +92,7 @@ calcAreaEquippedForIrrigation <- function(cellular = FALSE,
   ##############
   # reduce to 59k cells
   if (cells == "magpiecell") {
-    out <- toolCoord2Isocell(out)
+    out <- mstools::toolCoord2Isocell(out)
   }
 
   # aggregate to iso level
