@@ -222,18 +222,18 @@ fullCELLULARMAGPIE <- function(rev = numeric_version("0.1"), dev = "",
 
   # 30 crop
   calcOutput("Croparea", sectoral = "kcr", physical = TRUE,
-             cellular = TRUE, cells = cells, irrigation = FALSE, round = roundArea,
+             cellular = TRUE, irrigation = FALSE, round = roundArea,
              aggregate = "cluster", outputStatistics = stats,
              file = paste0("f30_croparea_initialisation_", ctype, ".mz"))
   calcOutput("Croparea", sectoral = "kcr", physical = TRUE,
-             cellular = TRUE, cells = cells, irrigation = TRUE, round = roundArea,
+             cellular = TRUE, irrigation = TRUE, round = roundArea,
              aggregate = "cluster", outputStatistics = stats,
              file = paste0("f30_croparea_w_initialisation_", ctype, ".mz"))
   ## For cellular comparison
   calcOutput("MAPSPAM", subtype = "physical",  aggregate = FALSE,
              outputStatistics = stats, file = paste0("MAPSPAM_croparea_0.5.mz"))
   calcOutput("Croparea", sectoral = "kcr", physical = TRUE, cellular = TRUE,
-             cells = cells, irrigation = TRUE, round = roundArea,
+             irrigation = TRUE, round = roundArea,
              aggregate = FALSE, outputStatistics = stats, file = paste0("LUH3_croparea_0.5.mz"))
 
   calcOutput("AvlCropland", marginal_land = "magpie", cell_upper_bound = 0.9,
