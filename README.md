@@ -48,7 +48,7 @@ A BibTeX entry for LaTeX users is
   title = {mrmagpie: madrat based MAgPIE Input Data Library},
   author = {Kristine Karstens and Jan Philipp Dietrich and David Chen and Michael Windisch and Marcos Alves and Felicitas Beier and Alexandre Köberle and Patrick {v. Jeetze} and Abhijeet Mishra and Florian Humpenoeder and Pascal Sauer and Patrick Rein},
   doi = {10.5281/zenodo.4319612},
-  date = {2025-09-03},
+  date = {2025-09-09},
   year = {2025},
   url = {https://github.com/pik-piam/mrmagpie},
   note = {Version: 1.61.0},
