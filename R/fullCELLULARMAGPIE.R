@@ -222,19 +222,19 @@ fullCELLULARMAGPIE <- function(rev = numeric_version("0.1"), dev = "",
 
   # 30 crop
   calcOutput("Croparea", sectoral = "kcr", physical = TRUE,
-             cellular = TRUE, cells = cells, irrigation = FALSE, round = roundArea,
+             cellular = TRUE, irrigation = FALSE, round = roundArea,
              aggregate = "cluster", outputStatistics = stats,
              file = paste0("f30_croparea_initialisation_", ctype, ".mz"))
   calcOutput("Croparea", sectoral = "kcr", physical = TRUE,
-             cellular = TRUE, cells = cells, irrigation = TRUE, round = roundArea,
+             cellular = TRUE, irrigation = TRUE, round = roundArea,
              aggregate = "cluster", outputStatistics = stats,
              file = paste0("f30_croparea_w_initialisation_", ctype, ".mz"))
   ## For cellular comparison
   calcOutput("MAPSPAM", subtype = "physical",  aggregate = FALSE,
              outputStatistics = stats, file = paste0("MAPSPAM_croparea_0.5.mz"))
   calcOutput("Croparea", sectoral = "kcr", physical = TRUE, cellular = TRUE,
-             cells = cells, irrigation = TRUE, round = roundArea,
-             aggregate = FALSE, outputStatistics = stats, file = paste0("LUH2_croparea_0.5.mz"))
+             irrigation = TRUE, round = roundArea,
+             aggregate = FALSE, outputStatistics = stats, file = paste0("LUH3_croparea_0.5.mz"))
 
   calcOutput("AvlCropland", marginal_land = "magpie", cell_upper_bound = 0.9,
              aggregate = FALSE, cells = cells,
@@ -267,9 +267,9 @@ fullCELLULARMAGPIE <- function(rev = numeric_version("0.1"), dev = "",
   if (grepl("+grasslandRealization", dev)) {
     calcOutput("GrasslandBiomass",  round = 3, outputStatistics = stats, file = "f31_grass_bio_hist.cs3",
                cells = cells, aggregate = "region")
-    calcOutput("LUH2v2", aggregate = "cluster", landuse_types = "LUH2v2",
-               cellular = TRUE, cells = cells,
-               outputStatistics = stats, file = paste0("f31_LUH2v2_", ctype, ".mz"))
+    calcOutput("LUH3", aggregate = "cluster", landuseTypes = "LUH3",
+               cellular = TRUE,
+               outputStatistics = stats, file = paste0("f31_LUH3_", ctype, ".mz"))
     # hard coded climate scenario for harmonization of data
     calcOutput("GrasslandsYields", lpjml = lpjml[["grass"]], climatetype = "MRI-ESM2-0:ssp126",
                subtype = "/co2/Nreturn0p5", # nolint
@@ -329,11 +329,11 @@ fullCELLULARMAGPIE <- function(rev = numeric_version("0.1"), dev = "",
                outputStatistics = stats, file = paste0("f34_urbanland_", ctype, ".mz"))
   } else {
 
-    calcOutput("UrbanLandFuture", subtype = "LUH2v2",
+    calcOutput("UrbanLandFuture", subtype = "LUH3",
                aggregate = FALSE, cells = cells,
                round = roundArea, years = shortYears,
                outputStatistics = stats, file = "f34_urbanland_0.5.mz")
-    calcOutput("UrbanLandFuture", subtype = "LUH2v2",
+    calcOutput("UrbanLandFuture", subtype = "LUH3",
                aggregate = "cluster", cells = cells,
                round = roundArea, years = shortYears,
                outputStatistics = stats, file = paste0("f34_urbanland_", ctype, ".mz"))
