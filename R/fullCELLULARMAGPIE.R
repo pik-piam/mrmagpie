@@ -448,9 +448,9 @@ fullCELLULARMAGPIE <- function(rev = numeric_version("0.1"), dev = "",
 
   # 52 carbon
   calcOutput("Carbon", aggregate = FALSE, lpjml = lpjml, climatetype = climatetype, cells = cells,
-             round = 6, years = "y1995", outputStatistics = stats, file = "lpj_carbon_stocks_0.5.mz")
+             round = 6, years = lpjYears, outputStatistics = stats, file = "lpj_carbon_stocks_0.5.mz")
   calcOutput("TopsoilCarbon", aggregate = FALSE, lpjml = lpjml, climatetype = climatetype, cells = cells,
-             round = 6, years = "y1995", outputStatistics = stats, file = "lpj_carbon_topsoil_0.5.mz")
+             round = 6, years = lpjYears, outputStatistics = stats, file = "lpj_carbon_topsoil_0.5.mz")
 
   calcOutput("Carbon", aggregate = "cluster", lpjml = lpjml, climatetype = climatetype,  cells = cells,
              round = 6, years = lpjYears, outputStatistics = stats, file = paste0("lpj_carbon_stocks_", ctype, ".mz"))
