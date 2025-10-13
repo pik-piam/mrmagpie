@@ -131,7 +131,7 @@ fullCELLULARMAGPIE <- function(rev = numeric_version("0.1"), dev = "",
   calcOutput("LanduseInitialisation", nclasses = "seven",
              aggregate = FALSE, cellular = FALSE, cells = cells,
              input_magpie = TRUE, selectyears = magYearsPastLong,
-             round = roundArea, outputStatistics = stats, file = paste0("avl_land_t_iso.cs3"))
+             round = roundArea, outputStatistics = stats, file = "avl_land_t_iso.cs3")
 
   ## nine land classes
   calcOutput("LanduseInitialisation", nclasses = "nine",
@@ -145,7 +145,7 @@ fullCELLULARMAGPIE <- function(rev = numeric_version("0.1"), dev = "",
   calcOutput("LanduseInitialisation", nclasses = "nine",
              aggregate = FALSE, cellular = FALSE, cells = cells,
              input_magpie = TRUE, selectyears = magYearsPastLong,
-             round = roundArea, outputStatistics = stats, file = paste0("avl_land_full_t_iso.cs3"))
+             round = roundArea, outputStatistics = stats, file = "avl_land_full_t_iso.cs3")
 
   calcOutput("AvlLandSi", cells = cells, aggregate = FALSE,
              round = NULL, outputStatistics = stats, file = "avl_land_si_0.5.mz")
@@ -170,7 +170,7 @@ fullCELLULARMAGPIE <- function(rev = numeric_version("0.1"), dev = "",
     calcOutput("Yields", source = c(lpjml = lpjml[["crop"]], isimip = isimip),
                cells = cells, aggregate = FALSE,
                climatetype = climatetype, round = NULL, years = lpjYears,
-               outputStatistics = stats, file = paste0("lpj_yields_0.5.mz"),
+               outputStatistics = stats, file = "lpj_yields_0.5.mz",
                weighting = "crop+irrigSpecific", indiaYields = TRUE, scaleFactor = 0.5)
 
 
@@ -185,7 +185,7 @@ fullCELLULARMAGPIE <- function(rev = numeric_version("0.1"), dev = "",
     calcOutput("Yields", source = c(lpjml = lpjml[["crop"]], isimip = isimip),
                aggregate = FALSE, cells = cells,
                climatetype = climatetype, round = NULL, years = lpjYears,
-               outputStatistics = stats, file = paste0("lpj_yields_0.5.mz"),
+               outputStatistics = stats, file = "lpj_yields_0.5.mz",
                weighting = ifelse(grepl("YieldWeights_", dev), gsub("YieldWeights_", "", dev), "totalCrop"))
 
     calcOutput("Yields", aggregate = "cluster", cells = cells,
@@ -234,7 +234,7 @@ fullCELLULARMAGPIE <- function(rev = numeric_version("0.1"), dev = "",
              outputStatistics = stats, file = paste0("MAPSPAM_croparea_0.5.mz"))
   calcOutput("Croparea", sectoral = "kcr", physical = TRUE, cellular = TRUE,
              irrigation = TRUE, round = NULL,
-             aggregate = FALSE, outputStatistics = stats, file = paste0("LUH3_croparea_0.5.mz"))
+             aggregate = FALSE, outputStatistics = stats, file = "LUH3_croparea_0.5.mz")
 
   calcOutput("AvlCropland", marginal_land = "magpie", cell_upper_bound = 0.9,
              aggregate = FALSE, cells = cells,
@@ -244,7 +244,7 @@ fullCELLULARMAGPIE <- function(rev = numeric_version("0.1"), dev = "",
              round = roundArea, outputStatistics = stats, file = paste0("avl_cropland_", ctype, ".mz"))
   calcOutput("AvlCropland", marginal_land = "magpie", cell_upper_bound = 0.9,
              aggregate = FALSE, cells = cells, country_level = TRUE,
-             round = roundArea, outputStatistics = stats, file = paste0("avl_cropland_iso.cs3"))
+             round = roundArea, outputStatistics = stats, file = "avl_cropland_iso.cs3")
 
   calcOutput("CroplandTreecover",
              aggregate = FALSE, cells = cells,
