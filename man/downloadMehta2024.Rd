@@ -4,7 +4,7 @@
 \alias{downloadMehta2024}
 \title{downloadMehta2024}
 \usage{
-downloadMehta2024(subtype = "GMIA", version = "v4")
+downloadMehta2024(subtype = "GMIA")
 }
 \arguments{
 \item{subtype}{data subtype to be downloaded
@@ -13,8 +13,6 @@ Subtypes available:
         Global Map of Irrigation Areas version 5.
 'Meier2018': gridded base map for downscaling from Meier, et al. (2018).
              Global Irrigated Areas.}
-
-\item{version}{version of the zenodo dataset to be downloaded}
 }
 \description{
 download Global Area Equipped for Irrigation Dataset 1900-2015 from Mehta et al. (2024).

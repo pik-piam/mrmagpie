@@ -10,8 +10,6 @@
 #'                        Global Map of Irrigation Areas version 5.
 #'                'Meier2018': gridded base map for downscaling from Meier, et al. (2018).
 #'                             Global Irrigated Areas.
-#' @param version version of the zenodo dataset to be downloaded
-#'
 #' @author  Felicitas Beier
 #' @seealso [downloadSource()] [readMehta2024()]
 #' @examples
@@ -22,17 +20,10 @@
 #' @importFrom utils download.file
 #' @importFrom withr with_options
 
-downloadMehta2024 <- function(subtype = "GMIA", version = "v4") {
+downloadMehta2024 <- function(subtype = "GMIA") {
 
-  if (version == "v3") {
-    aeiURL <- "https://zenodo.org/records/7809342"
-    doi    <- "10.5281/zenodo.6740334"
-  } else if (version == "v4") {
-    aeiURL <- "https://zenodo.org/records/14219723"
-    doi    <- "10.1038/s44221-024-00206-9"
-  } else {
-    stop("The selected version is not available for downloadMehta2024. Please select 'v3' or 'v4'.")
-  }
+  aeiURL <- "https://zenodo.org/records/14219723"
+  doi    <- "10.1038/s44221-024-00206-9"
 
   if (subtype == "GMIA") {
     dataname <- "G_AEI_"
