@@ -7,7 +7,7 @@
 downloadMehta2024(subtype = "GMIA")
 }
 \arguments{
-\item{subtype}{data subtype to be downloaded.
+\item{subtype}{data subtype to be downloaded
 Subtypes available:
 'GMIA': gridded base map for downscaling from Stefan et al. (2013).
         Global Map of Irrigation Areas version 5.
