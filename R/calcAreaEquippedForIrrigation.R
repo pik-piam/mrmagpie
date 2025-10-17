@@ -14,7 +14,7 @@
 #'
 #' @author Benjamin Leon Bodirsky, Kristine Karstens, Felicitas Beier
 #'
-#' @importFrom mstools toolHoldConstantBeyondEnd
+#' @importFrom mstools toolHoldConstant
 #'
 #' @seealso
 #' [calcLanduseInitialisation()]
