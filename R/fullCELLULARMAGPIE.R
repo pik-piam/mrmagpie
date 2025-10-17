@@ -362,7 +362,7 @@ fullCELLULARMAGPIE <- function(rev = numeric_version("0.1"), dev = "",
   calcOutput("TransportCosts", aggregate = "GLO", round = 4, outputStatistics = stats, file = "f40_transport_costs.csv")
 
   # 41 area equipped for irrigation
-  calcOutput("AreaEquippedForIrrigation", cells = cells,
+  calcOutput("AreaEquippedForIrrigation",
              aggregate = "cluster", cellular = TRUE,
              selectyears = magYearsPastLong, round = roundArea,
              outputStatistics = stats, file = paste0("avl_irrig_", ctype, ".mz"))

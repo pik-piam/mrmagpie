@@ -4,12 +4,13 @@
 #'              and country's census data downscaled using two alternative gridded irrigation maps
 #'              (GMIA from Siebert et al. 2013 and Meier et al. 2018)
 #'
-#' @param subtype data subtype to be downloaded.
+#' @param subtype data subtype to be downloaded
 #'                Subtypes available:
 #'                'GMIA': gridded base map for downscaling from Stefan et al. (2013).
 #'                        Global Map of Irrigation Areas version 5.
 #'                'Meier2018': gridded base map for downscaling from Meier, et al. (2018).
 #'                             Global Irrigated Areas.
+#' @param version version of the zenodo dataset to be downloaded
 #'
 #' @author  Felicitas Beier
 #' @seealso [downloadSource()] [readMehta2024()]
@@ -21,9 +22,17 @@
 #' @importFrom utils download.file
 #' @importFrom withr with_options
 
-downloadMehta2024 <- function(subtype = "GMIA") {
+downloadMehta2024 <- function(subtype = "GMIA", version = "v4") {
 
-  aeiURL <- "https://zenodo.org/records/7809342"
+  if (version == "v3") {
+    aeiURL <- "https://zenodo.org/records/7809342"
+    doi    <- "10.5281/zenodo.6740334"
+  } else if (version == "v4") {
+    aeiURL <- "https://zenodo.org/records/14219723"
+    doi    <- "10.1038/s44221-024-00206-9"
+  } else {
+    stop("The selected version is not available for downloadMehta2024. Please select 'v3' or 'v4'.")
+  }
 
   if (subtype == "GMIA") {
     dataname <- "G_AEI_"
@@ -56,7 +65,7 @@ downloadMehta2024 <- function(subtype = "GMIA") {
   }
 
   return(list(url          = aeiURL,
-              doi          = "10.5281/zenodo.6740334",
+              doi          = doi,
               title        = "Global Area Equipped for Irrigation Dataset 1900-2015",
               revision     = "2024",
               release_date = "2023-04-07",
