@@ -28,6 +28,7 @@ Patrick v. Jeetze
 ## Examples
 
 ``` r
+
 if (FALSE) { # \dontrun{
   readSource("BendingTheCurve", subtype="rr_layer", convert="onlycorrect")
 } # }

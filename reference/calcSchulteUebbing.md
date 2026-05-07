@@ -20,6 +20,7 @@ Michael Crawford
 ## Examples
 
 ``` r
+
 if (FALSE) { # \dontrun{
   calcOutput("SchulteUebbing")
 } # }
