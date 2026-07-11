@@ -18,7 +18,7 @@ downloadGAMI <- function() {
 
   download.file(file.path(baseURL, file), destfile = file, mode = "wb")
 
-  return(list(
+  meta <- list(
     url          = "https://doi.org/10.5880/GFZ.1.4.2023.006",
     doi          = "10.5880/GFZ.1.4.2023.006",
     title        = "Global Age Mapping Integration (GAMI)",
@@ -32,5 +32,7 @@ downloadGAMI <- function() {
                          "2010 and 2020, 20-member ensemble (class_fraction product)."),
     license      = "CC BY 4.0",
     reference    = "Besnard et al. (2024), GFZ Data Services, doi:10.5880/GFZ.1.4.2023.006",
-    unit         = "fraction"))
+    unit         = "fraction"
+  )
+  return(meta)
 }

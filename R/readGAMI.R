@@ -20,7 +20,7 @@ readGAMI <- function() {
   file <- "GAMIv2-1_2010-2020_class_fraction_0deg50.nc"
 
   nc <- ncdf4::nc_open(file)
-  on.exit(ncdf4::nc_close(nc))
+  withr::defer(ncdf4::nc_close(nc))
   glon     <- ncdf4::ncvar_get(nc, "longitude")
   glat     <- ncdf4::ncvar_get(nc, "latitude")
   ageClass <- ncdf4::ncvar_get(nc, "age_class")           # "0-20", ..., "200-299", ">299"

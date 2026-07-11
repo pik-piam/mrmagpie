@@ -334,8 +334,8 @@ fullCELLULARMAGPIE <- function(rev = numeric_version("0.1"), dev = "",
                outputStatistics = stats, file = paste0("f34_urbanland_", ctype, ".mz"))
   }
 
-  # 28 ageclass: forest age-class distribution. GFAD is the default; GAMI ships alongside it as an
-  # alternative selected at model runtime via c28_ageclass_source in module 28.
+  # 28 ageclass: forest age-class distribution from two datasets (GFAD and GAMI). Both are emitted here;
+  # which one MAgPIE reads is selected at model runtime via c28_ageclass_source in module 28.
   calcOutput("AgeClassDistribution", dataset = "GFAD", round = 6,
              aggregate = "cluster", cells = cells,
              outputStatistics = stats, file = paste0("forestageclasses_", ctype, ".mz"))
