@@ -10,7 +10,7 @@
 #' classes (each split 50/50 into two adjacent classes; all classes >=140 yr, i.e. GAMI
 #' `140-160 ... >299`, collapse into `class15`, the mature bin routed to `acx` in module 28).
 #' Where GAMI reports no forest but GFAD does, the GFAD age shape is retained (area-conserving).
-#' @param cells lpjcell for 67420 cells or magpiecell for 59199 cells
+#' @param cells lpjcell for 67420 cells
 #' @param dataset "GFAD" (default) or "GAMI"
 #' @param gamiYear GAMI reference year when \code{dataset = "GAMI"}: "y2010" (default, matches
 #'   the GFAD vintage) or "y2020"
