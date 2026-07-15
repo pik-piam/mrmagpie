@@ -10,11 +10,13 @@ correctGAMI(x)
 \item{x}{magpie object provided by \code{readGAMI}}
 }
 \value{
-magpie object on the 67420 lpj-cell grid, cleaned
+magpie object on GAMI's native 0.5-degree grid, cleaned
 }
 \description{
-Correct the GAMI v2.1 forest-age dataset: replace missing / negative
-class-fraction values by 0 and attach ISO country codes to the coordinate cells.
+Correct the GAMI v2.1 forest-age dataset: replace missing and negative
+class-fraction values (ocean / non-forest fill) by 0. The object stays on GAMI's native
+0.5-degree grid; the projection onto the 67420 lpj-cell grid happens in
+\code{calcAgeClassDistribution}.
 }
 \examples{
 \dontrun{

@@ -6,7 +6,6 @@
 #' @return metadata list describing the downloaded GAMI source
 #' @author Florian Humpenoeder
 #' @seealso [downloadSource()], \code{\link{readGAMI}}
-#' @importFrom utils download.file
 #' @examples
 #' \dontrun{
 #' downloadSource("GAMI")
@@ -16,7 +15,7 @@ downloadGAMI <- function() {
   baseURL <- "https://datapub.gfz-potsdam.de/download/10.5880.GFZ.1.4.2023.006-VEnuo"
   file    <- "GAMIv2-1_2010-2020_class_fraction_0deg50.nc"
 
-  download.file(file.path(baseURL, file), destfile = file, mode = "wb")
+  utils::download.file(file.path(baseURL, file), destfile = file, mode = "wb")
 
   meta <- list(
     url          = "https://doi.org/10.5880/GFZ.1.4.2023.006",

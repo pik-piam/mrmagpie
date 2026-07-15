@@ -23,12 +23,12 @@
 #' calcOutput("AgeClassDistribution", aggregate = FALSE)
 #' calcOutput("AgeClassDistribution", dataset = "GAMI", aggregate = FALSE)
 #' }
-#'
-#' @importFrom magclass where new.magpie collapseNames getItems getItems<-
-#' @importFrom mstools toolCoord2Isocell toolGetMappingCoord2Country
-#' @importFrom madrat toolGetMapping calcOutput readSource
 
 calcAgeClassDistribution <- function(cells = "lpjcell", dataset = "GFAD", gamiYear = "y2010") {
+
+  if (cells == "magpiecell") {
+    stop("magpiecell is no longer supported")
+  }
 
   if (dataset == "GFAD") {
 
@@ -36,9 +36,11 @@ calcAgeClassDistribution <- function(cells = "lpjcell", dataset = "GFAD", gamiYe
     poulterDataset <- readSource("GFAD", convert = "onlycorrect")
 
     # Calculate cellarea
-    mapping <- toolGetMappingCoord2Country()
+    mapping <- mstools::toolGetMappingCoord2Country()
     cb <- toolGetMapping("LPJ_CellBelongingsToCountries.csv",
                          type = "cell", where = "mrcommons")
+    # 111e3 m ~ length of one degree of latitude; (111e3 * 0.5)^2 = area of a 0.5-degree cell
+    # at the equator (m2); cos(lat) corrects for the convergence of meridians towards the poles
     cellArea <- (111e3 * 0.5) * (111e3 * 0.5) * cos(cb$lat / 180 * pi)
     cellArea <- as.magpie(cellArea, spatial = 1) /  1e10 # convert to Mha
     getItems(cellArea, dim = 1, raw = TRUE) <- paste(mapping$coords, mapping$iso, sep = ".")
@@ -52,8 +54,15 @@ calcAgeClassDistribution <- function(cells = "lpjcell", dataset = "GFAD", gamiYe
 
   } else if (dataset == "GAMI") {
 
-    # within-forest age shares from GAMI v2.1 (12 classes, sum to 1 where forest exists)
+    # within-forest age shares from GAMI v2.1 (native 0.5-degree grid, 12 classes, sum to 1 where forest exists)
     gami <- readSource("GAMI", convert = "onlycorrect")
+
+    # project GAMI onto the 67420 lpjcell grid and attach ISO codes (done here, not in the read function)
+    coordMap <- mstools::toolGetMappingCoord2Country()
+    gami <- gami[coordMap$coords, , ]
+    getItems(gami, dim = 1, raw = TRUE) <- paste(coordMap$coords, coordMap$iso, sep = ".")
+    getSets(gami) <- c("x", "y", "iso", "year", "ageClass")
+
     if (!gamiYear %in% getItems(gami, 2)) {
       stop("calcAgeClassDistribution: gamiYear must be one of ", paste(getItems(gami, 2), collapse = ", "))
     }
@@ -92,10 +101,6 @@ calcAgeClassDistribution <- function(cells = "lpjcell", dataset = "GFAD", gamiYe
 
   } else {
     stop("calcAgeClassDistribution: 'dataset' must be 'GFAD' or 'GAMI'")
-  }
-
-  if (cells == "magpiecell") {
-    stop("magpiecell is no longer supported")
   }
 
   return(list(x = out,

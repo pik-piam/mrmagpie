@@ -11,7 +11,7 @@ calcAgeClassDistribution(
 )
 }
 \arguments{
-\item{cells}{lpjcell for 67420 cells or magpiecell for 59199 cells}
+\item{cells}{lpjcell for 67420 cells}
 
 \item{dataset}{"GFAD" (default) or "GAMI"}
 
@@ -39,7 +39,6 @@ Where GAMI reports no forest but GFAD does, the GFAD age shape is retained (area
 calcOutput("AgeClassDistribution", aggregate = FALSE)
 calcOutput("AgeClassDistribution", dataset = "GAMI", aggregate = FALSE)
 }
-
 }
 \author{
 Abhijeet Mishra, Felicitas Beier, Florian Humpenoeder
