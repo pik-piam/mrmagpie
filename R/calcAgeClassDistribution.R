@@ -60,7 +60,7 @@ calcAgeClassDistribution <- function(cells = "lpjcell", dataset = "GFAD", gamiYe
     shares <- collapseNames(gami[, gamiYear, ])
 
     # per-cell forest AREA from the GFAD product (same forest-area map -> isolates the age change)
-    gfad  <- calcOutput("AgeClassDistribution", cells = "lpjcell", dataset = "GFAD", aggregate = FALSE)
+    gfad  <- calcOutput("AgeClassDistribution", dataset = "GFAD", aggregate = FALSE)
     cellIt <- getItems(gfad, 1)
     gfadM  <- matrix(as.numeric(gfad[cellIt, , ]), nrow = length(cellIt), ncol = 15,
                      dimnames = list(cellIt, paste0("class", 1:15)))
