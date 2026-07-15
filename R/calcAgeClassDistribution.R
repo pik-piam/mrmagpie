@@ -95,7 +95,7 @@ calcAgeClassDistribution <- function(cells = "lpjcell", dataset = "GFAD", gamiYe
   }
 
   if (cells == "magpiecell") {
-    out <- toolCoord2Isocell(out, cells = cells)
+    stop("magpiecell is no longer supported")
   }
 
   return(list(x = out,
