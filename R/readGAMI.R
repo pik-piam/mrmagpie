@@ -44,7 +44,7 @@ readGAMI <- function() {
   years   <- c("y2010", "y2020")
   classNm <- paste0("gami", seq_along(ageClass))          # gami1..gami12
   out <- new.magpie(cells_and_regions = cells, years = years, names = classNm, fill = 0)
-  for (tt in seq_len(2)) {
+  for (tt in c(1, 2)) {
     for (k in seq_along(ageClass)) {
       out[, years[tt], classNm[k]] <- as.vector(arr[tt, , , k])
     }
