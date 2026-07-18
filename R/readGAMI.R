@@ -26,6 +26,8 @@ readGAMI <- function() {
 
   file <- "GAMIv2-1_2010-2020_class_fraction_0deg50.nc"
 
+  # using ncdf4, because terra::rast() flattens the non-spatial dims into 480 layers,
+  # but labels every age class age_class=0 and scrambles member order
   nc <- ncdf4::nc_open(file)
   withr::defer(ncdf4::nc_close(nc))
   glon     <- ncdf4::ncvar_get(nc, "longitude")
