@@ -518,6 +518,10 @@ fullCELLULARMAGPIE <- function(rev = numeric_version("0.1"), dev = "",
                round = 6, outputStatistics = stats, file = "f59_topsoilc_naturalstate.cs3")
   }
 
+  # 71 disagg livestock
+  calcOutput("LivestockDensity", years = seq(1995, 2025, 5), cells = cells, aggregate = FALSE,
+             round = 4, outputStatistics = stats, file = "f71_livestock_weight_0.5.mz")
+
   ##### AGGREGATION ######
 
   # create info file
