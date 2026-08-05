@@ -519,8 +519,8 @@ fullCELLULARMAGPIE <- function(rev = numeric_version("0.1"), dev = "",
   }
 
   # 71 disagg livestock
-  calcOutput("LivestockDensity", years = seq(1995, 2025, 5), cells = cells, aggregate = FALSE,
-             round = 4, outputStatistics = stats, file = "f71_livestock_weight_0.5.mz")
+  calcOutput("LivestockDensity", years = seq(1995, 2025, 5), aggregate = FALSE,
+             round = NULL, outputStatistics = stats, file = "f71_livestock_weight_0.5.mz")
 
   ##### AGGREGATION ######
 
