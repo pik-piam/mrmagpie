@@ -86,6 +86,7 @@ fullCELLULARMAGPIE <- function(rev = numeric_version("0.1"), dev = "",
   magYearsPastLong <- c("y1995", "y2000", "y2005", "y2010", "y2015")
   magYears         <- findset("time")
   shortYears       <- findset("t_all")
+  pastTil2015      <- c(findset("past"), "y2015")
   lpjYears         <- seq(1995, 2100, by = 5)
   roundArea        <- 5
   stats            <- c("summary", "sum")
@@ -223,12 +224,24 @@ fullCELLULARMAGPIE <- function(rev = numeric_version("0.1"), dev = "",
   # 30 crop
   calcOutput("Croparea", sectoral = "kcr", physical = TRUE,
              cellular = TRUE, irrigation = FALSE, round = roundArea,
+             years = pastTil2015,
              aggregate = "cluster", outputStatistics = stats,
              file = paste0("f30_croparea_initialisation_", ctype, ".mz"))
   calcOutput("Croparea", sectoral = "kcr", physical = TRUE,
              cellular = TRUE, irrigation = TRUE, round = roundArea,
+             years = pastTil2015,
              aggregate = "cluster", outputStatistics = stats,
              file = paste0("f30_croparea_w_initialisation_", ctype, ".mz"))
+
+  ### As part of mrwater/multiple cropping integration: Change to this function.
+  #calcOutput("MulticroppingIntensity", selectyears = magYears, round = 4,
+  #           scenario = "crop", sectoral = "kcr",
+  #           outputStatistics = stats, file = "fm_multicropping_j.cs3",
+  #           aggregate = "cluster")
+  calcOutput("Multicropping", years = magYears, round = 4,
+             outputStatistics = stats, file = "fm_multicropping_j.cs3",
+             aggregate = "cluster")
+
   ## For cellular comparison
   calcOutput("MAPSPAM", subtype = "physical",  aggregate = FALSE, round = NULL,
              outputStatistics = stats, file = paste0("MAPSPAM_croparea_0.5.mz"))
@@ -247,13 +260,13 @@ fullCELLULARMAGPIE <- function(rev = numeric_version("0.1"), dev = "",
              round = roundArea, outputStatistics = stats, file = "avl_cropland_iso.cs3")
 
   calcOutput("CroplandTreecover",
-             aggregate = FALSE, cells = cells,
+             aggregate = FALSE,
              round = NULL, outputStatistics = stats, file = "CroplandTreecover_0.5.mz")
   calcOutput("CroplandTreecover",
-             aggregate = "cluster", cells = cells,
+             aggregate = "cluster",
              round = roundArea, outputStatistics = stats, file = paste0("CroplandTreecover_", ctype, ".mz"))
   calcOutput("CroplandTreecover",
-             aggregate = FALSE, cells = cells, countryLevel = TRUE,
+             aggregate = FALSE, countryLevel = TRUE,
              round = roundArea, outputStatistics = stats, file = "CroplandTreecover_iso.cs2")
 
   calcOutput("SNVTargetCropland",
