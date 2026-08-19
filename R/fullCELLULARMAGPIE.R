@@ -520,7 +520,7 @@ fullCELLULARMAGPIE <- function(rev = numeric_version("0.1"), dev = "",
 
   # 71 disagg livestock
   calcOutput("LivestockDistribution", years = seq(1995, 2025, 5), aggregate = FALSE,
-             round = NULL, outputStatistics = stats, file = "f71_livestock_distribution_0.5.mz")
+             round = 6, outputStatistics = stats, file = "f71_livestock_distribution_0.5.mz")
 
   ##### AGGREGATION ######
 
