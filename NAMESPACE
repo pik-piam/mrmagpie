@@ -39,6 +39,7 @@ importFrom(magclass,
   ndata,
   new.magpie,
   read.magpie,
+  setYears,
   where,
   wrap
 )
@@ -87,6 +88,8 @@ importFrom(utils,
   unzip
 )
 importFrom(withr,
+  defer,
   local_options,
+  local_tempdir,
   with_options
 )
