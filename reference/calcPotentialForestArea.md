@@ -11,7 +11,8 @@ calcPotentialForestArea(
   countryLevel = FALSE,
   cells = "lpjcell",
   lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de"),
-  climatetype = "MRI-ESM2-0:ssp370"
+  climatetype = "MRI-ESM2-0:ssp370",
+  grassyCorrection = FALSE
 )
 ```
 
@@ -41,13 +42,20 @@ calcPotentialForestArea(
   Switch between different GCM climate scenarios. Only relevant, if
   refData = "lpj".
 
+- grassyCorrection:
+
+  If TRUE, the potential forest area is reduced by the grassy-ecoregion
+  cover fraction (RESOLVE 2017 biomes 7-10, calcGrassyEcoregions),
+  correcting the LPJmL overestimation of forest in open grassy
+  ecosystems (Veldman et al. 2015).
+
 ## Value
 
 magpie object in cellular resolution
 
 ## Author
 
-Patrick v. Jeetze
+Patrick v. Jeetze, Florian Humpenoeder
 
 ## Examples
 

@@ -1,6 +1,6 @@
 # madrat based MAgPIE Input Data Library
 
-R package **mrmagpie**, version **1.66.4**
+R package **mrmagpie**, version **1.67.0**
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4319612.svg)](https://doi.org/10.5281/zenodo.4319612)
 [![R build
@@ -52,7 +52,7 @@ To cite package **mrmagpie** in publications use:
 Karstens K, Dietrich J, Chen D, Windisch M, Alves M, Beier F, Köberle A,
 v. Jeetze P, Mishra A, Humpenoeder F, Sauer P, Rein P (2026). “mrmagpie:
 madrat based MAgPIE Input Data Library.” <doi:10.5281/zenodo.4319612>
-<https://doi.org/10.5281/zenodo.4319612>, Version: 1.66.4,
+<https://doi.org/10.5281/zenodo.4319612>, Version: 1.67.0,
 <https://github.com/pik-piam/mrmagpie>.
 
 A BibTeX entry for LaTeX users is
@@ -65,6 +65,6 @@ A BibTeX entry for LaTeX users is
  date = {2026-09-10},
  year = {2026},
  url = {https://github.com/pik-piam/mrmagpie},
- note = {Version: 1.66.4},
+ note = {Version: 1.67.0},
 }
 ```
