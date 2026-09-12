@@ -44,10 +44,10 @@ calcPotentialForestArea(
 
 - grassyCorrection:
 
-  If TRUE, the potential forest area is reduced by the grassy-ecoregion
-  cover fraction (RESOLVE 2017 biomes 7-10, calcGrassyEcoregions),
-  correcting the LPJmL overestimation of forest in open grassy
-  ecosystems (Veldman et al. 2015).
+  If TRUE, the potential forest area is reduced by the
+  grassland-ecoregion cover fraction (RESOLVE 2017 biomes 7-10,
+  calcGrassyEcoregions), correcting the LPJmL overestimation of forest
+  in open grassy ecosystems.
 
 ## Value
 
