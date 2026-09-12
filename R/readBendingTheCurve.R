@@ -31,7 +31,9 @@ readBendingTheCurve <- function(subtype) {
 
   } else if (subtype == "luh2_side_layers") {
 
-    x <- read.magpie("./LUHSideLayers/table_LUH_side_data_16Nov2017.nc")
+    # The time not combined warning only states that there was no timestep attribute
+    # derived. The data is still read correctly.
+    x <- suppressSpecificWarnings(read.magpie("./LUHSideLayers/table_LUH_side_data_16Nov2017.nc"), "time not combined")
     getYears(x) <- NULL
 
     manpast <- collapseNames(x[, , "is_pasture1ORrRangeland0"])

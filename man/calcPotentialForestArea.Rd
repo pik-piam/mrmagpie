@@ -10,7 +10,7 @@ calcPotentialForestArea(
   cells = "lpjcell",
   lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de"),
   climatetype = "MRI-ESM2-0:ssp370",
-  grassyCorrection = FALSE
+  grassyCorrection = TRUE
 )
 }
 \arguments{
