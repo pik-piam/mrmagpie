@@ -343,8 +343,8 @@ fullCELLULARMAGPIE <- function(rev = numeric_version("0.1"), dev = "",
              aggregate = "cluster", cells = cells,
              outputStatistics = stats, file = paste0("forestageclasses_gami_", ctype, ".mz"))
 
-  # potential forest area for module 35 (selected by c35_pot_forest_correction): grassy-ecoregion-corrected
-  # (default; RESOLVE 2017 biomes 7-10, where LPJmL overestimates forest cover, Veldman et al. 2015) and the
+  # potential forest area for module 35 (selected by c35_pot_forest_correction): grassland-ecoregion-corrected
+  # (default; RESOLVE 2017 biomes 7-10, where LPJmL overestimates forest cover) and the
   # uncorrected variant. Emitted at BOTH 0.5 deg and cluster resolution so the two stay consistent.
   calcOutput("PotentialForestArea",
              refData = "lpj", cells = cells, lpjml = lpjml, climatetype = climatetype, years = lpjYears,

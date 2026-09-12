@@ -12,9 +12,9 @@
 #'              Only relevant, if refData = "lpj".
 #' @param climatetype Switch between different GCM climate scenarios.
 #'                    Only relevant, if refData = "lpj".
-#' @param grassyCorrection If TRUE, the potential forest area is reduced by the grassy-ecoregion
+#' @param grassyCorrection If TRUE, the potential forest area is reduced by the grassland-ecoregion
 #'                    cover fraction (RESOLVE 2017 biomes 7-10, calcGrassyEcoregions), correcting the
-#'                    LPJmL overestimation of forest in open grassy ecosystems (Veldman et al. 2015).
+#'                    LPJmL overestimation of forest in open grassy ecosystems.
 #'
 #' @return magpie object in cellular resolution
 #' @author Patrick v. Jeetze, Florian Humpenoeder
@@ -50,8 +50,8 @@ calcPotentialForestArea <- function(refData = "lpj", countryLevel = FALSE, cells
     potForestArea <- potForest * landArea
 
     if (grassyCorrection) {
-      # reduce the potential forest area by the grassy-ecoregion cover fraction, where LPJmL
-      # overestimates forest in open grassy ecosystems (Veldman et al. 2015)
+      # reduce the potential forest area by the grassland-ecoregion cover fraction, where LPJmL
+      # overestimates forest in open grassy ecosystems
       grassy <- calcOutput("GrassyEcoregions", aggregate = FALSE)
       potForestArea <- potForestArea * (1 - setYears(grassy, NULL))
     }

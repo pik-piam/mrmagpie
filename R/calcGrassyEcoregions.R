@@ -2,8 +2,8 @@
 #' @description Per-cell areal cover fraction of the RESOLVE Ecoregions 2017 grassy biomes
 #' (Dinerstein et al. 2017): tropical and subtropical, temperate, flooded, and montane
 #' grasslands, savannas and shrublands (biomes 7-10). Used to correct the LPJmL-derived
-#' potential forest area, which overestimates forest cover in these open ecosystems
-#' (Veldman et al. 2015).
+#' potential forest area, which overestimates forest cover in these open ecosystems,
+#' where tree planting and forest expansion are ecologically inappropriate (Veldman et al. 2015).
 #'
 #' @return magpie object in cellular resolution (67420 lpjcells)
 #' @author Florian Humpenoeder
@@ -26,7 +26,7 @@ calcGrassyEcoregions <- function() {
     x           = grassy,
     weight      = landArea,
     unit        = "fraction",
-    description = "Grassy ecoregions cover fraction (RESOLVE 2017 biomes 7-10)",
+    description = "Grassland ecoregions cover fraction (RESOLVE 2017 biomes 7-10)",
     isocountries = FALSE
   ))
 }

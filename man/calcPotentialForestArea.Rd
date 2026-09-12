@@ -28,9 +28,9 @@ Only relevant, if refData = "lpj".}
 \item{climatetype}{Switch between different GCM climate scenarios.
 Only relevant, if refData = "lpj".}
 
-\item{grassyCorrection}{If TRUE, the potential forest area is reduced by the grassy-ecoregion
+\item{grassyCorrection}{If TRUE, the potential forest area is reduced by the grassland-ecoregion
 cover fraction (RESOLVE 2017 biomes 7-10, calcGrassyEcoregions), correcting the
-LPJmL overestimation of forest in open grassy ecosystems (Veldman et al. 2015).}
+LPJmL overestimation of forest in open grassy ecosystems.}
 }
 \value{
 magpie object in cellular resolution
