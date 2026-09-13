@@ -26,8 +26,12 @@
 #'                    weight < 1 less cluster than by default.
 #' @return A mapping between regions and clusters
 #' @author Jan Philipp Dietrich
+#' @importFrom magclass getCells ncells getRegions new.magpie getSets getSets<-
+#' @importFrom stats hclust cutree
 #' @seealso \code{\link{calcCluster}}, \code{\link{calcClusterKMeans}}
-calcClusterHierarchical <- function(regionscode, ncluster, lpjml = c(natveg = "LPJmL4", crop = "LPJmL5"),
+#' @export
+
+calcClusterHierarchical <- function(regionscode, ncluster, lpjml = "lpjml5.9.5-m1",
                                     clusterdata = "yield_airrig", mode = "h", weight = NULL) {
 
   fullfit <- attributes(calcOutput("ClusterTreeHierarchical", regionscode = regionscode, mode = mode, weight = weight,

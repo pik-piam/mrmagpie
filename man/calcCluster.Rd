@@ -9,7 +9,7 @@ calcCluster(
   regionscode = madrat::regionscode(),
   seed = 42,
   weight = NULL,
-  lpjml = c(natveg = "LPJmL4", crop = "LPJmL5"),
+  lpjml = "lpjml5.9.5-m1",
   clusterdata = "yield_airrig"
 )
 }
@@ -42,7 +42,7 @@ weights will be assumed to be 1 (examples: c(LAM=1.5,SSA=1.5,OAS=1.5), c(LAM=2,S
 \item{lpjml}{defines LPJmL version for crop/grass and natveg specific inputs}
 
 \item{clusterdata}{similarity data to be used to determine clusters: yield_airrig (current default)
-or yield_increment}
+or yield_increment for new irrigation implementation}
 }
 \value{
 map from cells to clusters as data.frame

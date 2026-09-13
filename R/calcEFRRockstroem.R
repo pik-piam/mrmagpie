@@ -12,7 +12,7 @@
 #'
 #' @importFrom stats quantile
 #' @importFrom mstools toolHarmonize2Baseline
-#' @importFrom mrlandcore toolLPJmLVersion
+#' @importFrom mrlandcore toolLPJmLHarmonize
 #'
 #' @return magpie object in cellular resolution
 #' @author Felicitas Beier, Jens Heinke
@@ -22,19 +22,12 @@
 #' calcOutput("EFRRockstroem", aggregate = FALSE)
 #' }
 #'
-calcEFRRockstroem <- function(lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de",
-                                        crop = "ggcmi_phase3_nchecks_9ca735cb"),
-                              climatetype = "GSWP3-W5E5:historical", stage = "harmonized2020",
-                              seasonality = "grper") {
-  # Create settings for LPJmL from version and climatetype argument
-  cfgNatveg <- toolLPJmLVersion(version = lpjml["natveg"], climatetype = climatetype)
-  cfgCrop   <- toolLPJmLVersion(version = lpjml["crop"],   climatetype = climatetype)
 
-  lpjmlReadin  <- c(natveg = unname(cfgNatveg$readin_version),
-                    crop   = unname(cfgCrop$readin_version))
-
-  lpjmlBaseline <- c(natveg = unname(cfgNatveg$baseline_version),
-                     crop   = unname(cfgCrop$baseline_version))
+calcEFRRockstroem <- function(lpjml = "lpjml5.9.5-m1", climatetype = "MRI-ESM2-0:ssp370",
+                              stage = "harmonized2020", seasonality = "grper") {
+  # extract LPJmL config information
+  cfg <- toolLPJmLHarmonize(lpjmlversion = lpjml,
+                            climatetype = climatetype)
 
   #############################################################################
   # Definition of planetary boundary (PB) according to Rockström et al. 2023: #
@@ -47,9 +40,9 @@ calcEFRRockstroem <- function(lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de",
 
   if (stage %in% c("raw", "smoothed")) {
     # Available water per month (smoothed)
-    avlWaterMonth <- calcOutput("AvlWater", lpjml = lpjmlReadin, climatetype = climatetype,
+    avlWaterMonth <- calcOutput("AvlWater", lpjml = cfg$readinVersion, climatetype = climatetype,
                                 seasonality = "monthly", stage = "smoothed",
-                                aggregate = FALSE, cells = "lpjcell")
+                                aggregate = FALSE)
 
     # Monthly EFR: 80% of monthly available water
     efr <- 0.8 * avlWaterMonth
@@ -69,9 +62,9 @@ calcEFRRockstroem <- function(lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de",
       efrTotal <- dimSums(efr, dim = 3)
 
       # Read in available water (for Smakthin calculation)
-      avlWaterTotal <- calcOutput("AvlWater", lpjml = lpjmlReadin, climatetype = climatetype,
+      avlWaterTotal <- calcOutput("AvlWater", lpjml = cfg$readinVersion, climatetype = climatetype,
                                   seasonality = "total", stage = "smoothed",
-                                  aggregate = FALSE, cells = "lpjcell")
+                                  aggregate = FALSE)
 
       # Reduce EFR to 80% of available water where it exceeds this threshold
       efrTotal[which(efrTotal / avlWaterTotal > 0.8)] <-
@@ -97,18 +90,21 @@ calcEFRRockstroem <- function(lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de",
       efrDay   <- efr / monthDayMagpie
 
       # Growing days per month
-      growDays <- calcOutput("GrowingPeriod", lpjml = lpjmlReadin, climatetype = climatetype,
+      growDays <- calcOutput("GrowingPeriod", lpjml = cfg$readinVersion, climatetype = climatetype,
                              stage = "smoothed", yield_ratio = 0.1,
-                             aggregate = FALSE, cells = "lpjcell")
+                             aggregate = FALSE)
+      getItems(growDays, dim = 3) <- c(1:12)
+      getSets(growDays) <- c("x", "y", "iso", "year", "month")
+      yrs <- intersect(getItems(growDays, dim = 2), getItems(efr, dim = 2))
 
       # Available water in growing period
-      efrGrper <- efrDay * growDays
+      efrGrper <- efrDay[, yrs, ] * growDays[, yrs, ]
       # Available water in growing period per year
       efrGrper <- dimSums(efrGrper, dim = 3)
       # Read in available water (for Smakthin calculation)
-      avlWaterGrper <- calcOutput("AvlWater", lpjml = lpjmlReadin, climatetype = climatetype,
+      avlWaterGrper <- calcOutput("AvlWater", lpjml = cfg$readinVersion, climatetype = climatetype,
                                   seasonality = "grper", stage = "smoothed",
-                                  aggregate = FALSE, cells = "lpjcell")
+                                  aggregate = FALSE)
 
       # Reduce EFR to 80% of available water where it exceeds this threshold
       efrGrper[which(efrGrper / avlWaterGrper > 0.8)] <-
@@ -125,39 +121,39 @@ calcEFRRockstroem <- function(lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de",
 
   } else if (stage == "harmonized") {
     # Load baseline and climate EFR:
-    baseline <- calcOutput("EFRRockstroem", lpjml = lpjmlBaseline, climatetype = cfgNatveg$baseline_hist,
+    baseline <- calcOutput("EFRRockstroem", lpjml = cfg$readinVersion, climatetype = cfg$baselineHist,
                            seasonality = seasonality, stage = "smoothed",
                            aggregate = FALSE)
 
-    if (climatetype == cfgNatveg$baseline_hist) {
+    if (climatetype == cfg$baselineHist) {
 
       out <- baseline
 
     } else {
 
-      x   <- calcOutput("EFRRockstroem", lpjml = lpjmlReadin, climatetype = climatetype,
+      x   <- calcOutput("EFRRockstroem", lpjml = cfg$readinVersion, climatetype = cfg$climatetype,
                         seasonality = seasonality, stage = "smoothed",
                         aggregate = FALSE)
       # Harmonize to baseline
-      out <- toolHarmonize2Baseline(x = x, base = baseline, ref_year = cfgNatveg$ref_year_hist)
+      out <- toolHarmonize2Baseline(x = x, base = baseline, ref_year = cfg$refYearHist)
     }
 
   } else if (stage == "harmonized2020") {
 
-    baseline2020 <- calcOutput("EFRRockstroem", lpjml = lpjmlBaseline, climatetype = cfgNatveg$baseline_gcm,
+    baseline2020 <- calcOutput("EFRRockstroem", lpjml = cfg$readinVersion, climatetype = cfg$baselineGcm,
                                seasonality = seasonality, stage = "harmonized",
                                aggregate = FALSE)
 
-    if (climatetype == cfgNatveg$baseline_gcm) {
+    if (climatetype == cfg$baselineGcm) {
 
       out <- baseline2020
 
     } else {
 
-      x        <- calcOutput("EFRRockstroem", lpjml = lpjmlReadin, climatetype = climatetype,
+      x        <- calcOutput("EFRRockstroem", lpjml = cfg$readinVersion, climatetype = cfg$climatetype,
                              seasonality = seasonality, stage = "smoothed",
                              aggregate = FALSE)
-      out      <- toolHarmonize2Baseline(x, baseline2020, ref_year = cfgNatveg$ref_year_gcm)
+      out <- toolHarmonize2Baseline(x, baseline2020, ref_year = cfg$refYearGcm)
     }
 
   } else {
