@@ -6,14 +6,18 @@
 \usage{
 calcPotentialForestArea(
   refData = "lpj",
-  lpjml = "lpjml5.9.5-m1",
-  climatetype = "MRI-ESM2-0:ssp370",
-  countryLevel = FALSE
+  countryLevel = FALSE,
+  lpjml = "lpjml5.10.0-m4",
+  climatetype = "MRI-ESM2-0:ssp245",
+  grassyCorrection = TRUE
 )
 }
 \arguments{
 \item{refData}{Determines the reference data that the estimated potential
 forest area is derived from (currently only "lpj")}
+
+\item{countryLevel}{Whether output shall be at country level.
+Requires aggregate=FALSE in calcOutput.}
 
 \item{lpjml}{Defines LPJmL version for crop/grass and natveg specific inputs.
 Only relevant, if refData = "lpj".}
@@ -21,8 +25,9 @@ Only relevant, if refData = "lpj".}
 \item{climatetype}{Switch between different GCM climate scenarios.
 Only relevant, if refData = "lpj".}
 
-\item{countryLevel}{Whether output shall be at country level.
-Requires aggregate=FALSE in calcOutput.}
+\item{grassyCorrection}{If TRUE, the potential forest area is reduced by the grassland-ecoregion
+cover fraction (RESOLVE 2017 biomes 7-10, calcGrassyEcoregions), correcting the
+LPJmL overestimation of forest in open grassy ecosystems.}
 }
 \value{
 magpie object in cellular resolution
@@ -35,7 +40,8 @@ Calculates the area than can be potentially covered by forests,
 \dontrun{
 calcOutput("PotentialForestArea", aggregate = FALSE)
 }
+
 }
 \author{
-Patrick v. Jeetze, Michael Crawford
+Patrick v. Jeetze, Florian Humpenoeder
 }
