@@ -544,6 +544,12 @@ fullCELLULARMAGPIE <- function(rev = numeric_version("0.1"), dev = "",
                round = 6, outputStatistics = stats, file = "f59_topsoilc_naturalstate.cs3")
   }
 
+  # 71 disagg livestock
+  calcOutput("LivestockDistribution", output = "head", landProxy = "glw", years = seq(1995, 2025, 5),
+             aggregate = FALSE, round = 6, outputStatistics = stats, file = "f71_livestock_distribution_0.5.mz")
+  calcOutput("LivestockDistribution", output = "head", landProxy = "glw", years = seq(1995, 2025, 5),
+             aggregate = "cluster", round = 6, outputStatistics = stats, file = "f71_livestock_distribution.cs3")
+
   ##### AGGREGATION ######
 
   # create info file
