@@ -26,5 +26,5 @@ calcOutput("GrasslandBiomass")
 \code{\link[madrat]{readSource}}
 }
 \author{
-Marcos Alves, Bin Lin
+Marcos Alves
 }
