@@ -34,6 +34,7 @@ Authors:
   \item Florian Humpenoeder \email{humpenoeder@pik-potsdam.de}
   \item Pascal Sauer \email{pascal.sauer@pik-potsdam.de}
   \item Patrick Rein \email{patrick.rein@pik-potsdam.de}
+  \item Bin Lin
 }
 
 }

@@ -1,8 +1,8 @@
 Type: Package
 Package: mrmagpie
 Title: madrat based MAgPIE Input Data Library
-Version: 1.68.0
-Date: 2026-10-02
+Version: 1.69.0
+Date: 2026-10-21
 Authors@R: c(
     person("Kristine", "Karstens", , "karstens@pik-potsdam.de", role = c("aut", "cre")),
     person("Jan Philipp", "Dietrich", , "dietrich@pik-potsdam.de", role = "aut"),
@@ -15,7 +15,8 @@ Authors@R: c(
     person("Abhijeet", "Mishra", , "mishra@pik-potsdam.de", role = "aut"),
     person("Florian", "Humpenoeder", , "humpenoeder@pik-potsdam.de", role = "aut"),
     person("Pascal", "Sauer", , "pascal.sauer@pik-potsdam.de", role = "aut"),
-    person("Patrick", "Rein", , "patrick.rein@pik-potsdam.de", role = "aut")
+    person("Patrick", "Rein", , "patrick.rein@pik-potsdam.de", role = "aut"),
+    person("Bin", "Lin", role = "aut")
   )
 Description: Provides functions for MAgPIE country and cellular input data
     generation.
@@ -28,7 +29,7 @@ Depends:
     magclass (>= 3.17),
     mrcommons (>= 1.41.0),
     mrdrivers (>= 7.1.1),
-    mrland (>= 0.78.0),
+    mrland (>= 0.79.0),
     mrlandcore (>= 1.1.0),
     mrsoil (>= 2.0.0),
     mrwater (>= 1.13.0),
