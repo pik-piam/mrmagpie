@@ -7,9 +7,8 @@
 calcPotentialForestArea(
   refData = "lpj",
   countryLevel = FALSE,
-  cells = "lpjcell",
-  lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de"),
-  climatetype = "MRI-ESM2-0:ssp370",
+  lpjml = "lpjml5.10.0-m4",
+  climatetype = "MRI-ESM2-0:ssp245",
   grassyCorrection = TRUE
 )
 }
@@ -19,8 +18,6 @@ forest area is derived from (currently only "lpj")}
 
 \item{countryLevel}{Whether output shall be at country level.
 Requires aggregate=FALSE in calcOutput.}
-
-\item{cells}{magpiecell (59199 cells) or lpjcell (67420 cells)}
 
 \item{lpjml}{Defines LPJmL version for crop/grass and natveg specific inputs.
 Only relevant, if refData = "lpj".}

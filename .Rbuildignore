@@ -14,3 +14,6 @@
 ^.*CITATION.cff$
 ^\.claude$
 ^_pkgdown\.yml$
+^\.positai$
+^CODE_STYLE\.md$
+^CONTRIBUTING\.md$
