@@ -29,7 +29,7 @@ Depends:
     mrcommons (>= 1.41.0),
     mrdrivers (>= 7.1.1),
     mrland (>= 0.78.0),
-    mrlandcore (>= 1.1.0),
+    mrlandcore (>= 1.9.0),
     mrsoil (>= 2.0.0),
     mrwater (>= 1.13.0),
     R (>= 3.5.0)
